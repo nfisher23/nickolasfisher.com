@@ -1,0 +1,39 @@
+User-agent: *
+
+Disallow: /blog/
+
+Disallow: /tags/foo/
+
+Disallow: /blog/hello-world-3/
+
+Disallow: /
+
+Disallow: /tags/
+
+Disallow: /blog/hello-world-2/
+
+Disallow: /blog/hello-world-5/
+
+Disallow: /blog/hello-world-4/
+
+Disallow: /blog/hello-world/
+
+Disallow: /blog/hello-world-1/
+
+Disallow: /categories/
+
+Disallow: /tags/hello/
+
+Disallow: /categories/hello/
+
+Disallow: /posts/markdown-cheat-sheet/
+
+Disallow: /posts/
+
+Disallow: /tags/whatsapp/
+
+Disallow: /categories/css/
+
+Disallow: /categories/javascript/
+
+Disallow: /categories/uncategories/

@@ -5,16 +5,16 @@ draft: false
 tags: [java, spring, reactive, aws, dynamodb, webflux]
 ---
 
-In my last post on [getting started with spring boot webflux and AWS DynamoDB](https://nickolasfisher.com/blog/DynamoDB-and-Spring-Boot-Webflux-A-Working-Introduction), I mentioned that it wasn&#39;t immediately obvious to find a way to customize the response code in a spring boot **RestController**, so I opted to use handlers instead.
+In my last post on [getting started with spring boot webflux and AWS DynamoDB](https://nickolasfisher.com/blog/DynamoDB-and-Spring-Boot-Webflux-A-Working-Introduction), I mentioned that it wasn't immediately obvious to find a way to customize the response code in a spring boot **RestController**, so I opted to use handlers instead.
 
 It turns out it was pretty simple. This handler code from that post:
 
 ```java
-    public Mono&lt;ServerResponse&gt; getSinglePhoneHandler(ServerRequest serverRequest) {
-        String companyName = serverRequest.pathVariable(&#34;company-name&#34;);
-        String modelName = serverRequest.pathVariable(&#34;model-name&#34;);
+    public Mono<ServerResponse> getSinglePhoneHandler(ServerRequest serverRequest) {
+        String companyName = serverRequest.pathVariable("company-name");
+        String modelName = serverRequest.pathVariable("model-name");
 
-        Map&lt;String, AttributeValue&gt; getSinglePhoneItemRequest = new HashMap&lt;&gt;();
+        Map<String, AttributeValue> getSinglePhoneItemRequest = new HashMap<>();
         getSinglePhoneItemRequest.put(COMPANY, AttributeValue.builder().s(companyName).build());
         getSinglePhoneItemRequest.put(MODEL, AttributeValue.builder().s(modelName).build());
         GetItemRequest getItemRequest = GetItemRequest.builder()
@@ -22,9 +22,9 @@ It turns out it was pretty simple. This handler code from that post:
                 .key(getSinglePhoneItemRequest)
                 .build();
 
-        CompletableFuture&lt;GetItemResponse&gt; item = dynamoDbAsyncClient.getItem(getItemRequest);
+        CompletableFuture<GetItemResponse> item = dynamoDbAsyncClient.getItem(getItemRequest);
         return Mono.fromCompletionStage(item)
-                .flatMap(getItemResponse -&gt; {
+                .flatMap(getItemResponse -> {
                     if (!getItemResponse.hasItem()) {
                         return ServerResponse.notFound().build();
                     }
@@ -47,19 +47,19 @@ Can be refactored into this:
 @RestController
 public class DynamoController {
 
-    public static final String PHONES_TABLENAME = &#34;Phones&#34;;
-    public static final String COMPANY = &#34;Company&#34;;
-    public static final String MODEL = &#34;Model&#34;;
+    public static final String PHONES_TABLENAME = "Phones";
+    public static final String COMPANY = "Company";
+    public static final String MODEL = "Model";
     private final DynamoDbAsyncClient dynamoDbAsyncClient;
 
     public DynamoController(DynamoDbAsyncClient dynamoDbAsyncClient) {
         this.dynamoDbAsyncClient = dynamoDbAsyncClient;
     }
 
-    @GetMapping(&#34;/company/{company-name}/model/{model-name}/phone&#34;)
-    public Mono&lt;ResponseEntity&lt;Phone&gt;&gt; getPhone(@PathVariable(&#34;company-name&#34;) String companyName,
-                                @PathVariable(&#34;model-name&#34;) String modelName) {
-        Map&lt;String, AttributeValue&gt; getSinglePhoneItemRequest = new HashMap&lt;&gt;();
+    @GetMapping("/company/{company-name}/model/{model-name}/phone")
+    public Mono<ResponseEntity<Phone>> getPhone(@PathVariable("company-name") String companyName,
+                                @PathVariable("model-name") String modelName) {
+        Map<String, AttributeValue> getSinglePhoneItemRequest = new HashMap<>();
         getSinglePhoneItemRequest.put(COMPANY, AttributeValue.builder().s(companyName).build());
         getSinglePhoneItemRequest.put(MODEL, AttributeValue.builder().s(modelName).build());
         GetItemRequest getItemRequest = GetItemRequest.builder()
@@ -67,11 +67,11 @@ public class DynamoController {
                 .key(getSinglePhoneItemRequest)
                 .build();
 
-        CompletableFuture&lt;GetItemResponse&gt; item = dynamoDbAsyncClient.getItem(getItemRequest);
+        CompletableFuture<GetItemResponse> item = dynamoDbAsyncClient.getItem(getItemRequest);
         return Mono.fromCompletionStage(item)
-                .map(getItemResponse -&gt; {
+                .map(getItemResponse -> {
                     if (!getItemResponse.hasItem()) {
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).&lt;Phone&gt;body(null);
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).<Phone>body(null);
                     }
                     Phone phone = new Phone();
                     phone.setColors(getItemResponse.item().get(COLORS).ss());

@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="You can see the source code for this post on GitHub.
-In a previous post on How to Provision Multiple Logstash Hosts Using Ansible, we saw that provisioning logstash is pretty straightforward. However, what do we do with it after it&#39;s been out there transforming messages this entire time? Given that elastic comes out with a new version of Logstash every fifteen or twenty minutes, a wise person would look to automate the upgrade process as soon as possible."
+In a previous post on How to Provision Multiple Logstash Hosts Using Ansible, we saw that provisioning logstash is pretty straightforward. However, what do we do with it after it&rsquo;s been out there transforming messages this entire time? Given that elastic comes out with a new version of Logstash every fifteen or twenty minutes, a wise person would look to automate the upgrade process as soon as possible."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-do-a-rolling-upgrade-of-multiple-logstash-instances-using-ansible/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,18 +154,18 @@ In a previous post on How to Provision Multiple Logstash Hosts Using Ansible, we
   
 
   <section><p>You can see the source code for this post <a href="https://github.com/nfisher23/some-ansible-examples">on GitHub</a>.</p>
-<p>In a previous post on <a href="https://nickolasfisher.com/blog/How-to-Provision-Multiple-Logstash-Hosts-Using-Ansible">How to Provision Multiple Logstash Hosts Using Ansible</a>, we saw that provisioning logstash is pretty straightforward. However, what do we do with it after it's been out there transforming messages this entire time? Given that elastic comes out with a new version of Logstash every fifteen or twenty minutes, a wise person would look to automate the upgrade process as soon as possible.</p>
+<p>In a previous post on <a href="https://nickolasfisher.com/blog/How-to-Provision-Multiple-Logstash-Hosts-Using-Ansible">How to Provision Multiple Logstash Hosts Using Ansible</a>, we saw that provisioning logstash is pretty straightforward. However, what do we do with it after it&rsquo;s been out there transforming messages this entire time? Given that elastic comes out with a new version of Logstash every fifteen or twenty minutes, a wise person would look to automate the upgrade process as soon as possible.</p>
 <p>This post will examine an in place upgrade of logstash.</p>
 <h3 id="create-an-ansible-role">Create an Ansible Role</h3>
 <p>We can create out ansible role using Molecule, and use vagrant as our local virtual machine provider:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule init role -r upgrade-logstash -d vagrant
-</span></span></code></pre></div><p>First, we'll need to adjust our <strong>molecule/default/molecule.yml</strong> file by creating some virtual machine to drop our logstash instances on:</p>
+</span></span></code></pre></div><p>First, we&rsquo;ll need to adjust our <strong>molecule/default/molecule.yml</strong> file by creating some virtual machine to drop our logstash instances on:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">platforms</span>:
 </span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">name</span>: lsNode1
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">box</span>: ubuntu/xenial64
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">memory</span>: <span style="color:#bd93f9">4096</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">provider_raw_config_args</span>:
-</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">&amp;#34;customize</span> [<span style="color:#ff79c6">&amp;#39;modifyvm&amp;#39;,</span> :id, &amp;#39;--uartmode1&amp;#39;, &amp;#39;disconnected&amp;#39;]&amp;#34;
+</span></span><span style="display:flex;"><span>    - <span style="color:#f1fa8c">&#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">interfaces</span>:
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">auto_config</span>: <span style="color:#ff79c6">true</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">network_name</span>: private_network
@@ -175,7 +175,7 @@ In a previous post on How to Provision Multiple Logstash Hosts Using Ansible, we
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">box</span>: ubuntu/xenial64
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">memory</span>: <span style="color:#bd93f9">4096</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">provider_raw_config_args</span>:
-</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">&amp;#34;customize</span> [<span style="color:#ff79c6">&amp;#39;modifyvm&amp;#39;,</span> :id, &amp;#39;--uartmode1&amp;#39;, &amp;#39;disconnected&amp;#39;]&amp;#34;
+</span></span><span style="display:flex;"><span>    - <span style="color:#f1fa8c">&#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">interfaces</span>:
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">auto_config</span>: <span style="color:#ff79c6">true</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">network_name</span>: private_network
@@ -188,7 +188,7 @@ In a previous post on How to Provision Multiple Logstash Hosts Using Ansible, we
 </span></span></code></pre></div><p>At this point, you should be able to run</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule create &amp;amp;&amp;amp; molecule converge
 </span></span></code></pre></div><p>To get your VMs up and logstash on them.</p>
-<p>We will create a logstash upgrade yml file and only use it when we have a parameter upgrade_ls set to true. I'm dropping this file in <strong>tasks/upgrade_ls.yml:</strong></p>
+<p>We will create a logstash upgrade yml file and only use it when we have a parameter upgrade_ls set to true. I&rsquo;m dropping this file in <strong>tasks/upgrade_ls.yml:</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
 </span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: ensure logstash already present
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">service</span>:
@@ -200,9 +200,9 @@ In a previous post on How to Provision Multiple Logstash Hosts Using Ansible, we
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">block</span>:
 </span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">name</span>: get logstash deb version
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">get_url</span>:
-</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">dest</span>: <span style="color:#ff79c6">&amp;#34;/etc/{{</span> ls_version_to_upgrade_to }}&amp;#34;
-</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">url</span>: <span style="color:#ff79c6">&amp;#34;https://artifacts.elastic.co/downloads/logstash/{{</span> ls_version_to_upgrade_to }}&amp;#34;
-</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">checksum</span>: <span style="color:#ff79c6">&amp;#34;sha512:https://artifacts.elastic.co/downloads/logstash/{{</span> ls_version_to_upgrade_to }}.sha512&amp;#34;
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">dest</span>: <span style="color:#f1fa8c">&#34;/etc/{{ ls_version_to_upgrade_to }}&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">url</span>: <span style="color:#f1fa8c">&#34;https://artifacts.elastic.co/downloads/logstash/{{ ls_version_to_upgrade_to }}&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">checksum</span>: <span style="color:#f1fa8c">&#34;sha512:https://artifacts.elastic.co/downloads/logstash/{{ ls_version_to_upgrade_to }}.sha512&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">name</span>: shut down instance
@@ -212,10 +212,10 @@ In a previous post on How to Provision Multiple Logstash Hosts Using Ansible, we
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">name</span>: install new version
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">apt</span>:
-</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">deb</span>: <span style="color:#ff79c6">&amp;#34;/etc/{{</span> ls_version_to_upgrade_to }}&amp;#34;
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">deb</span>: <span style="color:#f1fa8c">&#34;/etc/{{ ls_version_to_upgrade_to }}&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">name</span>: test configuration files
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">shell</span>: /usr/share/logstash/bin/logstash -t &amp;#34;--path.settings&amp;#34; &amp;#34;/etc/logstash&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">shell</span>: /usr/share/logstash/bin/logstash -t &#34;--path.settings&#34; &#34;/etc/logstash&#34;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">name</span>: restart pipeline
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">service</span>:
@@ -246,7 +246,7 @@ In a previous post on How to Provision Multiple Logstash Hosts Using Ansible, we
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">upgrade_ls</span>: <span style="color:#ff79c6">true</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">ls_version_to_upgrade_to</span>: logstash-6.5.3.deb
 </span></span></code></pre></div><p>As you can see, we will be upgrade logstash to version 6.5.3 in this example.</p>
-<p>Finally, we will want to upgrade one at a time, which means that we'll use the serial flag in our <strong>molecule/default/playbook.yml</strong>:</p>
+<p>Finally, we will want to upgrade one at a time, which means that we&rsquo;ll use the serial flag in our <strong>molecule/default/playbook.yml</strong>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
 </span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: Converge
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">hosts</span>: all

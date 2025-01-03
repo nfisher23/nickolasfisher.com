@@ -11,7 +11,7 @@ The source code for this blog post can be found [on GitHub](https://github.com/n
 
 Ignoring my opinion about the architecture choices, we will expand on the last post ( [How to Provision a Standalone Consul Server with Ansible](https://nickolasfisher.com/blog/How-to-Provision-a-Standalone-Consul-Server-with-Ansible)) and modify our ansible role to allow for agents to join the standalone consul server.
 
-Because [the default Restart=Always behavior of systemd isn&#39;t automatically honored](https://unix.stackexchange.com/questions/289629/systemd-restart-always-is-not-honored), and we will need for the Consul Agents to restart while they try to connect to the server (which could still be coming up), the first thing we will do is get our Consul systemd service to keep trying to restart ad infinitum. Modify our **templates/consul.service.j2** file to look like:
+Because [the default Restart=Always behavior of systemd isn't automatically honored](https://unix.stackexchange.com/questions/289629/systemd-restart-always-is-not-honored), and we will need for the Consul Agents to restart while they try to connect to the server (which could still be coming up), the first thing we will do is get our Consul systemd service to keep trying to restart ad infinitum. Modify our **templates/consul.service.j2** file to look like:
 
 ```
 [Unit]
@@ -45,7 +45,7 @@ platforms:
     box: ubuntu/xenial64
     memory: 2048
     provider_raw_config_args:
-    - &#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;
+    - "customize ['modifyvm', :id, '--uartmode1', 'disconnected']"
     interfaces:
     - auto_config: true
       network_name: private_network
@@ -55,7 +55,7 @@ platforms:
     box: ubuntu/xenial64
     memory: 2048
     provider_raw_config_args:
-    - &#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;
+    - "customize ['modifyvm', :id, '--uartmode1', 'disconnected']"
     interfaces:
     - auto_config: true
       network_name: private_network
@@ -66,10 +66,10 @@ provisioner:
   inventory:
     host_vars:
       consulClient:
-        is_server: &#34;false&#34;
+        is_server: "false"
         node_name: client
       consulServer:
-        is_server: &#34;true&#34;
+        is_server: "true"
         node_name: server
   lint:
     name: ansible-lint
@@ -86,30 +86,30 @@ The two main things that we have done here are:
 - Added a virtual machine, called consulClient﻿
 - Set two host variables for both the consulClient and consulServer virtual machines. We will use them in our next step.
 
-As luck would have it, we do not need to make any changes to the tasks/main.yml file. The only thing left to make this playbook &#34;just work&#34; is to modify the **templates/consul.config.j2** file to look like:
+As luck would have it, we do not need to make any changes to the tasks/main.yml file. The only thing left to make this playbook "just work" is to modify the **templates/consul.config.j2** file to look like:
 
 ```json
 {
-    &#34;node_name&#34;: &#34;{{ node_name }}&#34;,
-    &#34;addresses&#34;: {
-        &#34;http&#34;: &#34;{{ ansible_facts[&#39;all_ipv4_addresses&#39;] | last }} 127.0.0.1&#34;
+    "node_name": "{{ node_name }}",
+    "addresses": {
+        "http": "{{ ansible_facts['all_ipv4_addresses'] | last }} 127.0.0.1"
     },
-    &#34;server&#34;: {{ is_server }},
-    &#34;advertise_addr&#34;: &#34;{{ ansible_facts[&#39;all_ipv4_addresses&#39;] | last }}&#34;,
-    &#34;client_addr&#34;: &#34;127.0.0.1 {{ ansible_facts[&#39;all_ipv4_addresses&#39;] | last }}&#34;,
-    &#34;connect&#34;: {
-        &#34;enabled&#34;: true
+    "server": {{ is_server }},
+    "advertise_addr": "{{ ansible_facts['all_ipv4_addresses'] | last }}",
+    "client_addr": "127.0.0.1 {{ ansible_facts['all_ipv4_addresses'] | last }}",
+    "connect": {
+        "enabled": true
     },
-    &#34;data_dir&#34;: &#34;{{ consul_data_dir }}&#34;,
-{% if is_server == &#39;false&#39; %}
-    &#34;start_join&#34;: [ &#34;{{ hostvars[&#39;consulServer&#39;][&#39;ansible_all_ipv4_addresses&#39;] | last }}&#34;]
+    "data_dir": "{{ consul_data_dir }}",
+{% if is_server == 'false' %}
+    "start_join": [ "{{ hostvars['consulServer']['ansible_all_ipv4_addresses'] | last }}"]
 {% else %}
-    &#34;bootstrap&#34;: true
+    "bootstrap": true
 {% endif %}
 }
 ```
 
-If we are running in server mode, we need the up and coming standalone server to bootstrap itself, hence **&#34;bootstrap&#34;: true**. If, instead, we are running in client mode, we need the client to find our server to register with. Since molecule automatically adds inventory based on what is defined in the platforms section, we can reference our consul server&#39;s IP address in start\_join.
+If we are running in server mode, we need the up and coming standalone server to bootstrap itself, hence **"bootstrap": true**. If, instead, we are running in client mode, we need the client to find our server to register with. Since molecule automatically adds inventory based on what is defined in the platforms section, we can reference our consul server's IP address in start\_join.
 
 If you run:
 

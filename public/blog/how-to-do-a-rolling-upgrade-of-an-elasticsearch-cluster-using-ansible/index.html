@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="You can see the source code for this blog post on GitHub.
-In a previous post, we saw how to provision a multi-node elasticsearch cluster using ansible. The problem with that post is that, by the time I was done writing it, Elastic had already come out with a new version of elasticsearch. I&#39;m being mildly facetious, but not really. They release new versions very quickly, even by the standards of modern software engineering."
+In a previous post, we saw how to provision a multi-node elasticsearch cluster using ansible. The problem with that post is that, by the time I was done writing it, Elastic had already come out with a new version of elasticsearch. I&rsquo;m being mildly facetious, but not really. They release new versions very quickly, even by the standards of modern software engineering."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-do-a-rolling-upgrade-of-an-elasticsearch-cluster-using-ansible/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,24 +154,24 @@ In a previous post, we saw how to provision a multi-node elasticsearch cluster u
   
 
   <section><p>You can see the source code for this blog post <a href="https://github.com/nfisher23/some-ansible-examples">on GitHub</a>.</p>
-<p>In a previous post, we saw <a href="https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible">how to provision a multi-node elasticsearch cluster using ansible</a>. The problem with that post is that, by the time I was done writing it, <em>Elastic had already come out with a new version of elasticsearch</em>. I'm being mildly facetious, but not really. They release new versions very quickly, even by the standards of modern software engineering.</p>
+<p>In a previous post, we saw <a href="https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible">how to provision a multi-node elasticsearch cluster using ansible</a>. The problem with that post is that, by the time I was done writing it, <em>Elastic had already come out with a new version of elasticsearch</em>. I&rsquo;m being mildly facetious, but not really. They release new versions very quickly, even by the standards of modern software engineering.</p>
 <p>It would be wise, therefore, to think about upgrading from the very beginning. The recommended way to upgrade versions of elasticsearch from 5.6 onwards is a <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/rolling-upgrades.html">rolling upgrade</a>. As you can see from that article, upgrading (even in place) elasticsearch is not trivial by any stretch of the imagination.</p>
-<p>However, it can be done, and in this post I'll show you one way to do it using ansible.</p>
+<p>However, it can be done, and in this post I&rsquo;ll show you one way to do it using ansible.</p>
 <h3 id="doing-the-upgrade">Doing the Upgrade</h3>
-<p>To start with, I'll create an ansible role using molecule to demo what is required:</p>
+<p>To start with, I&rsquo;ll create an ansible role using molecule to demo what is required:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule init role -r upgrade-elasticsearch-cluster -d vagrant
-</span></span></code></pre></div><p>I'm choosing Vagrant as my VM driver and calling this role upgrade-elasticsearch-cluster.</p>
-<p>So I don't have to reinvent the wheel I'm reusing the role that installs elasticsearch (version 6.3.0) by including it in my <strong>meta/main.yml</strong> file:</p>
+</span></span></code></pre></div><p>I&rsquo;m choosing Vagrant as my VM driver and calling this role upgrade-elasticsearch-cluster.</p>
+<p>So I don&rsquo;t have to reinvent the wheel I&rsquo;m reusing the role that installs elasticsearch (version 6.3.0) by including it in my <strong>meta/main.yml</strong> file:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">dependencies</span>:
 </span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">role</span>: install-elasticsearch-cluster
-</span></span></code></pre></div><p>That role is still a WIP, and in fact I changed the discovery IP addresses to be 192.168.56.101-103, hardcoded in the configuration file. To demonstrate a minimum viable product for this example I'll reuse that <strong>molecule/default/molecule.yml</strong> platform's section:</p>
+</span></span></code></pre></div><p>That role is still a WIP, and in fact I changed the discovery IP addresses to be 192.168.56.101-103, hardcoded in the configuration file. To demonstrate a minimum viable product for this example I&rsquo;ll reuse that <strong>molecule/default/molecule.yml</strong> platform&rsquo;s section:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">platforms</span>:
 </span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">name</span>: elasticsearchNode1
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">box</span>: ubuntu/xenial64
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">memory</span>: <span style="color:#bd93f9">4096</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">provider_raw_config_args</span>:
-</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">&amp;#34;customize</span> [<span style="color:#ff79c6">&amp;#39;modifyvm&amp;#39;,</span> :id, &amp;#39;--uartmode1&amp;#39;, &amp;#39;disconnected&amp;#39;]&amp;#34;
+</span></span><span style="display:flex;"><span>    - <span style="color:#f1fa8c">&#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">interfaces</span>:
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">auto_config</span>: <span style="color:#ff79c6">true</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">network_name</span>: private_network
@@ -181,7 +181,7 @@ In a previous post, we saw how to provision a multi-node elasticsearch cluster u
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">box</span>: ubuntu/xenial64
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">memory</span>: <span style="color:#bd93f9">4096</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">provider_raw_config_args</span>:
-</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">&amp;#34;customize</span> [<span style="color:#ff79c6">&amp;#39;modifyvm&amp;#39;,</span> :id, &amp;#39;--uartmode1&amp;#39;, &amp;#39;disconnected&amp;#39;]&amp;#34;
+</span></span><span style="display:flex;"><span>    - <span style="color:#f1fa8c">&#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">interfaces</span>:
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">auto_config</span>: <span style="color:#ff79c6">true</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">network_name</span>: private_network
@@ -191,7 +191,7 @@ In a previous post, we saw how to provision a multi-node elasticsearch cluster u
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">box</span>: ubuntu/xenial64
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">memory</span>: <span style="color:#bd93f9">4096</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">provider_raw_config_args</span>:
-</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">&amp;#34;customize</span> [<span style="color:#ff79c6">&amp;#39;modifyvm&amp;#39;,</span> :id, &amp;#39;--uartmode1&amp;#39;, &amp;#39;disconnected&amp;#39;]&amp;#34;
+</span></span><span style="display:flex;"><span>    - <span style="color:#f1fa8c">&#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">interfaces</span>:
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">auto_config</span>: <span style="color:#ff79c6">true</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">network_name</span>: private_network
@@ -238,9 +238,9 @@ In a previous post, we saw how to provision a multi-node elasticsearch cluster u
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: get elasticsearch to upgrade to
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">get_url</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: <span style="color:#ff79c6">&amp;#34;/etc/{{</span> es_version_to_upgrade_to }}&amp;#34;
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">url</span>: <span style="color:#ff79c6">&amp;#34;https://artifacts.elastic.co/downloads/elasticsearch/{{</span> es_version_to_upgrade_to }}&amp;#34;
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">checksum</span>: <span style="color:#ff79c6">&amp;#34;sha512:https://artifacts.elastic.co/downloads/elasticsearch/{{</span> es_version_to_upgrade_to }}.sha512&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: <span style="color:#f1fa8c">&#34;/etc/{{ es_version_to_upgrade_to }}&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">url</span>: <span style="color:#f1fa8c">&#34;https://artifacts.elastic.co/downloads/elasticsearch/{{ es_version_to_upgrade_to }}&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">checksum</span>: <span style="color:#f1fa8c">&#34;sha512:https://artifacts.elastic.co/downloads/elasticsearch/{{ es_version_to_upgrade_to }}.sha512&#34;</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: perform upgrade process as root
@@ -248,7 +248,7 @@ In a previous post, we saw how to provision a multi-node elasticsearch cluster u
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: disable shard allocation
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uri</span>:
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">url</span>: http://127.0.0.1:9200/_cluster/settings
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">body</span>: <span style="color:#ff79c6">&amp;#39;{&amp;#34;persistent&amp;#34;:{&amp;#34;cluster.routing.allocation.enable&amp;#34;:&amp;#34;none&amp;#34;}}&amp;#39;</span> <span style="color:#6272a4"># specify no shard allocation</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">body</span>: <span style="color:#f1fa8c">&#39;{&#34;persistent&#34;:{&#34;cluster.routing.allocation.enable&#34;:&#34;none&#34;}}&#39;</span> <span style="color:#6272a4"># specify no shard allocation</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">body_format</span>: json
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">method</span>: PUT
 </span></span><span style="display:flex;"><span>
@@ -270,7 +270,7 @@ In a previous post, we saw how to provision a multi-node elasticsearch cluster u
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: upgrade node
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">apt</span>:
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">deb</span>: <span style="color:#ff79c6">&amp;#34;/etc/{{</span> es_version_to_upgrade_to }}&amp;#34;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">deb</span>: <span style="color:#f1fa8c">&#34;/etc/{{ es_version_to_upgrade_to }}&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: bring up node
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">service</span>:
@@ -291,7 +291,7 @@ In a previous post, we saw how to provision a multi-node elasticsearch cluster u
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: reenable shard allocation
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uri</span>:
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">url</span>: http://127.0.0.1:9200/_cluster/settings
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">body</span>: <span style="color:#ff79c6">&amp;#39;{&amp;#34;persistent&amp;#34;:{&amp;#34;cluster.routing.allocation.enable&amp;#34;:null}}&amp;#39;</span> <span style="color:#6272a4"># reenabling the setting removes shard allocation</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">body</span>: <span style="color:#f1fa8c">&#39;{&#34;persistent&#34;:{&#34;cluster.routing.allocation.enable&#34;:null}}&#39;</span> <span style="color:#6272a4"># reenabling the setting removes shard allocation</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">body_format</span>: json
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">method</span>: PUT
 </span></span><span style="display:flex;"><span>
@@ -308,10 +308,10 @@ In a previous post, we saw how to provision a multi-node elasticsearch cluster u
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> urllib2
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> sys
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>response <span style="color:#ff79c6">=</span> urllib2<span style="color:#ff79c6">.</span>urlopen(<span style="color:#ff79c6">&amp;</span><span style="color:#6272a4">#34;http://127.0.0.1:9200/_cat/health&amp;#34;)</span>
+</span></span><span style="display:flex;"><span>response <span style="color:#ff79c6">=</span> urllib2<span style="color:#ff79c6">.</span>urlopen(<span style="color:#f1fa8c">&#34;http://127.0.0.1:9200/_cat/health&#34;</span>)
 </span></span><span style="display:flex;"><span>body <span style="color:#ff79c6">=</span> response<span style="color:#ff79c6">.</span>read()
 </span></span><span style="display:flex;"><span>response<span style="color:#ff79c6">.</span>close()
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> <span style="color:#ff79c6">&amp;</span><span style="color:#6272a4">#34;green&amp;#34; in body:</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> <span style="color:#f1fa8c">&#34;green&#34;</span> <span style="color:#ff79c6">in</span> body:
 </span></span><span style="display:flex;"><span>    sys<span style="color:#ff79c6">.</span>exit(<span style="color:#bd93f9">0</span>)
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">else</span>:
 </span></span><span style="display:flex;"><span>    sys<span style="color:#ff79c6">.</span>exit(<span style="color:#bd93f9">1</span>)

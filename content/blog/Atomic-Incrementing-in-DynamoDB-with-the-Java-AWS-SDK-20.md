@@ -14,17 +14,17 @@ We will start by building off work done on a previous post where we [set up an e
 ```java
     @Test
     public void atomicCounting() throws Exception {
-        String currentTableName = &#34;PhonesAtomicCounting&#34;;
+        String currentTableName = "PhonesAtomicCounting";
 
         createTableAndWaitForComplete(currentTableName);
 
-        String stubCompanyName = &#34;Nokia&#34;;
-        String stubPhoneName = &#34;flip-phone-1&#34;;
+        String stubCompanyName = "Nokia";
+        String stubPhoneName = "flip-phone-1";
 
-        Map&lt;String, AttributeValue&gt; itemAttributes = getMapWith(stubCompanyName, stubPhoneName);
-        itemAttributes.put(&#34;Color&#34;, AttributeValue.builder().s(&#34;Orange&#34;).build());
-        itemAttributes.put(&#34;Version&#34;, AttributeValue.builder().n(Long.valueOf(1L).toString()).build());
-        itemAttributes.put(&#34;NumberSold&#34;, AttributeValue.builder().n(Long.valueOf(1L).toString()).build());
+        Map<String, AttributeValue> itemAttributes = getMapWith(stubCompanyName, stubPhoneName);
+        itemAttributes.put("Color", AttributeValue.builder().s("Orange").build());
+        itemAttributes.put("Version", AttributeValue.builder().n(Long.valueOf(1L).toString()).build());
+        itemAttributes.put("NumberSold", AttributeValue.builder().n(Long.valueOf(1L).toString()).build());
 
         PutItemRequest populateDataItemRequest = PutItemRequest.builder()
                 .tableName(currentTableName)
@@ -38,26 +38,26 @@ We will start by building off work done on a previous post where we [set up an e
 
 ```
 
-We create a partition and sort key on a table called **PhonesAtomicCounting**. This table stores phones, so we put a phone in there where the company that creates the phone is named &#34;Nokia&#34; and the phone name is &#34;flip-phone-1&#34;. Other item attributes include &#34;Color&#34;, &#34;Version&#34;, and &#34;NumberSold&#34;.
+We create a partition and sort key on a table called **PhonesAtomicCounting**. This table stores phones, so we put a phone in there where the company that creates the phone is named "Nokia" and the phone name is "flip-phone-1". Other item attributes include "Color", "Version", and "NumberSold".
 
-Now let&#39;s say that we want to blindly increment **NumberSold**, and we&#39;re okay with the consequences/caveat that it&#39;s not idempotent \[it will increment every time it&#39;s called, if you want idempotency you will want to look into Optimistic Locking\]. If that&#39;s our game, this is how it can be done:
+Now let's say that we want to blindly increment **NumberSold**, and we're okay with the consequences/caveat that it's not idempotent \[it will increment every time it's called, if you want idempotency you will want to look into Optimistic Locking\]. If that's our game, this is how it can be done:
 
 ```java
         UpdateItemRequest updateItemRequest = UpdateItemRequest.builder()
                 .tableName(currentTableName)
                 .key(getMapWith(stubCompanyName, stubPhoneName))
-                .updateExpression(&#34;SET Version = Version &#43; :incr_amt, NumberSold = NumberSold &#43; :num_sold_incr_amt&#34;)
+                .updateExpression("SET Version = Version + :incr_amt, NumberSold = NumberSold + :num_sold_incr_amt")
                 .expressionAttributeValues(Map.of(
-                        &#34;:incr_amt&#34;,
-                        AttributeValue.builder().n(&#34;1&#34;).build(),
-                        &#34;:num_sold_incr_amt&#34;,
-                        AttributeValue.builder().n(&#34;2&#34;).build()
+                        ":incr_amt",
+                        AttributeValue.builder().n("1").build(),
+                        ":num_sold_incr_amt",
+                        AttributeValue.builder().n("2").build()
                     )
                 )
                 .build();
 
-        StepVerifier.create(Mono.fromFuture(() -&gt; dynamoDbAsyncClient.updateItem(updateItemRequest)))
-                .expectNextMatches(updateItemResponse -&gt; {
+        StepVerifier.create(Mono.fromFuture(() -> dynamoDbAsyncClient.updateItem(updateItemRequest)))
+                .expectNextMatches(updateItemResponse -> {
                     return true;
                 }).verifyComplete();
 
@@ -67,7 +67,7 @@ Now let&#39;s say that we want to blindly increment **NumberSold**, and we&#39;r
                         .key(getMapWith(stubCompanyName, stubPhoneName))
                         .build())
             ))
-            .expectNextMatches(getItemResponse -&gt; getItemResponse.item().get(&#34;NumberSold&#34;).n().equals(&#34;3&#34;))
+            .expectNextMatches(getItemResponse -> getItemResponse.item().get("NumberSold").n().equals("3"))
             .verifyComplete();
 
     }

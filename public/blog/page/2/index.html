@@ -164,7 +164,7 @@
   <div class="description">
     
       <p>The source code for this article <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>Using Redis as a best effort locking mechanism can be very useful in practice, to prevent two logical threads from clobbering each other. While redis locking is certainly not perfect, and <a href="https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html">you shouldn't use redis locking if the underlying operation can't be occasionally done twice</a>, it can still be useful for that &quot;best effort, do this once&quot; use case.</p>
+<p>Using Redis as a best effort locking mechanism can be very useful in practice, to prevent two logical threads from clobbering each other. While redis locking is certainly not perfect, and <a href="https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html">you shouldn&rsquo;t use redis locking if the underlying operation can&rsquo;t be occasionally done twice</a>, it can still be useful for that &ldquo;best effort, do this once&rdquo; use case.</p>
     
   </div>
 
@@ -195,7 +195,7 @@
 
   <div class="description">
     
-      <p>We already know <a href="https://nickolasfisher.com/blog/Subscribing-to-Redis-Channels-with-Java-Spring-Boot-and-Lettuce">how to subscribe to redis using lettuce</a> when it's not running in clustered mode. If it's running in clustered mode, it's not terribly different, but I did discover one thing that is interesting, which is the subject of this article.</p>
+      <p>We already know <a href="https://nickolasfisher.com/blog/Subscribing-to-Redis-Channels-with-Java-Spring-Boot-and-Lettuce">how to subscribe to redis using lettuce</a> when it&rsquo;s not running in clustered mode. If it&rsquo;s running in clustered mode, it&rsquo;s not terribly different, but I did discover one thing that is interesting, which is the subject of this article.</p>
     
   </div>
 
@@ -227,7 +227,7 @@
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on github</a>.</p>
-<p>In a previous article, we showed how to <a href="https://nickolasfisher.com/blog/Pre-Loading-a-Lua-Script-into-Redis-With-Lettuce">efficiently execute a lua script in redis using lettuce</a>. To really scale our caching solution horizontally [and elegantly deal with many scaling headaches], we will also want to make sure we can execute our lua scripts against clustered redis, which as we'll see here is pretty straightforward.</p>
+<p>In a previous article, we showed how to <a href="https://nickolasfisher.com/blog/Pre-Loading-a-Lua-Script-into-Redis-With-Lettuce">efficiently execute a lua script in redis using lettuce</a>. To really scale our caching solution horizontally [and elegantly deal with many scaling headaches], we will also want to make sure we can execute our lua scripts against clustered redis, which as we&rsquo;ll see here is pretty straightforward.</p>
     
   </div>
 
@@ -258,7 +258,7 @@
 
   <div class="description">
     
-      <p><a href="https://redis.io/topics/pubsub">Redis has a pub/sub feature</a> whereby there are publishers and subscribers, and publishers can fanout messages to subscribers. SQS [ <a href="https://aws.amazon.com/sqs/">amazon's simple queue service</a>] has message senders and receivers. They can both be useful, but in practice they produce different results.</p>
+      <p><a href="https://redis.io/topics/pubsub">Redis has a pub/sub feature</a> whereby there are publishers and subscribers, and publishers can fanout messages to subscribers. SQS [ <a href="https://aws.amazon.com/sqs/">amazon&rsquo;s simple queue service</a>] has message senders and receivers. They can both be useful, but in practice they produce different results.</p>
     
   </div>
 

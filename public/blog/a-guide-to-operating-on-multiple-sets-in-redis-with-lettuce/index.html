@@ -8,7 +8,7 @@
 <title>A Guide to Operating on Multiple Sets in Redis with Lettuce</title>
 <meta
   name="description"
-  content="In the last article, we showed how to do some of the most common single set operations against redis, this article will focus on operating on multiple sets using a lettuce client against redis. Specifically, we&#39;ll focus on subtracting, intersecting, and adding sets. The source code for what follows can be found on Github."
+  content="In the last article, we showed how to do some of the most common single set operations against redis, this article will focus on operating on multiple sets using a lettuce client against redis. Specifically, we&rsquo;ll focus on subtracting, intersecting, and adding sets. The source code for what follows can be found on Github."
 />
 <link rel="canonical" href="http://localhost:1313/blog/a-guide-to-operating-on-multiple-sets-in-redis-with-lettuce/" />
 <link rel="robots" href="/robots.txt" />
@@ -152,45 +152,45 @@
 
   
 
-  <section><p>In the last article, we showed how to do some of the most common single set operations against redis, this article will focus on operating on multiple sets using a lettuce client against redis. Specifically, we'll focus on subtracting, intersecting, and adding sets. The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
+  <section><p>In the last article, we showed how to do some of the most common single set operations against redis, this article will focus on operating on multiple sets using a lettuce client against redis. Specifically, we&rsquo;ll focus on subtracting, intersecting, and adding sets. The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
 <h3 id="subtracting-sets">Subtracting Sets</h3>
 <p>Subtracting sets work similarly to subtracting numbers.</p>
-<p>You take the first set, and when there are elements in the second set that match the element in the first set, you take those out of the set that you return. Both the set you're subtracting from and the set you're using to subtract will remain unchanged.</p>
+<p>You take the first set, and when there are elements in the second set that match the element in the first set, you take those out of the set that you return. Both the set you&rsquo;re subtracting from and the set you&rsquo;re using to subtract will remain unchanged.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">subtractingMultipleSets</span>() {
-</span></span><span style="display:flex;"><span>        String firstSetKey <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;first<span style="color:#ff79c6">-</span>set<span style="color:#ff79c6">-</span>key<span style="color:#ff79c6">&amp;</span>#34;;
-</span></span><span style="display:flex;"><span>        String secondSetKey <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;second<span style="color:#ff79c6">-</span>set<span style="color:#ff79c6">-</span>key<span style="color:#ff79c6">&amp;</span>#34;;
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Long<span style="color:#ff79c6">&amp;</span>gt; setupFirstSetMono <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">sadd</span>(firstSetKey, <span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>1<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>2<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        String firstSetKey <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;first-set-key&#34;</span>;
+</span></span><span style="display:flex;"><span>        String secondSetKey <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;second-set-key&#34;</span>;
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Long<span style="color:#ff79c6">&gt;</span> setupFirstSetMono <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">sadd</span>(firstSetKey, <span style="color:#f1fa8c">&#34;value-1&#34;</span>, <span style="color:#f1fa8c">&#34;value-2&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(setupFirstSetMono).<span style="color:#50fa7b">expectNext</span>(2L).<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Long<span style="color:#ff79c6">&amp;</span>gt; setupSecondSetMono <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">sadd</span>(secondSetKey, <span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>1<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>3<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Long<span style="color:#ff79c6">&gt;</span> setupSecondSetMono <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">sadd</span>(secondSetKey, <span style="color:#f1fa8c">&#34;value-1&#34;</span>, <span style="color:#f1fa8c">&#34;value-3&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(setupSecondSetMono).<span style="color:#50fa7b">expectNext</span>(2L).<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;List<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; subtractSecondFromFirstCollection <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">sdiff</span>(firstSetKey, secondSetKey).<span style="color:#50fa7b">collectList</span>();
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;&gt;</span> subtractSecondFromFirstCollection <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">sdiff</span>(firstSetKey, secondSetKey).<span style="color:#50fa7b">collectList</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(subtractSecondFromFirstCollection)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(collection <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(collection <span style="color:#ff79c6">-&gt;</span>
 </span></span><span style="display:flex;"><span>                        collection.<span style="color:#50fa7b">size</span>() <span style="color:#ff79c6">==</span> 1
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; collection.<span style="color:#50fa7b">contains</span>(<span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>2<span style="color:#ff79c6">&amp;</span>#34;))
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; collection.<span style="color:#50fa7b">contains</span>(<span style="color:#f1fa8c">&#34;value-2&#34;</span>))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;List<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; subtractFirstFromSecondCollection <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">sdiff</span>(secondSetKey, firstSetKey).<span style="color:#50fa7b">collectList</span>();
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;&gt;</span> subtractFirstFromSecondCollection <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">sdiff</span>(secondSetKey, firstSetKey).<span style="color:#50fa7b">collectList</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(subtractFirstFromSecondCollection)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(collection <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(collection <span style="color:#ff79c6">-&gt;</span>
 </span></span><span style="display:flex;"><span>                        collection.<span style="color:#50fa7b">size</span>() <span style="color:#ff79c6">==</span> 1
-</span></span><span style="display:flex;"><span>                                <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; collection.<span style="color:#50fa7b">contains</span>(<span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>3<span style="color:#ff79c6">&amp;</span>#34;))
+</span></span><span style="display:flex;"><span>                                <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; collection.<span style="color:#50fa7b">contains</span>(<span style="color:#f1fa8c">&#34;value-3&#34;</span>))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;List<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; originalSetUnchangedMono <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">smembers</span>(firstSetKey).<span style="color:#50fa7b">collectList</span>();
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;&gt;</span> originalSetUnchangedMono <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">smembers</span>(firstSetKey).<span style="color:#50fa7b">collectList</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(originalSetUnchangedMono)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(firstSetMembers <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(firstSetMembers <span style="color:#ff79c6">-&gt;</span>
 </span></span><span style="display:flex;"><span>                        firstSetMembers.<span style="color:#50fa7b">size</span>() <span style="color:#ff79c6">==</span> 2
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; firstSetMembers.<span style="color:#50fa7b">contains</span>(<span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>1<span style="color:#ff79c6">&amp;</span>#34;)
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; firstSetMembers.<span style="color:#50fa7b">contains</span>(<span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>2<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; firstSetMembers.<span style="color:#50fa7b">contains</span>(<span style="color:#f1fa8c">&#34;value-1&#34;</span>)
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; firstSetMembers.<span style="color:#50fa7b">contains</span>(<span style="color:#f1fa8c">&#34;value-2&#34;</span>)
 </span></span><span style="display:flex;"><span>                ).<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>Here, we create two sets, subtract them in both directions, then verify the original set was unchanged. This test passes.</p>
@@ -198,59 +198,59 @@
 <p>Intersecting sets in redis means that only elements that are in both sets make it into the resulting set. You use <strong>sinter</strong> to intersect two different sets:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">intersectingMultipleSets</span>() {
-</span></span><span style="display:flex;"><span>        String firstSetKey <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;first<span style="color:#ff79c6">-</span>set<span style="color:#ff79c6">-</span>key<span style="color:#ff79c6">&amp;</span>#34;;
-</span></span><span style="display:flex;"><span>        String secondSetKey <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;second<span style="color:#ff79c6">-</span>set<span style="color:#ff79c6">-</span>key<span style="color:#ff79c6">&amp;</span>#34;;
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Long<span style="color:#ff79c6">&amp;</span>gt; setupFirstSetMono <span style="color:#ff79c6">=</span> redisReactiveCommands
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">sadd</span>(firstSetKey, <span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>1<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>2<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        String firstSetKey <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;first-set-key&#34;</span>;
+</span></span><span style="display:flex;"><span>        String secondSetKey <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;second-set-key&#34;</span>;
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Long<span style="color:#ff79c6">&gt;</span> setupFirstSetMono <span style="color:#ff79c6">=</span> redisReactiveCommands
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">sadd</span>(firstSetKey, <span style="color:#f1fa8c">&#34;value-1&#34;</span>, <span style="color:#f1fa8c">&#34;value-2&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(setupFirstSetMono).<span style="color:#50fa7b">expectNext</span>(2L).<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Long<span style="color:#ff79c6">&amp;</span>gt; setupSecondSetMono <span style="color:#ff79c6">=</span> redisReactiveCommands
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">sadd</span>(secondSetKey, <span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>1<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>3<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Long<span style="color:#ff79c6">&gt;</span> setupSecondSetMono <span style="color:#ff79c6">=</span> redisReactiveCommands
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">sadd</span>(secondSetKey, <span style="color:#f1fa8c">&#34;value-1&#34;</span>, <span style="color:#f1fa8c">&#34;value-3&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(setupSecondSetMono).<span style="color:#50fa7b">expectNext</span>(2L).<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;List<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; intersectedSets <span style="color:#ff79c6">=</span> redisReactiveCommands
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;&gt;</span> intersectedSets <span style="color:#ff79c6">=</span> redisReactiveCommands
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">sinter</span>(firstSetKey, secondSetKey).<span style="color:#50fa7b">collectList</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(intersectedSets)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(collection <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(collection <span style="color:#ff79c6">-&gt;</span>
 </span></span><span style="display:flex;"><span>                    collection.<span style="color:#50fa7b">size</span>() <span style="color:#ff79c6">==</span> 1
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; collection.<span style="color:#50fa7b">contains</span>(<span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>1<span style="color:#ff79c6">&amp;</span>#34;)
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; <span style="color:#ff79c6">!</span>collection.<span style="color:#50fa7b">contains</span>(<span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>2<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; collection.<span style="color:#50fa7b">contains</span>(<span style="color:#f1fa8c">&#34;value-1&#34;</span>)
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; <span style="color:#ff79c6">!</span>collection.<span style="color:#50fa7b">contains</span>(<span style="color:#f1fa8c">&#34;value-2&#34;</span>)
 </span></span><span style="display:flex;"><span>                )
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>&quot;first-set-key&quot; and &quot;second-set-key&quot; only share &quot;value-1&quot; as a common element, so the intersected set contains only one element [&quot;value-1&quot;].</p>
+</span></span></code></pre></div><p>&ldquo;first-set-key&rdquo; and &ldquo;second-set-key&rdquo; only share &ldquo;value-1&rdquo; as a common element, so the intersected set contains only one element [&ldquo;value-1&rdquo;].</p>
 <h3 id="adding-sets">Adding Sets</h3>
-<p>Adding sets [also called a <strong>union</strong>] is basically the same as if you were to get all the members of both sets, then run <strong>sadd</strong> over and over again. Common elements only show up once because that's how sets work:</p>
+<p>Adding sets [also called a <strong>union</strong>] is basically the same as if you were to get all the members of both sets, then run <strong>sadd</strong> over and over again. Common elements only show up once because that&rsquo;s how sets work:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">addingMultipleSetsTogether</span>() {
-</span></span><span style="display:flex;"><span>        String firstSetKey <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;first<span style="color:#ff79c6">-</span>set<span style="color:#ff79c6">-</span>key<span style="color:#ff79c6">&amp;</span>#34;;
-</span></span><span style="display:flex;"><span>        String secondSetKey <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;second<span style="color:#ff79c6">-</span>set<span style="color:#ff79c6">-</span>key<span style="color:#ff79c6">&amp;</span>#34;;
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Long<span style="color:#ff79c6">&amp;</span>gt; setupFirstSetMono <span style="color:#ff79c6">=</span> redisReactiveCommands
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">sadd</span>(firstSetKey, <span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>1<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>2<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        String firstSetKey <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;first-set-key&#34;</span>;
+</span></span><span style="display:flex;"><span>        String secondSetKey <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;second-set-key&#34;</span>;
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Long<span style="color:#ff79c6">&gt;</span> setupFirstSetMono <span style="color:#ff79c6">=</span> redisReactiveCommands
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">sadd</span>(firstSetKey, <span style="color:#f1fa8c">&#34;value-1&#34;</span>, <span style="color:#f1fa8c">&#34;value-2&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(setupFirstSetMono).<span style="color:#50fa7b">expectNext</span>(2L).<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Long<span style="color:#ff79c6">&amp;</span>gt; setupSecondSetMono <span style="color:#ff79c6">=</span> redisReactiveCommands
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">sadd</span>(secondSetKey, <span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>1<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>3<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Long<span style="color:#ff79c6">&gt;</span> setupSecondSetMono <span style="color:#ff79c6">=</span> redisReactiveCommands
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">sadd</span>(secondSetKey, <span style="color:#f1fa8c">&#34;value-1&#34;</span>, <span style="color:#f1fa8c">&#34;value-3&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(setupSecondSetMono).<span style="color:#50fa7b">expectNext</span>(2L).<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;List<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; unionedSets <span style="color:#ff79c6">=</span> redisReactiveCommands
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;&gt;</span> unionedSets <span style="color:#ff79c6">=</span> redisReactiveCommands
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">sunion</span>(firstSetKey, secondSetKey).<span style="color:#50fa7b">collectList</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(unionedSets)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(collection <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(collection <span style="color:#ff79c6">-&gt;</span>
 </span></span><span style="display:flex;"><span>                    collection.<span style="color:#50fa7b">size</span>() <span style="color:#ff79c6">==</span> 3
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; collection.<span style="color:#50fa7b">contains</span>(<span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>1<span style="color:#ff79c6">&amp;</span>#34;)
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; collection.<span style="color:#50fa7b">contains</span>(<span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>2<span style="color:#ff79c6">&amp;</span>#34;)
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; collection.<span style="color:#50fa7b">contains</span>(<span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">-</span>3<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; collection.<span style="color:#50fa7b">contains</span>(<span style="color:#f1fa8c">&#34;value-1&#34;</span>)
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; collection.<span style="color:#50fa7b">contains</span>(<span style="color:#f1fa8c">&#34;value-2&#34;</span>)
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; collection.<span style="color:#50fa7b">contains</span>(<span style="color:#f1fa8c">&#34;value-3&#34;</span>)
 </span></span><span style="display:flex;"><span>                )
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>The identical sets we've been creating for every test so far are here added together, which leads to a three element set of &quot;value-1&quot;, &quot;value-2&quot;, and &quot;value-3&quot;.</p>
+</span></span></code></pre></div><p>The identical sets we&rsquo;ve been creating for every test so far are here added together, which leads to a three element set of &ldquo;value-1&rdquo;, &ldquo;value-2&rdquo;, and &ldquo;value-3&rdquo;.</p>
 <p>And with that, you should be good to go.</p>
 </section>
 

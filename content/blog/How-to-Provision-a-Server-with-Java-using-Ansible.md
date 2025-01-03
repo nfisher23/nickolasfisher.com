@@ -29,27 +29,27 @@ java -version
 
 Will get you openJDK version 10.0.1 from the tarball in the link.
 
-While that script works, it&#39;s generally a better idea to make this more maintainable. For example, if we re-run this bash script on a server that is already provisioned, it will run all of these steps again. In this case, nothing bad will actually happen, but it can lead to some sticky debug sessions when we start to move to more complicated provisioning steps.
+While that script works, it's generally a better idea to make this more maintainable. For example, if we re-run this bash script on a server that is already provisioned, it will run all of these steps again. In this case, nothing bad will actually happen, but it can lead to some sticky debug sessions when we start to move to more complicated provisioning steps.
 
-We&#39;ll convert this bash script to an [ansible](https://www.ansible.com/) playbook. To test this, we&#39;ll set up a VagrantFile like so:
+We'll convert this bash script to an [ansible](https://www.ansible.com/) playbook. To test this, we'll set up a VagrantFile like so:
 
 ```
-Vagrant.configure(&#34;2&#34;) do |config|
-  config.vm.box = &#34;ubuntu/bionic64&#34;
-  config.vm.network &#34;private_network&#34;, ip: &#34;192.168.56.115&#34;
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.network "private_network", ip: "192.168.56.115"
 
   config.vm.provider :virtualbox do |vb|
     vb.memory = 1024
     vb.cpus = 1
   end
 
-  config.vm.provision &#34;ansible&#34; do |ansible|
-    ansible.playbook = &#34;provision.yml&#34;
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "provision.yml"
   end
 end
 ```
 
-We&#39;ll need an ansible playbook in the same directory called &#34;provision.yml&#34;. We are using Ubuntu 18 (bionic64), which does not come with python 2 installed. Since ansible defaults to python 2, one way to deal with that problem is to install it prior to running the playbook. We can&#39;t gather facts before installing it, because gathering facts requires, you guessed it, python 2:
+We'll need an ansible playbook in the same directory called "provision.yml". We are using Ubuntu 18 (bionic64), which does not come with python 2 installed. Since ansible defaults to python 2, one way to deal with that problem is to install it prior to running the playbook. We can't gather facts before installing it, because gathering facts requires, you guessed it, python 2:
 
 ```yaml
 ---
@@ -57,7 +57,7 @@ We&#39;ll need an ansible playbook in the same directory called &#34;provision.y
   become: yes
   gather_facts: no
   pre_tasks:
-    - name: &#39;install python2 on ubuntu 18&#39;
+    - name: 'install python2 on ubuntu 18'
       raw: test -e /usr/bin/python || (apt-get -y update &amp;&amp; apt-get install -y python-minimal)
 
   tasks:
@@ -66,7 +66,7 @@ We&#39;ll need an ansible playbook in the same directory called &#34;provision.y
 
 ```
 
-This bash command checks if we have python first, and only updates and gets python-minimal if it&#39;s not already there. The empty **setup:** command runs the gathering of facts and we can proceed like we never had to do this weird pre-provisioning step in the first place.
+This bash command checks if we have python first, and only updates and gets python-minimal if it's not already there. The empty **setup:** command runs the gathering of facts and we can proceed like we never had to do this weird pre-provisioning step in the first place.
 
 We can convert these two steps to:
 
@@ -93,7 +93,7 @@ To:
 
 ```
 
-Which uses ansible&#39;s get\_url module to download the tarball and move it to the /etc/open-jdk10.tar.gz location, only downloading it if we haven&#39;t already done so. We then create the directory we eventually want to put java10 into
+Which uses ansible's get\_url module to download the tarball and move it to the /etc/open-jdk10.tar.gz location, only downloading it if we haven't already done so. We then create the directory we eventually want to put java10 into
 
 We can then convert:
 
@@ -114,7 +114,7 @@ Into:
 
 This unpacks the tarball and places it into the directory previously created.
 
-Finally, we will update alternatives (and, as a bonus, we&#39;ll set the JAVA\_HOME environment variable):
+Finally, we will update alternatives (and, as a bonus, we'll set the JAVA\_HOME environment variable):
 
 ```yaml
     - name: update alternatives for java
@@ -140,7 +140,7 @@ The final ansible playbook looks like:
   become: yes
   gather_facts: no
   pre_tasks:
-    - name: &#39;install python2 on ubuntu 18&#39;
+    - name: 'install python2 on ubuntu 18'
       raw: test -e /usr/bin/python || (apt-get -y update &amp;&amp; apt-get install -y python-minimal)
 
   tasks:

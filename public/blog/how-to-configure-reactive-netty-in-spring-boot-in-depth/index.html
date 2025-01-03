@@ -8,7 +8,7 @@
 <title>How to Configure Reactive Netty in Spring Boot, in Depth</title>
 <meta
   name="description"
-  content="Spring Boot&#39;s WebFlux programming model is pretty neat, but there isn&#39;t a lot by way of explaining how to best leverage it to get the results you need. I wrote this blog post after tinkering with the configuration of Reactor Netty on Spring Boot."
+  content="Spring Boot&rsquo;s WebFlux programming model is pretty neat, but there isn&rsquo;t a lot by way of explaining how to best leverage it to get the results you need. I wrote this blog post after tinkering with the configuration of Reactor Netty on Spring Boot."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-configure-reactive-netty-in-spring-boot-in-depth/" />
 <link rel="robots" href="/robots.txt" />
@@ -152,12 +152,12 @@
 
   
 
-  <section><p><a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html">Spring Boot's WebFlux programming model</a> is pretty neat, but there isn't a lot by way of explaining how to best leverage it to get the results you need. I wrote this blog post after tinkering with the configuration of Reactor Netty on Spring Boot.</p>
-<p>The first point, before we begin, to realize about the event loop model is that we want to reuse threads across all operations, and then insure that those operations utilize non-blocking behavior. This is contrary to the asynchronous and blocking behavior in the past (e.g. Servlets), where we often want to designate specific thread pools for specific actions and reduce the probability that one misbehaving process or operation brings down the entire application. That idea is called the <a href="https://docs.microsoft.com/en-us/azure/architecture/patterns/bulkhead">bulkhead pattern</a>, and it does not apply here. If that's confusing to you (which it is to most people at first), follow up with the blog post directly after this one for a more in depth example and discussion.</p>
-<p>With that in mind, the first thing we're going to want to do is reuse an event loop group, which I'll demonstrate below.</p>
+  <section><p><a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html">Spring Boot&rsquo;s WebFlux programming model</a> is pretty neat, but there isn&rsquo;t a lot by way of explaining how to best leverage it to get the results you need. I wrote this blog post after tinkering with the configuration of Reactor Netty on Spring Boot.</p>
+<p>The first point, before we begin, to realize about the event loop model is that we want to reuse threads across all operations, and then insure that those operations utilize non-blocking behavior. This is contrary to the asynchronous and blocking behavior in the past (e.g. Servlets), where we often want to designate specific thread pools for specific actions and reduce the probability that one misbehaving process or operation brings down the entire application. That idea is called the <a href="https://docs.microsoft.com/en-us/azure/architecture/patterns/bulkhead">bulkhead pattern</a>, and it does not apply here. If that&rsquo;s confusing to you (which it is to most people at first), follow up with the blog post directly after this one for a more in depth example and discussion.</p>
+<p>With that in mind, the first thing we&rsquo;re going to want to do is reuse an event loop group, which I&rsquo;ll demonstrate below.</p>
 <h3 id="create-the-reactive-webflux-app">Create the Reactive WebFlux App</h3>
 <p>Go to the <a href="https://start.spring.io/">spring initializr</a>, select WebFlux, and unzip to your desired directory. By default, it comes with Reactor Netty.</p>
-<p>From our discussion above, it makes sense to have one event loop group, which represents a group of threads that all consume work from a queue, pick it up, and try to release that work as quickly as possible in a non-blocking way. We can choose from most of the classes that implement Netty's <a href="https://netty.io/4.0/api/io/netty/channel/EventLoopGroup.html">EventLoopGroup</a>, or if we are feeling ambitious we could hand roll our own. I will choose <a href="https://netty.io/4.0/api/io/netty/channel/nio/NioEventLoopGroup.html">NioEventLoopGroup</a> and create a bean, so that the entry point looks like this:</p>
+<p>From our discussion above, it makes sense to have one event loop group, which represents a group of threads that all consume work from a queue, pick it up, and try to release that work as quickly as possible in a non-blocking way. We can choose from most of the classes that implement Netty&rsquo;s <a href="https://netty.io/4.0/api/io/netty/channel/EventLoopGroup.html">EventLoopGroup</a>, or if we are feeling ambitious we could hand roll our own. I will choose <a href="https://netty.io/4.0/api/io/netty/channel/nio/NioEventLoopGroup.html">NioEventLoopGroup</a> and create a bean, so that the entry point looks like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@SpringBootApplication
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">ReactiveexApplication</span> {
 </span></span><span style="display:flex;"><span>
@@ -177,8 +177,8 @@
 </span></span><span style="display:flex;"><span>        factory.<span style="color:#50fa7b">setServerCustomizers</span>(Collections.<span style="color:#50fa7b">singletonList</span>(<span style="color:#ff79c6">new</span> NettyServerCustomizer() {
 </span></span><span style="display:flex;"><span>            @Override
 </span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">public</span> HttpServer <span style="color:#50fa7b">apply</span>(HttpServer httpServer) {
-</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">return</span> httpServer.<span style="color:#50fa7b">tcpConfiguration</span>(tcpServer <span style="color:#ff79c6">-&amp;</span>gt;
-</span></span><span style="display:flex;"><span>                                tcpServer.<span style="color:#50fa7b">bootstrap</span>(serverBootstrap <span style="color:#ff79c6">-&amp;</span>gt; serverBootstrap.<span style="color:#50fa7b">group</span>(eventLoopGroup)
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">return</span> httpServer.<span style="color:#50fa7b">tcpConfiguration</span>(tcpServer <span style="color:#ff79c6">-&gt;</span>
+</span></span><span style="display:flex;"><span>                                tcpServer.<span style="color:#50fa7b">bootstrap</span>(serverBootstrap <span style="color:#ff79c6">-&gt;</span> serverBootstrap.<span style="color:#50fa7b">group</span>(eventLoopGroup)
 </span></span><span style="display:flex;"><span>                                                        .<span style="color:#50fa7b">channel</span>(NioServerSocketChannel.<span style="color:#50fa7b">class</span>)));
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>        }));
@@ -200,12 +200,12 @@
 </span></span></code></pre></div><p>We will use this <code>ReactorResourceFactory</code> to register a <code>ReactorClientHttpConnector</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Bean
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> ReactorClientHttpConnector <span style="color:#50fa7b">reactorClientHttpConnector</span>(ReactorResourceFactory r) {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">new</span> ReactorClientHttpConnector(r, m <span style="color:#ff79c6">-&amp;</span>gt; m);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">new</span> ReactorClientHttpConnector(r, m <span style="color:#ff79c6">-&gt;</span> m);
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>Finally, anytime we want our <code>WebClient</code> to participate in our custom defined thread pool, we can use this bean as the client connector:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Bean
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> WebClient <span style="color:#50fa7b">webClient</span>(ReactorClientHttpConnector r) {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> WebClient.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">baseUrl</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:9000&amp;#34;).clientConnector(r).build();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> WebClient.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">baseUrl</span>(<span style="color:#f1fa8c">&#34;http://localhost:9000&#34;</span>).<span style="color:#50fa7b">clientConnector</span>(r).<span style="color:#50fa7b">build</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div></section>
 

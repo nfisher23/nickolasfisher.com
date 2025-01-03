@@ -32,7 +32,7 @@ public class MockServerTimeoutTest {
 
 ```
 
-This automatically starts mock server for us on a random port, and the **@AfterEach** annotation ensures we clear the expectations for mock server, which should give us improved consistency \[when one test fails, it doesn&#39;t affect the other tests\].
+This automatically starts mock server for us on a random port, and the **@AfterEach** annotation ensures we clear the expectations for mock server, which should give us improved consistency \[when one test fails, it doesn't affect the other tests\].
 
 A simple example test, using **RestTemplate**, could then look like this:
 
@@ -40,15 +40,15 @@ A simple example test, using **RestTemplate**, could then look like this:
     @Test
     public void basicRestTemplateExample() {
         RestTemplate restTemplate = new RestTemplateBuilder()
-                .rootUri(&#34;http://localhost:&#34; &#43; clientAndServer.getPort())
+                .rootUri("http://localhost:" + clientAndServer.getPort())
                 .build();
 
         HttpRequest expectedFirstRequest = HttpRequest.request()
                 .withMethod(HttpMethod.GET.name())
-                .withPath(&#34;/some/endpoint/10&#34;);
+                .withPath("/some/endpoint/10");
 
         HttpResponse mockResponse = HttpResponse.response()
-                .withBody(&#34;{\&#34;message\&#34;: \&#34;hello\&#34;}&#34;)
+                .withBody("{\"message\": \"hello\"}")
                 .withContentType(MediaType.APPLICATION_JSON)
                 .withStatusCode(200);
 
@@ -56,14 +56,14 @@ A simple example test, using **RestTemplate**, could then look like this:
                 .when(expectedFirstRequest)
                 .respond(mockResponse);
 
-        ResponseEntity&lt;JsonNode&gt; responseEntity = restTemplate.getForEntity(&#34;/some/endpoint/10&#34;, JsonNode.class);
+        ResponseEntity<JsonNode> responseEntity = restTemplate.getForEntity("/some/endpoint/10", JsonNode.class);
 
-        assertEquals(&#34;hello&#34;, responseEntity.getBody().get(&#34;message&#34;).asText());
+        assertEquals("hello", responseEntity.getBody().get("message").asText());
     }
 
 ```
 
-This just makes a request to a canned endpoint **&#34;/some/endpoint/10&#34;** and returns a canned response. We then verify that we deserialize the response properly.
+This just makes a request to a canned endpoint **"/some/endpoint/10"** and returns a canned response. We then verify that we deserialize the response properly.
 
 ### Testing for Latency
 
@@ -74,7 +74,7 @@ Instrumenting something like that with mock server is pretty straightforward, we
 ```java
         this.clientAndServer
                 .when(expectedFirstRequest)
-                .respond(httpRequest -&gt; {
+                .respond(httpRequest -> {
                             Thread.sleep(150);
                             return mockResponse;
                         }
@@ -88,50 +88,50 @@ And a full test that leverages that to prove it actually works can be like so:
     @Test
     public void latencyInMockServer() {
         RestTemplate restTemplateWithSmallTimeout = new RestTemplateBuilder()
-                .rootUri(&#34;http://localhost:&#34; &#43; clientAndServer.getPort())
+                .rootUri("http://localhost:" + clientAndServer.getPort())
                 .setConnectTimeout(Duration.of(50, ChronoUnit.MILLIS))
                 .setReadTimeout(Duration.of(80, ChronoUnit.MILLIS))
                 .build();
 
         RestTemplate restTemplateWithBigTimeout = new RestTemplateBuilder()
-                .rootUri(&#34;http://localhost:&#34; &#43; clientAndServer.getPort())
+                .rootUri("http://localhost:" + clientAndServer.getPort())
                 .setConnectTimeout(Duration.of(50, ChronoUnit.MILLIS))
                 .setReadTimeout(Duration.of(250, ChronoUnit.MILLIS))
                 .build();
 
         HttpRequest expectedFirstRequest = HttpRequest.request()
                 .withMethod(HttpMethod.GET.name())
-                .withPath(&#34;/some/endpoint/10&#34;);
+                .withPath("/some/endpoint/10");
 
         HttpResponse mockResponse = HttpResponse.response()
-                .withBody(&#34;{\&#34;message\&#34;: \&#34;hello\&#34;}&#34;)
+                .withBody("{\"message\": \"hello\"}")
                 .withContentType(MediaType.APPLICATION_JSON)
                 .withStatusCode(200);
 
         this.clientAndServer
                 .when(expectedFirstRequest)
-                .respond(httpRequest -&gt; {
+                .respond(httpRequest -> {
                             Thread.sleep(150);
                             return mockResponse;
                         }
                 );
 
         try {
-            restTemplateWithSmallTimeout.getForEntity(&#34;/some/endpoint/10&#34;, JsonNode.class);
-            fail(&#34;We should never reach this line!&#34;);
+            restTemplateWithSmallTimeout.getForEntity("/some/endpoint/10", JsonNode.class);
+            fail("We should never reach this line!");
         } catch (ResourceAccessException resourceAccessException) {
-            assertEquals(&#34;Read timed out&#34;, resourceAccessException.getCause().getMessage());
+            assertEquals("Read timed out", resourceAccessException.getCause().getMessage());
         }
 
-        ResponseEntity&lt;JsonNode&gt; jsonNodeResponseEntity = restTemplateWithBigTimeout
-                .getForEntity(&#34;/some/endpoint/10&#34;, JsonNode.class);
+        ResponseEntity<JsonNode> jsonNodeResponseEntity = restTemplateWithBigTimeout
+                .getForEntity("/some/endpoint/10", JsonNode.class);
 
         assertEquals(200, jsonNodeResponseEntity.getStatusCode().value());
-        assertEquals(&#34;hello&#34;, jsonNodeResponseEntity.getBody().get(&#34;message&#34;).asText());
+        assertEquals("hello", jsonNodeResponseEntity.getBody().get("message").asText());
     }
 
 ```
 
-All we do here is assert that we&#39;re getting a read timeout when the timeout is lower than how long our mock server will take to respond, and that when it&#39;s bigger than the amount of time it takes to respond we are in good shape.
+All we do here is assert that we're getting a read timeout when the timeout is lower than how long our mock server will take to respond, and that when it's bigger than the amount of time it takes to respond we are in good shape.
 
-It&#39;s important to note that just bumping up the timeouts is not a recommended solution for production code, but this way we can start to test some robust resiliency mechanisms with confidence.
+It's important to note that just bumping up the timeouts is not a recommended solution for production code, but this way we can start to test some robust resiliency mechanisms with confidence.

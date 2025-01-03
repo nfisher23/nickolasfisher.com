@@ -7,20 +7,20 @@ tags: [java, java stream api]
 
 You can view the sample code associated with this post [on GitHub](https://github.com/nfisher23/java_stream_api_samples).
 
-Calling `collect(..)` on a stream terminates a stream into a collection. We&#39;ve already seen that calling collect(Collectors.toList()) moves your stream into
-a List&lt;T&gt;, but you can also collect into a set. If we take our familiar collection of names in a String collection:
+Calling `collect(..)` on a stream terminates a stream into a collection. We've already seen that calling collect(Collectors.toList()) moves your stream into
+a List<T>, but you can also collect into a set. If we take our familiar collection of names in a String collection:
 
 ```java
-public static List&lt;String&gt; getListOfNames() {
-    List&lt;String&gt; names = new ArrayList&lt;&gt;();
+public static List<String> getListOfNames() {
+    List<String> names = new ArrayList<>();
 
-    names.add(&#34;John&#34;);
-    names.add(&#34;Jacob&#34;);
-    names.add(&#34;Jerry&#34;);
-    names.add(&#34;Josephine&#34;);
-    names.add(&#34;Janine&#34;);
-    names.add(&#34;Alan&#34;);
-    names.add(&#34;Beverly&#34;);
+    names.add("John");
+    names.add("Jacob");
+    names.add("Jerry");
+    names.add("Josephine");
+    names.add("Janine");
+    names.add("Alan");
+    names.add("Beverly");
 
     return names;
 }
@@ -32,10 +32,10 @@ We can make a set out of them like so:
 ```java
 @Test
 public void collect_toSet() {
-    Set&lt;String&gt; allJNames = names.stream().filter(name -&gt; name.startsWith(&#34;J&#34;)).collect(Collectors.toSet());
+    Set<String> allJNames = names.stream().filter(name -> name.startsWith("J")).collect(Collectors.toSet());
 
-    assertTrue(allJNames.contains(&#34;John&#34;));
-    assertTrue(allJNames.contains(&#34;Jacob&#34;));
+    assertTrue(allJNames.contains("John"));
+    assertTrue(allJNames.contains("Jacob"));
 }
 
 ```
@@ -47,7 +47,7 @@ You can join a Stream without using a delimiter:
 public void collect_joining() {
     String allNamesJoined = names.stream().collect(Collectors.joining());
 
-    assertTrue(allNamesJoined.startsWith(&#34;JohnJacobJerry&#34;));
+    assertTrue(allNamesJoined.startsWith("JohnJacobJerry"));
 }
 
 ```
@@ -57,14 +57,14 @@ Or you can include a delimiter:
 ```java
 @Test
 public void collect_joinWithDelimiter() {
-    String commaDelimitedNames = names.stream().collect(Collectors.joining(&#34;,&#34;));
+    String commaDelimitedNames = names.stream().collect(Collectors.joining(","));
 
-    assertTrue(commaDelimitedNames.startsWith(&#34;John,Jacob,Jerry&#34;));
+    assertTrue(commaDelimitedNames.startsWith("John,Jacob,Jerry"));
 }
 
 ```
 
-Let&#39;s move into a slightly more involved example. In a POJO class like so:
+Let's move into a slightly more involved example. In a POJO class like so:
 
 ```java
 public class SimplePair {
@@ -90,7 +90,7 @@ public class SimplePair {
 
     @Override
     public String toString() {
-        return &#34;name-&#34; &#43; name &#43; &#34;,id-&#34; &#43; id;
+        return "name-" + name + ",id-" + id;
     }
 }
 
@@ -99,13 +99,13 @@ public class SimplePair {
 And where we create pairs that have `(id: 1, name: pair1), (id: 2, name: pair2)`....
 
 ```java
-public static List&lt;SimplePair&gt; generateSimplePairs(int numToGenerate) {
-    List&lt;SimplePair&gt; pairs = new ArrayList&lt;&gt;();
-    for (int i = 1; i &lt;= numToGenerate; i&#43;&#43;) {
+public static List<SimplePair> generateSimplePairs(int numToGenerate) {
+    List<SimplePair> pairs = new ArrayList<>();
+    for (int i = 1; i <= numToGenerate; i++) {
         SimplePair pair = new SimplePair();
 
         pair.setId(i);
-        pair.setName(&#34;pair&#34; &#43; i);
+        pair.setName("pair" + i);
 
         pairs.add(pair);
     }
@@ -119,11 +119,11 @@ We can then collect after a call to `map(..)`, as map continues along the stream
 ```java
 @Test
 public void collect_mapToString() {
-    List&lt;SimplePair&gt; twoPairs = TestUtils.generateSimplePairs(2);
+    List<SimplePair> twoPairs = TestUtils.generateSimplePairs(2);
 
-    String semiColonDelimited = twoPairs.stream().map(Objects::toString).collect(Collectors.joining(&#34;;&#34;));
+    String semiColonDelimited = twoPairs.stream().map(Objects::toString).collect(Collectors.joining(";"));
 
-    assertEquals(&#34;name-pair1,id-1;name-pair2,id-2&#34;, semiColonDelimited);
+    assertEquals("name-pair1,id-1;name-pair2,id-2", semiColonDelimited);
 }
 
 ```

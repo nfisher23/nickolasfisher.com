@@ -5,7 +5,7 @@
 <meta charset="UTF-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>How to Use Spring&amp;#39;s Aspect Oriented Programming to log all Public Methods</title>
+<title>How to Use Spring&#39;s Aspect Oriented Programming to log all Public Methods</title>
 <meta
   name="description"
   content="The sample code for this post can be found on GitHub.
@@ -138,7 +138,7 @@ Aspect Oriented Programming In Spring is a clever way to reduce code duplication
 
 <article class="flex flex-col gap-10">
   <header class="flex flex-col gap-2">
-    <h2 class="title-large">How to Use Spring&amp;#39;s Aspect Oriented Programming to log all Public Methods</h2>
+    <h2 class="title-large">How to Use Spring&#39;s Aspect Oriented Programming to log all Public Methods</h2>
 
     <div class="meta">
       
@@ -156,14 +156,14 @@ Aspect Oriented Programming In Spring is a clever way to reduce code duplication
   <section><p>The sample code for this post can be found <a href="https://github.com/nfisher23/spring-aop-universal-public-logger">on GitHub</a>.</p>
 <p><a href="https://docs.spring.io/spring/docs/2.5.x/reference/aop.html">Aspect Oriented Programming In Spring</a> is a clever way to reduce code duplication, by taking a different approach than traditional tools like dependency injection or inheritance. Cross cutting concerns like security and logging can permeate a code base and make maintainability a nightmare unless properly taken care of, and aspect oriented programming is one way to properly take care of that, when used appropriately. This post will illustrate how to get started with a transparent way to log without cluttering up business logic.</p>
 <p>The provided link above gives a thorough and concise introduction to the strange AOP terminologies that get introduced when you go down this path, and you should read through that first before moving on.</p>
-<p>The things you'll need to get aspects enabled in your project are:</p>
+<p>The things you&rsquo;ll need to get aspects enabled in your project are:</p>
 <ul>
 <li>A reference in your pom.xml (if using maven) or your build.gradle (if using gradle). E.g. for spring boot and maven:</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>&amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;artifactId&amp;gt;spring-boot-starter-aop&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>&amp;lt;/dependency&amp;gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-boot-starter-aop<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/dependency&gt;</span>
 </span></span></code></pre></div><ul>
 <li>An aspect annotation above a bean definition. In our case, we can demonstrate an aspect that uses around-advice like so:</li>
 </ul>
@@ -171,27 +171,27 @@ Aspect Oriented Programming In Spring is a clever way to reduce code duplication
 </span></span><span style="display:flex;"><span>@Component
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">LoggerAspect</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    @Around(<span style="color:#ff79c6">&amp;</span>#34;execution(<span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#ff79c6">*</span> <span style="color:#ff79c6">*</span>(..)) <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; within(com.<span style="color:#50fa7b">nickolasfisher</span>.<span style="color:#50fa7b">aspectdemo</span>..<span style="color:#ff79c6">*</span>)<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>    @Around(<span style="color:#f1fa8c">&#34;execution(public * *(..)) &amp;amp;&amp;amp; within(com.nickolasfisher.aspectdemo..*)&#34;</span>)
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> Object <span style="color:#50fa7b">logAroundEveryPublicMethod</span>(ProceedingJoinPoint pjp) <span style="color:#8be9fd;font-style:italic">throws</span> Throwable {
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;\n<span style="color:#ff79c6">-----------</span>beginning around advice<span style="color:#ff79c6">---------&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;\n-----------beginning around advice---------&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;arguments: <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; Arrays.<span style="color:#50fa7b">stream</span>(pjp.<span style="color:#50fa7b">getArgs</span>()).<span style="color:#50fa7b">map</span>(Object::toString).<span style="color:#50fa7b">collect</span>(Collectors.<span style="color:#50fa7b">toList</span>()));
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;pointcut as <span style="color:#8be9fd">long</span> string: <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; pjp.<span style="color:#50fa7b">toLongString</span>());
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;method signature: <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; pjp.<span style="color:#50fa7b">getSignature</span>());
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;target <span style="color:#8be9fd;font-style:italic">class</span>: &amp;#<span style="color:#50fa7b">34</span>; <span style="color:#ff79c6">&amp;</span>#43; pjp.<span style="color:#50fa7b">getTarget</span>().<span style="color:#50fa7b">toString</span>());
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">in</span> use: <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; pjp.<span style="color:#50fa7b">getSourceLocation</span>().<span style="color:#50fa7b">getWithinType</span>());
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;arguments: &#34;</span> <span style="color:#ff79c6">+</span> Arrays.<span style="color:#50fa7b">stream</span>(pjp.<span style="color:#50fa7b">getArgs</span>()).<span style="color:#50fa7b">map</span>(Object::toString).<span style="color:#50fa7b">collect</span>(Collectors.<span style="color:#50fa7b">toList</span>()));
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;pointcut as long string: &#34;</span> <span style="color:#ff79c6">+</span> pjp.<span style="color:#50fa7b">toLongString</span>());
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;method signature: &#34;</span> <span style="color:#ff79c6">+</span> pjp.<span style="color:#50fa7b">getSignature</span>());
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;target class: &#34;</span> <span style="color:#ff79c6">+</span> pjp.<span style="color:#50fa7b">getTarget</span>().<span style="color:#50fa7b">toString</span>());
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;class in use: &#34;</span> <span style="color:#ff79c6">+</span> pjp.<span style="color:#50fa7b">getSourceLocation</span>().<span style="color:#50fa7b">getWithinType</span>());
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        Object returnedVal <span style="color:#ff79c6">=</span> pjp.<span style="color:#50fa7b">proceed</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;returned value: <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; returnedVal);
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">---------</span>around advice concluded<span style="color:#ff79c6">---------</span>\n<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;returned value: &#34;</span> <span style="color:#ff79c6">+</span> returnedVal);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;---------around advice concluded---------\n&#34;</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> returnedVal;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Here, the @Around(..) annotation runs this block of code around any method that falls into our pointcut definition. Our pointcut definition is</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>execution(<span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#ff79c6">*</span> <span style="color:#ff79c6">*</span>(..)) <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; within(com.<span style="color:#50fa7b">nickolasfisher</span>.<span style="color:#50fa7b">aspectdemo</span>..<span style="color:#ff79c6">*</span>)
-</span></span></code></pre></div><p>Which says &quot;any public method&quot; and &quot;within the package com.nickolasfisher.aspectdemo&quot;. When both of these criteria are met, then the aspect will execute. When we call pjp.proceed(), we run the method that we are &quot;decorating&quot;, and we have to return a value from this method, which then gets processed in the application. You could theoretically return something different than what the method itself executed, or call the method multiple times&ndash;though I would recommend you don't unless you have a very compelling reason, as that would make debugging a nightmare for future you or for a teammate.</p>
-<p>This works on both interfaces and classes. To demonstrate, we'll create a very simple interface:</p>
+</span></span></code></pre></div><p>Which says &ldquo;any public method&rdquo; and &ldquo;within the package com.nickolasfisher.aspectdemo&rdquo;. When both of these criteria are met, then the aspect will execute. When we call pjp.proceed(), we run the method that we are &ldquo;decorating&rdquo;, and we have to return a value from this method, which then gets processed in the application. You could theoretically return something different than what the method itself executed, or call the method multiple times&ndash;though I would recommend you don&rsquo;t unless you have a very compelling reason, as that would make debugging a nightmare for future you or for a teammate.</p>
+<p>This works on both interfaces and classes. To demonstrate, we&rsquo;ll create a very simple interface:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">interface</span> <span style="color:#50fa7b">InterfaceToAspectOn</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">emptyMethod1</span>();
 </span></span><span style="display:flex;"><span>
@@ -199,33 +199,33 @@ Aspect Oriented Programming In Spring is a clever way to reduce code duplication
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    String <span style="color:#50fa7b">methodThatReturns</span>(String input);
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Which we'll implement like so:</p>
+</span></span></code></pre></div><p>Which we&rsquo;ll implement like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Component
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">ClassImplementingInterface</span> <span style="color:#8be9fd;font-style:italic">implements</span> InterfaceToAspectOn {
 </span></span><span style="display:flex;"><span>    @Override
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">emptyMethod1</span>() {
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;inside emptyMethod1<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;inside emptyMethod1&#34;</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Override
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">emptyMethod2</span>() {
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;inside emptyMethod2<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;inside emptyMethod2&#34;</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Override
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">methodThatReturns</span>(String input) {
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;method that returns with input value: <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; input);
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>#34;some returned string<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;method that returns with input value: &#34;</span> <span style="color:#ff79c6">+</span> input);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;some returned string&#34;</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>We'll also create a standalone class to demonstrate an interface-less aspect execution:</p>
+</span></span></code></pre></div><p>We&rsquo;ll also create a standalone class to demonstrate an interface-less aspect execution:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Component
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">StandaloneClass</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">doSomethingInOtherClass</span>() {
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;in a standalone <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">method</span><span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;in a standalone class method&#34;</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>We can bring all of this together in our Spring Boot 2.0+ application by using Spring's <a href="https://docs.spring.io/spring/docs/4.3.20.RELEASE/spring-framework-reference/htmlsingle/#beans-postconstruct-and-predestroy-annotations">PostConstruct</a>:</p>
+</span></span></code></pre></div><p>We can bring all of this together in our Spring Boot 2.0+ application by using Spring&rsquo;s <a href="https://docs.spring.io/spring/docs/4.3.20.RELEASE/spring-framework-reference/htmlsingle/#beans-postconstruct-and-predestroy-annotations">PostConstruct</a>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Component
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">PostConstructRunner</span> {
 </span></span><span style="display:flex;"><span>
@@ -240,17 +240,17 @@ Aspect Oriented Programming In Spring is a clever way to reduce code duplication
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @PostConstruct
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">runOnce</span>() {
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;running method after context loaded<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;running method after context loaded&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        interfaceToAspectOn.<span style="color:#50fa7b">emptyMethod1</span>();
 </span></span><span style="display:flex;"><span>        interfaceToAspectOn.<span style="color:#50fa7b">emptyMethod2</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        String val <span style="color:#ff79c6">=</span> interfaceToAspectOn.<span style="color:#50fa7b">methodThatReturns</span>(<span style="color:#ff79c6">&amp;</span>#34;some string input value<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;returned value inside post construct: <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; val);
+</span></span><span style="display:flex;"><span>        String val <span style="color:#ff79c6">=</span> interfaceToAspectOn.<span style="color:#50fa7b">methodThatReturns</span>(<span style="color:#f1fa8c">&#34;some string input value&#34;</span>);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;returned value inside post construct: &#34;</span> <span style="color:#ff79c6">+</span> val);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        standaloneClass.<span style="color:#50fa7b">doSomethingInOtherClass</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;post construct method concluded<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;post construct method concluded&#34;</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>When you run this application, you should see printed output that contains text like so:</p>

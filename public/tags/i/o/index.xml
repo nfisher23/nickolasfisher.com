@@ -28,7 +28,7 @@
       <link>http://localhost:1313/blog/improving-java-io-performance-formatting-costs/</link>
       <pubDate>Sat, 17 Nov 2018 18:27:31 +0000</pubDate>
       <guid>http://localhost:1313/blog/improving-java-io-performance-formatting-costs/</guid>
-      <description>&lt;p&gt;The sample code associated with this blog post can be found &lt;a href=&#34;https://github.com/nfisher23/io-tuning&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Another potential source of I/O bottlenecks, across any medium, could be the process you choose to format the data in in the first place. For example, XML used to be a standard way to send information across the wire or store in a backend system, but the size overhead of XML as compared to JSON is about double (not to mention it&#39;s somehow harder to read when formatted compared to JSON).&lt;/p&gt;</description>
+      <description>&lt;p&gt;The sample code associated with this blog post can be found &lt;a href=&#34;https://github.com/nfisher23/io-tuning&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Another potential source of I/O bottlenecks, across any medium, could be the process you choose to format the data in in the first place. For example, XML used to be a standard way to send information across the wire or store in a backend system, but the size overhead of XML as compared to JSON is about double (not to mention it&amp;rsquo;s somehow harder to read when formatted compared to JSON).&lt;/p&gt;</description>
     </item>
     <item>
       <title>Improving Java IO Performance: Reducing Method Call Overhead</title>
@@ -42,7 +42,7 @@
       <link>http://localhost:1313/blog/improving-java-io-performance-buffering-techniques/</link>
       <pubDate>Sat, 10 Nov 2018 12:45:54 +0000</pubDate>
       <guid>http://localhost:1313/blog/improving-java-io-performance-buffering-techniques/</guid>
-      <description>&lt;p&gt;﻿You can view the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/io-tuning&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Now that we know &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Benchmark-Java-Code-Using-JUnit-and-JMH&#34;&gt;how to benchmark using junit and jmh&lt;/a&gt;, let&#39;s put it to the test and try to optimize some basic I/O operations. While filesystem tasks are much less common in the web-enabled world, understanding the basics can help us when we move on to streams across network connections.&lt;/p&gt;</description>
+      <description>&lt;p&gt;﻿You can view the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/io-tuning&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Now that we know &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Benchmark-Java-Code-Using-JUnit-and-JMH&#34;&gt;how to benchmark using junit and jmh&lt;/a&gt;, let&amp;rsquo;s put it to the test and try to optimize some basic I/O operations. While filesystem tasks are much less common in the web-enabled world, understanding the basics can help us when we move on to streams across network connections.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Java IO: Creating and Traversing Files And Directories</title>
@@ -63,7 +63,7 @@
       <link>http://localhost:1313/blog/java-io-zip-archive-manipulation/</link>
       <pubDate>Sat, 03 Nov 2018 12:27:15 +0000</pubDate>
       <guid>http://localhost:1313/blog/java-io-zip-archive-manipulation/</guid>
-      <description>&lt;p&gt;The sample code associated with this post can be found &lt;a href=&#34;https://github.com/nfisher23/iodemos&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;A &lt;a href=&#34;https://en.wikipedia.org/wiki/Zip_(file_format)&#34;&gt;ZIP file format&lt;/a&gt; is a compressed, lossless archive of files of files and/or directories. While the content being compressed will matter as to the algorithm&#39;s effectiveness, it is a common way to transfer files among peers, particularly on many windows machines.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The sample code associated with this post can be found &lt;a href=&#34;https://github.com/nfisher23/iodemos&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;A &lt;a href=&#34;https://en.wikipedia.org/wiki/Zip_(file_format)&#34;&gt;ZIP file format&lt;/a&gt; is a compressed, lossless archive of files of files and/or directories. While the content being compressed will matter as to the algorithm&amp;rsquo;s effectiveness, it is a common way to transfer files among peers, particularly on many windows machines.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Java IO: Input Streaming</title>

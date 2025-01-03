@@ -158,15 +158,15 @@
 <li>Modulus the output by 16384 [magic number used by redis]</li>
 <li>Use that number to send it to the node responsible for it</li>
 </ul>
-<p>Given that the lettuce client can automatically handle many cross-slot commands on your behalf [for example, <a href="https://nickolasfisher.com/blog/Breaking-down-Lettuce-MSET-Commands-in-Clustered-Redis">automatically sending chunked MSET commands to the correct node</a>], it's usually preferable to just define your key and let the lettuce client take care of it. However, if you find that you want to ensure a group of keys all end up on the same node, you have to use hash tags. To demonstrate, let's build off of some previous code that <a href="https://nickolasfisher.com/blog/Configuring-Lettuce-to-work-with-Clustered-Redis">configures lettuce to communicate to clustered redis</a>. We can run this code to demonstrate that the little formula to get a key's hash slot is indeed different depending on the key used:</p>
+<p>Given that the lettuce client can automatically handle many cross-slot commands on your behalf [for example, <a href="https://nickolasfisher.com/blog/Breaking-down-Lettuce-MSET-Commands-in-Clustered-Redis">automatically sending chunked MSET commands to the correct node</a>], it&rsquo;s usually preferable to just define your key and let the lettuce client take care of it. However, if you find that you want to ensure a group of keys all end up on the same node, you have to use hash tags. To demonstrate, let&rsquo;s build off of some previous code that <a href="https://nickolasfisher.com/blog/Configuring-Lettuce-to-work-with-Clustered-Redis">configures lettuce to communicate to clustered redis</a>. We can run this code to demonstrate that the little formula to get a key&rsquo;s hash slot is indeed different depending on the key used:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Service
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">PostConstructExecutor</span> {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> Logger LOG <span style="color:#ff79c6">=</span> Loggers.<span style="color:#50fa7b">getLogger</span>(PostConstructExecutor.<span style="color:#50fa7b">class</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> RedisClusterReactiveCommands<span style="color:#ff79c6">&amp;</span>lt;String, String<span style="color:#ff79c6">&amp;</span>gt; redisClusterReactiveCommands;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> RedisClusterReactiveCommands<span style="color:#ff79c6">&lt;</span>String, String<span style="color:#ff79c6">&gt;</span> redisClusterReactiveCommands;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">PostConstructExecutor</span>(RedisClusterReactiveCommands<span style="color:#ff79c6">&amp;</span>lt;String, String<span style="color:#ff79c6">&amp;</span>gt; redisClusterReactiveCommands) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">PostConstructExecutor</span>(RedisClusterReactiveCommands<span style="color:#ff79c6">&lt;</span>String, String<span style="color:#ff79c6">&gt;</span> redisClusterReactiveCommands) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">redisClusterReactiveCommands</span> <span style="color:#ff79c6">=</span> redisClusterReactiveCommands;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
@@ -176,15 +176,15 @@
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">hashTagging</span>() {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; 10; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
-</span></span><span style="display:flex;"><span>            String candidateKey <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;not<span style="color:#ff79c6">-</span>hashtag.<span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; i;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> 10; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>            String candidateKey <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;not-hashtag.&#34;</span> <span style="color:#ff79c6">+</span> i;
 </span></span><span style="display:flex;"><span>            Long keySlotNumber <span style="color:#ff79c6">=</span> redisClusterReactiveCommands.<span style="color:#50fa7b">clusterKeyslot</span>(candidateKey).<span style="color:#50fa7b">block</span>();
-</span></span><span style="display:flex;"><span>            LOG.<span style="color:#50fa7b">info</span>(<span style="color:#ff79c6">&amp;</span>#34;key slot number <span style="color:#ff79c6">for</span> {} is {}<span style="color:#ff79c6">&amp;</span>#34;, candidateKey, keySlotNumber);
-</span></span><span style="display:flex;"><span>            redisClusterReactiveCommands.<span style="color:#50fa7b">set</span>(candidateKey, <span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">block</span>();
+</span></span><span style="display:flex;"><span>            LOG.<span style="color:#50fa7b">info</span>(<span style="color:#f1fa8c">&#34;key slot number for {} is {}&#34;</span>, candidateKey, keySlotNumber);
+</span></span><span style="display:flex;"><span>            redisClusterReactiveCommands.<span style="color:#50fa7b">set</span>(candidateKey, <span style="color:#f1fa8c">&#34;value&#34;</span>).<span style="color:#50fa7b">block</span>();
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>If you run this block of code against your clustered redis, you'll see an output similar to:</p>
+</span></span></code></pre></div><p>If you run this block of code against your clustered redis, you&rsquo;ll see an output similar to:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>key slot number <span style="color:#ff79c6">for</span> not-hashtag.0 is <span style="color:#bd93f9">11206</span>
 </span></span><span style="display:flex;"><span>key slot number <span style="color:#ff79c6">for</span> not-hashtag.1 is <span style="color:#bd93f9">15335</span>
 </span></span><span style="display:flex;"><span>key slot number <span style="color:#ff79c6">for</span> not-hashtag.2 is <span style="color:#bd93f9">2948</span>
@@ -196,30 +196,30 @@
 </span></span><span style="display:flex;"><span>key slot number <span style="color:#ff79c6">for</span> not-hashtag.8 is <span style="color:#bd93f9">10958</span>
 </span></span><span style="display:flex;"><span>key slot number <span style="color:#ff79c6">for</span> not-hashtag.9 is <span style="color:#bd93f9">15087</span>
 </span></span></code></pre></div><p>You can then run this little script against the ports that represent each node in our cluster:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ <span style="color:#ff79c6">for</span> port in <span style="color:#bd93f9">30001</span> <span style="color:#bd93f9">30002</span> 30003; <span style="color:#ff79c6">do</span> <span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;\nport (therefore node): $port&amp;#34;; redis-cli -p $port -c keys &amp;#39;*&amp;#39;; done</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ <span style="color:#ff79c6">for</span> port in <span style="color:#bd93f9">30001</span> <span style="color:#bd93f9">30002</span> 30003; <span style="color:#ff79c6">do</span> <span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#f1fa8c">&#34;\nport (therefore node): </span><span style="color:#8be9fd;font-style:italic">$port</span><span style="color:#f1fa8c">&#34;</span>; redis-cli -p <span style="color:#8be9fd;font-style:italic">$port</span> -c keys <span style="color:#f1fa8c">&#39;*&#39;</span>; <span style="color:#ff79c6">done</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>port <span style="color:#ff79c6">(</span>therefore node<span style="color:#ff79c6">)</span>: <span style="color:#bd93f9">30001</span>
-</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;not-hashtag.6&amp;#34;</span>
-</span></span><span style="display:flex;"><span>2<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;not-hashtag.2&amp;#34;</span>
+</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;not-hashtag.6&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;not-hashtag.2&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>port <span style="color:#ff79c6">(</span>therefore node<span style="color:#ff79c6">)</span>: <span style="color:#bd93f9">30002</span>
-</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;not-hashtag.7&amp;#34;</span>
-</span></span><span style="display:flex;"><span>2<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;not-hashtag.3&amp;#34;</span>
+</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;not-hashtag.7&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;not-hashtag.3&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>port <span style="color:#ff79c6">(</span>therefore node<span style="color:#ff79c6">)</span>: <span style="color:#bd93f9">30003</span>
-</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;not-hashtag.9&amp;#34;</span>
-</span></span><span style="display:flex;"><span>2<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;not-hashtag.1&amp;#34;</span>
-</span></span><span style="display:flex;"><span>3<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;not-hashtag.4&amp;#34;</span>
-</span></span><span style="display:flex;"><span>4<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;not-hashtag.5&amp;#34;</span>
-</span></span><span style="display:flex;"><span>5<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;not-hashtag.0&amp;#34;</span>
-</span></span><span style="display:flex;"><span>6<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;not-hashtag.8&amp;#34;</span>
+</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;not-hashtag.9&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;not-hashtag.1&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;not-hashtag.4&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;not-hashtag.5&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;not-hashtag.0&#34;</span>
+</span></span><span style="display:flex;"><span>6<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;not-hashtag.8&#34;</span>
 </span></span></code></pre></div><p>Okay, so they definitely end up on different nodes as expected, and lettuce did abstract all that away for us. If we want them to all end up on the same node, we can use the aforementioned hash tags. The format is <code>{something-unique}.actual-key</code>.</p>
 <p>For example, we can change our loop to look something like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; 10; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
-</span></span><span style="display:flex;"><span>            String candidateHashTaggedKey <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;{some:hashtag}.<span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; i;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> 10; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>            String candidateHashTaggedKey <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;{some:hashtag}.&#34;</span> <span style="color:#ff79c6">+</span> i;
 </span></span><span style="display:flex;"><span>            Long keySlotNumber <span style="color:#ff79c6">=</span> redisClusterReactiveCommands.<span style="color:#50fa7b">clusterKeyslot</span>(candidateHashTaggedKey).<span style="color:#50fa7b">block</span>();
-</span></span><span style="display:flex;"><span>            LOG.<span style="color:#50fa7b">info</span>(<span style="color:#ff79c6">&amp;</span>#34;key slot number <span style="color:#ff79c6">for</span> {} is {}<span style="color:#ff79c6">&amp;</span>#34;, candidateHashTaggedKey, keySlotNumber);
-</span></span><span style="display:flex;"><span>            redisClusterReactiveCommands.<span style="color:#50fa7b">set</span>(candidateHashTaggedKey, <span style="color:#ff79c6">&amp;</span>#34;value<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">block</span>();
+</span></span><span style="display:flex;"><span>            LOG.<span style="color:#50fa7b">info</span>(<span style="color:#f1fa8c">&#34;key slot number for {} is {}&#34;</span>, candidateHashTaggedKey, keySlotNumber);
+</span></span><span style="display:flex;"><span>            redisClusterReactiveCommands.<span style="color:#50fa7b">set</span>(candidateHashTaggedKey, <span style="color:#f1fa8c">&#34;value&#34;</span>).<span style="color:#50fa7b">block</span>();
 </span></span><span style="display:flex;"><span>        }
 </span></span></code></pre></div><p>And the log output should look nearly exactly like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>key slot number <span style="color:#ff79c6">for</span> <span style="color:#ff79c6">{</span>some:hashtag<span style="color:#ff79c6">}</span>.0 is <span style="color:#bd93f9">2574</span>
@@ -233,19 +233,19 @@
 </span></span><span style="display:flex;"><span>key slot number <span style="color:#ff79c6">for</span> <span style="color:#ff79c6">{</span>some:hashtag<span style="color:#ff79c6">}</span>.8 is <span style="color:#bd93f9">2574</span>
 </span></span><span style="display:flex;"><span>key slot number <span style="color:#ff79c6">for</span> <span style="color:#ff79c6">{</span>some:hashtag<span style="color:#ff79c6">}</span>.9 is <span style="color:#bd93f9">2574</span>
 </span></span></code></pre></div><p>And we can rerun our little shell script&ndash;we should see all these keys end up on the same node because they share the same hash slot, which was determined by plugging our hashtag into the hash slot function:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ <span style="color:#ff79c6">for</span> port in <span style="color:#bd93f9">30001</span> <span style="color:#bd93f9">30002</span> 30003; <span style="color:#ff79c6">do</span> <span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;\nport (therefore node): $port&amp;#34;; redis-cli -p $port -c keys &amp;#39;*&amp;#39;; done</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ <span style="color:#ff79c6">for</span> port in <span style="color:#bd93f9">30001</span> <span style="color:#bd93f9">30002</span> 30003; <span style="color:#ff79c6">do</span> <span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#f1fa8c">&#34;\nport (therefore node): </span><span style="color:#8be9fd;font-style:italic">$port</span><span style="color:#f1fa8c">&#34;</span>; redis-cli -p <span style="color:#8be9fd;font-style:italic">$port</span> -c keys <span style="color:#f1fa8c">&#39;*&#39;</span>; <span style="color:#ff79c6">done</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>port <span style="color:#ff79c6">(</span>therefore node<span style="color:#ff79c6">)</span>: <span style="color:#bd93f9">30001</span>
-</span></span><span style="display:flex;"><span> 1<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;{some:hashtag}.8&amp;#34;</span>
-</span></span><span style="display:flex;"><span> 2<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;{some:hashtag}.6&amp;#34;</span>
-</span></span><span style="display:flex;"><span> 3<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;{some:hashtag}.7&amp;#34;</span>
-</span></span><span style="display:flex;"><span> 4<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;{some:hashtag}.9&amp;#34;</span>
-</span></span><span style="display:flex;"><span> 5<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;{some:hashtag}.1&amp;#34;</span>
-</span></span><span style="display:flex;"><span> 6<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;{some:hashtag}.4&amp;#34;</span>
-</span></span><span style="display:flex;"><span> 7<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;{some:hashtag}.2&amp;#34;</span>
-</span></span><span style="display:flex;"><span> 8<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;{some:hashtag}.0&amp;#34;</span>
-</span></span><span style="display:flex;"><span> 9<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;{some:hashtag}.5&amp;#34;</span>
-</span></span><span style="display:flex;"><span>10<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;{some:hashtag}.3&amp;#34;</span>
+</span></span><span style="display:flex;"><span> 1<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;{some:hashtag}.8&#34;</span>
+</span></span><span style="display:flex;"><span> 2<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;{some:hashtag}.6&#34;</span>
+</span></span><span style="display:flex;"><span> 3<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;{some:hashtag}.7&#34;</span>
+</span></span><span style="display:flex;"><span> 4<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;{some:hashtag}.9&#34;</span>
+</span></span><span style="display:flex;"><span> 5<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;{some:hashtag}.1&#34;</span>
+</span></span><span style="display:flex;"><span> 6<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;{some:hashtag}.4&#34;</span>
+</span></span><span style="display:flex;"><span> 7<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;{some:hashtag}.2&#34;</span>
+</span></span><span style="display:flex;"><span> 8<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;{some:hashtag}.0&#34;</span>
+</span></span><span style="display:flex;"><span> 9<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;{some:hashtag}.5&#34;</span>
+</span></span><span style="display:flex;"><span>10<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;{some:hashtag}.3&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>port <span style="color:#ff79c6">(</span>therefore node<span style="color:#ff79c6">)</span>: <span style="color:#bd93f9">30002</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">(</span>empty list or <span style="color:#8be9fd;font-style:italic">set</span><span style="color:#ff79c6">)</span>
@@ -255,9 +255,9 @@
 </span></span></code></pre></div><p>So that lines up with our intuition and is good news. Some parting thoughts for you to chew on:</p>
 <ul>
 <li>The entire purpose of clustering redis and getting automated sharding and replication on each shard is to horizontally scale compute and memory utilization</li>
-<li>Poorly defined hash tags will cause &quot;clumping&quot; of keys onto a single node, defeating the main purpose of clustering redis in the first place.</li>
+<li>Poorly defined hash tags will cause &ldquo;clumping&rdquo; of keys onto a single node, defeating the main purpose of clustering redis in the first place.</li>
 <li>You should only use hash tags when you have a fundamental understanding of how it works and a very good reason for doing so</li>
-<li>If you have a good reason and decide to use them, make sure that you define them so that they have high cardinality&ndash;or that there are a large number of distinct hash tags that logically group the right keys together, but don't overdo it.</li>
+<li>If you have a good reason and decide to use them, make sure that you define them so that they have high cardinality&ndash;or that there are a large number of distinct hash tags that logically group the right keys together, but don&rsquo;t overdo it.</li>
 </ul>
 <p>And with that, you should be good to go.</p>
 </section>

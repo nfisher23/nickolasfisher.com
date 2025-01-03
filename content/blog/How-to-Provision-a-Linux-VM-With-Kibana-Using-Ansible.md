@@ -17,7 +17,7 @@ Navigate to the directory you want the ansible role to reside and type:
 $ molecule init role -d vagrant -r install-kibana
 ```
 
-I&#39;m using molecule to wrap vagrant and I&#39;m calling this role install-kibana.
+I'm using molecule to wrap vagrant and I'm calling this role install-kibana.
 
 We will put kibana on a single host, 192.168.56.121. To make this happen, adjust the _platforms_ section of your **molecule/default/molecule.yml** file to look like:
 
@@ -27,7 +27,7 @@ platforms:
     box: ubuntu/xenial64
     memory: 4096
     provider_raw_config_args:
-    - &#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;
+    - "customize ['modifyvm', :id, '--uartmode1', 'disconnected']"
     interfaces:
     - auto_config: true
       network_name: private_network
@@ -42,7 +42,7 @@ We provision this local VM with 4GB of RAM. You can bring up this VM at this poi
 $ molecule create
 ```
 
-First, we&#39;ll decide on the version of kibana we want to provision. To keep this compatible with the two posts mentioned above, we&#39;ll choose version 6.4.0, and update the **vars/main.yml** file to reflect the full name of the deb file we&#39;ll be grabbing in our playbook like so:
+First, we'll decide on the version of kibana we want to provision. To keep this compatible with the two posts mentioned above, we'll choose version 6.4.0, and update the **vars/main.yml** file to reflect the full name of the deb file we'll be grabbing in our playbook like so:
 
 ```yaml
 ---
@@ -57,14 +57,14 @@ Our **tasks/main.yml** file can now look like:
 # tasks file for install-kibana
 - name: download deb file
   get_url:
-    dest: &#34;/etc/{{ kibana_deb_file }}&#34;
-    url: &#34;https://artifacts.elastic.co/downloads/kibana/{{ kibana_deb_file }}&#34;
-    checksum: &#34;sha512:https://artifacts.elastic.co/downloads/kibana/{{ kibana_deb_file }}.sha512&#34;
+    dest: "/etc/{{ kibana_deb_file }}"
+    url: "https://artifacts.elastic.co/downloads/kibana/{{ kibana_deb_file }}"
+    checksum: "sha512:https://artifacts.elastic.co/downloads/kibana/{{ kibana_deb_file }}.sha512"
   become: yes
 
 - name: install kibana from deb file
   apt:
-    deb: &#34;/etc/{{ kibana_deb_file }}&#34;
+    deb: "/etc/{{ kibana_deb_file }}"
     update_cache: yes
   become: yes
 
@@ -76,7 +76,7 @@ Our **tasks/main.yml** file can now look like:
   notify: restart kibana
 ```
 
-You can see we&#39;re using a handler that restarts kibana, which is in the **handlers/main.yml** file like so:
+You can see we're using a handler that restarts kibana, which is in the **handlers/main.yml** file like so:
 
 ```yaml
 ---
@@ -92,7 +92,7 @@ You can see we&#39;re using a handler that restarts kibana, which is in the **ha
 Finally, we will have to create a **templates/kibana.yml.j2** template, which as of right now is just a simple file:
 
 ```yaml
-elasticsearch.url: &#34;http://192.168.56.102:9200&#34;
+elasticsearch.url: "http://192.168.56.102:9200"
 server.host: 0.0.0.0
 
 ```
@@ -105,4 +105,4 @@ You should now be able to run:
 $ molecule converge
 ```
 
-And the playbook will install kibana successfully. Once it comes up, you should navigate to [http://192.168.56.121:5601,](http://192.168.56.121:5601,) and you&#39;ll see kibana&#39;s home page. If you don&#39;t have any backing elasticsearch database, then you&#39;ll see an error, but bring on up at the port in the kibana.yml.j2 template and that error will go away.
+And the playbook will install kibana successfully. Once it comes up, you should navigate to [http://192.168.56.121:5601,](http://192.168.56.121:5601,) and you'll see kibana's home page. If you don't have any backing elasticsearch database, then you'll see an error, but bring on up at the port in the kibana.yml.j2 template and that error will go away.

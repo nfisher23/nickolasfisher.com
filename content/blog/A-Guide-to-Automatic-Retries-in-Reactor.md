@@ -7,13 +7,13 @@ tags: [java, spring, reactive, testing, webflux]
 
 The source code for this post [is available on GitHub](https://github.com/nfisher23/reactive-programming-webflux).
 
-One of the nice things about a reactive programming model is there is a significantly lower risk of doomsday when things start getting latent all at once. You don&#39;t have threads upstream blocking and waiting for a response, therefore they won&#39;t all seize up and stop serving requests \[or they won&#39;t short circuit if you&#39;re using a resiliency library like hystrix\].
+One of the nice things about a reactive programming model is there is a significantly lower risk of doomsday when things start getting latent all at once. You don't have threads upstream blocking and waiting for a response, therefore they won't all seize up and stop serving requests \[or they won't short circuit if you're using a resiliency library like hystrix\].
 
-Reactor has a lot of extension points to pretty easily retry in the case of failure. I&#39;ll go through a couple of the options and provide some sample code to help you get started in this tutorial.
+Reactor has a lot of extension points to pretty easily retry in the case of failure. I'll go through a couple of the options and provide some sample code to help you get started in this tutorial.
 
 ## The Example Project
 
-I&#39;m going to extend some sample code from a previous blog post on [testing WebClient using MockServer in Spring Boot Webflux](https://nickolasfisher.com/blog/How-to-use-Mock-Server-to-End-to-End-Test-Any-WebClient-Calls-in-Spring-Boot-Webflux) to bootstrap us here. Recall, in that post, we had a really simple service:
+I'm going to extend some sample code from a previous blog post on [testing WebClient using MockServer in Spring Boot Webflux](https://nickolasfisher.com/blog/How-to-use-Mock-Server-to-End-to-End-Test-Any-WebClient-Calls-in-Spring-Boot-Webflux) to bootstrap us here. Recall, in that post, we had a really simple service:
 
 ```java
 @Service
@@ -25,9 +25,9 @@ public class MyService {
         this.webClient = webClient;
     }
 
-    public Flux&lt;DownstreamResponseDTO&gt; getAllPeople() {
+    public Flux<DownstreamResponseDTO> getAllPeople() {
         return this.webClient.get()
-                .uri(&#34;/legacy/persons&#34;)
+                .uri("/legacy/persons")
                 .retrieve()
                 .bodyToFlux(DownstreamResponseDTO.class);
     }
@@ -50,7 +50,7 @@ public class MyServiceTest {
     public void setupMockServer() {
         mockServer = ClientAndServer.startClientAndServer(2001);
         myService = new MyService(WebClient.builder()
-                .baseUrl(&#34;http://localhost:&#34; &#43; mockServer.getLocalPort()).build());
+                .baseUrl("http://localhost:" + mockServer.getLocalPort()).build());
     }
 
     @AfterEach
@@ -63,26 +63,26 @@ public class MyServiceTest {
 
 ```
 
-So let&#39;s add a test case using this framework. The test should setup mock server such that it:
+So let's add a test case using this framework. The test should setup mock server such that it:
 
 - Returns a 5xx internal server error the first two times that we call it, simulating \[hopefully intermittent\] failures
 
 - Recover and let a good request through on the third time we try it
 
-We can make this happen by implementing our own custom [ExpectationResponseCallback](https://javadoc.io/static/org.mock-server/mockserver-core/5.6.1/org/mockserver/mock/action/ExpectationResponseCallback.html). Because java does not let you modify variables which were declared outside of the closure inside the closure, I&#39;m also going to use an **AtomicInteger** because it has some convenience methods like **incrementAndGet**:
+We can make this happen by implementing our own custom [ExpectationResponseCallback](https://javadoc.io/static/org.mock-server/mockserver-core/5.6.1/org/mockserver/mock/action/ExpectationResponseCallback.html). Because java does not let you modify variables which were declared outside of the closure inside the closure, I'm also going to use an **AtomicInteger** because it has some convenience methods like **incrementAndGet**:
 
 ```java
         AtomicInteger counter = new AtomicInteger(0);
         mockServer.when(
                 request()
                     .withMethod(HttpMethod.GET.name())
-                    .withPath(&#34;/legacy/persons&#34;)
+                    .withPath("/legacy/persons")
         ).respond(
                 new ExpectationResponseCallback() {
                     @Override
                     public HttpResponse handle(HttpRequest httpRequest) throws Exception {
                         int attempt = counter.incrementAndGet();
-                        if (attempt &gt;= 2) {
+                        if (attempt >= 2) {
                             return response().
                                     withBody(responseBody)
                                     .withContentType(MediaType.APPLICATION_JSON)
@@ -96,7 +96,7 @@ We can make this happen by implementing our own custom [ExpectationResponseCallb
 
 ```
 
-Every time **GET &#34;/legacy/persons&#34;** is called, mock server will invoke our **ExpectationResponseCallback**, which is this case is looking for our **AtomicInteger** to increment past 2. Until it does, we will return a 500 Internal Server Error, and once it does we will return our response body.
+Every time **GET "/legacy/persons"** is called, mock server will invoke our **ExpectationResponseCallback**, which is this case is looking for our **AtomicInteger** to increment past 2. Until it does, we will return a 500 Internal Server Error, and once it does we will return our response body.
 
 All of the relevant code for this test can now be laid out like so:
 
@@ -104,10 +104,10 @@ All of the relevant code for this test can now be laid out like so:
     private String getDownstreamResponseDTOAsString() throws JsonProcessingException {
         DownstreamResponseDTO downstreamResponseDTO = new DownstreamResponseDTO();
 
-        downstreamResponseDTO.setLastName(&#34;last&#34;);
-        downstreamResponseDTO.setFirstName(&#34;first&#34;);
-        downstreamResponseDTO.setSsn(&#34;123-12-1231&#34;);
-        downstreamResponseDTO.setDeepesetFear(&#34;alligators&#34;);
+        downstreamResponseDTO.setLastName("last");
+        downstreamResponseDTO.setFirstName("first");
+        downstreamResponseDTO.setSsn("123-12-1231");
+        downstreamResponseDTO.setDeepesetFear("alligators");
 
         return serializer.writeValueAsString(Arrays.asList(downstreamResponseDTO));
     }
@@ -120,13 +120,13 @@ All of the relevant code for this test can now be laid out like so:
         mockServer.when(
                 request()
                     .withMethod(HttpMethod.GET.name())
-                    .withPath(&#34;/legacy/persons&#34;)
+                    .withPath("/legacy/persons")
         ).respond(
                 new ExpectationResponseCallback() {
                     @Override
                     public HttpResponse handle(HttpRequest httpRequest) throws Exception {
                         int attempt = counter.incrementAndGet();
-                        if (attempt &gt;= 2) {
+                        if (attempt >= 2) {
                             return response().
                                     withBody(responseBody)
                                     .withContentType(MediaType.APPLICATION_JSON)
@@ -138,15 +138,15 @@ All of the relevant code for this test can now be laid out like so:
                 }
         );
 
-        List&lt;DownstreamResponseDTO&gt; responses = myService.getAllPeople().collectList().block();
+        List<DownstreamResponseDTO> responses = myService.getAllPeople().collectList().block();
 
         assertEquals(1, responses.size());
-        assertEquals(&#34;first&#34;, responses.get(0).getFirstName());
-        assertEquals(&#34;last&#34;, responses.get(0).getLastName());
+        assertEquals("first", responses.get(0).getFirstName());
+        assertEquals("last", responses.get(0).getLastName());
 
         mockServer.verify(
                 request().withMethod(HttpMethod.GET.name())
-                        .withPath(&#34;/legacy/persons&#34;)
+                        .withPath("/legacy/persons")
         );
     }
 
@@ -167,7 +167,7 @@ A naive implementation of retrying could use some of the [built in Retry methods
 
 ```java
         return this.webClient.get()
-                .uri(&#34;/legacy/persons&#34;)
+                .uri("/legacy/persons")
                 .retrieve()
                 .bodyToFlux(DownstreamResponseDTO.class)
                 .retryWhen(Retry.max(3));
@@ -178,7 +178,7 @@ While this is, err, fine, we should also want a bit more control over the backof
 
 ```java
         return this.webClient.get()
-                .uri(&#34;/legacy/persons&#34;)
+                .uri("/legacy/persons")
                 .retrieve()
                 .bodyToFlux(DownstreamResponseDTO.class)
                 .retryWhen(Retry.backoff(3, Duration.ofMillis(250)));
@@ -191,7 +191,7 @@ By invoking **backoff** we can then enter into a fluent API \[a [RetryBackoffSpe
 
 ```java
 this.webClient.get()
-.uri(&#34;/legacy/persons&#34;)
+.uri("/legacy/persons")
 .retrieve()
 .bodyToFlux(DownstreamResponseDTO.class)
 .retryWhen(
@@ -201,4 +201,4 @@ this.webClient.get()
 
 ```
 
-It&#39;s important to note that there is also [a Retry in reactor-extra](https://projectreactor.io/docs/extra/snapshot/api/reactor/retry/Retry.html), but this has now been deprecated in favor of the Retry functionality listed above, which ships with Reactor Core as of this article. You should use the library that ships with reactor core and save yourself a dependency.
+It's important to note that there is also [a Retry in reactor-extra](https://projectreactor.io/docs/extra/snapshot/api/reactor/retry/Retry.html), but this has now been deprecated in favor of the Retry functionality listed above, which ships with Reactor Core as of this article. You should use the library that ships with reactor core and save yourself a dependency.

@@ -154,15 +154,15 @@
 
   <section><p>There are use cases for wanting to immediately subscribe to a <strong>Flux</strong> or a <strong>Mono</strong> immediately after the subscription has completed. The most obvious use case is if your application needs to continuously poll for values.</p>
 <p>To continuously subscribe to a <strong>Flux</strong>, the easiest way to do so is to use <strong>repeat</strong>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        Flux.<span style="color:#50fa7b">generate</span>(synchronousSink <span style="color:#ff79c6">-&amp;</span>gt; synchronousSink.<span style="color:#50fa7b">next</span>(<span style="color:#ff79c6">new</span> Noop()))
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        Flux.<span style="color:#50fa7b">generate</span>(synchronousSink <span style="color:#ff79c6">-&gt;</span> synchronousSink.<span style="color:#50fa7b">next</span>(<span style="color:#ff79c6">new</span> Noop()))
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">repeat</span>()
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">subscribe</span>(noop <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">subscribe</span>(noop <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>                <span style="color:#8be9fd">int</span> millis <span style="color:#ff79c6">=</span> ZonedDateTime.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">getNano</span>() <span style="color:#ff79c6">/</span> 1_000_000;
 </span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">if</span> (millis <span style="color:#ff79c6">%</span> 500 <span style="color:#ff79c6">==</span> 0) {
-</span></span><span style="display:flex;"><span>                    System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;noop<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                    System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;noop&#34;</span>);
 </span></span><span style="display:flex;"><span>                }
 </span></span><span style="display:flex;"><span>            });
-</span></span></code></pre></div><p>Note that I'm using this simple class to facilitate that example and a few below:</p>
+</span></span></code></pre></div><p>Note that I&rsquo;m using this simple class to facilitate that example and a few below:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Noop</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">int</span> something;
@@ -175,8 +175,8 @@
 </span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">something</span>;
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>This simple example will print &quot;noop&quot; to the console every time we hit a half or whole second. It's important to note that if your <strong>Flux</strong> throws an exception at this point, then the subscription will be terminated. If you want to just keep blindly retrying every time you hit an unexpected exception, that's a one liner to fix:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        Flux.<span style="color:#50fa7b">generate</span>(synchronousSink <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span></code></pre></div><p>This simple example will print &ldquo;noop&rdquo; to the console every time we hit a half or whole second. It&rsquo;s important to note that if your <strong>Flux</strong> throws an exception at this point, then the subscription will be terminated. If you want to just keep blindly retrying every time you hit an unexpected exception, that&rsquo;s a one liner to fix:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        Flux.<span style="color:#50fa7b">generate</span>(synchronousSink <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">if</span> (ZonedDateTime.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">getNano</span>() <span style="color:#ff79c6">/</span> 1_000_000 <span style="color:#ff79c6">%</span> 500 <span style="color:#ff79c6">==</span> 0) {
 </span></span><span style="display:flex;"><span>                    synchronousSink.<span style="color:#50fa7b">error</span>(<span style="color:#ff79c6">new</span> RuntimeException());
 </span></span><span style="display:flex;"><span>                }
@@ -184,31 +184,31 @@
 </span></span><span style="display:flex;"><span>            })
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">repeat</span>()
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">retry</span>()
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">subscribe</span>(noop <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">subscribe</span>(noop <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>                        <span style="color:#8be9fd">int</span> millis <span style="color:#ff79c6">=</span> ZonedDateTime.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">getNano</span>() <span style="color:#ff79c6">/</span> 1_000_000;
 </span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">if</span> (millis <span style="color:#ff79c6">%</span> 500 <span style="color:#ff79c6">==</span> 0) {
-</span></span><span style="display:flex;"><span>                            System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;noop<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                            System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;noop&#34;</span>);
 </span></span><span style="display:flex;"><span>                        }
 </span></span><span style="display:flex;"><span>                    }
 </span></span><span style="display:flex;"><span>            );
-</span></span></code></pre></div><p>This example generates an error every half or whole minute. A few &quot;noop&quot;s will actually make it through in some cases just due to timing between the first sink being called and the actual subscription getting executed [usually nanoseconds later].</p>
+</span></span></code></pre></div><p>This example generates an error every half or whole minute. A few &ldquo;noop&quot;s will actually make it through in some cases just due to timing between the first sink being called and the actual subscription getting executed [usually nanoseconds later].</p>
 <p>We can also retry a <strong>Mono</strong> with the same syntax:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        Mono.<span style="color:#50fa7b">fromFuture</span>(CompletableFuture.<span style="color:#50fa7b">supplyAsync</span>(() <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">new</span> Noop()))
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        Mono.<span style="color:#50fa7b">fromFuture</span>(CompletableFuture.<span style="color:#50fa7b">supplyAsync</span>(() <span style="color:#ff79c6">-&gt;</span> <span style="color:#ff79c6">new</span> Noop()))
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">repeat</span>()
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">subscribe</span>(noop <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">subscribe</span>(noop <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>                <span style="color:#8be9fd">int</span> millis <span style="color:#ff79c6">=</span> ZonedDateTime.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">getNano</span>() <span style="color:#ff79c6">/</span> 1_000_000;
 </span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">if</span> (millis <span style="color:#ff79c6">%</span> 500 <span style="color:#ff79c6">==</span> 0) {
-</span></span><span style="display:flex;"><span>                    System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;noop<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                    System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;noop&#34;</span>);
 </span></span><span style="display:flex;"><span>                }
 </span></span><span style="display:flex;"><span>            });
 </span></span></code></pre></div><p>An important related note: if you keep resubscribing to a mono from a <strong>CompletableFuture</strong> like this, the future will only actually execute once, and the value will just get propogated down multiple times. We can demonstrate this behavior like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        AtomicInteger count <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> AtomicInteger();
-</span></span><span style="display:flex;"><span>        Mono.<span style="color:#50fa7b">fromFuture</span>(CompletableFuture.<span style="color:#50fa7b">supplyAsync</span>(() <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">new</span> Noop() {{ setSomething(count.<span style="color:#50fa7b">incrementAndGet</span>()); }}))
+</span></span><span style="display:flex;"><span>        Mono.<span style="color:#50fa7b">fromFuture</span>(CompletableFuture.<span style="color:#50fa7b">supplyAsync</span>(() <span style="color:#ff79c6">-&gt;</span> <span style="color:#ff79c6">new</span> Noop() {{ setSomething(count.<span style="color:#50fa7b">incrementAndGet</span>()); }}))
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">repeat</span>()
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">subscribe</span>(noop <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">subscribe</span>(noop <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>                <span style="color:#8be9fd">int</span> millis <span style="color:#ff79c6">=</span> ZonedDateTime.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">getNano</span>() <span style="color:#ff79c6">/</span> 1_000_000;
 </span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">if</span> (millis <span style="color:#ff79c6">%</span> 500 <span style="color:#ff79c6">==</span> 0) {
-</span></span><span style="display:flex;"><span>                    System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;noop <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; noop.<span style="color:#50fa7b">getSomething</span>());
+</span></span><span style="display:flex;"><span>                    System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;noop &#34;</span> <span style="color:#ff79c6">+</span> noop.<span style="color:#50fa7b">getSomething</span>());
 </span></span><span style="display:flex;"><span>                }
 </span></span><span style="display:flex;"><span>            });
 </span></span></code></pre></div><p>This prints out:</p>
@@ -222,12 +222,12 @@
 </span></span><span style="display:flex;"><span>...
 </span></span></code></pre></div><p>To get the <strong>CompletableFuture</strong> to execute every time, we need to wrap it in a <strong>Supplier</strong>, which will here be a lambda:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        AtomicInteger count <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> AtomicInteger();
-</span></span><span style="display:flex;"><span>        Mono.<span style="color:#50fa7b">fromFuture</span>(() <span style="color:#ff79c6">-&amp;</span>gt; CompletableFuture.<span style="color:#50fa7b">supplyAsync</span>(() <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">new</span> Noop() {{ setSomething(count.<span style="color:#50fa7b">incrementAndGet</span>()); }}))
+</span></span><span style="display:flex;"><span>        Mono.<span style="color:#50fa7b">fromFuture</span>(() <span style="color:#ff79c6">-&gt;</span> CompletableFuture.<span style="color:#50fa7b">supplyAsync</span>(() <span style="color:#ff79c6">-&gt;</span> <span style="color:#ff79c6">new</span> Noop() {{ setSomething(count.<span style="color:#50fa7b">incrementAndGet</span>()); }}))
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">repeat</span>()
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">subscribe</span>(noop <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">subscribe</span>(noop <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>                <span style="color:#8be9fd">int</span> millis <span style="color:#ff79c6">=</span> ZonedDateTime.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">getNano</span>() <span style="color:#ff79c6">/</span> 1_000_000;
 </span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">if</span> (millis <span style="color:#ff79c6">%</span> 500 <span style="color:#ff79c6">==</span> 0) {
-</span></span><span style="display:flex;"><span>                    System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;noop <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; noop.<span style="color:#50fa7b">getSomething</span>());
+</span></span><span style="display:flex;"><span>                    System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;noop &#34;</span> <span style="color:#ff79c6">+</span> noop.<span style="color:#50fa7b">getSomething</span>());
 </span></span><span style="display:flex;"><span>                }
 </span></span><span style="display:flex;"><span>            });
 </span></span></code></pre></div><p>With this change, we can see in the console:</p>

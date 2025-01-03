@@ -14,7 +14,7 @@
       <link>http://localhost:1313/blog/setup-and-use-a-dynamodb-test-container-with-the-aws-java-sdk-20/</link>
       <pubDate>Sat, 10 Apr 2021 16:13:09 +0000</pubDate>
       <guid>http://localhost:1313/blog/setup-and-use-a-dynamodb-test-container-with-the-aws-java-sdk-20/</guid>
-      <description>&lt;p&gt;The source code for this article &lt;a href=&#34;https://github.com/nfisher23/webflux-and-dynamo&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Using &lt;a href=&#34;https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing&#34;&gt;embedded dynamodb for testing&lt;/a&gt; is, in my experience, kind of flakey and unpredictable. Because of the weird way it pulls in SQLite on a per operating system basis, it can sometimes work locally and not work on the build server. Sometimes it&#39;s just not working for some unexplained reason and wiping the directory that the code is in and re-cloning fixes it. Not a fun time.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this article &lt;a href=&#34;https://github.com/nfisher23/webflux-and-dynamo&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Using &lt;a href=&#34;https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing&#34;&gt;embedded dynamodb for testing&lt;/a&gt; is, in my experience, kind of flakey and unpredictable. Because of the weird way it pulls in SQLite on a per operating system basis, it can sometimes work locally and not work on the build server. Sometimes it&amp;rsquo;s just not working for some unexplained reason and wiping the directory that the code is in and re-cloning fixes it. Not a fun time.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Atomic Incrementing in DynamoDB with the Java AWS SDK 2.0</title>
@@ -35,7 +35,7 @@
       <link>http://localhost:1313/blog/dynamodb-transactions-and-java/</link>
       <pubDate>Sat, 28 Nov 2020 20:57:47 +0000</pubDate>
       <guid>http://localhost:1313/blog/dynamodb-transactions-and-java/</guid>
-      <description>&lt;p&gt;DynamoDB transactions can be used for &lt;em&gt;atomic&lt;/em&gt; updates. Atomic updates in DynamoDB without transactions can be difficult to implement&amp;ndash;you&#39;ll often have to manage the current state of the update yourself in something like a saga, and have business logic specific rollback procedures. Further, without a transaction manager, the data will be in an inconsistent state at some point in time while the saga is ongoing. An alternative to that is a Two Phase Commit, but that&#39;s also expensive both from the standpoint of developers making it work as well as performance [2PC typically call for a lock being held during the operation, and even then there&#39;s a possibility that the operation ends up in an inconsistent state at some point].&lt;/p&gt;</description>
+      <description>&lt;p&gt;DynamoDB transactions can be used for &lt;em&gt;atomic&lt;/em&gt; updates. Atomic updates in DynamoDB without transactions can be difficult to implement&amp;ndash;you&amp;rsquo;ll often have to manage the current state of the update yourself in something like a saga, and have business logic specific rollback procedures. Further, without a transaction manager, the data will be in an inconsistent state at some point in time while the saga is ongoing. An alternative to that is a Two Phase Commit, but that&amp;rsquo;s also expensive both from the standpoint of developers making it work as well as performance [2PC typically call for a lock being held during the operation, and even then there&amp;rsquo;s a possibility that the operation ends up in an inconsistent state at some point].&lt;/p&gt;</description>
     </item>
     <item>
       <title>Working with Nested Attributes, DynamoDB, and the Java SDK 2.0</title>
@@ -49,14 +49,14 @@
       <link>http://localhost:1313/blog/scanning-a-dynamodb-table-in-java-with-the-aws-sdk-20/</link>
       <pubDate>Sat, 07 Nov 2020 02:08:37 +0000</pubDate>
       <guid>http://localhost:1313/blog/scanning-a-dynamodb-table-in-java-with-the-aws-sdk-20/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html&#34;&gt;Scanning in DynamoDB&lt;/a&gt; is exactly what it sounds like: loop through every single record in a table, optionally filtering for items with a certain condition when dynamo returns them to you. In general, you &lt;em&gt;shouldn&#39;t do this&lt;/em&gt;. DynamoDB is designed to store and manage a very large amount of data. Scanning through a large amount of data is very expensive, even in a distributed world. In the best case, you&#39;ll be waiting a long time to see results. In the worst case, you might see service outages as you burn through your RCUs.&lt;/p&gt;</description>
+      <description>&lt;p&gt;&lt;a href=&#34;https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html&#34;&gt;Scanning in DynamoDB&lt;/a&gt; is exactly what it sounds like: loop through every single record in a table, optionally filtering for items with a certain condition when dynamo returns them to you. In general, you &lt;em&gt;shouldn&amp;rsquo;t do this&lt;/em&gt;. DynamoDB is designed to store and manage a very large amount of data. Scanning through a large amount of data is very expensive, even in a distributed world. In the best case, you&amp;rsquo;ll be waiting a long time to see results. In the worst case, you might see service outages as you burn through your RCUs.&lt;/p&gt;</description>
     </item>
     <item>
       <title>DynamoDB and Duplicate Keys in Global Secondary Indexes</title>
       <link>http://localhost:1313/blog/dynamodb-and-duplicate-keys-in-global-secondary-indexes/</link>
       <pubDate>Sun, 01 Nov 2020 23:27:39 +0000</pubDate>
       <guid>http://localhost:1313/blog/dynamodb-and-duplicate-keys-in-global-secondary-indexes/</guid>
-      <description>&lt;p&gt;If there&#39;s something in the documentation about what the behavior of a DynamoDB Global Secondary Index is when there are duplicate keys in the index, it isn&#39;t easy to find. I tested this empirically with an embedded DynamoDB mock for java and will quickly share my findings here with you.&lt;/p&gt;</description>
+      <description>&lt;p&gt;If there&amp;rsquo;s something in the documentation about what the behavior of a DynamoDB Global Secondary Index is when there are duplicate keys in the index, it isn&amp;rsquo;t easy to find. I tested this empirically with an embedded DynamoDB mock for java and will quickly share my findings here with you.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Query a DynamoDB Global Secondary Index in Java</title>
@@ -70,14 +70,14 @@
       <link>http://localhost:1313/blog/query-a-dynamodb-local-secondary-index-with-java/</link>
       <pubDate>Sat, 31 Oct 2020 22:49:54 +0000</pubDate>
       <guid>http://localhost:1313/blog/query-a-dynamodb-local-secondary-index-with-java/</guid>
-      <description>&lt;p&gt;DynamoDB&#39;s Local Secondary Indexes allow for more query flexibility than a traditional partition and range key combination. They are also the only index in DynamoDB where a strongly consistent read can be requested [global secondary indexes, the other index that dynamo supports, can at best be eventually consistent]. I will walk through an example for how to use local secondary indexes in dynamo using the AWS SDK 2.0 for Java, which has full reactive support, in this post.&lt;/p&gt;</description>
+      <description>&lt;p&gt;DynamoDB&amp;rsquo;s Local Secondary Indexes allow for more query flexibility than a traditional partition and range key combination. They are also the only index in DynamoDB where a strongly consistent read can be requested [global secondary indexes, the other index that dynamo supports, can at best be eventually consistent]. I will walk through an example for how to use local secondary indexes in dynamo using the AWS SDK 2.0 for Java, which has full reactive support, in this post.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Set Time to Live [TTL] on DynamoDB Items using Java</title>
       <link>http://localhost:1313/blog/set-time-to-live-ttl-on-dynamodb-items-using-java/</link>
       <pubDate>Sun, 18 Oct 2020 13:43:39 +0000</pubDate>
       <guid>http://localhost:1313/blog/set-time-to-live-ttl-on-dynamodb-items-using-java/</guid>
-      <description>&lt;p&gt;In this post, we&#39;ll demonstrate how &lt;a href=&#34;https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html&#34;&gt;expiring items in DynamoDB&lt;/a&gt; works in java, using the AWS SDK 2.0+, which has full reactive support.&lt;/p&gt;</description>
+      <description>&lt;p&gt;In this post, we&amp;rsquo;ll demonstrate how &lt;a href=&#34;https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html&#34;&gt;expiring items in DynamoDB&lt;/a&gt; works in java, using the AWS SDK 2.0+, which has full reactive support.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Querying DynamoDB in Java with the AWS SDK 2.0</title>
@@ -91,7 +91,7 @@
       <link>http://localhost:1313/blog/optimistic-locking-in-java-and-dynamodb/</link>
       <pubDate>Sun, 11 Oct 2020 20:19:42 +0000</pubDate>
       <guid>http://localhost:1313/blog/optimistic-locking-in-java-and-dynamodb/</guid>
-      <description>&lt;p&gt;I&#39;ve previously written about using &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-use-Optimistic-Locking-in-DynamoDB-via-the-AWS-CLI&#34;&gt;conditional expressions to achieve optimistic locking in DynamoDB&lt;/a&gt;, that example used the command line. I will now demonstrate how to do the same thing in java code, leveraging the AWS SDK 2.0 [with full reactive support].&lt;/p&gt;</description>
+      <description>&lt;p&gt;I&amp;rsquo;ve previously written about using &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-use-Optimistic-Locking-in-DynamoDB-via-the-AWS-CLI&#34;&gt;conditional expressions to achieve optimistic locking in DynamoDB&lt;/a&gt;, that example used the command line. I will now demonstrate how to do the same thing in java code, leveraging the AWS SDK 2.0 [with full reactive support].&lt;/p&gt;</description>
     </item>
     <item>
       <title>Configuring an In Memory DynamoDB instance with Java for Integration Testing</title>
@@ -112,21 +112,21 @@
       <link>http://localhost:1313/blog/dynamodb-streams-and-python-a-working-introduction/</link>
       <pubDate>Sun, 26 Jul 2020 21:54:59 +0000</pubDate>
       <guid>http://localhost:1313/blog/dynamodb-streams-and-python-a-working-introduction/</guid>
-      <description>&lt;p&gt;DynamoDB Streams is AWS&#39;s home grown &lt;a href=&#34;https://en.wikipedia.org/wiki/Change_data_capture&#34;&gt;Change Data Capture [CDC]&lt;/a&gt; mechanism, which allows the consumer of the stream to see records probably in approximately the order they were created [it&#39;s basically impossible, at scale, to guarantee that all records across all partitions will somehow stream the data in exactly the same order that it was written]. This is a pretty fantastic feature because it allows us to reliably do &lt;em&gt;&amp;mdash;something&amp;mdash;&lt;/em&gt; after we add new data, update existing data, or delete existing data. As long as all the stream records are read and processed, we can ensure at least once processing on data changes and then go sleep soundly at night knowing that there is one less edge case in our application. Combine that with the natural scale that DynamoDB provides via its leaderless architecture and you can build this thing once and probably never have to worry about it handling more load ever again.&lt;/p&gt;</description>
+      <description>&lt;p&gt;DynamoDB Streams is AWS&amp;rsquo;s home grown &lt;a href=&#34;https://en.wikipedia.org/wiki/Change_data_capture&#34;&gt;Change Data Capture [CDC]&lt;/a&gt; mechanism, which allows the consumer of the stream to see records probably in approximately the order they were created [it&amp;rsquo;s basically impossible, at scale, to guarantee that all records across all partitions will somehow stream the data in exactly the same order that it was written]. This is a pretty fantastic feature because it allows us to reliably do &lt;em&gt;&amp;mdash;something&amp;mdash;&lt;/em&gt; after we add new data, update existing data, or delete existing data. As long as all the stream records are read and processed, we can ensure at least once processing on data changes and then go sleep soundly at night knowing that there is one less edge case in our application. Combine that with the natural scale that DynamoDB provides via its leaderless architecture and you can build this thing once and probably never have to worry about it handling more load ever again.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to Return a Response Entity in Spring Boot Webflux</title>
       <link>http://localhost:1313/blog/how-to-return-a-response-entity-in-spring-boot-webflux/</link>
       <pubDate>Sun, 19 Jul 2020 16:07:33 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-return-a-response-entity-in-spring-boot-webflux/</guid>
-      <description>&lt;p&gt;In my last post on &lt;a href=&#34;https://nickolasfisher.com/blog/DynamoDB-and-Spring-Boot-Webflux-A-Working-Introduction&#34;&gt;getting started with spring boot webflux and AWS DynamoDB&lt;/a&gt;, I mentioned that it wasn&#39;t immediately obvious to find a way to customize the response code in a spring boot &lt;strong&gt;RestController&lt;/strong&gt;, so I opted to use handlers instead.&lt;/p&gt;</description>
+      <description>&lt;p&gt;In my last post on &lt;a href=&#34;https://nickolasfisher.com/blog/DynamoDB-and-Spring-Boot-Webflux-A-Working-Introduction&#34;&gt;getting started with spring boot webflux and AWS DynamoDB&lt;/a&gt;, I mentioned that it wasn&amp;rsquo;t immediately obvious to find a way to customize the response code in a spring boot &lt;strong&gt;RestController&lt;/strong&gt;, so I opted to use handlers instead.&lt;/p&gt;</description>
     </item>
     <item>
       <title>DynamoDB and Spring Boot Webflux - A Working Introduction</title>
       <link>http://localhost:1313/blog/dynamodb-and-spring-boot-webflux-a-working-introduction/</link>
       <pubDate>Sat, 18 Jul 2020 23:07:05 +0000</pubDate>
       <guid>http://localhost:1313/blog/dynamodb-and-spring-boot-webflux-a-working-introduction/</guid>
-      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/webflux-and-dynamo&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;The &lt;a href=&#34;https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/welcome.html&#34;&gt;latest AWS SDK for java&lt;/a&gt; uses a reactive client to send requests to various AWS services, including DynamoDB. Reactive programming is ultimately more robust at the edges&amp;ndash;once you start experiencing latency anywhere in your stack, if your tech is not reactive, you&#39;re going to have a significantly worse time than if it were.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/webflux-and-dynamo&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;The &lt;a href=&#34;https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/welcome.html&#34;&gt;latest AWS SDK for java&lt;/a&gt; uses a reactive client to send requests to various AWS services, including DynamoDB. Reactive programming is ultimately more robust at the edges&amp;ndash;once you start experiencing latency anywhere in your stack, if your tech is not reactive, you&amp;rsquo;re going to have a significantly worse time than if it were.&lt;/p&gt;</description>
     </item>
     <item>
       <title>DynamoDB Basics: A Hands On Tutorial</title>

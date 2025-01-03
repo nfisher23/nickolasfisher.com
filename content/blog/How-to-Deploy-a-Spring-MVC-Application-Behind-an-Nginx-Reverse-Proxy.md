@@ -9,9 +9,9 @@ tags: [java, ngnix, vagrant, ansible, spring, DevOps, maven]
 
 ### What is a Reverse Proxy?
 
-A reverse proxy is the middle-man between the consumer of your service/application and the application itself. Take, for example, somebody typing your web domain (https://your-awesome-domain.com) into her browser. After the browser finds the IP address of where your web domain is located, her browser sends an HTTP request to the browser at the specified endpoint. If you _don&#39;t_ have a reverse proxy set up, then your application will have to be listening for active connections at your-awesome-domain.com:443, and be capable of serving up a CA-signed certificate along with the response. If your site doesn&#39;t have https configured, then it must be listening at port 80 (and obviously would not need any certs).
+A reverse proxy is the middle-man between the consumer of your service/application and the application itself. Take, for example, somebody typing your web domain (https://your-awesome-domain.com) into her browser. After the browser finds the IP address of where your web domain is located, her browser sends an HTTP request to the browser at the specified endpoint. If you _don't_ have a reverse proxy set up, then your application will have to be listening for active connections at your-awesome-domain.com:443, and be capable of serving up a CA-signed certificate along with the response. If your site doesn't have https configured, then it must be listening at port 80 (and obviously would not need any certs).
 
-This is fine for some applications. However, what if you want to put another web app on the same VM (because you&#39;re cheap, like me)? With this setup, you&#39;re going to need something in between your web applications to decide which one to forward the request to. That &#34;something&#34; is a reverse proxy. The person deciding to come to your site still enters https://your-awesome-domain.com into the browser. Before, her signal would look like: \[her\] -&gt; \[your web app\]. Now, her request signal looks like \[her\] -&gt; \[reverse proxy\] -&gt; \[your web app\].
+This is fine for some applications. However, what if you want to put another web app on the same VM (because you're cheap, like me)? With this setup, you're going to need something in between your web applications to decide which one to forward the request to. That "something" is a reverse proxy. The person deciding to come to your site still enters https://your-awesome-domain.com into the browser. Before, her signal would look like: \[her\] -> \[your web app\]. Now, her request signal looks like \[her\] -> \[reverse proxy\] -> \[your web app\].
 
 Common reasons for reverse proxies include making zero downtime deployments much easier to do, handling certificate management for https-enabled sites, cramming as many web apps on your server as the thing can handle, or selectively caching content--which I will cover in the next post.
 
@@ -25,7 +25,7 @@ Navigate to the directory that you want this project to go into and type:
 $ molecule init role -r reverse-proxy-nginx -d vagrant
 ```
 
-I&#39;m using vagrant as the VM provider here, and the ansible role I&#39;m creating is called &#34;reverse-proxy-nginx.&#34; Modify the **molecule/default/molecule.yml** file&#39;s **providers** section to the following:
+I'm using vagrant as the VM provider here, and the ansible role I'm creating is called "reverse-proxy-nginx." Modify the **molecule/default/molecule.yml** file's **providers** section to the following:
 
 ```yaml
 platforms:
@@ -33,7 +33,7 @@ platforms:
     box: ubuntu/xenial64
     memory: 1024
     provider_raw_config_args:
-    - &#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;
+    - "customize ['modifyvm', :id, '--uartmode1', 'disconnected']"
     interfaces:
     - auto_config: true
       network_name: private_network
@@ -42,7 +42,7 @@ platforms:
 
 ```
 
-The first thing we will need is a Spring MVC application to work with. For simplicity, we&#39;re going to keep the app source code within this ansible role. In a real application, you should set up a CI/CD pipeline that the application would go through, but I&#39;m going to keep the focus on getting a working example. Create a **app/** directory, then go to the [spring initializer](https://start.spring.io/) and select the &#34;Web&#34; dependency option, then Maven as the build engine. Place the generated code inside the **app/** directory.
+The first thing we will need is a Spring MVC application to work with. For simplicity, we're going to keep the app source code within this ansible role. In a real application, you should set up a CI/CD pipeline that the application would go through, but I'm going to keep the focus on getting a working example. Create a **app/** directory, then go to the [spring initializer](https://start.spring.io/) and select the "Web" dependency option, then Maven as the build engine. Place the generated code inside the **app/** directory.
 
 We can then add a **SimpleController.java** class to the **app/src/main/java/com/nickolasfisher/simplemvc/** directory that is, well, simple:
 
@@ -57,33 +57,33 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class SimpleController {
 
-    @GetMapping(&#34;/**&#34;)
-    public ResponseEntity&lt;String&gt; simpleResponder() {
-        return new ResponseEntity&lt;&gt;(&#34;&lt;h1&gt;Welcome to my site!&lt;/h1&gt;&#34;, HttpStatus.ACCEPTED);
+    @GetMapping("/**")
+    public ResponseEntity<String> simpleResponder() {
+        return new ResponseEntity<>("<h1>Welcome to my site!</h1>", HttpStatus.ACCEPTED);
     }
 }
 
 ```
 
-On the server, we are going to need Java and Nginx. In the [source code for this post](https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx), I&#39;ve included two separate roles called **openjdk** and **nginx**. The ansible role that gets Java looks like:
+On the server, we are going to need Java and Nginx. In the [source code for this post](https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx), I've included two separate roles called **openjdk** and **nginx**. The ansible role that gets Java looks like:
 
 ```yaml
 ---
 - name: Get Java tarball
   get_url:
-    url: &#34;{{ jdk_url }}&#34;
+    url: "{{ jdk_url }}"
     dest: /etc/{{ jdk_tarball }}
   become: yes
 
 - name: make java directory
   file:
-    path: &#34;/usr/lib/openjdk-{{ jdk_version }}&#34;
+    path: "/usr/lib/openjdk-{{ jdk_version }}"
     state: directory
   become: yes
 
 - name: unpack tarball
   unarchive:
-    dest: &#34;/usr/lib/openjdk-{{ jdk_version }}/&#34;
+    dest: "/usr/lib/openjdk-{{ jdk_version }}/"
     src: /etc/{{ jdk_tarball }}
     remote_src: yes
   become: yes
@@ -91,7 +91,7 @@ On the server, we are going to need Java and Nginx. In the [source code for this
 - name: update alternatives for java
   alternatives:
     name: java
-    path: &#34;/usr/lib/openjdk-{{ jdk_version }}/jdk-{{ jdk_version }}/bin/java&#34;
+    path: "/usr/lib/openjdk-{{ jdk_version }}/jdk-{{ jdk_version }}/bin/java"
     link: /usr/bin/java
     priority: 2000
   become: yes
@@ -116,7 +116,7 @@ Where the variables are:
 # vars file for openjdk
 jdk_version: 11.0.2
 jdk_tarball: openjdk-{{ jdk_version }}_linux-x64_bin.tar.gz
-jdk_url: &#34;https://download.java.net/java/GA/jdk11/9/GPL/{{ jdk_tarball }}&#34;
+jdk_url: "https://download.java.net/java/GA/jdk11/9/GPL/{{ jdk_tarball }}"
 
 ```
 
@@ -146,7 +146,7 @@ The Nginx role playbook looks like:
 
 - name: remove nginx defaults
   file:
-    path: &#34;{{ item }}&#34;
+    path: "{{ item }}"
     state: absent
   with_items:
     - /etc/nginx/sites-available/default
@@ -198,7 +198,7 @@ dependencies:
   - role: nginx
 ```
 
-We can now move on to the logic of deploying it. Again, in a production setup, we would want an automated CI/CD pipeline to handle deployments, preferably only deploying a release branch. However, for this simple example, we will build it using ansible and send up the artifact directly. The only protection that this offers is building and running the unit tests, but configuration management basically doesn&#39;t exist.
+We can now move on to the logic of deploying it. Again, in a production setup, we would want an automated CI/CD pipeline to handle deployments, preferably only deploying a release branch. However, for this simple example, we will build it using ansible and send up the artifact directly. The only protection that this offers is building and running the unit tests, but configuration management basically doesn't exist.
 
 Note that you will need maven installed on your system for this to run properly.
 
@@ -219,15 +219,15 @@ We need to get the jar artifact on the server, then create a systemd service fil
 
 - name: ensure apps dir exists
   file:
-    path: &#34;{{ jar_dir }}&#34;
+    path: "{{ jar_dir }}"
     state: directory
     mode: 0755
   become: yes
 
 - name: send jar
   copy:
-    src: &#34;{{ jar_name }}&#34;
-    dest: &#34;{{ path_to_jar }}&#34;
+    src: "{{ jar_name }}"
+    dest: "{{ path_to_jar }}"
     mode: 0755
     force: yes
   become: yes
@@ -265,7 +265,7 @@ And variables in **vars/main.yml**:
 # vars file for reverse-proxy-nginx
 jar_dir: /opt/apps/app
 jar_name: app.jar
-path_to_jar: &#34;{{ jar_dir }}/{{ jar_name }}&#34;
+path_to_jar: "{{ jar_dir }}/{{ jar_name }}"
 
 ```
 

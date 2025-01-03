@@ -8,7 +8,7 @@
 <title>Set up a Basic Leader/Follower Redis Cluster Locally using Docker</title>
 <meta
   name="description"
-  content="In general, you will want to keep your development environment and your higher environments as similar as makes sense [times it doesn&#39;t make sense: when it costs too much], to catch bugs early and often. Here, we&#39;ll quickly run through how to set up a leader/follower topology for redis using docker/docker-compose on your local machine."
+  content="In general, you will want to keep your development environment and your higher environments as similar as makes sense [times it doesn&rsquo;t make sense: when it costs too much], to catch bugs early and often. Here, we&rsquo;ll quickly run through how to set up a leader/follower topology for redis using docker/docker-compose on your local machine."
 />
 <link rel="canonical" href="http://localhost:1313/blog/set-up-a-basic-leaderfollower-redis-cluster-locally-using-docker/" />
 <link rel="robots" href="/robots.txt" />
@@ -152,26 +152,26 @@
 
   
 
-  <section><p>In general, you will want to keep your development environment and your higher environments as similar as makes sense [times it doesn't make sense: when it costs too much], to catch bugs early and often. Here, we'll quickly run through how to set up a leader/follower topology for redis using docker/docker-compose on your local machine.</p>
-<p>The <a href="https://redis.io/topics/replication">redis documentation on replication</a> is a very good read to get more familiar with the details, but you basically just need to pass a flag/config value to the follower to tell it to start replicating. This will also, by default, make the replica reject all write requests [you want this&ndash;trust me]. Here's a docker-compose file that does just that:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">version</span>: <span style="color:#ff79c6">&amp;#39;3.8&amp;#39;</span>
+  <section><p>In general, you will want to keep your development environment and your higher environments as similar as makes sense [times it doesn&rsquo;t make sense: when it costs too much], to catch bugs early and often. Here, we&rsquo;ll quickly run through how to set up a leader/follower topology for redis using docker/docker-compose on your local machine.</p>
+<p>The <a href="https://redis.io/topics/replication">redis documentation on replication</a> is a very good read to get more familiar with the details, but you basically just need to pass a flag/config value to the follower to tell it to start replicating. This will also, by default, make the replica reject all write requests [you want this&ndash;trust me]. Here&rsquo;s a docker-compose file that does just that:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">version</span>: <span style="color:#f1fa8c">&#39;3.8&#39;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">services</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">leader</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: redis
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:
-</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">&amp;#34;6379:6379&amp;#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;6379:6379&#34;</span>
 </span></span><span style="display:flex;"><span>      - <span style="color:#bd93f9">6379</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">networks</span>:
 </span></span><span style="display:flex;"><span>      - local
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">follower</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: redis
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:
-</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">&amp;#34;6380:6379&amp;#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;6380:6379&#34;</span>
 </span></span><span style="display:flex;"><span>      - <span style="color:#bd93f9">6379</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">networks</span>:
 </span></span><span style="display:flex;"><span>      - local
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">command</span>: [<span style="color:#ff79c6">&amp;#34;--replicaof&amp;#34;,</span> <span style="color:#ff79c6">&amp;#34;leader&amp;#34;,</span> <span style="color:#ff79c6">&amp;#34;6379&amp;#34;]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">command</span>: [<span style="color:#f1fa8c">&#34;--replicaof&#34;</span>, <span style="color:#f1fa8c">&#34;leader&#34;</span>, <span style="color:#f1fa8c">&#34;6379&#34;</span>]
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">networks</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">local</span>:
@@ -179,13 +179,13 @@
 </span></span></code></pre></div><p>You can, somewhat obviously, start this up like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker-compose up -d
 </span></span></code></pre></div><p>We can then test this with the cli like so:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ redis-cli <span style="color:#8be9fd;font-style:italic">set</span> <span style="color:#bd93f9">3</span> &amp;<span style="color:#6272a4">#34;something&amp;#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ redis-cli <span style="color:#8be9fd;font-style:italic">set</span> <span style="color:#bd93f9">3</span> <span style="color:#f1fa8c">&#34;something&#34;</span>
 </span></span><span style="display:flex;"><span>OK
-</span></span><span style="display:flex;"><span>$ redis-cli -p <span style="color:#bd93f9">6380</span> <span style="color:#8be9fd;font-style:italic">set</span> <span style="color:#bd93f9">3</span> &amp;<span style="color:#6272a4">#34;something&amp;#34; # fails because you&amp;#39;re trying to write to the replica</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">(</span>error<span style="color:#ff79c6">)</span> READONLY You can&amp;<span style="color:#6272a4">#39;t write against a read only replica.</span>
+</span></span><span style="display:flex;"><span>$ redis-cli -p <span style="color:#bd93f9">6380</span> <span style="color:#8be9fd;font-style:italic">set</span> <span style="color:#bd93f9">3</span> <span style="color:#f1fa8c">&#34;something&#34;</span> <span style="color:#6272a4"># fails because you&#39;re trying to write to the replica</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">(</span>error<span style="color:#ff79c6">)</span> READONLY You can&#39;t write against a <span style="color:#8be9fd;font-style:italic">read</span> only replica.
 </span></span><span style="display:flex;"><span>$ redis-cli -p <span style="color:#bd93f9">6380</span> get <span style="color:#bd93f9">3</span> <span style="color:#6272a4"># get from replica, same value</span>
-</span></span><span style="display:flex;"><span>&amp;<span style="color:#6272a4">#34;something&amp;#34;</span>
-</span></span></code></pre></div><p>If you're running a redis leader/follower topology in your staging/production environments or if you just want to experiment with how that might affect your application, this is probably the best place to start.</p>
+</span></span><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;something&#34;</span>
+</span></span></code></pre></div><p>If you&rsquo;re running a redis leader/follower topology in your staging/production environments or if you just want to experiment with how that might affect your application, this is probably the best place to start.</p>
 </section>
 
   

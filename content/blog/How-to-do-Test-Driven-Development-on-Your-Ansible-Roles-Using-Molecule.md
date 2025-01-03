@@ -21,7 +21,7 @@ First, navigate to the directory you want your Ansible role to reside, and initi
 $ molecule init role -d vagrant -r test-driven-development-with-molecule
 ```
 
-As you can see, this example will use Vagrant as the provider. Molecule, as of this writing, defaults to Docker, which is a valid choice as well, however we&#39;ll focus on one thing at at time and work with a VM (even though it is slower) for now. The command above will simplify your life by providing boilerplate code that installs python on your target VM, which is required by Ansible. You _might_ have to modify the created VM in the platforms section of your **molecule/default/molecule.yml** instance like so:
+As you can see, this example will use Vagrant as the provider. Molecule, as of this writing, defaults to Docker, which is a valid choice as well, however we'll focus on one thing at at time and work with a VM (even though it is slower) for now. The command above will simplify your life by providing boilerplate code that installs python on your target VM, which is required by Ansible. You _might_ have to modify the created VM in the platforms section of your **molecule/default/molecule.yml** instance like so:
 
 ```yaml
 platforms:
@@ -29,7 +29,7 @@ platforms:
     box: ubuntu/xenial64
     memory: 2048
     provider_raw_config_args:
-    - &#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;
+    - "customize ['modifyvm', :id, '--uartmode1', 'disconnected']"
 
 ```
 
@@ -46,7 +46,7 @@ I want to [install the latest OpenJDK version 11 from the tarball](https://jdk.j
 - Javac is available on the PATH and ﻿$ javac -version ﻿outputs a valid java compiler.
 - JAVA\_HOME is set properly.
 
-To stick with test driven development, I&#39;ll write a test for the java runtime using test infra first. Paste this code into your **molecule/default/tests/test\_default.py** file:
+To stick with test driven development, I'll write a test for the java runtime using test infra first. Paste this code into your **molecule/default/tests/test\_default.py** file:
 
 ```python
 import os
@@ -54,13 +54,13 @@ import os
 import testinfra.utils.ansible_runner
 
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
-    os.environ[&#39;MOLECULE_INVENTORY_FILE&#39;]).get_hosts(&#39;all&#39;)
+    os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
 
 # validate java runtime
 def test_java_runtime(host):
-    cmd = host.run(&#34;java -version&#34;)
+    cmd = host.run("java -version")
     assert cmd.rc == 0
-    assert cmd.stderr.find(&#34;11.0&#34;)
+    assert cmd.stderr.find("11.0")
 ```
 
 You can run:
@@ -69,7 +69,7 @@ You can run:
 $ molecule create
 ```
 
-To create the local Vagrant VM you&#39;re going to test with, and you can run:
+To create the local Vagrant VM you're going to test with, and you can run:
 
 ```bash
 $ molecule converge
@@ -131,17 +131,17 @@ We can take a shortcut and create two tests for the next two requirements that s
 
 ```python
 def test_java_compiler(host):
-    cmd = host.run(&#34;javac -version&#34;)
+    cmd = host.run("javac -version")
     assert cmd.rc == 0
-    assert cmd.stderr.find(&#34;11.0&#34;)
+    assert cmd.stderr.find("11.0")
 
 def test_java_home_configured(host):
-    f = host.file(&#34;/etc/environment&#34;)
-    assert f.contains(&#34;JAVA_HOME=/usr/lib/&#34;)
+    f = host.file("/etc/environment")
+    assert f.contains("JAVA_HOME=/usr/lib/")
 
 ```
 
-Here, I want to validate that the java compiler is on our PATH and that its version contains 11.0. I could have been more specific here, but I want the tests to be flexible enough to allow for changes and this was the compromise that I struck. In the second test, it&#39;s my goal to ensure that the **/etc/environment** file, which sets environment variables for every user on our system, has the JAVA\_HOME variable defined--again, it&#39;s a tradeoff between being so specific that its not flexible to change and so vague that it&#39;s meaningless, so I stuck with saying that JAVA\_HOME should start with /usr/lib.
+Here, I want to validate that the java compiler is on our PATH and that its version contains 11.0. I could have been more specific here, but I want the tests to be flexible enough to allow for changes and this was the compromise that I struck. In the second test, it's my goal to ensure that the **/etc/environment** file, which sets environment variables for every user on our system, has the JAVA\_HOME variable defined--again, it's a tradeoff between being so specific that its not flexible to change and so vague that it's meaningless, so I stuck with saying that JAVA\_HOME should start with /usr/lib.
 
 We could also write a test that runs an ﻿$ echo $JAVA\_HOME command and interprets the response, which is probably more robust in the long run.
 
@@ -177,6 +177,6 @@ $ molecule converge &amp;&amp; molecule verify
 
 Should have both tests pass.
 
-Probably the most difficult part going forward will be understanding how to leverage test infra to write the appropriate tests. The best resource I&#39;ve found is simply the listing of modules at [https://testinfra.readthedocs.io/en/latest/modules.html](https://testinfra.readthedocs.io/en/latest/modules.html,)--from there I have just been tinkering with it to get used to how it all works.
+Probably the most difficult part going forward will be understanding how to leverage test infra to write the appropriate tests. The best resource I've found is simply the listing of modules at [https://testinfra.readthedocs.io/en/latest/modules.html](https://testinfra.readthedocs.io/en/latest/modules.html,)--from there I have just been tinkering with it to get used to how it all works.
 
-A big reason that we write these tests is so that we can refactor our work. I would encourage you to take the code above and modularize it--e.g. change the download url, use a register to get the tar.gz location, and reuse anything that looks duplicated. Because this is focused on introducing molecule, I&#39;ll leave you here.
+A big reason that we write these tests is so that we can refactor our work. I would encourage you to take the code above and modularize it--e.g. change the download url, use a register to get the tar.gz location, and reuse anything that looks duplicated. Because this is focused on introducing molecule, I'll leave you here.

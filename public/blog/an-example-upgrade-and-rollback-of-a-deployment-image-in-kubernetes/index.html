@@ -8,7 +8,7 @@
 <title>An Example Upgrade and Rollback of a Deployment image in Kubernetes</title>
 <meta
   name="description"
-  content="In this article, I&#39;m going to show you how to bootstrap a local kubernetes cluster with a custom image, debug it, deploy a new image, then rollback to the old image."
+  content="In this article, I&rsquo;m going to show you how to bootstrap a local kubernetes cluster with a custom image, debug it, deploy a new image, then rollback to the old image."
 />
 <link rel="canonical" href="http://localhost:1313/blog/an-example-upgrade-and-rollback-of-a-deployment-image-in-kubernetes/" />
 <link rel="robots" href="/robots.txt" />
@@ -152,13 +152,13 @@
 
   
 
-  <section><p>In this article, I'm going to show you how to bootstrap a local kubernetes cluster with a custom image, debug it, deploy a new image, then rollback to the old image.</p>
-<p>If you don't have a good way to get a local kubernetes cluster, you should check out: <a href="https://nickolasfisher.com/blog/How-to-Setup-and-Use-Kubernetes-in-Docker-kind">how to setup and use kind locally</a>. Big fan.</p>
+  <section><p>In this article, I&rsquo;m going to show you how to bootstrap a local kubernetes cluster with a custom image, debug it, deploy a new image, then rollback to the old image.</p>
+<p>If you don&rsquo;t have a good way to get a local kubernetes cluster, you should check out: <a href="https://nickolasfisher.com/blog/How-to-Setup-and-Use-Kubernetes-in-Docker-kind">how to setup and use kind locally</a>. Big fan.</p>
 <h2 id="create-cluster-make-base-resources">Create Cluster, Make Base Resources</h2>
 <p>Start by creating a local kubernetes cluster using <a href="https://kind.sigs.k8s.io/">kind</a>:</p>
 <pre tabindex="0"><code>kind create cluster
-</code></pre><p>This will automatically configure your <strong>kubectl</strong> cli to communicate to your local cluster (called &quot;kind&quot; by default).</p>
-<p>I have created <a href="https://hub.docker.com/repository/docker/nfisher23/simplesb">a sample repository in Docker Hub</a> with a few different versions that we'll use for this demo. Specifically, there are two versions (both tags):</p>
+</code></pre><p>This will automatically configure your <strong>kubectl</strong> cli to communicate to your local cluster (called &ldquo;kind&rdquo; by default).</p>
+<p>I have created <a href="https://hub.docker.com/repository/docker/nfisher23/simplesb">a sample repository in Docker Hub</a> with a few different versions that we&rsquo;ll use for this demo. Specifically, there are two versions (both tags):</p>
 <ul>
 <li><strong>v2</strong>: has just an <strong>/actuator/health</strong> endpoint</li>
 <li><strong>v3</strong>: added a GET <strong>/hello</strong> endpoint</li>
@@ -194,7 +194,7 @@
 </span></span><span style="display:flex;"><span>            - <span style="color:#ff79c6">containerPort</span>: <span style="color:#bd93f9">8080</span>
 </span></span></code></pre></div><p>Pretty much the same command to get this up there:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl apply -f deployment.yaml
-</span></span></code></pre></div><p>Finally, we'll expose a way for other pods in the cluster to communicate with the pods managed by the deployment (actually, the deployment manages ReplicaSets, which in turn ensure we have enough pods) with one more yaml for cluster ip:</p>
+</span></span></code></pre></div><p>Finally, we&rsquo;ll expose a way for other pods in the cluster to communicate with the pods managed by the deployment (actually, the deployment manages ReplicaSets, which in turn ensure we have enough pods) with one more yaml for cluster ip:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">apiVersion</span>: v1
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">kind</span>: Service
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">metadata</span>:
@@ -211,7 +211,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">app</span>: nick-sample-sb
 </span></span></code></pre></div><p>And apply that change:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl apply -f service.yaml
-</span></span></code></pre></div><p>Note that, while I have shown these examples as being in three different yaml files, they could technically all be in one. It's usually easier to keep them more isolated, but if you're just proving things out/sandboxing, you can do so by separating them with <strong>&ndash;</strong>.</p>
+</span></span></code></pre></div><p>Note that, while I have shown these examples as being in three different yaml files, they could technically all be in one. It&rsquo;s usually easier to keep them more isolated, but if you&rsquo;re just proving things out/sandboxing, you can do so by separating them with <strong>&ndash;</strong>.</p>
 <h2 id="debugging">Debugging</h2>
 <p>Okay, we have our namespace:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ kubectl get namespaces | grep nick-sample-sb
@@ -225,18 +225,18 @@
 </span></span><span style="display:flex;"><span>NAME                              READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
 </span></span><span style="display:flex;"><span>nick-sample-sb-7f65cbf9fc-bc4pw   1/1     Running   <span style="color:#bd93f9">0</span>          16m   10.244.1.5   kind-worker
 </span></span><span style="display:flex;"><span>nick-sample-sb-7f65cbf9fc-kd95d   1/1     Running   <span style="color:#bd93f9">0</span>          17m   10.244.1.5   kind-worker
-</span></span></code></pre></div><p>Because CoreDNS is included with this version of kubernetes and it is a cluster aware DNS service, our cluster ip will automatically allow us to communicate via a DNS entry <strong>nick-sample-sb-clusterip</strong> if we are in the same namespace. Let's prove that&ndash;we can exec onto one of the pods and send a curl to the health endpoint:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">POD</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>kubectl get pods -n nick-sample-sb | grep nick-sample | awk &amp;<span style="color:#6272a4">#39;{print $1}&amp;#39; | head -1)</span>
+</span></span></code></pre></div><p>Because CoreDNS is included with this version of kubernetes and it is a cluster aware DNS service, our cluster ip will automatically allow us to communicate via a DNS entry <strong>nick-sample-sb-clusterip</strong> if we are in the same namespace. Let&rsquo;s prove that&ndash;we can exec onto one of the pods and send a curl to the health endpoint:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">POD</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>kubectl get pods -n nick-sample-sb | grep nick-sample | awk <span style="color:#f1fa8c">&#39;{print $1}&#39;</span> | head -1<span style="color:#ff79c6">)</span>
 </span></span><span style="display:flex;"><span>$ kubectl <span style="color:#8be9fd;font-style:italic">exec</span> --namespace nick-sample-sb <span style="color:#8be9fd;font-style:italic">$POD</span> -- curl nick-sample-sb-clusterip/actuator/health
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>&amp;<span style="color:#6272a4">#34;status&amp;#34;:&amp;#34;UP&amp;#34;,&amp;#34;components&amp;#34;:{&amp;#34;diskSpace&amp;#34;:{&amp;#34;status&amp;#34;:&amp;#34;UP&amp;#34;,&amp;#34;details&amp;#34;:{&amp;#34;total&amp;#34;:117610516480,&amp;#34;free&amp;#34;:57556758528,&amp;#34;threshold&amp;#34;:10485760}},&amp;#34;ping&amp;#34;:{&amp;#34;status&amp;#34;:&amp;#34;UP&amp;#34;}}}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span><span style="color:#f1fa8c">&#34;status&#34;</span>:<span style="color:#f1fa8c">&#34;UP&#34;</span>,<span style="color:#f1fa8c">&#34;components&#34;</span>:<span style="color:#ff79c6">{</span><span style="color:#f1fa8c">&#34;diskSpace&#34;</span>:<span style="color:#ff79c6">{</span><span style="color:#f1fa8c">&#34;status&#34;</span>:<span style="color:#f1fa8c">&#34;UP&#34;</span>,<span style="color:#f1fa8c">&#34;details&#34;</span>:<span style="color:#ff79c6">{</span><span style="color:#f1fa8c">&#34;total&#34;</span>:117610516480,<span style="color:#f1fa8c">&#34;free&#34;</span>:57556758528,<span style="color:#f1fa8c">&#34;threshold&#34;</span>:10485760<span style="color:#ff79c6">}}</span>,<span style="color:#f1fa8c">&#34;ping&#34;</span>:<span style="color:#ff79c6">{</span><span style="color:#f1fa8c">&#34;status&#34;</span>:<span style="color:#f1fa8c">&#34;UP&#34;</span><span style="color:#ff79c6">}}}</span>
 </span></span></code></pre></div><p>We can also notice that our <strong>/hello</strong> endpoint is not available:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ kubectl <span style="color:#8be9fd;font-style:italic">exec</span> --namespace nick-sample-sb <span style="color:#8be9fd;font-style:italic">$POD</span> -- curl nick-sample-sb-clusterip/hello
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>&amp;<span style="color:#6272a4">#34;timestamp&amp;#34;:&amp;#34;2020-06-27T23:38:46.663&amp;#43;0000&amp;#34;,&amp;#34;status&amp;#34;:404,&amp;#34;error&amp;#34;:&amp;#34;Not Found&amp;#34;,&amp;#34;message&amp;#34;:&amp;#34;No message available&amp;#34;,&amp;#34;path&amp;#34;:&amp;#34;/hello&amp;#34;}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span><span style="color:#f1fa8c">&#34;timestamp&#34;</span>:<span style="color:#f1fa8c">&#34;2020-06-27T23:38:46.663+0000&#34;</span>,<span style="color:#f1fa8c">&#34;status&#34;</span>:404,<span style="color:#f1fa8c">&#34;error&#34;</span>:<span style="color:#f1fa8c">&#34;Not Found&#34;</span>,<span style="color:#f1fa8c">&#34;message&#34;</span>:<span style="color:#f1fa8c">&#34;No message available&#34;</span>,<span style="color:#f1fa8c">&#34;path&#34;</span>:<span style="color:#f1fa8c">&#34;/hello&#34;</span><span style="color:#ff79c6">}</span>
 </span></span></code></pre></div><p>Now, we are ready to ship our code, version 3&ndash;we can do so from the cli with:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ kubectl <span style="color:#8be9fd;font-style:italic">set</span> image -n nick-sample-sb deployments/nick-sample-sb nick-sample-sb<span style="color:#ff79c6">=</span>nfisher23/simplesb:v3 --record
 </span></span><span style="display:flex;"><span>deployment.apps/nick-sample-sb image updated
 </span></span></code></pre></div><p>This command will update to the latest version and after all the pods come up, we can see that our <strong>/hello</strong> endpoint exists:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">POD</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>kubectl get pods -n nick-sample-sb | grep nick-sample | awk &amp;<span style="color:#6272a4">#39;{print $1}&amp;#39; | head -1)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">POD</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>kubectl get pods -n nick-sample-sb | grep nick-sample | awk <span style="color:#f1fa8c">&#39;{print $1}&#39;</span> | head -1<span style="color:#ff79c6">)</span>
 </span></span><span style="display:flex;"><span>$ kubectl <span style="color:#8be9fd;font-style:italic">exec</span> --namespace nick-sample-sb <span style="color:#8be9fd;font-style:italic">$POD</span> -- curl nick-sample-sb-clusterip/hello
 </span></span><span style="display:flex;"><span>hello
 </span></span></code></pre></div><p>I hope this provided you with enough information to get you started bridging the gap between applications and infra when it comes to kubernetes.</p>

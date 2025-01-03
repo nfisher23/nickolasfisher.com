@@ -7,7 +7,7 @@ tags: [vagrant, ansible, the elastic stack, DevOps, molecule]
 
 You can view the sample code associated with this post [on GitHub](https://github.com/nfisher23/some-ansible-examples).
 
-In a previous post on [Provisioning a Server with Kibana](https://nickolasfisher.com/blog/How-to-Provision-a-Linux-VM-With-Kibana-Using-Ansible), we saw that it&#39;s very straightforward to get kibana on a box.
+In a previous post on [Provisioning a Server with Kibana](https://nickolasfisher.com/blog/How-to-Provision-a-Linux-VM-With-Kibana-Using-Ansible), we saw that it's very straightforward to get kibana on a box.
 
 Upgrading Kibana is also very straightforward (and nowhere near as complicated as [upgrading elasticsearch](https://nickolasfisher.com/blog/How-to-do-a-Rolling-Upgrade-of-an-Elasticsearch-Cluster-Using-Ansible)). That will be the subject of this post.
 
@@ -25,7 +25,7 @@ platforms:
     box: ubuntu/xenial64
     memory: 4096
     provider_raw_config_args:
-    - &#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;
+    - "customize ['modifyvm', :id, '--uartmode1', 'disconnected']"
     interfaces:
     - auto_config: true
       network_name: private_network
@@ -71,9 +71,9 @@ Then add your **tasks/upgrade\_kibana.yml** file:
 
 - name: get kibana deb to dl
   get_url:
-    dest: &#34;/etc/{{ kibana_deb_to_upgrade_to }}&#34;
-    url: &#34;https://artifacts.elastic.co/downloads/kibana/{{ kibana_deb_to_upgrade_to }}&#34;
-    checksum: &#34;sha512:https://artifacts.elastic.co/downloads/kibana/{{ kibana_deb_to_upgrade_to }}.sha512&#34;
+    dest: "/etc/{{ kibana_deb_to_upgrade_to }}"
+    url: "https://artifacts.elastic.co/downloads/kibana/{{ kibana_deb_to_upgrade_to }}"
+    checksum: "sha512:https://artifacts.elastic.co/downloads/kibana/{{ kibana_deb_to_upgrade_to }}.sha512"
   become: yes
 
 - name: stop kibana
@@ -84,7 +84,7 @@ Then add your **tasks/upgrade\_kibana.yml** file:
 
 - name: upgrade
   apt:
-    deb: &#34;/etc/{{ kibana_deb_to_upgrade_to }}&#34;
+    deb: "/etc/{{ kibana_deb_to_upgrade_to }}"
   become: yes
 
 - name: start upgraded kibana
@@ -94,7 +94,7 @@ Then add your **tasks/upgrade\_kibana.yml** file:
   become: yes
 ```
 
-We will need a couple of parameters, which I&#39;ve elected to keep in the **defaults/main.yml** file:
+We will need a couple of parameters, which I've elected to keep in the **defaults/main.yml** file:
 
 ```yaml
 ---
@@ -109,4 +109,4 @@ With this, you should be able to run:
 $ molecule converge
 ```
 
-Note that [there are some breaking changes to the upgrade to 6.5.](https://www.elastic.co/guide/en/kibana/current/release-notes-6.5.0.html#known-issues-6.5.0) Given that this is an Elastic product, I&#39;m not surprised one bit. You will have to address those if, like this example, you upgrade to 6.5 or greater from a &lt; 6.5 version.
+Note that [there are some breaking changes to the upgrade to 6.5.](https://www.elastic.co/guide/en/kibana/current/release-notes-6.5.0.html#known-issues-6.5.0) Given that this is an Elastic product, I'm not surprised one bit. You will have to address those if, like this example, you upgrade to 6.5 or greater from a < 6.5 version.

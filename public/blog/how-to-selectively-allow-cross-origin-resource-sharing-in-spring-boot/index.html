@@ -153,10 +153,10 @@
   
 
   <section><p>A single page application (SPA) architecture usually involves an end user getting a smattering of javascript files when he/she makes a request to a URL endpoint. After the javascript files load and start executing code, they usually make AJAX calls to interact with the back end from that point onwards. This pairs nicely with a microservice architecture based on REST over HTTP, since the front end SPA can effectively act as a client to any microservice that it needs information from.</p>
-<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">Cross Origin Resource Sharing</a> is a mechanism that browsers enforce to try and prevent an AJAX call being made to a server that is not properly configured to receive it. This is a strict mechanism: if the browser isn't using the exact URI resource and port number to request the resource, then the browser enforces this policy.</p>
-<p>Let's say you have a website, spa.nickolasfisher.com, and users of your site get their smattering of javascript files and small html file when they request your home page. Then you want to make a backend request to api.nickolasfisher.com, since that's the gateway for the microservices you need to interact with. Well, if it's a GET request, then the browser will let you send the request directly, but will require a response header like:</p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">Cross Origin Resource Sharing</a> is a mechanism that browsers enforce to try and prevent an AJAX call being made to a server that is not properly configured to receive it. This is a strict mechanism: if the browser isn&rsquo;t using the exact URI resource and port number to request the resource, then the browser enforces this policy.</p>
+<p>Let&rsquo;s say you have a website, spa.nickolasfisher.com, and users of your site get their smattering of javascript files and small html file when they request your home page. Then you want to make a backend request to api.nickolasfisher.com, since that&rsquo;s the gateway for the microservices you need to interact with. Well, if it&rsquo;s a GET request, then the browser will let you send the request directly, but will require a response header like:</p>
 <pre tabindex="0"><code>Access-Control-Allow-Origin: https://spa.nickolasfisher.com
-</code></pre><p>If it doesn't see that (it also supports wildcards, so it doesn't have to be that exactly), then the response will not make it into the sandbox. Further, if you try to make any request to the backend that is not a GET request (e.g. POST, PUT, etc.), the browser will send a &quot;preflight&quot; request to the backend via the OPTIONS method that wants a collection of headers like:</p>
+</code></pre><p>If it doesn&rsquo;t see that (it also supports wildcards, so it doesn&rsquo;t have to be that exactly), then the response will not make it into the sandbox. Further, if you try to make any request to the backend that is not a GET request (e.g. POST, PUT, etc.), the browser will send a &ldquo;preflight&rdquo; request to the backend via the OPTIONS method that wants a collection of headers like:</p>
 <ul>
 <li>Access-Control-Allow-Origin</li>
 <li>Access-Control-Allow-Methods</li>
@@ -166,7 +166,7 @@
 <p>It will make this request to the same endpoint that your browser wants to talk to, so while you could fairly easily do this manually, it definitely sniffs of DRY in a very real way.</p>
 <p>Thankfully, Spring Boot provides a very easy mechanism to set a cross origin policy that can be defined in one place. In this example, I set up a CORS mapping to allow all requests for a default Angular application that gets served at localhost:4200:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Configuration
-</span></span><span style="display:flex;"><span>@Profile(<span style="color:#ff79c6">&amp;</span>#34;dev<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>@Profile(<span style="color:#f1fa8c">&#34;dev&#34;</span>)
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">AppConfig</span> {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  @Bean
@@ -174,7 +174,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">new</span> WebMvcConfigurer() {
 </span></span><span style="display:flex;"><span>      @Override
 </span></span><span style="display:flex;"><span>      <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">addCorsMappings</span>(CorsRegistry registry) {
-</span></span><span style="display:flex;"><span>        registry.<span style="color:#50fa7b">addMapping</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/**&amp;</span>#34;).<span style="color:#50fa7b">allowedOrigins</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:4200&amp;#34;);</span>
+</span></span><span style="display:flex;"><span>        registry.<span style="color:#50fa7b">addMapping</span>(<span style="color:#f1fa8c">&#34;/**&#34;</span>).<span style="color:#50fa7b">allowedOrigins</span>(<span style="color:#f1fa8c">&#34;http://localhost:4200&#34;</span>);
 </span></span><span style="display:flex;"><span>      }
 </span></span><span style="display:flex;"><span>    };
 </span></span><span style="display:flex;"><span>  }

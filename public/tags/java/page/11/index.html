@@ -164,7 +164,7 @@
   <div class="description">
     
       <p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux">is available on GitHub</a>.</p>
-<p>One of the nice things about a reactive programming model is there is a significantly lower risk of doomsday when things start getting latent all at once. You don't have threads upstream blocking and waiting for a response, therefore they won't all seize up and stop serving requests [or they won't short circuit if you're using a resiliency library like hystrix].</p>
+<p>One of the nice things about a reactive programming model is there is a significantly lower risk of doomsday when things start getting latent all at once. You don&rsquo;t have threads upstream blocking and waiting for a response, therefore they won&rsquo;t all seize up and stop serving requests [or they won&rsquo;t short circuit if you&rsquo;re using a resiliency library like hystrix].</p>
     
   </div>
 
@@ -228,7 +228,7 @@
   <div class="description">
     
       <p>The source code for this post can be found <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing">on Github</a>.</p>
-<p>The most straightforward way to write unit tests in spring boot webflux is to leverage <a href="https://projectreactor.io/docs/test/release/api/reactor/test/StepVerifier.html">project reactor's StepVerifier</a>. StepVerifier allows you to pull each item in a <strong>Flux</strong> or the only potential item in a <strong>Mono</strong> and make assertions about each item as it's pulled through the chain, or make assertions about certain errors that should be thrown in the process. I'm going to quickly walk you through an example integrating mockito with it and webflux.</p>
+<p>The most straightforward way to write unit tests in spring boot webflux is to leverage <a href="https://projectreactor.io/docs/test/release/api/reactor/test/StepVerifier.html">project reactor&rsquo;s StepVerifier</a>. StepVerifier allows you to pull each item in a <strong>Flux</strong> or the only potential item in a <strong>Mono</strong> and make assertions about each item as it&rsquo;s pulled through the chain, or make assertions about certain errors that should be thrown in the process. I&rsquo;m going to quickly walk you through an example integrating mockito with it and webflux.</p>
     
   </div>
 
@@ -259,7 +259,7 @@
 
   <div class="description">
     
-      <p>The <a href="http://spec.openapis.org/oas/v3.0.3">OpenAPI Specification</a> is an &quot;industry standard&quot; way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code&ndash;better yet, displayed while the app is running.</p>
+      <p>The <a href="http://spec.openapis.org/oas/v3.0.3">OpenAPI Specification</a> is an &ldquo;industry standard&rdquo; way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code&ndash;better yet, displayed while the app is running.</p>
     
   </div>
 
@@ -291,7 +291,7 @@
   <div class="description">
     
       <p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/context-api">can be found on Github</a>.</p>
-<p>When you make the switch to a reactive codebase, <a href="https://docs.oracle.com/javase/7/docs/api/java/lang/ThreadLocal.html">ThreadLocal</a> becomes effectively off limits to you, because you aren't guaranteed that the thread that starts the request processing remains the same, even if it's the same HTTP request. This has caused pain in many places: the original implementation of spring security, for example, relied very heavily on ThreadLocal variables to store state that happened in the start of the request, and then reuse the information stored in those variables later on to make access control decisions. <a href="https://netflixtechblog.com/zuul-2-the-netflix-journey-to-asynchronous-non-blocking-systems-45947377fb5c">Neflix spoke of their pain migrating to a reactive stack</a>, when they had relied so heavily on ThreadLocal variables in most of their shared libraries.</p>
+<p>When you make the switch to a reactive codebase, <a href="https://docs.oracle.com/javase/7/docs/api/java/lang/ThreadLocal.html">ThreadLocal</a> becomes effectively off limits to you, because you aren&rsquo;t guaranteed that the thread that starts the request processing remains the same, even if it&rsquo;s the same HTTP request. This has caused pain in many places: the original implementation of spring security, for example, relied very heavily on ThreadLocal variables to store state that happened in the start of the request, and then reuse the information stored in those variables later on to make access control decisions. <a href="https://netflixtechblog.com/zuul-2-the-netflix-journey-to-asynchronous-non-blocking-systems-45947377fb5c">Neflix spoke of their pain migrating to a reactive stack</a>, when they had relied so heavily on ThreadLocal variables in most of their shared libraries.</p>
     
   </div>
 

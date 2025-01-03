@@ -8,7 +8,7 @@
 <title>How to Setup SNS Message Forwarding to SQS with the AWS CLI</title>
 <meta
   name="description"
-  content="Amazon SNS is AWS&#39;s solution to pub/sub. In a large, distributed system, decoupling events from services that need to act on those events allows for teams that own different services to better work in parallel, and also prevents the need for coordinating code deploys to deliver new features. If a services is already publishing a generic event, other services can hook into that event and act on them without needing anything but a bit of infrastructure."
+  content="Amazon SNS is AWS&rsquo;s solution to pub/sub. In a large, distributed system, decoupling events from services that need to act on those events allows for teams that own different services to better work in parallel, and also prevents the need for coordinating code deploys to deliver new features. If a services is already publishing a generic event, other services can hook into that event and act on them without needing anything but a bit of infrastructure."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-setup-sns-message-forwarding-to-sqs-with-the-aws-cli/" />
 <link rel="robots" href="/robots.txt" />
@@ -152,19 +152,19 @@
 
   
 
-  <section><p><a href="https://docs.aws.amazon.com/sns/latest/dg/welcome.html">Amazon SNS</a> is AWS's solution to pub/sub. In a large, distributed system, decoupling <em>events</em> from services that <em>need to act on those events</em> allows for teams that own different services to better work in parallel, and also prevents the need for coordinating code deploys to deliver new features. If a services is already publishing a generic event, other services can hook into that event and act on them without needing anything but a bit of infrastructure.</p>
-<p>Most commonly, you will want to use SNS with Amazon SQS. Multiple queues can subscribe to the same SNS topic, and with no filters setup, every event sent to the SNS topic will be forwarded to all the SQS queues for you automatically. I'm going to show you how to do that with the CLI using localstack in this post.</p>
+  <section><p><a href="https://docs.aws.amazon.com/sns/latest/dg/welcome.html">Amazon SNS</a> is AWS&rsquo;s solution to pub/sub. In a large, distributed system, decoupling <em>events</em> from services that <em>need to act on those events</em> allows for teams that own different services to better work in parallel, and also prevents the need for coordinating code deploys to deliver new features. If a services is already publishing a generic event, other services can hook into that event and act on them without needing anything but a bit of infrastructure.</p>
+<p>Most commonly, you will want to use SNS with Amazon SQS. Multiple queues can subscribe to the same SNS topic, and with no filters setup, every event sent to the SNS topic will be forwarded to all the SQS queues for you automatically. I&rsquo;m going to show you how to do that with the CLI using localstack in this post.</p>
 <h3 id="start-localstack-on-your-machine-configure-cli">Start localstack on your machine, configure CLI</h3>
 <p>I took the <strong>docker-compose.yaml</strong> from <a href="https://github.com/localstack/localstack/blob/master/docker-compose.yml">the root of the localstack github repository</a>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">version</span>: <span style="color:#ff79c6">&amp;#39;2.1&amp;#39;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">version</span>: <span style="color:#f1fa8c">&#39;2.1&#39;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">services</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">localstack</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">container_name</span>: <span style="color:#ff79c6">&amp;#34;${LOCALSTACK_DOCKER_NAME-localstack_main}&amp;#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">container_name</span>: <span style="color:#f1fa8c">&#34;${LOCALSTACK_DOCKER_NAME-localstack_main}&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: localstack/localstack
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:
-</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">&amp;#34;4566-4599:4566-4599&amp;#34;</span>
-</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">&amp;#34;${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}&amp;#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;4566-4599:4566-4599&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">environment</span>:
 </span></span><span style="display:flex;"><span>      - SERVICES=${SERVICES- }
 </span></span><span style="display:flex;"><span>      - DEBUG=${DEBUG- }
@@ -175,85 +175,85 @@
 </span></span><span style="display:flex;"><span>      - DOCKER_HOST=unix:///var/run/docker.sock
 </span></span><span style="display:flex;"><span>      - HOST_TMP_FOLDER=${TMPDIR}
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">volumes</span>:
-</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">&amp;#34;${TMPDIR:-/tmp/localstack}:/tmp/localstack&amp;#34;</span>
-</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">&amp;#34;/var/run/docker.sock:/var/run/docker.sock&amp;#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;${TMPDIR:-/tmp/localstack}:/tmp/localstack&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;/var/run/docker.sock:/var/run/docker.sock&#34;</span>
 </span></span></code></pre></div><p>Go ahead and copy paste that thing and run [in the same directory]:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker-compose up -d
 </span></span></code></pre></div><p>We can set some dummy environment variables to make localstack and the CLI happy:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_DEFAULT_REGION</span><span style="color:#ff79c6">=</span>us-west-2export <span style="color:#8be9fd;font-style:italic">AWS_SECRET_ACCESS_KEY</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_ACCESS_KEY_ID</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_DEFAULT_REGION</span><span style="color:#ff79c6">=</span>us-west-2export <span style="color:#8be9fd;font-style:italic">AWS_SECRET_ACCESS_KEY</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;FAKE&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_ACCESS_KEY_ID</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;FAKE&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_DEFAULT_REGION</span><span style="color:#ff79c6">=</span>us-east-1
 </span></span></code></pre></div><p>You can test that your CLI is working with something like</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name &amp;<span style="color:#6272a4">#34;test&amp;#34;</span>
-</span></span></code></pre></div><p>If all is well you'll see an output like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name <span style="color:#f1fa8c">&#34;test&#34;</span>
+</span></span></code></pre></div><p>If all is well you&rsquo;ll see an output like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    &amp;#34;QueueUrls&amp;#34;: [
-</span></span><span style="display:flex;"><span>        &amp;#34;http:<span style="color:#6272a4">//localhost:4566/000000000000/test&amp;#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    ]
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;QueueUrls&#34;</span>: [
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;http://localhost:4566/000000000000/test&#34;</span>
+</span></span><span style="display:flex;"><span>    ]
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h3 id="actually-do-the-forwarding-now">Actually Do the Forwarding Now</h3>
 <p>We will first need to create both the SNS topic and the SQS queue (these are both idempotent operations):</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_NAME</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;my-queue&amp;#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">TOPIC_NAME</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;my-topic&amp;#34;</span>
-</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name &amp;<span style="color:#6272a4">#34;$QUEUE_NAME&amp;#34; --output text</span>
-</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sns create-topic --output text --name &amp;<span style="color:#6272a4">#34;$TOPIC_NAME&amp;#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_NAME</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;my-queue&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">TOPIC_NAME</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;my-topic&#34;</span>
+</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$QUEUE_NAME</span><span style="color:#f1fa8c">&#34;</span> --output text
+</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sns create-topic --output text --name <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$TOPIC_NAME</span><span style="color:#f1fa8c">&#34;</span>
 </span></span></code></pre></div><p>Creating the queue will by default return the queue url, and creating the SNS topic will by default return its ARN (Amazon Resource Name). It will make our lives easier if we store those as bash variables:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_URL</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name &amp;<span style="color:#6272a4">#34;$QUEUE_NAME&amp;#34; --output text)</span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">TOPIC_ARN</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sns create-topic --output text --name &amp;<span style="color:#6272a4">#34;$TOPIC_NAME&amp;#34;)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_URL</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$QUEUE_NAME</span><span style="color:#f1fa8c">&#34;</span> --output text<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">TOPIC_ARN</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sns create-topic --output text --name <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$TOPIC_NAME</span><span style="color:#f1fa8c">&#34;</span><span style="color:#ff79c6">)</span>
 </span></span></code></pre></div><p>To set up a subscription, we also are going to need to grab the SQS queue ARN. I will do that by leveraging <a href="https://stedolan.github.io/jq/manual/">jq</a>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_ARN</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sqs get-queue-attributes --queue-url &amp;<span style="color:#6272a4">#34;$QUEUE_URL&amp;#34; | jq -r &amp;#34;.Attributes.QueueArn&amp;#34;)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_ARN</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sqs get-queue-attributes --queue-url <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$QUEUE_URL</span><span style="color:#f1fa8c">&#34;</span> | jq -r <span style="color:#f1fa8c">&#34;.Attributes.QueueArn&#34;</span><span style="color:#ff79c6">)</span>
 </span></span></code></pre></div><p>Finally, we will set up the link between the two [and also grab the ARN of the subscription] with:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">SUBSCRIPTION_ARN</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sns subscribe --topic-arn &amp;<span style="color:#6272a4">#34;$TOPIC_ARN&amp;#34; --protocol sqs --notification-endpoint &amp;#34;$QUEUE_ARN&amp;#34; --output text)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">SUBSCRIPTION_ARN</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sns subscribe --topic-arn <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$TOPIC_ARN</span><span style="color:#f1fa8c">&#34;</span> --protocol sqs --notification-endpoint <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$QUEUE_ARN</span><span style="color:#f1fa8c">&#34;</span> --output text<span style="color:#ff79c6">)</span>
 </span></span></code></pre></div><p>At this point we should be able to see our subscription in a list with:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sns list-subscriptions
 </span></span></code></pre></div><p>The output from that should look something like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    &amp;#34;Subscriptions&amp;#34;: [
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;Subscriptions&#34;</span>: [
 </span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            &amp;#34;SubscriptionArn&amp;#34;: &amp;#34;arn:aws:sns:us-east-1:000000000000:my-topic:0243d3b4-4cdd-41c8-abbf-d8f0f83a74c5&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;Owner&amp;#34;: &amp;#34;&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;Protocol&amp;#34;: &amp;#34;sqs&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;Endpoint&amp;#34;: &amp;#34;arn:aws:sqs:us-east-1:000000000000:my-queue&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;TopicArn&amp;#34;: &amp;#34;arn:aws:sns:us-east-1:000000000000:my-topic&amp;#34;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;SubscriptionArn&#34;</span>: <span style="color:#f1fa8c">&#34;arn:aws:sns:us-east-1:000000000000:my-topic:0243d3b4-4cdd-41c8-abbf-d8f0f83a74c5&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;Owner&#34;</span>: <span style="color:#f1fa8c">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;Protocol&#34;</span>: <span style="color:#f1fa8c">&#34;sqs&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;Endpoint&#34;</span>: <span style="color:#f1fa8c">&#34;arn:aws:sqs:us-east-1:000000000000:my-queue&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;TopicArn&#34;</span>: <span style="color:#f1fa8c">&#34;arn:aws:sns:us-east-1:000000000000:my-topic&#34;</span>
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    ]
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>And if we send a message to the SNS topic, we should be able to see a response by polling the SQS queue:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>aws sns --endpoint-url http://localhost:4566 publish --topic-arn &amp;<span style="color:#6272a4">#34;$TOPIC_ARN&amp;#34; --message &amp;#34;hello!&amp;#34;</span>
-</span></span><span style="display:flex;"><span>aws sqs --endpoint-url http://localhost:4566 receive-message --queue-url &amp;<span style="color:#6272a4">#34;$QUEUE_URL&amp;#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>aws sns --endpoint-url http://localhost:4566 publish --topic-arn <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$TOPIC_ARN</span><span style="color:#f1fa8c">&#34;</span> --message <span style="color:#f1fa8c">&#34;hello!&#34;</span>
+</span></span><span style="display:flex;"><span>aws sqs --endpoint-url http://localhost:4566 receive-message --queue-url <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$QUEUE_URL</span><span style="color:#f1fa8c">&#34;</span>
 </span></span></code></pre></div><p>If you take a close look at the message as SQS receives it, you will see that the message was not delivered in its original form:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    &amp;#34;Messages&amp;#34;: [
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;Messages&#34;</span>: [
 </span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            &amp;#34;MessageId&amp;#34;: &amp;#34;24810d56-1f40-0569-d5f9-751dbc881fcc&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;ReceiptHandle&amp;#34;: &amp;#34;chbhoztdlwckzmbjctnecnyafkfkdwzgonqetkwoxvvdxfohrmgplcsdgmskwiwhienohhefdrhmqxxjrqtuamoliwpfwzldugbloxrxjjnmpatswuoetnpoudjugphvgzywrzjexdvktenqiaxczofiphjstzslnygpdxwjsarlgiuhpeioohvav&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;MD5OfBody&amp;#34;: &amp;#34;e999e85bed5f7a06f9b5548304e9ea49&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;Body&amp;#34;: &amp;#34;{\&amp;#34;Type\&amp;#34;: \&amp;#34;Notification\&amp;#34;, \&amp;#34;MessageId\&amp;#34;: \&amp;#34;6af3f1a1-07d5-4f16-b1d3-a3dc3656e107\&amp;#34;, \&amp;#34;Token\&amp;#34;: null, \&amp;#34;TopicArn\&amp;#34;: \&amp;#34;arn:aws:sns:us-east-1:000000000000:my-topic\&amp;#34;, \&amp;#34;Message\&amp;#34;: \&amp;#34;hello!\&amp;#34;, \&amp;#34;SubscribeURL\&amp;#34;: null, \&amp;#34;Timestamp\&amp;#34;: \&amp;#34;2020-08-22T22:27:45.235Z\&amp;#34;, \&amp;#34;SignatureVersion\&amp;#34;: \&amp;#34;1\&amp;#34;, \&amp;#34;Signature\&amp;#34;: \&amp;#34;EXAMPLEpH&amp;#43;..\&amp;#34;, \&amp;#34;SigningCertURL\&amp;#34;: \&amp;#34;https:<span style="color:#6272a4">//sns.us-east-1.amazonaws.com/SimpleNotificationService-0000000000000000000000.pem\&amp;#34;}&amp;#34;,
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            &amp;#34;Attributes&amp;#34;: {
-</span></span><span style="display:flex;"><span>                &amp;#34;SenderId&amp;#34;: &amp;#34;AIDAIT2UOQQY3AUEKVGXU&amp;#34;,
-</span></span><span style="display:flex;"><span>                &amp;#34;SentTimestamp&amp;#34;: &amp;#34;1598135265266&amp;#34;,
-</span></span><span style="display:flex;"><span>                &amp;#34;ApproximateReceiveCount&amp;#34;: &amp;#34;1&amp;#34;,
-</span></span><span style="display:flex;"><span>                &amp;#34;ApproximateFirstReceiveTimestamp&amp;#34;: &amp;#34;1598135265910&amp;#34;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;MessageId&#34;</span>: <span style="color:#f1fa8c">&#34;24810d56-1f40-0569-d5f9-751dbc881fcc&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;ReceiptHandle&#34;</span>: <span style="color:#f1fa8c">&#34;chbhoztdlwckzmbjctnecnyafkfkdwzgonqetkwoxvvdxfohrmgplcsdgmskwiwhienohhefdrhmqxxjrqtuamoliwpfwzldugbloxrxjjnmpatswuoetnpoudjugphvgzywrzjexdvktenqiaxczofiphjstzslnygpdxwjsarlgiuhpeioohvav&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;MD5OfBody&#34;</span>: <span style="color:#f1fa8c">&#34;e999e85bed5f7a06f9b5548304e9ea49&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;Body&#34;</span>: <span style="color:#f1fa8c">&#34;{\&#34;Type\&#34;: \&#34;Notification\&#34;, \&#34;MessageId\&#34;: \&#34;6af3f1a1-07d5-4f16-b1d3-a3dc3656e107\&#34;, \&#34;Token\&#34;: null, \&#34;TopicArn\&#34;: \&#34;arn:aws:sns:us-east-1:000000000000:my-topic\&#34;, \&#34;Message\&#34;: \&#34;hello!\&#34;, \&#34;SubscribeURL\&#34;: null, \&#34;Timestamp\&#34;: \&#34;2020-08-22T22:27:45.235Z\&#34;, \&#34;SignatureVersion\&#34;: \&#34;1\&#34;, \&#34;Signature\&#34;: \&#34;EXAMPLEpH+..\&#34;, \&#34;SigningCertURL\&#34;: \&#34;https://sns.us-east-1.amazonaws.com/SimpleNotificationService-0000000000000000000000.pem\&#34;}&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;Attributes&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;SenderId&#34;</span>: <span style="color:#f1fa8c">&#34;AIDAIT2UOQQY3AUEKVGXU&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;SentTimestamp&#34;</span>: <span style="color:#f1fa8c">&#34;1598135265266&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;ApproximateReceiveCount&#34;</span>: <span style="color:#f1fa8c">&#34;1&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;ApproximateFirstReceiveTimestamp&#34;</span>: <span style="color:#f1fa8c">&#34;1598135265910&#34;</span>
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    ]
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>This is because <strong>raw message delivery</strong> is not <strong>true</strong> when you first create the subscription. You can change that with one more CLI command:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sns set-subscription-attributes <span style="color:#f1fa8c">\
-</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>  --subscription-arn &amp;<span style="color:#6272a4">#34;$SUBSCRIPTION_ARN&amp;#34; --attribute-name RawMessageDelivery --attribute-value true</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>  --subscription-arn <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$SUBSCRIPTION_ARN</span><span style="color:#f1fa8c">&#34;</span> --attribute-name RawMessageDelivery --attribute-value <span style="color:#8be9fd;font-style:italic">true</span>
 </span></span></code></pre></div><p>Now when you ask for a message from SQS you will see it in its proper form:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    &amp;#34;Messages&amp;#34;: [
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;Messages&#34;</span>: [
 </span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            &amp;#34;MessageId&amp;#34;: &amp;#34;e03aa463-61d2-3910-97ca-d0eb13274082&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;ReceiptHandle&amp;#34;: &amp;#34;tcjqhbygluhgeyjgqcahrxseqztnwlkppciqjoollvlavhruexvryomumruvrpkiykljcouekexunqijuswzccjzzclbbwreafvmusqnbtqdpclnzgwatxnxgwvegzsrwkzinpavmdekeqqwdvyktpibywifsbeognewqtibjjwnvdjrdwnbhujtn&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;MD5OfBody&amp;#34;: &amp;#34;5a8dd3ad0756a93ded72b823b19dd877&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;Body&amp;#34;: &amp;#34;hello!&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;Attributes&amp;#34;: {
-</span></span><span style="display:flex;"><span>                &amp;#34;SenderId&amp;#34;: &amp;#34;AIDAIT2UOQQY3AUEKVGXU&amp;#34;,
-</span></span><span style="display:flex;"><span>                &amp;#34;SentTimestamp&amp;#34;: &amp;#34;1598135539742&amp;#34;,
-</span></span><span style="display:flex;"><span>                &amp;#34;ApproximateReceiveCount&amp;#34;: &amp;#34;1&amp;#34;,
-</span></span><span style="display:flex;"><span>                &amp;#34;ApproximateFirstReceiveTimestamp&amp;#34;: &amp;#34;1598135546283&amp;#34;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;MessageId&#34;</span>: <span style="color:#f1fa8c">&#34;e03aa463-61d2-3910-97ca-d0eb13274082&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;ReceiptHandle&#34;</span>: <span style="color:#f1fa8c">&#34;tcjqhbygluhgeyjgqcahrxseqztnwlkppciqjoollvlavhruexvryomumruvrpkiykljcouekexunqijuswzccjzzclbbwreafvmusqnbtqdpclnzgwatxnxgwvegzsrwkzinpavmdekeqqwdvyktpibywifsbeognewqtibjjwnvdjrdwnbhujtn&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;MD5OfBody&#34;</span>: <span style="color:#f1fa8c">&#34;5a8dd3ad0756a93ded72b823b19dd877&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;Body&#34;</span>: <span style="color:#f1fa8c">&#34;hello!&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;Attributes&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;SenderId&#34;</span>: <span style="color:#f1fa8c">&#34;AIDAIT2UOQQY3AUEKVGXU&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;SentTimestamp&#34;</span>: <span style="color:#f1fa8c">&#34;1598135539742&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;ApproximateReceiveCount&#34;</span>: <span style="color:#f1fa8c">&#34;1&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;ApproximateFirstReceiveTimestamp&#34;</span>: <span style="color:#f1fa8c">&#34;1598135546283&#34;</span>
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    ]

@@ -21,14 +21,14 @@
       <link>http://localhost:1313/blog/how-to-invalidate-an-nginx-cache-in-a-reverse-proxy-setup-with-spring-mvc/</link>
       <pubDate>Sat, 13 Apr 2019 16:52:53 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-invalidate-an-nginx-cache-in-a-reverse-proxy-setup-with-spring-mvc/</guid>
-      <description>&lt;p&gt;You can see the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In two previous posts, we looked at how to &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy&#34;&gt;provision a reverse proxy using nginx&lt;/a&gt; and then &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Use-Nginxs-Caching-to-Improve-Site-Responsiveness&#34;&gt;how to add caching to the nginx reverse proxy&lt;/a&gt;. The implementation we ended up with at the end of the last post was a &amp;quot;dumb&amp;quot; cache, meaning that it doesn&#39;t know when or if any data gets updated&amp;ndash;it just times out after 60 seconds and then asks for a new payload from the application it&#39;s acting as proxy for.&lt;/p&gt;</description>
+      <description>&lt;p&gt;You can see the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In two previous posts, we looked at how to &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy&#34;&gt;provision a reverse proxy using nginx&lt;/a&gt; and then &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Use-Nginxs-Caching-to-Improve-Site-Responsiveness&#34;&gt;how to add caching to the nginx reverse proxy&lt;/a&gt;. The implementation we ended up with at the end of the last post was a &amp;ldquo;dumb&amp;rdquo; cache, meaning that it doesn&amp;rsquo;t know when or if any data gets updated&amp;ndash;it just times out after 60 seconds and then asks for a new payload from the application it&amp;rsquo;s acting as proxy for.&lt;/p&gt;</description>
     </item>
     <item>
-      <title>How to Use Nginx&amp;#39;s Caching to Improve Site Responsiveness</title>
+      <title>How to Use Nginx&#39;s Caching to Improve Site Responsiveness</title>
       <link>http://localhost:1313/blog/how-to-use-nginxs-caching-to-improve-site-responsiveness/</link>
       <pubDate>Sat, 06 Apr 2019 17:14:30 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-use-nginxs-caching-to-improve-site-responsiveness/</guid>
-      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In my last post, I provided an example for &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy&#34;&gt;how to set up an Nginx Reverse Proxy for a Spring MVC application&lt;/a&gt;. One such reason to set up a reverse proxy is to utilize caching of resources. If you have dynamically generated content that doesn&#39;t change very often, then adding caching at the site entry point can dramatically improve site responsiveness and reduce load on critical resources.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In my last post, I provided an example for &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy&#34;&gt;how to set up an Nginx Reverse Proxy for a Spring MVC application&lt;/a&gt;. One such reason to set up a reverse proxy is to utilize caching of resources. If you have dynamically generated content that doesn&amp;rsquo;t change very often, then adding caching at the site entry point can dramatically improve site responsiveness and reduce load on critical resources.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to Deploy a Spring MVC Application Behind an Nginx Reverse Proxy</title>
@@ -49,7 +49,7 @@
       <link>http://localhost:1313/blog/how-to-set-up-clickonce-continuous-deployment-for-wpf-via-nginx/</link>
       <pubDate>Wed, 08 Aug 2018 00:08:00 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-set-up-clickonce-continuous-deployment-for-wpf-via-nginx/</guid>
-      <description>&lt;p&gt;I&#39;ve been working on a small wpf project on GitHub that let&#39;s you &lt;a href=&#34;https://github.com/nfisher23/SEPubViewer&#34;&gt;view SEC filings on your desktop&lt;/a&gt; in an intuitive way. Since EDGAR kind of sucks for a casual user, this is much more appealing.&lt;/p&gt;</description>
+      <description>&lt;p&gt;I&amp;rsquo;ve been working on a small wpf project on GitHub that let&amp;rsquo;s you &lt;a href=&#34;https://github.com/nfisher23/SEPubViewer&#34;&gt;view SEC filings on your desktop&lt;/a&gt; in an intuitive way. Since EDGAR kind of sucks for a casual user, this is much more appealing.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

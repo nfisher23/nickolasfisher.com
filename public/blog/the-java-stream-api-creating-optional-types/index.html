@@ -159,12 +159,12 @@ types will greatly simplify code development, and prevent premature graying hair
 <p>While Optionals are often used in conjunction with the Java Stream API, you can also create your own.
 Now, why would you want to do that? Simply put, null pointer exceptions are not a fun time, and embracing optional
 types will greatly simplify code development, and prevent premature graying hair.</p>
-<p>You can create an Optional with <code>Optional.of(..)</code>, <code>Optional.ofNullable(..)</code>, or <code>Optional.empty()</code>. Let's say we want to make a
-square root method which will ignore values less than zero. Here's how we might do it:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> Optional<span style="color:#ff79c6">&amp;</span>lt;Double<span style="color:#ff79c6">&amp;</span>gt; sqrt(Double num) {
+<p>You can create an Optional with <code>Optional.of(..)</code>, <code>Optional.ofNullable(..)</code>, or <code>Optional.empty()</code>. Let&rsquo;s say we want to make a
+square root method which will ignore values less than zero. Here&rsquo;s how we might do it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> Optional<span style="color:#ff79c6">&lt;</span>Double<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">sqrt</span>(Double num) {
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (num <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">null</span>) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> Optional.<span style="color:#50fa7b">ofNullable</span>(num);
-</span></span><span style="display:flex;"><span>    } <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> (num <span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">=</span> 0) {
+</span></span><span style="display:flex;"><span>    } <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> (num <span style="color:#ff79c6">&gt;=</span> 0) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> Optional.<span style="color:#50fa7b">of</span>(Math.<span style="color:#50fa7b">sqrt</span>(num));
 </span></span><span style="display:flex;"><span>    } <span style="color:#ff79c6">else</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> Optional.<span style="color:#50fa7b">empty</span>();
@@ -174,7 +174,7 @@ square root method which will ignore values less than zero. Here's how we might 
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">optional_createPositive_works</span>() {
 </span></span><span style="display:flex;"><span>    Double positive <span style="color:#ff79c6">=</span> 8.<span style="color:#50fa7b">8</span>;
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;Double<span style="color:#ff79c6">&amp;</span>gt; sqrtPositive <span style="color:#ff79c6">=</span> sqrt(positive);
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>Double<span style="color:#ff79c6">&gt;</span> sqrtPositive <span style="color:#ff79c6">=</span> sqrt(positive);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    assertTrue(sqrtPositive.<span style="color:#50fa7b">isPresent</span>());
 </span></span><span style="display:flex;"><span>}
@@ -182,21 +182,21 @@ square root method which will ignore values less than zero. Here's how we might 
 </span></span><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">optional_createNegative_stillWorks</span>() {
 </span></span><span style="display:flex;"><span>    Double negative <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">-</span>6.<span style="color:#50fa7b">5</span>;
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;Double<span style="color:#ff79c6">&amp;</span>gt; sqrtNegative <span style="color:#ff79c6">=</span> sqrt(negative);
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>Double<span style="color:#ff79c6">&gt;</span> sqrtNegative <span style="color:#ff79c6">=</span> sqrt(negative);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    assertFalse(sqrtNegative.<span style="color:#50fa7b">isPresent</span>());
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">optional_createNull_stillWorks</span>() {
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;Double<span style="color:#ff79c6">&amp;</span>gt; optionalNull <span style="color:#ff79c6">=</span> sqrt(<span style="color:#ff79c6">null</span>);
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>Double<span style="color:#ff79c6">&gt;</span> optionalNull <span style="color:#ff79c6">=</span> sqrt(<span style="color:#ff79c6">null</span>);
 </span></span><span style="display:flex;"><span>    assertFalse(optionalNull.<span style="color:#50fa7b">isPresent</span>());
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>To continue down this path, a really neat feature of Optional types is that you can call a chain of methods on them, and if the
-optional goes empty at any point during the chain, it won't blow up. Without optional types, again, a null pointer exception will
+optional goes empty at any point during the chain, it won&rsquo;t blow up. Without optional types, again, a null pointer exception will
 blow up your code. Say we wanted to add a logarithm method to our collection of computations:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> Optional<span style="color:#ff79c6">&amp;</span>lt;Double<span style="color:#ff79c6">&amp;</span>gt; log(Double num) {
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (num <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">null</span> <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; num <span style="color:#ff79c6">&amp;</span>gt; 0) {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> Optional<span style="color:#ff79c6">&lt;</span>Double<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">log</span>(Double num) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (num <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">null</span> <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; num <span style="color:#ff79c6">&gt;</span> 0) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> Optional.<span style="color:#50fa7b">of</span>(Math.<span style="color:#50fa7b">log</span>(num));
 </span></span><span style="display:flex;"><span>    } <span style="color:#ff79c6">else</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> Optional.<span style="color:#50fa7b">empty</span>();
@@ -206,17 +206,17 @@ blow up your code. Say we wanted to add a logarithm method to our collection of 
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">optional_getsRealValue</span>() {
 </span></span><span style="display:flex;"><span>    Double positive <span style="color:#ff79c6">=</span> 1.<span style="color:#50fa7b">0</span>;
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;Double<span style="color:#ff79c6">&amp;</span>gt; sqrtPositive <span style="color:#ff79c6">=</span> sqrt(positive);
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;Double<span style="color:#ff79c6">&amp;</span>gt; realVal <span style="color:#ff79c6">=</span> sqrtPositive.<span style="color:#50fa7b">flatMap</span>(<span style="color:#ff79c6">this</span>::log);
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>Double<span style="color:#ff79c6">&gt;</span> sqrtPositive <span style="color:#ff79c6">=</span> sqrt(positive);
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>Double<span style="color:#ff79c6">&gt;</span> realVal <span style="color:#ff79c6">=</span> sqrtPositive.<span style="color:#50fa7b">flatMap</span>(<span style="color:#ff79c6">this</span>::log);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    assertEquals(0, realVal.<span style="color:#50fa7b">orElseThrow</span>(RuntimeException::<span style="color:#ff79c6">new</span>).<span style="color:#50fa7b">intValue</span>());
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>However, we can still chain together calls without a null pointer exception, even if the Optional&lt;T&gt; is already empty:</p>
+</span></span></code></pre></div><p>However, we can still chain together calls without a null pointer exception, even if the Optional<!-- raw HTML omitted --> is already empty:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">optional_composingMultipleCalls</span>() {
 </span></span><span style="display:flex;"><span>    Double negative <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">-</span>1.<span style="color:#50fa7b">0</span>;
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;Double<span style="color:#ff79c6">&amp;</span>gt; emptySqrt <span style="color:#ff79c6">=</span> sqrt(negative);
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;Double<span style="color:#ff79c6">&amp;</span>gt; doesntBlowUp <span style="color:#ff79c6">=</span> emptySqrt.<span style="color:#50fa7b">flatMap</span>(<span style="color:#ff79c6">this</span>::log);
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>Double<span style="color:#ff79c6">&gt;</span> emptySqrt <span style="color:#ff79c6">=</span> sqrt(negative);
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>Double<span style="color:#ff79c6">&gt;</span> doesntBlowUp <span style="color:#ff79c6">=</span> emptySqrt.<span style="color:#50fa7b">flatMap</span>(<span style="color:#ff79c6">this</span>::log);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    assertFalse(emptySqrt.<span style="color:#50fa7b">isPresent</span>());
 </span></span><span style="display:flex;"><span>    assertFalse(doesntBlowUp.<span style="color:#50fa7b">isPresent</span>());

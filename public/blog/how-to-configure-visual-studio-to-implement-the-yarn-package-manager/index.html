@@ -161,22 +161,22 @@ mostly server-side functionality, and could use bootstrap to handle page styling
 recommends that you use <a href="https://yarnpkg.com/en/">Yarn</a>. Yarn is good, but you do have to fiddle with it a bit
 to get automatic installation of the packages into your real project.</p>
 <h3 id="getting-yarn-installed">Getting Yarn Installed</h3>
-<p>First, if you don't have Node.js, <a href="https://nodejs.org/en/">install Node.js here</a>.
+<p>First, if you don&rsquo;t have Node.js, <a href="https://nodejs.org/en/">install Node.js here</a>.
 Then, head over to the <a href="https://yarnpkg.com/en/docs/install">Yarn download page</a> and get Yarn installed on your box.</p>
 <h3 id="use-a-convienent-add-on">Use a Convienent Add On</h3>
-<p>I use a good visual studio extension by Mads Kristensen to get VS to use package.json in the same way that bower.json works, which is located <a href="https://marketplace.visualstudio.com/items?itemName=MadsKristensen.YarnInstaller">here</a>. Per the instructions on that page, after you install it, for Visual Studio 2017 you have to make sure you set the Yarn Installer &quot;Install on save&quot; and disable the npm restore options.</p>
+<p>I use a good visual studio extension by Mads Kristensen to get VS to use package.json in the same way that bower.json works, which is located <a href="https://marketplace.visualstudio.com/items?itemName=MadsKristensen.YarnInstaller">here</a>. Per the instructions on that page, after you install it, for Visual Studio 2017 you have to make sure you set the Yarn Installer &ldquo;Install on save&rdquo; and disable the npm restore options.</p>
 <h3 id="add-and-manipulate-the-yarnrc-file">Add and manipulate the .yarnrc file</h3>
-<p>Finally, what we (I, I'm guessing you do too) really would like is to have packages installed in the <em>wwwroot/lib</em> folder on saving the <em>package.json</em> file. As it currently stands, if you add bootstrap in your package.json file like so:</p>
+<p>Finally, what we (I, I&rsquo;m guessing you do too) really would like is to have packages installed in the <em>wwwroot/lib</em> folder on saving the <em>package.json</em> file. As it currently stands, if you add bootstrap in your package.json file like so:</p>
 <pre tabindex="0"><code>{
-  &amp;#34;version&amp;#34;: &amp;#34;1.0.0&amp;#34;,
-  &amp;#34;name&amp;#34;: &amp;#34;asp.net&amp;#34;,
-  &amp;#34;private&amp;#34;: true,
-  &amp;#34;devDependencies&amp;#34;: {
-    &amp;#34;bootstrap&amp;#34;: &amp;#34;4.0.0&amp;#34;
+  &#34;version&#34;: &#34;1.0.0&#34;,
+  &#34;name&#34;: &#34;asp.net&#34;,
+  &#34;private&#34;: true,
+  &#34;devDependencies&#34;: {
+    &#34;bootstrap&#34;: &#34;4.0.0&#34;
   }
 }
 </code></pre><p>Yarn will install the package in a node_modules folder, which is inside the project folder but not, by default, visible to Visual Studio. To change this, we need to add a <em><a href="https://yarnpkg.com/en/docs/yarnrc">.yarnrc</a></em> file. The <em>.yarnrc</em> file will let us configure additional features when the yarn command is run in the background by VS. In my case, I want new packages to be downloaded and saved to the wwwroot/lib folder, so I will add this line to my <em>.yarnrc</em> file:</p>
-<pre tabindex="0"><code>--install.modules-folder &amp;#34;./wwwroot/lib&amp;#34;
+<pre tabindex="0"><code>--install.modules-folder &#34;./wwwroot/lib&#34;
 </code></pre><p>And presto! Now, if you add bootstrap, as before, it will save the distribution files to the <em>wwwroot/lib</em> folder.</p>
 <p>I hope you enjoyed this post. Please contact me if you would like further clarification or if you think I have made an error.</p>
 </section>

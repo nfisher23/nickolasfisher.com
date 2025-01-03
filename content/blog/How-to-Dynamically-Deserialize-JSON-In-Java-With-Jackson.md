@@ -13,10 +13,10 @@ Java is a statically typed language, whose types must be known at compile time. 
 
 ```json
 {
-    &#34;hasErrors&#34;: false,
-    &#34;body&#34;: {
-        &#34;property1&#34;: &#34;value1&#34;,
-        &#34;property2&#34;: &#34;value2&#34;
+    "hasErrors": false,
+    "body": {
+        "property1": "value1",
+        "property2": "value2"
     }
 }
 ```
@@ -26,10 +26,10 @@ We can make a POJO to deserialize pretty easily, like:
 ```java
 public class ResponseObject {
 
-    @JsonProperty(&#34;hasErrors&#34;)
+    @JsonProperty("hasErrors")
     private boolean hasErrors;
 
-    @JsonProperty(&#34;body&#34;)
+    @JsonProperty("body")
     private SimpleObject body;
 }
 
@@ -37,10 +37,10 @@ public class ResponseObject {
 
 public class SimpleObject {
 
-    @JsonProperty(&#34;property1&#34;)
+    @JsonProperty("property1")
     private String property1;
 
-    @JsonProperty(&#34;property2&#34;)
+    @JsonProperty("property2")
     private String property2;
 
     public String getProperty1() {
@@ -59,13 +59,13 @@ However, what if the same service also has a response like:
 
 ```json
 {
-    &#34;hasErrors&#34;: true,
-    &#34;body&#34;: [
+    "hasErrors": true,
+    "body": [
         {
-            &#34;errorMessage&#34;: &#34;you totally messed this up&#34;
+            "errorMessage": "you totally messed this up"
         },
         {
-            &#34;errorMessage&#34;: &#34;seriously, that was pretty whack&#34;
+            "errorMessage": "seriously, that was pretty whack"
         }
     ]
 }
@@ -74,18 +74,18 @@ However, what if the same service also has a response like:
 
 In Java, since we have defined the body to be an object, trying to deserialize into the previously defined objects above will blow everything up. This would be easy to take care of in JavaScript or another dynamic language like Python, but Java requires us to get a little creative. In this very specific case, we could technically create another object and wrap each deserialization attempt in a try/catch block. However, sometimes we get back an array of objects, where each object could be either of the responses shown above, and then we have to put our spectacles on and figure something else out.
 
-Jackson defaults to defining each node in the JSON object structure as a JsonNode. So, if we want to be able to handle multiple types of bodies (both arrays and objects, for example), we can simply defer the deserialization into a Java class until after we&#39;ve had a chance to process it. We can then define another POJO as:
+Jackson defaults to defining each node in the JSON object structure as a JsonNode. So, if we want to be able to handle multiple types of bodies (both arrays and objects, for example), we can simply defer the deserialization into a Java class until after we've had a chance to process it. We can then define another POJO as:
 
 ```java
 public class DynamicResponseObject {
 
-    @JsonProperty(&#34;hasErrors&#34;)
+    @JsonProperty("hasErrors")
     private boolean hasErrors;
 
     @JsonIgnore
     private JsonNode bodyAsNode;
 
-    @JsonProperty(&#34;body&#34;)
+    @JsonProperty("body")
     private void setBody(JsonNode body) {
         this.bodyAsNode = body;
     }
@@ -107,8 +107,8 @@ public class DynamicDeserializationApplicationTests {
     @Autowired
     ObjectMapper objectMapper;
 
-    public static final String NORMAL_RESPONSE = &#34;{\&#34;hasErrors\&#34;:false,\&#34;body\&#34;:{\&#34;property1\&#34;:\&#34;value1\&#34;,\&#34;property2\&#34;:\&#34;value2\&#34;}}&#34;;
-    public static final String RESPONSE_WITH_ERRORS = &#34;{\&#34;hasErrors\&#34;:true,\&#34;body\&#34;:[{\&#34;errorMessage\&#34;:\&#34;you totally messed this up\&#34;},{\&#34;errorMessage\&#34;:\&#34;seriously, that was pretty whack\&#34;}]}&#34;;
+    public static final String NORMAL_RESPONSE = "{\"hasErrors\":false,\"body\":{\"property1\":\"value1\",\"property2\":\"value2\"}}";
+    public static final String RESPONSE_WITH_ERRORS = "{\"hasErrors\":true,\"body\":[{\"errorMessage\":\"you totally messed this up\"},{\"errorMessage\":\"seriously, that was pretty whack\"}]}";
 
     @Test
     public void normalResponse_setsBodyIsObject() throws Exception {
@@ -136,8 +136,8 @@ If we want to see the properties of something we know is an object, we can call 
 
         JsonNode bodyNode = dynamicResponseObject.getBodyAsNode();
 
-        assertEquals(&#34;value1&#34;, bodyNode.get(&#34;property1&#34;).asText());
-        assertEquals(&#34;value2&#34;, bodyNode.get(&#34;property2&#34;).asText());
+        assertEquals("value1", bodyNode.get("property1").asText());
+        assertEquals("value2", bodyNode.get("property2").asText());
     }
 
 ```
@@ -151,8 +151,8 @@ We can see the array properties by using get(..) with an int argument:
 
         JsonNode bodyNode = dynamicResponseObject.getBodyAsNode();
 
-        assertEquals(&#34;you totally messed this up&#34;, bodyNode.get(0).get(&#34;errorMessage&#34;).asText());
-        assertEquals(&#34;seriously, that was pretty whack&#34;, bodyNode.get(1).get(&#34;errorMessage&#34;).asText());
+        assertEquals("you totally messed this up", bodyNode.get(0).get("errorMessage").asText());
+        assertEquals("seriously, that was pretty whack", bodyNode.get(1).get("errorMessage").asText());
     }
 
 ```
@@ -185,7 +185,7 @@ And we can similarly define an error class:
 ```java
 public class Error {
 
-    @JsonProperty(&#34;errorMessage&#34;)
+    @JsonProperty("errorMessage")
     private String errorMessage;
 
     public String getErrorMessage() {
@@ -199,9 +199,9 @@ And then deserialize it like:
 
 ```java
     @JsonIgnore
-    private List&lt;Error&gt; errors;
+    private List<Error> errors;
 
-    public List&lt;Error&gt; getErrors() throws IOException {
+    public List<Error> getErrors() throws IOException {
         if (errors == null) {
             setErrors();
         }
@@ -214,13 +214,13 @@ And then deserialize it like:
             JavaType javaType = typeFactory.constructParametricType(List.class, Error.class);
             errors = objectMapper.readValue(bodyAsNode.toString(), javaType);
         } else {
-            errors = new ArrayList&lt;&gt;();
+            errors = new ArrayList<>();
         }
     }
 
 ```
 
-Keep in mind that we can&#39;t inject an ObjectMapper into this POJO class because it gets deserialized, and not created by a DI framework (like, for example, Spring). It would be smart to not instantiate a new ObjectMapper in the class itself, since the benefits of dependency injection are pretty obvious at this point. If you are using Spring, you can ask for a previously defined ObjectMapper by leveraging the ApplicationContext. Create an ApplicationContextProvider like:
+Keep in mind that we can't inject an ObjectMapper into this POJO class because it gets deserialized, and not created by a DI framework (like, for example, Spring). It would be smart to not instantiate a new ObjectMapper in the class itself, since the benefits of dependency injection are pretty obvious at this point. If you are using Spring, you can ask for a previously defined ObjectMapper by leveraging the ApplicationContext. Create an ApplicationContextProvider like:
 
 ```java
 @Component
@@ -250,4 +250,4 @@ And then get a bit of a hacked DI result by calling it inside your POJO:
 
 Which is still kind of ugly, but at least reduces the cost of instantiation duplication.
 
-Definitely [download the source code for this post](https://github.com/nfisher23/json-with-jackson-tricks) and play around with it if it&#39;s not clear to you.
+Definitely [download the source code for this post](https://github.com/nfisher23/json-with-jackson-tricks) and play around with it if it's not clear to you.

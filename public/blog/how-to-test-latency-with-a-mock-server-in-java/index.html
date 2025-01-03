@@ -172,20 +172,20 @@ Very often, you will want to test service api clients using a Mock Server [for e
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>.<span style="color:#50fa7b">reset</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>This automatically starts mock server for us on a random port, and the <strong>@AfterEach</strong> annotation ensures we clear the expectations for mock server, which should give us improved consistency [when one test fails, it doesn't affect the other tests].</p>
+</span></span></code></pre></div><p>This automatically starts mock server for us on a random port, and the <strong>@AfterEach</strong> annotation ensures we clear the expectations for mock server, which should give us improved consistency [when one test fails, it doesn&rsquo;t affect the other tests].</p>
 <p>A simple example test, using <strong>RestTemplate</strong>, could then look like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">basicRestTemplateExample</span>() {
 </span></span><span style="display:flex;"><span>        RestTemplate restTemplate <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> RestTemplateBuilder()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">rootUri</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:&amp;#34; &amp;#43; clientAndServer.getPort())</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">rootUri</span>(<span style="color:#f1fa8c">&#34;http://localhost:&#34;</span> <span style="color:#ff79c6">+</span> clientAndServer.<span style="color:#50fa7b">getPort</span>())
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        HttpRequest expectedFirstRequest <span style="color:#ff79c6">=</span> HttpRequest.<span style="color:#50fa7b">request</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#f1fa8c">&#34;/some/endpoint/10&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        HttpResponse mockResponse <span style="color:#ff79c6">=</span> HttpResponse.<span style="color:#50fa7b">response</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withBody</span>(<span style="color:#ff79c6">&amp;</span>#34;{\<span style="color:#ff79c6">&amp;</span>#34;message\<span style="color:#ff79c6">&amp;</span>#34;: \<span style="color:#ff79c6">&amp;</span>#34;hello\<span style="color:#ff79c6">&amp;</span>#34;}<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withBody</span>(<span style="color:#f1fa8c">&#34;{\&#34;message\&#34;: \&#34;hello\&#34;}&#34;</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withContentType</span>(MediaType.<span style="color:#50fa7b">APPLICATION_JSON</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withStatusCode</span>(200);
 </span></span><span style="display:flex;"><span>
@@ -193,9 +193,9 @@ Very often, you will want to test service api clients using a Mock Server [for e
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">when</span>(expectedFirstRequest)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">respond</span>(mockResponse);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        ResponseEntity<span style="color:#ff79c6">&amp;</span>lt;JsonNode<span style="color:#ff79c6">&amp;</span>gt; responseEntity <span style="color:#ff79c6">=</span> restTemplate.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;, JsonNode.<span style="color:#50fa7b">class</span>);
+</span></span><span style="display:flex;"><span>        ResponseEntity<span style="color:#ff79c6">&lt;</span>JsonNode<span style="color:#ff79c6">&gt;</span> responseEntity <span style="color:#ff79c6">=</span> restTemplate.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#f1fa8c">&#34;/some/endpoint/10&#34;</span>, JsonNode.<span style="color:#50fa7b">class</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#ff79c6">&amp;</span>#34;hello<span style="color:#ff79c6">&amp;</span>#34;, responseEntity.<span style="color:#50fa7b">getBody</span>().<span style="color:#50fa7b">get</span>(<span style="color:#ff79c6">&amp;</span>#34;message<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">asText</span>());
+</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#f1fa8c">&#34;hello&#34;</span>, responseEntity.<span style="color:#50fa7b">getBody</span>().<span style="color:#50fa7b">get</span>(<span style="color:#f1fa8c">&#34;message&#34;</span>).<span style="color:#50fa7b">asText</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>This just makes a request to a canned endpoint <strong>&quot;/some/endpoint/10&quot;</strong> and returns a canned response. We then verify that we deserialize the response properly.</p>
 <h3 id="testing-for-latency">Testing for Latency</h3>
@@ -203,7 +203,7 @@ Very often, you will want to test service api clients using a Mock Server [for e
 <p>Instrumenting something like that with mock server is pretty straightforward, we just leverage an <a href="https://javadoc.io/static/org.mock-server/mockserver-core/5.6.1/org/mockserver/mock/action/ExpectationResponseCallback.html">ExpectationResponseCalback</a>, which allows us to run whatever code we want once we get a matching request. This is a functional interface and we can therefore write a little lambda, the condensed version of just sleeping once we get the request can look like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">when</span>(expectedFirstRequest)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">respond</span>(httpRequest <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">respond</span>(httpRequest <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>                            Thread.<span style="color:#50fa7b">sleep</span>(150);
 </span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">return</span> mockResponse;
 </span></span><span style="display:flex;"><span>                        }
@@ -212,49 +212,49 @@ Very often, you will want to test service api clients using a Mock Server [for e
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">latencyInMockServer</span>() {
 </span></span><span style="display:flex;"><span>        RestTemplate restTemplateWithSmallTimeout <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> RestTemplateBuilder()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">rootUri</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:&amp;#34; &amp;#43; clientAndServer.getPort())</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">rootUri</span>(<span style="color:#f1fa8c">&#34;http://localhost:&#34;</span> <span style="color:#ff79c6">+</span> clientAndServer.<span style="color:#50fa7b">getPort</span>())
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">setConnectTimeout</span>(Duration.<span style="color:#50fa7b">of</span>(50, ChronoUnit.<span style="color:#50fa7b">MILLIS</span>))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">setReadTimeout</span>(Duration.<span style="color:#50fa7b">of</span>(80, ChronoUnit.<span style="color:#50fa7b">MILLIS</span>))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        RestTemplate restTemplateWithBigTimeout <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> RestTemplateBuilder()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">rootUri</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:&amp;#34; &amp;#43; clientAndServer.getPort())</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">rootUri</span>(<span style="color:#f1fa8c">&#34;http://localhost:&#34;</span> <span style="color:#ff79c6">+</span> clientAndServer.<span style="color:#50fa7b">getPort</span>())
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">setConnectTimeout</span>(Duration.<span style="color:#50fa7b">of</span>(50, ChronoUnit.<span style="color:#50fa7b">MILLIS</span>))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">setReadTimeout</span>(Duration.<span style="color:#50fa7b">of</span>(250, ChronoUnit.<span style="color:#50fa7b">MILLIS</span>))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        HttpRequest expectedFirstRequest <span style="color:#ff79c6">=</span> HttpRequest.<span style="color:#50fa7b">request</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#f1fa8c">&#34;/some/endpoint/10&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        HttpResponse mockResponse <span style="color:#ff79c6">=</span> HttpResponse.<span style="color:#50fa7b">response</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withBody</span>(<span style="color:#ff79c6">&amp;</span>#34;{\<span style="color:#ff79c6">&amp;</span>#34;message\<span style="color:#ff79c6">&amp;</span>#34;: \<span style="color:#ff79c6">&amp;</span>#34;hello\<span style="color:#ff79c6">&amp;</span>#34;}<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withBody</span>(<span style="color:#f1fa8c">&#34;{\&#34;message\&#34;: \&#34;hello\&#34;}&#34;</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withContentType</span>(MediaType.<span style="color:#50fa7b">APPLICATION_JSON</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withStatusCode</span>(200);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">when</span>(expectedFirstRequest)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">respond</span>(httpRequest <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">respond</span>(httpRequest <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>                            Thread.<span style="color:#50fa7b">sleep</span>(150);
 </span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">return</span> mockResponse;
 </span></span><span style="display:flex;"><span>                        }
 </span></span><span style="display:flex;"><span>                );
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">try</span> {
-</span></span><span style="display:flex;"><span>            restTemplateWithSmallTimeout.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;, JsonNode.<span style="color:#50fa7b">class</span>);
-</span></span><span style="display:flex;"><span>            fail(<span style="color:#ff79c6">&amp;</span>#34;We should never reach <span style="color:#ff79c6">this</span> line<span style="color:#ff79c6">!&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>            restTemplateWithSmallTimeout.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#f1fa8c">&#34;/some/endpoint/10&#34;</span>, JsonNode.<span style="color:#50fa7b">class</span>);
+</span></span><span style="display:flex;"><span>            fail(<span style="color:#f1fa8c">&#34;We should never reach this line!&#34;</span>);
 </span></span><span style="display:flex;"><span>        } <span style="color:#ff79c6">catch</span> (ResourceAccessException resourceAccessException) {
-</span></span><span style="display:flex;"><span>            assertEquals(<span style="color:#ff79c6">&amp;</span>#34;Read timed out<span style="color:#ff79c6">&amp;</span>#34;, resourceAccessException.<span style="color:#50fa7b">getCause</span>().<span style="color:#50fa7b">getMessage</span>());
+</span></span><span style="display:flex;"><span>            assertEquals(<span style="color:#f1fa8c">&#34;Read timed out&#34;</span>, resourceAccessException.<span style="color:#50fa7b">getCause</span>().<span style="color:#50fa7b">getMessage</span>());
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        ResponseEntity<span style="color:#ff79c6">&amp;</span>lt;JsonNode<span style="color:#ff79c6">&amp;</span>gt; jsonNodeResponseEntity <span style="color:#ff79c6">=</span> restTemplateWithBigTimeout
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">getForEntity</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;, JsonNode.<span style="color:#50fa7b">class</span>);
+</span></span><span style="display:flex;"><span>        ResponseEntity<span style="color:#ff79c6">&lt;</span>JsonNode<span style="color:#ff79c6">&gt;</span> jsonNodeResponseEntity <span style="color:#ff79c6">=</span> restTemplateWithBigTimeout
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">getForEntity</span>(<span style="color:#f1fa8c">&#34;/some/endpoint/10&#34;</span>, JsonNode.<span style="color:#50fa7b">class</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        assertEquals(200, jsonNodeResponseEntity.<span style="color:#50fa7b">getStatusCode</span>().<span style="color:#50fa7b">value</span>());
-</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#ff79c6">&amp;</span>#34;hello<span style="color:#ff79c6">&amp;</span>#34;, jsonNodeResponseEntity.<span style="color:#50fa7b">getBody</span>().<span style="color:#50fa7b">get</span>(<span style="color:#ff79c6">&amp;</span>#34;message<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">asText</span>());
+</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#f1fa8c">&#34;hello&#34;</span>, jsonNodeResponseEntity.<span style="color:#50fa7b">getBody</span>().<span style="color:#50fa7b">get</span>(<span style="color:#f1fa8c">&#34;message&#34;</span>).<span style="color:#50fa7b">asText</span>());
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>All we do here is assert that we're getting a read timeout when the timeout is lower than how long our mock server will take to respond, and that when it's bigger than the amount of time it takes to respond we are in good shape.</p>
-<p>It's important to note that just bumping up the timeouts is not a recommended solution for production code, but this way we can start to test some robust resiliency mechanisms with confidence.</p>
+</span></span></code></pre></div><p>All we do here is assert that we&rsquo;re getting a read timeout when the timeout is lower than how long our mock server will take to respond, and that when it&rsquo;s bigger than the amount of time it takes to respond we are in good shape.</p>
+<p>It&rsquo;s important to note that just bumping up the timeouts is not a recommended solution for production code, but this way we can start to test some robust resiliency mechanisms with confidence.</p>
 </section>
 
   

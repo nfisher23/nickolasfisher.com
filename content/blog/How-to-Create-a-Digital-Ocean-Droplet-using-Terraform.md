@@ -19,15 +19,15 @@ The official [digital ocean terraform provider](https://www.terraform.io/docs/pr
 
 ## Getting it Done
 
-To begin with, you will need a digital ocean api key. You can get one by going to the digital ocean control panel, clicking &#34;API&#34; under &#34;Account&#34; in the lower left hand corner, then &#34;Generate New Token.&#34; I would recommend you use a sophisticated secrets management tool like [Encryptr](https://spideroak.com/encryptr/) to keep the api token safe, since you&#39;re only going to get to see the token immediately after you create it.
+To begin with, you will need a digital ocean api key. You can get one by going to the digital ocean control panel, clicking "API" under "Account" in the lower left hand corner, then "Generate New Token." I would recommend you use a sophisticated secrets management tool like [Encryptr](https://spideroak.com/encryptr/) to keep the api token safe, since you're only going to get to see the token immediately after you create it.
 
 Once you have the key, you need to set an environment variable in your shell like so:
 
 ```
-export DIGITALOCEAN_ACCESS_TOKEN=&lt;your-token-here&gt;
+export DIGITALOCEAN_ACCESS_TOKEN=<your-token-here>
 ```
 
-If you&#39;ve already set up your digital ocean cli before then you could try [a yaml bash tool called yq](https://mikefarah.gitbook.io/yq/) to set it for you:
+If you've already set up your digital ocean cli before then you could try [a yaml bash tool called yq](https://mikefarah.gitbook.io/yq/) to set it for you:
 
 ```
 export DIGITALOCEAN_ACCESS_TOKEN=$(cat ~/.config/doctl/config.yaml |  yq r - access-token)
@@ -35,32 +35,32 @@ export DIGITALOCEAN_ACCESS_TOKEN=$(cat ~/.config/doctl/config.yaml |  yq r - acc
 
 ### Reuse Existing SSH Key
 
-If you already have a ssh key that you uploaded to digital ocean in some other way, you can import it as terraform data, so that your terraform configuration can look like this (in this case, I&#39;m using an old thinkpad retrofitted with linux, so I have an ssh key I&#39;ve named &#34;thinkpad&#34;):
+If you already have a ssh key that you uploaded to digital ocean in some other way, you can import it as terraform data, so that your terraform configuration can look like this (in this case, I'm using an old thinkpad retrofitted with linux, so I have an ssh key I've named "thinkpad"):
 
 ```hcl
-provider &#34;digitalocean&#34; {
+provider "digitalocean" {
   // token automatically picked up using env variable DIGITALOCEAN_ACCESS_TOKEN
 }
 
-variable &#34;region&#34; {
-  default = &#34;sfo2&#34;
+variable "region" {
+  default = "sfo2"
 }
 
-data digitalocean_ssh_key &#34;my_ssh_key&#34; {
-  name = &#34;thinkpad&#34;
+data digitalocean_ssh_key "my_ssh_key" {
+  name = "thinkpad"
 }
 
-resource &#34;digitalocean_droplet&#34; &#34;atest&#34; {
-  image      = &#34;ubuntu-18-04-x64&#34;
-  name       = &#34;test&#34;
+resource "digitalocean_droplet" "atest" {
+  image      = "ubuntu-18-04-x64"
+  name       = "test"
   region     = var.region
-  size       = &#34;s-1vcpu-2gb&#34;
+  size       = "s-1vcpu-2gb"
   ssh_keys   = [data.digitalocean_ssh_key.my_ssh_key.id]
   monitoring = true
   private_networking = true
 }
 
-output &#34;droplet_ip_address&#34; {
+output "droplet_ip_address" {
   value = digitalocean_droplet.atest.ipv4_address
 }
 
@@ -71,30 +71,30 @@ output &#34;droplet_ip_address&#34; {
 If you want to upload your ssh key to digital ocean in this terraform configuration as well, then you can set this up as:
 
 ```yaml
-provider &#34;digitalocean&#34; {
+provider "digitalocean" {
   // token automatically picked up using env variable DIGITALOCEAN_ACCESS_TOKEN
 }
 
-variable &#34;region&#34; {
-  default = &#34;sfo2&#34;
+variable "region" {
+  default = "sfo2"
 }
 
-resource &#34;digitalocean_ssh_key&#34; &#34;my_ssh_key&#34; {
-  name = &#34;new_ssh_key&#34;
-  public_key = file(&#34;~/.ssh/id_rsa.pub&#34;)
+resource "digitalocean_ssh_key" "my_ssh_key" {
+  name = "new_ssh_key"
+  public_key = file("~/.ssh/id_rsa.pub")
 }
 
-resource &#34;digitalocean_droplet&#34; &#34;atest&#34; {
-  image      = &#34;ubuntu-18-04-x64&#34;
-  name       = &#34;test&#34;
+resource "digitalocean_droplet" "atest" {
+  image      = "ubuntu-18-04-x64"
+  name       = "test"
   region     = var.region
-  size       = &#34;s-1vcpu-2gb&#34;
+  size       = "s-1vcpu-2gb"
   ssh_keys   = [digitalocean_ssh_key.my_ssh_key.id]
   monitoring = true
   private_networking = true
 }
 
-output &#34;droplet_ip_address&#34; {
+output "droplet_ip_address" {
   value = digitalocean_droplet.atest.ipv4_address
 }
 
@@ -108,7 +108,7 @@ $ terraform apply
 
 ```
 
-Then type &#34;yes&#34; on prompt, and you should see two resources being created.
+Then type "yes" on prompt, and you should see two resources being created.
 
 ### Installing Nginx
 
@@ -116,7 +116,7 @@ Once it is up and running, you should be able to install nginx on this server wi
 
 ```
 $ export IP_ADDR=$(terraform output droplet_ip_address)
-$ ssh root@$IP_ADDR &#34;sudo apt-get update &amp;&amp; sudo apt-get install -y nginx&#34;
+$ ssh root@$IP_ADDR "sudo apt-get update &amp;&amp; sudo apt-get install -y nginx"
 
 ```
 

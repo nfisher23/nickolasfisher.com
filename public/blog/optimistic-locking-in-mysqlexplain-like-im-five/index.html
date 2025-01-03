@@ -5,10 +5,10 @@
 <meta charset="UTF-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Optimistic Locking in MySQL--Explain Like I&amp;#39;m Five</title>
+<title>Optimistic Locking in MySQL--Explain Like I&#39;m Five</title>
 <meta
   name="description"
-  content="Optimistic Locking is a compromise to improve performance. If processors were infinitely fast, we wouldn&#39;t need it and it would add unnecessary complexity. But, well, they aren&#39;t."
+  content="Optimistic Locking is a compromise to improve performance. If processors were infinitely fast, we wouldn&rsquo;t need it and it would add unnecessary complexity. But, well, they aren&rsquo;t."
 />
 <link rel="canonical" href="http://localhost:1313/blog/optimistic-locking-in-mysqlexplain-like-im-five/" />
 <link rel="robots" href="/robots.txt" />
@@ -137,7 +137,7 @@
 
 <article class="flex flex-col gap-10">
   <header class="flex flex-col gap-2">
-    <h2 class="title-large">Optimistic Locking in MySQL--Explain Like I&amp;#39;m Five</h2>
+    <h2 class="title-large">Optimistic Locking in MySQL--Explain Like I&#39;m Five</h2>
 
     <div class="meta">
       
@@ -152,11 +152,11 @@
 
   
 
-  <section><p>Optimistic Locking is a compromise to improve performance. If processors were infinitely fast, we wouldn't need it and it would add unnecessary complexity. But, well, they aren't.</p>
+  <section><p>Optimistic Locking is a compromise to improve performance. If processors were infinitely fast, we wouldn&rsquo;t need it and it would add unnecessary complexity. But, well, they aren&rsquo;t.</p>
 <p>Optimistic Locking was also introduced because holding open locks on databases can cause cascading failures, bubbling up unnecessary errors to users.</p>
-<p>So what is it? It's not locking at all, it's just another form of concurrency control that takes some load off of the database. You try to update a record based off some known property of the row (typically a version or datetime field) that you read as a select query at the start of a transaction. Let's set up the example with MySQL:</p>
-<h4 id="1-start-a-mysql-database-i39m-using-docker-obviously">1. Start a MySQL database [I'm using docker, obviously]:</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker container run --env &amp;<span style="color:#6272a4">#34;MYSQL_ALLOW_EMPTY_PASSWORD=true&amp;#34; -d -p 3306:3306 mysql</span>
+<p>So what is it? It&rsquo;s not locking at all, it&rsquo;s just another form of concurrency control that takes some load off of the database. You try to update a record based off some known property of the row (typically a version or datetime field) that you read as a select query at the start of a transaction. Let&rsquo;s set up the example with MySQL:</p>
+<h4 id="1-start-a-mysql-database-im-using-docker-obviously">1. Start a MySQL database [I&rsquo;m using docker, obviously]:</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker container run --env <span style="color:#f1fa8c">&#34;MYSQL_ALLOW_EMPTY_PASSWORD=true&#34;</span> -d -p 3306:3306 mysql
 </span></span></code></pre></div><h4 id="2-setup-test-data">2. Setup test data</h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ mysql --protocol tcp -u root
 </span></span><span style="display:flex;"><span>CREATE SCHEMA IF NOT EXISTS myschema;
@@ -172,9 +172,9 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>INSERT INTO mytable <span style="color:#ff79c6">(</span> first_column, second_column <span style="color:#ff79c6">)</span>
 </span></span><span style="display:flex;"><span>VALUES
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">(</span> &amp;<span style="color:#6272a4">#39;jack&amp;#39;, &amp;#39;bauer&amp;#39;);</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">(</span> <span style="color:#f1fa8c">&#39;jack&#39;</span>, <span style="color:#f1fa8c">&#39;bauer&#39;</span><span style="color:#ff79c6">)</span>;
 </span></span></code></pre></div><h4 id="3-actual-example-and-explanation-now">3. Actual Example and Explanation Now</h4>
-<p>Open two different terminals, I'll call them <strong>T1</strong> and <strong>T2</strong> and start typing in the order specified by the comments:</p>
+<p>Open two different terminals, I&rsquo;ll call them <strong>T1</strong> and <strong>T2</strong> and start typing in the order specified by the comments:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4">#### T1</span>
 </span></span><span style="display:flex;"><span>$ mysql --protocol tcp - u root
 </span></span><span style="display:flex;"><span>USE myschema;
@@ -190,32 +190,32 @@
 </span></span><span style="display:flex;"><span>START TRANSACTION;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>SELECT * FROM mytable where <span style="color:#8be9fd;font-style:italic">prim_key</span> <span style="color:#ff79c6">=</span> 1;
-</span></span></code></pre></div><p>Notice that T2 did not block, even though we're in a transaction. What does this mean? It means that the remainder of each transaction is made with an assumption about how the data was at the start of the transaction. If both threads start marching forward and want to update that data without optimistic locking, then one will be overwriting the other one:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4">#### T1 - DON&amp;#39;T ACTUALLY EXECUTE THIS</span>
-</span></span><span style="display:flex;"><span>UPDATE mytable SET <span style="color:#8be9fd;font-style:italic">second_column</span> <span style="color:#ff79c6">=</span> &amp;<span style="color:#6272a4">#39;jackson&amp;#39; where prim_key = 1;</span>
+</span></span></code></pre></div><p>Notice that T2 did not block, even though we&rsquo;re in a transaction. What does this mean? It means that the remainder of each transaction is made with an assumption about how the data was at the start of the transaction. If both threads start marching forward and want to update that data without optimistic locking, then one will be overwriting the other one:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4">#### T1 - DON&#39;T ACTUALLY EXECUTE THIS</span>
+</span></span><span style="display:flex;"><span>UPDATE mytable SET <span style="color:#8be9fd;font-style:italic">second_column</span> <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;jackson&#39;</span> where <span style="color:#8be9fd;font-style:italic">prim_key</span> <span style="color:#ff79c6">=</span> 1;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>COMMIT;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4">#### T2 - DON&amp;#39;T ACTUALLY EXECUTE THIS</span>
-</span></span><span style="display:flex;"><span>UPDATE mytable SET <span style="color:#8be9fd;font-style:italic">second_column</span> <span style="color:#ff79c6">=</span> &amp;<span style="color:#6272a4">#39;johnson&amp;#39; where prim_key = 1;</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#### T2 - DON&#39;T ACTUALLY EXECUTE THIS</span>
+</span></span><span style="display:flex;"><span>UPDATE mytable SET <span style="color:#8be9fd;font-style:italic">second_column</span> <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;johnson&#39;</span> where <span style="color:#8be9fd;font-style:italic">prim_key</span> <span style="color:#ff79c6">=</span> 1;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>COMMIT;
-</span></span></code></pre></div><p>Depending on the order of these two distinct transactions, one is going to be overwriting the other without knowing that the data had changed midway through&ndash;the second_column could be either &quot;jackson&quot; or &quot;johnson&quot;. There are some use cases where this isn't that big of a deal and many others where it is <em>definitely a big deal</em>, especially if the engineer writing the application doesn't understand that this is going to happen.</p>
+</span></span></code></pre></div><p>Depending on the order of these two distinct transactions, one is going to be overwriting the other without knowing that the data had changed midway through&ndash;the second_column could be either &ldquo;jackson&rdquo; or &ldquo;johnson&rdquo;. There are some use cases where this isn&rsquo;t that big of a deal and many others where it is <em>definitely a big deal</em>, especially if the engineer writing the application doesn&rsquo;t understand that this is going to happen.</p>
 <h4 id="optimistic-locking---a-practice-not-a-database-feature">Optimistic Locking - A Practice, not a Database Feature</h4>
-<p>Optimistic Locking &quot;fixes&quot; this problem by observing some attribute about the data that it is changing, and if that value has changed the code will roll back the transaction. This can be made atomic in two ways: first, MySQL will hold open a lock on data that is being UPDATED (not selected, by default), and second, include the piece of data in the actual update as a WHERE condition, so that if the operation fails we can see the number of rows that were updated. If the number of rows that were updated is zero, then it's an optimistic locking exception and we should roll back:</p>
+<p>Optimistic Locking &ldquo;fixes&rdquo; this problem by observing some attribute about the data that it is changing, and if that value has changed the code will roll back the transaction. This can be made atomic in two ways: first, MySQL will hold open a lock on data that is being UPDATED (not selected, by default), and second, include the piece of data in the actual update as a WHERE condition, so that if the operation fails we can see the number of rows that were updated. If the number of rows that were updated is zero, then it&rsquo;s an optimistic locking exception and we should roll back:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4">#### T1 - Pay attention to the output</span>
-</span></span><span style="display:flex;"><span>UPDATE mytable SET <span style="color:#8be9fd;font-style:italic">second_column</span> <span style="color:#ff79c6">=</span> &amp;<span style="color:#6272a4">#39;jackson&amp;#39; where prim_key = 1;</span>
+</span></span><span style="display:flex;"><span>UPDATE mytable SET <span style="color:#8be9fd;font-style:italic">second_column</span> <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;jackson&#39;</span> where <span style="color:#8be9fd;font-style:italic">prim_key</span> <span style="color:#ff79c6">=</span> 1;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># optimistic locking check:</span>
-</span></span><span style="display:flex;"><span>UPDATE mytable SET <span style="color:#8be9fd;font-style:italic">version</span> <span style="color:#ff79c6">=</span> version &amp;<span style="color:#6272a4">#43; 1 WHERE prim_key = 1 AND version = 1;</span>
+</span></span><span style="display:flex;"><span>UPDATE mytable SET <span style="color:#8be9fd;font-style:italic">version</span> <span style="color:#ff79c6">=</span> version + <span style="color:#bd93f9">1</span> WHERE <span style="color:#8be9fd;font-style:italic">prim_key</span> <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span> AND <span style="color:#8be9fd;font-style:italic">version</span> <span style="color:#ff79c6">=</span> 1;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>COMMIT;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4">#### T2 - Watch the output!</span>
-</span></span><span style="display:flex;"><span>UPDATE mytable SET <span style="color:#8be9fd;font-style:italic">second_column</span> <span style="color:#ff79c6">=</span> &amp;<span style="color:#6272a4">#39;johnson&amp;#39; where prim_key = 1;</span>
+</span></span><span style="display:flex;"><span>UPDATE mytable SET <span style="color:#8be9fd;font-style:italic">second_column</span> <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;johnson&#39;</span> where <span style="color:#8be9fd;font-style:italic">prim_key</span> <span style="color:#ff79c6">=</span> 1;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># optimistic locking check:</span>
-</span></span><span style="display:flex;"><span>UPDATE mytable SET <span style="color:#8be9fd;font-style:italic">version</span> <span style="color:#ff79c6">=</span> version &amp;<span style="color:#6272a4">#43; 1 WHERE prim_key = 1 AND version = 1;</span>
+</span></span><span style="display:flex;"><span>UPDATE mytable SET <span style="color:#8be9fd;font-style:italic">version</span> <span style="color:#ff79c6">=</span> version + <span style="color:#bd93f9">1</span> WHERE <span style="color:#8be9fd;font-style:italic">prim_key</span> <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span> AND <span style="color:#8be9fd;font-style:italic">version</span> <span style="color:#ff79c6">=</span> 1;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># ^ no rows affected! Roll back the transaction</span>
 </span></span><span style="display:flex;"><span>ROLLBACK;

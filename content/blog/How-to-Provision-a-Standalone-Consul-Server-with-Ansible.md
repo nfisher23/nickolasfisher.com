@@ -7,9 +7,9 @@ tags: [ansible, DevOps, consul]
 
 You can find the source code for this post [on GitHub](https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server).
 
-[Consul](https://www.consul.io/) is a distributed service discovery engine. It&#39;s primary purpose is to track and manage services that interact with it--usually via an HTTP API. It monitors the health of services in near real time, providing a more robust way of routing services to healthy and responsive nodes.
+[Consul](https://www.consul.io/) is a distributed service discovery engine. It's primary purpose is to track and manage services that interact with it--usually via an HTTP API. It monitors the health of services in near real time, providing a more robust way of routing services to healthy and responsive nodes.
 
-In this post, we&#39;ll look at provisioning a standalone consul server with Ansible. This is not recommended for production, both because this Consul Server is a single point of failure and because there is no security in this example, but it is a good starting place to Proof-of-Concept the technology.
+In this post, we'll look at provisioning a standalone consul server with Ansible. This is not recommended for production, both because this Consul Server is a single point of failure and because there is no security in this example, but it is a good starting place to Proof-of-Concept the technology.
 
 You will need Molecule, Ansible, VirtualBox, and Vagrant for this example to work. It will be easier for you to follow along if you are already familiar with those tools.
 
@@ -43,18 +43,18 @@ While you can technically pass in a large collection of configuration parameters
 
 ```json
 {
-    &#34;node_name&#34;: &#34;example&#34;,
-    &#34;addresses&#34;: {
-        &#34;http&#34;: &#34;{{ ansible_facts[&#39;all_ipv4_addresses&#39;] | last }} 127.0.0.1&#34;
+    "node_name": "example",
+    "addresses": {
+        "http": "{{ ansible_facts['all_ipv4_addresses'] | last }} 127.0.0.1"
     },
-    &#34;server&#34;: true,
-    &#34;advertise_addr&#34;: &#34;{{ ansible_facts[&#39;all_ipv4_addresses&#39;] | last }}&#34;,
-    &#34;client_addr&#34;: &#34;127.0.0.1 {{ ansible_facts[&#39;all_ipv4_addresses&#39;] | last }}&#34;,
-    &#34;connect&#34;: {
-        &#34;enabled&#34;: true
+    "server": true,
+    "advertise_addr": "{{ ansible_facts['all_ipv4_addresses'] | last }}",
+    "client_addr": "127.0.0.1 {{ ansible_facts['all_ipv4_addresses'] | last }}",
+    "connect": {
+        "enabled": true
     },
-    &#34;data_dir&#34;: &#34;{{ consul_data_dir }}&#34;,
-    &#34;bootstrap&#34;: true
+    "data_dir": "{{ consul_data_dir }}",
+    "bootstrap": true
 }
 ```
 
@@ -98,8 +98,8 @@ Finally, we can specify the tasks that are going to carry out the installation f
 # tasks file for consul-server
 - name: get consul zip
   get_url:
-    dest: &#34;/etc/{{ consul_zip_file }}&#34;
-    url: &#34;https://releases.hashicorp.com/consul/{{ consul_version }}/{{ consul_zip_file }}&#34;
+    dest: "/etc/{{ consul_zip_file }}"
+    url: "https://releases.hashicorp.com/consul/{{ consul_version }}/{{ consul_zip_file }}"
   become: yes
 
 - name: ensure unzip present
@@ -110,23 +110,23 @@ Finally, we can specify the tasks that are going to carry out the installation f
 
 - name: place unzipped consul on path
   unarchive:
-    src: &#34;/etc/{{ consul_zip_file }}&#34;
-    dest: &#34;{{ consul_install_dir }}&#34;
+    src: "/etc/{{ consul_zip_file }}"
+    dest: "{{ consul_install_dir }}"
     remote_src: yes
   become: yes
 
 - name: ensure directories for data and config exists
   file:
-    path: &#34;{{ item }}&#34;
+    path: "{{ item }}"
     state: directory
   with_items:
-    - &#34;{{ consul_config_dir }}&#34;
-    - &#34;{{ consul_data_dir }}&#34;
+    - "{{ consul_config_dir }}"
+    - "{{ consul_data_dir }}"
   become: yes
 
 - name: send consul configuration file
   template:
-    dest: &#34;{{ consul_config_dir }}/config.json&#34;
+    dest: "{{ consul_config_dir }}/config.json"
     src: consul.config.j2
   notify: restart consul
   become: yes

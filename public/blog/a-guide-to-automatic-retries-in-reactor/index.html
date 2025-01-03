@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The source code for this post is available on GitHub.
-One of the nice things about a reactive programming model is there is a significantly lower risk of doomsday when things start getting latent all at once. You don&#39;t have threads upstream blocking and waiting for a response, therefore they won&#39;t all seize up and stop serving requests [or they won&#39;t short circuit if you&#39;re using a resiliency library like hystrix]."
+One of the nice things about a reactive programming model is there is a significantly lower risk of doomsday when things start getting latent all at once. You don&rsquo;t have threads upstream blocking and waiting for a response, therefore they won&rsquo;t all seize up and stop serving requests [or they won&rsquo;t short circuit if you&rsquo;re using a resiliency library like hystrix]."
 />
 <link rel="canonical" href="http://localhost:1313/blog/a-guide-to-automatic-retries-in-reactor/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,10 +154,10 @@ One of the nice things about a reactive programming model is there is a signific
   
 
   <section><p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux">is available on GitHub</a>.</p>
-<p>One of the nice things about a reactive programming model is there is a significantly lower risk of doomsday when things start getting latent all at once. You don't have threads upstream blocking and waiting for a response, therefore they won't all seize up and stop serving requests [or they won't short circuit if you're using a resiliency library like hystrix].</p>
-<p>Reactor has a lot of extension points to pretty easily retry in the case of failure. I'll go through a couple of the options and provide some sample code to help you get started in this tutorial.</p>
+<p>One of the nice things about a reactive programming model is there is a significantly lower risk of doomsday when things start getting latent all at once. You don&rsquo;t have threads upstream blocking and waiting for a response, therefore they won&rsquo;t all seize up and stop serving requests [or they won&rsquo;t short circuit if you&rsquo;re using a resiliency library like hystrix].</p>
+<p>Reactor has a lot of extension points to pretty easily retry in the case of failure. I&rsquo;ll go through a couple of the options and provide some sample code to help you get started in this tutorial.</p>
 <h2 id="the-example-project">The Example Project</h2>
-<p>I'm going to extend some sample code from a previous blog post on <a href="https://nickolasfisher.com/blog/How-to-use-Mock-Server-to-End-to-End-Test-Any-WebClient-Calls-in-Spring-Boot-Webflux">testing WebClient using MockServer in Spring Boot Webflux</a> to bootstrap us here. Recall, in that post, we had a really simple service:</p>
+<p>I&rsquo;m going to extend some sample code from a previous blog post on <a href="https://nickolasfisher.com/blog/How-to-use-Mock-Server-to-End-to-End-Test-Any-WebClient-Calls-in-Spring-Boot-Webflux">testing WebClient using MockServer in Spring Boot Webflux</a> to bootstrap us here. Recall, in that post, we had a really simple service:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Service
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">MyService</span> {
 </span></span><span style="display:flex;"><span>
@@ -167,9 +167,9 @@ One of the nice things about a reactive programming model is there is a signific
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">webClient</span> <span style="color:#ff79c6">=</span> webClient;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Flux<span style="color:#ff79c6">&amp;</span>lt;DownstreamResponseDTO<span style="color:#ff79c6">&amp;</span>gt; getAllPeople() {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Flux<span style="color:#ff79c6">&lt;</span>DownstreamResponseDTO<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">getAllPeople</span>() {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">webClient</span>.<span style="color:#50fa7b">get</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>legacy<span style="color:#ff79c6">/</span>persons<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(<span style="color:#f1fa8c">&#34;/legacy/persons&#34;</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">retrieve</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">bodyToFlux</span>(DownstreamResponseDTO.<span style="color:#50fa7b">class</span>);
 </span></span><span style="display:flex;"><span>    }
@@ -187,7 +187,7 @@ One of the nice things about a reactive programming model is there is a signific
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">setupMockServer</span>() {
 </span></span><span style="display:flex;"><span>        mockServer <span style="color:#ff79c6">=</span> ClientAndServer.<span style="color:#50fa7b">startClientAndServer</span>(2001);
 </span></span><span style="display:flex;"><span>        myService <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> MyService(WebClient.<span style="color:#50fa7b">builder</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">baseUrl</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:&amp;#34; &amp;#43; mockServer.getLocalPort()).build());</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">baseUrl</span>(<span style="color:#f1fa8c">&#34;http://localhost:&#34;</span> <span style="color:#ff79c6">+</span> mockServer.<span style="color:#50fa7b">getLocalPort</span>()).<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @AfterEach
@@ -197,7 +197,7 @@ One of the nice things about a reactive programming model is there is a signific
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>...<span style="color:#50fa7b">the</span> tests...
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>So let's add a test case using this framework. The test should setup mock server such that it:</p>
+</span></span></code></pre></div><p>So let&rsquo;s add a test case using this framework. The test should setup mock server such that it:</p>
 <ul>
 <li>
 <p>Returns a 5xx internal server error the first two times that we call it, simulating [hopefully intermittent] failures</p>
@@ -206,18 +206,18 @@ One of the nice things about a reactive programming model is there is a signific
 <p>Recover and let a good request through on the third time we try it</p>
 </li>
 </ul>
-<p>We can make this happen by implementing our own custom <a href="https://javadoc.io/static/org.mock-server/mockserver-core/5.6.1/org/mockserver/mock/action/ExpectationResponseCallback.html">ExpectationResponseCallback</a>. Because java does not let you modify variables which were declared outside of the closure inside the closure, I'm also going to use an <strong>AtomicInteger</strong> because it has some convenience methods like <strong>incrementAndGet</strong>:</p>
+<p>We can make this happen by implementing our own custom <a href="https://javadoc.io/static/org.mock-server/mockserver-core/5.6.1/org/mockserver/mock/action/ExpectationResponseCallback.html">ExpectationResponseCallback</a>. Because java does not let you modify variables which were declared outside of the closure inside the closure, I&rsquo;m also going to use an <strong>AtomicInteger</strong> because it has some convenience methods like <strong>incrementAndGet</strong>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        AtomicInteger counter <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> AtomicInteger(0);
 </span></span><span style="display:flex;"><span>        mockServer.<span style="color:#50fa7b">when</span>(
 </span></span><span style="display:flex;"><span>                request()
 </span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
-</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>legacy<span style="color:#ff79c6">/</span>persons<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">withPath</span>(<span style="color:#f1fa8c">&#34;/legacy/persons&#34;</span>)
 </span></span><span style="display:flex;"><span>        ).<span style="color:#50fa7b">respond</span>(
 </span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">new</span> ExpectationResponseCallback() {
 </span></span><span style="display:flex;"><span>                    @Override
 </span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> HttpResponse <span style="color:#50fa7b">handle</span>(HttpRequest httpRequest) <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>                        <span style="color:#8be9fd">int</span> attempt <span style="color:#ff79c6">=</span> counter.<span style="color:#50fa7b">incrementAndGet</span>();
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">if</span> (attempt <span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">=</span> 2) {
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">if</span> (attempt <span style="color:#ff79c6">&gt;=</span> 2) {
 </span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">return</span> response().
 </span></span><span style="display:flex;"><span>                                    withBody(responseBody)
 </span></span><span style="display:flex;"><span>                                    .<span style="color:#50fa7b">withContentType</span>(MediaType.<span style="color:#50fa7b">APPLICATION_JSON</span>)
@@ -228,15 +228,15 @@ One of the nice things about a reactive programming model is there is a signific
 </span></span><span style="display:flex;"><span>                    }
 </span></span><span style="display:flex;"><span>                }
 </span></span><span style="display:flex;"><span>        );
-</span></span></code></pre></div><p>Every time <strong>GET &quot;/legacy/persons&quot;</strong> is called, mock server will invoke our <strong>ExpectationResponseCallback</strong>, which is this case is looking for our <strong>AtomicInteger</strong> to increment past 2. Until it does, we will return a 500 Internal Server Error, and once it does we will return our response body.</p>
+</span></span></code></pre></div><p>Every time <strong>GET &ldquo;/legacy/persons&rdquo;</strong> is called, mock server will invoke our <strong>ExpectationResponseCallback</strong>, which is this case is looking for our <strong>AtomicInteger</strong> to increment past 2. Until it does, we will return a 500 Internal Server Error, and once it does we will return our response body.</p>
 <p>All of the relevant code for this test can now be laid out like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> String <span style="color:#50fa7b">getDownstreamResponseDTOAsString</span>() <span style="color:#8be9fd;font-style:italic">throws</span> JsonProcessingException {
 </span></span><span style="display:flex;"><span>        DownstreamResponseDTO downstreamResponseDTO <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> DownstreamResponseDTO();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setLastName</span>(<span style="color:#ff79c6">&amp;</span>#34;last<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setFirstName</span>(<span style="color:#ff79c6">&amp;</span>#34;first<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setSsn</span>(<span style="color:#ff79c6">&amp;</span>#34;123<span style="color:#ff79c6">-</span>12<span style="color:#ff79c6">-</span>1231<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setDeepesetFear</span>(<span style="color:#ff79c6">&amp;</span>#34;alligators<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setLastName</span>(<span style="color:#f1fa8c">&#34;last&#34;</span>);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setFirstName</span>(<span style="color:#f1fa8c">&#34;first&#34;</span>);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setSsn</span>(<span style="color:#f1fa8c">&#34;123-12-1231&#34;</span>);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setDeepesetFear</span>(<span style="color:#f1fa8c">&#34;alligators&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> serializer.<span style="color:#50fa7b">writeValueAsString</span>(Arrays.<span style="color:#50fa7b">asList</span>(downstreamResponseDTO));
 </span></span><span style="display:flex;"><span>    }
@@ -249,13 +249,13 @@ One of the nice things about a reactive programming model is there is a signific
 </span></span><span style="display:flex;"><span>        mockServer.<span style="color:#50fa7b">when</span>(
 </span></span><span style="display:flex;"><span>                request()
 </span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
-</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>legacy<span style="color:#ff79c6">/</span>persons<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">withPath</span>(<span style="color:#f1fa8c">&#34;/legacy/persons&#34;</span>)
 </span></span><span style="display:flex;"><span>        ).<span style="color:#50fa7b">respond</span>(
 </span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">new</span> ExpectationResponseCallback() {
 </span></span><span style="display:flex;"><span>                    @Override
 </span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> HttpResponse <span style="color:#50fa7b">handle</span>(HttpRequest httpRequest) <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>                        <span style="color:#8be9fd">int</span> attempt <span style="color:#ff79c6">=</span> counter.<span style="color:#50fa7b">incrementAndGet</span>();
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">if</span> (attempt <span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">=</span> 2) {
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">if</span> (attempt <span style="color:#ff79c6">&gt;=</span> 2) {
 </span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">return</span> response().
 </span></span><span style="display:flex;"><span>                                    withBody(responseBody)
 </span></span><span style="display:flex;"><span>                                    .<span style="color:#50fa7b">withContentType</span>(MediaType.<span style="color:#50fa7b">APPLICATION_JSON</span>)
@@ -267,15 +267,15 @@ One of the nice things about a reactive programming model is there is a signific
 </span></span><span style="display:flex;"><span>                }
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        List<span style="color:#ff79c6">&amp;</span>lt;DownstreamResponseDTO<span style="color:#ff79c6">&amp;</span>gt; responses <span style="color:#ff79c6">=</span> myService.<span style="color:#50fa7b">getAllPeople</span>().<span style="color:#50fa7b">collectList</span>().<span style="color:#50fa7b">block</span>();
+</span></span><span style="display:flex;"><span>        List<span style="color:#ff79c6">&lt;</span>DownstreamResponseDTO<span style="color:#ff79c6">&gt;</span> responses <span style="color:#ff79c6">=</span> myService.<span style="color:#50fa7b">getAllPeople</span>().<span style="color:#50fa7b">collectList</span>().<span style="color:#50fa7b">block</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        assertEquals(1, responses.<span style="color:#50fa7b">size</span>());
-</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#ff79c6">&amp;</span>#34;first<span style="color:#ff79c6">&amp;</span>#34;, responses.<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">getFirstName</span>());
-</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#ff79c6">&amp;</span>#34;last<span style="color:#ff79c6">&amp;</span>#34;, responses.<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">getLastName</span>());
+</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#f1fa8c">&#34;first&#34;</span>, responses.<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">getFirstName</span>());
+</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#f1fa8c">&#34;last&#34;</span>, responses.<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">getLastName</span>());
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        mockServer.<span style="color:#50fa7b">verify</span>(
 </span></span><span style="display:flex;"><span>                request().<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
-</span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>legacy<span style="color:#ff79c6">/</span>persons<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">withPath</span>(<span style="color:#f1fa8c">&#34;/legacy/persons&#34;</span>)
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>If you run this with:</p>
@@ -284,27 +284,27 @@ One of the nice things about a reactive programming model is there is a signific
 <h2 id="doing-retries-now">Doing Retries Now</h2>
 <p>A naive implementation of retrying could use some of the <a href="https://projectreactor.io/docs/core/release/api/reactor/util/retry/Retry.html">built in Retry methods that ship with Reactor</a>. We can get a passing test by instructing the <strong>Flux</strong> to retry up to three times:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">webClient</span>.<span style="color:#50fa7b">get</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>legacy<span style="color:#ff79c6">/</span>persons<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(<span style="color:#f1fa8c">&#34;/legacy/persons&#34;</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">retrieve</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">bodyToFlux</span>(DownstreamResponseDTO.<span style="color:#50fa7b">class</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">retryWhen</span>(Retry.<span style="color:#50fa7b">max</span>(3));
 </span></span></code></pre></div><p>While this is, err, fine, we should also want a bit more control over the backoff strategy so that we are not overwhelming the downstream service. This can be done with something like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">webClient</span>.<span style="color:#50fa7b">get</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>legacy<span style="color:#ff79c6">/</span>persons<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(<span style="color:#f1fa8c">&#34;/legacy/persons&#34;</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">retrieve</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">bodyToFlux</span>(DownstreamResponseDTO.<span style="color:#50fa7b">class</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">retryWhen</span>(Retry.<span style="color:#50fa7b">backoff</span>(3, Duration.<span style="color:#50fa7b">ofMillis</span>(250)));
 </span></span></code></pre></div><p>This backoff strategy will automatically include a jitter for us so that a thundering herd of retries is unlikely to happen.</p>
 <p>By invoking <strong>backoff</strong> we can then enter into a fluent API [a <a href="https://projectreactor.io/docs/core/release/api/reactor/util/retry/RetryBackoffSpec.html">RetryBackoffSpec</a>], and can further customize it with something like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">webClient</span>.<span style="color:#50fa7b">get</span>()
-</span></span><span style="display:flex;"><span>.<span style="color:#50fa7b">uri</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>legacy<span style="color:#ff79c6">/</span>persons<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>.<span style="color:#50fa7b">uri</span>(<span style="color:#f1fa8c">&#34;/legacy/persons&#34;</span>)
 </span></span><span style="display:flex;"><span>.<span style="color:#50fa7b">retrieve</span>()
 </span></span><span style="display:flex;"><span>.<span style="color:#50fa7b">bodyToFlux</span>(DownstreamResponseDTO.<span style="color:#50fa7b">class</span>)
 </span></span><span style="display:flex;"><span>.<span style="color:#50fa7b">retryWhen</span>(
 </span></span><span style="display:flex;"><span>    Retry.<span style="color:#50fa7b">backoff</span>(3, Duration.<span style="color:#50fa7b">ofMillis</span>(250))
 </span></span><span style="display:flex;"><span>        .<span style="color:#50fa7b">minBackoff</span>(Duration.<span style="color:#50fa7b">ofMillis</span>(100))
 </span></span><span style="display:flex;"><span>);
-</span></span></code></pre></div><p>It's important to note that there is also <a href="https://projectreactor.io/docs/extra/snapshot/api/reactor/retry/Retry.html">a Retry in reactor-extra</a>, but this has now been deprecated in favor of the Retry functionality listed above, which ships with Reactor Core as of this article. You should use the library that ships with reactor core and save yourself a dependency.</p>
+</span></span></code></pre></div><p>It&rsquo;s important to note that there is also <a href="https://projectreactor.io/docs/extra/snapshot/api/reactor/retry/Retry.html">a Retry in reactor-extra</a>, but this has now been deprecated in favor of the Retry functionality listed above, which ships with Reactor Core as of this article. You should use the library that ships with reactor core and save yourself a dependency.</p>
 </section>
 
   

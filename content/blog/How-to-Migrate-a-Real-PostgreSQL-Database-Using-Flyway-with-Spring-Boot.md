@@ -27,26 +27,26 @@ spring.datasource.url: jdbc:postgresql://192.168.56.111:5432/testdb
 spring.datasource.driver-class-name: org.postgresql.Driver
 ```
 
-Here, we are telling Spring Boot to use the &#34;dev&#34; profile by default, and if we decide to use the &#34;stage&#34; profile, then the application will attempt to connect to a PostgreSQL database at the 192.168.56.111 IP address, at port 5432. It will connect to the **testdb** database and use postgres/postgres as the username/password combo.
+Here, we are telling Spring Boot to use the "dev" profile by default, and if we decide to use the "stage" profile, then the application will attempt to connect to a PostgreSQL database at the 192.168.56.111 IP address, at port 5432. It will connect to the **testdb** database and use postgres/postgres as the username/password combo.
 
 **Note**: Never use postgres/postgres as the username/password combo for a database that you actually want to protect. This will last about five seconds on the internet.
 
-With the work we have already done, this will ensure that our application runs the database migration scripts on application start time in an idempotent way. We just need a real database to validate this against, and I will use [Vagrant](https://www.vagrantup.com/). I&#39;ve created a **postgres-vm/Vagrantfile** like:
+With the work we have already done, this will ensure that our application runs the database migration scripts on application start time in an idempotent way. We just need a real database to validate this against, and I will use [Vagrant](https://www.vagrantup.com/). I've created a **postgres-vm/Vagrantfile** like:
 
 ```
-Vagrant.configure(&#34;2&#34;) do |config|
-  config.vm.box = &#34;ubuntu/bionic64&#34;
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
 
-  config.vm.provider &#34;virtualbox&#34; do |v|
+  config.vm.provider "virtualbox" do |v|
     v.memory = 2048
     v.cpus = 1
   end
 
-  config.vm.provision &#34;file&#34;, source: &#34;~/.ssh/id_rsa.pub&#34;, destination: &#34;~/.ssh/me.pub&#34;
-  config.vm.provision &#34;shell&#34;, inline: &#34;cat /home/vagrant/.ssh/me.pub &gt;&gt; /home/vagrant/.ssh/authorized_keys&#34;
-  config.vm.provision &#34;shell&#34;, inline: &#34;mkdir -p /root &amp;&amp; mkdir -p /root/.ssh/ &amp;&amp; cat /home/vagrant/.ssh/me.pub &gt;&gt; /root/.ssh/authorized_keys&#34;
-  config.vm.provision :shell, path: &#34;postgres-provision.sh&#34;
-  config.vm.network &#34;private_network&#34;, ip: &#34;192.168.56.111&#34;
+  config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/me.pub"
+  config.vm.provision "shell", inline: "cat /home/vagrant/.ssh/me.pub >> /home/vagrant/.ssh/authorized_keys"
+  config.vm.provision "shell", inline: "mkdir -p /root &amp;&amp; mkdir -p /root/.ssh/ &amp;&amp; cat /home/vagrant/.ssh/me.pub >> /root/.ssh/authorized_keys"
+  config.vm.provision :shell, path: "postgres-provision.sh"
+  config.vm.network "private_network", ip: "192.168.56.111"
 end
 ```
 
@@ -58,13 +58,13 @@ This Vagrantfile needs a **postgres-provision.sh** bash script in the same direc
 sudo apt-get update &amp;&amp; sudo apt-get -y install postgresql
 
 # set the default to listen to all addresses
-sudo sed -i &#34;/port*/a listen_addresses = &#39;*&#39;&#34; /etc/postgresql/10/main/postgresql.conf
+sudo sed -i "/port*/a listen_addresses = '*'" /etc/postgresql/10/main/postgresql.conf
 
 # allow any authentication mechanism from any client
-sudo sed -i &#34;$ a host all all all trust&#34; /etc/postgresql/10/main/pg_hba.conf
+sudo sed -i "$ a host all all all trust" /etc/postgresql/10/main/pg_hba.conf
 
 # create db named testdb
-sudo su postgres -c &#34;createdb testdb&#34;
+sudo su postgres -c "createdb testdb"
 
 # restart the service to allow changes to take effect
 sudo service postgresql restart
@@ -103,7 +103,7 @@ You should get an output like this:
 ```
                  List of relations
  Schema |         Name          | Type  |  Owner
---------&#43;-----------------------&#43;-------&#43;----------
+--------+-----------------------+-------+----------
  public | employee              | table | postgres
  public | flyway_schema_history | table | postgres
 (2 rows)

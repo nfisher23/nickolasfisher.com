@@ -154,9 +154,9 @@
 
   <section><p><a href="https://kind.sigs.k8s.io/">kind</a> is a tool that spins up a kubernetes cluster of arbitrary size on your local machine. It is, in my experience, more lightweight than minikube, and also allows for a multi node setup.</p>
 <h2 id="install">Install</h2>
-<p>To install kind, I would recommend using <a href="https://brew.sh/">homebrew</a> if you're on *nix:</p>
+<p>To install kind, I would recommend using <a href="https://brew.sh/">homebrew</a> if you&rsquo;re on *nix:</p>
 <pre tabindex="0"><code>$ brew install kind
-</code></pre><p>and <a href="https://chocolatey.org/">chocolatey</a> if you're on windows:</p>
+</code></pre><p>and <a href="https://chocolatey.org/">chocolatey</a> if you&rsquo;re on windows:</p>
 <pre tabindex="0"><code>choco install kind
 </code></pre><p>You will want to already have <a href="https://docs.docker.com/get-docker/">docker installed</a> as well as <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/">kubectl installed</a></p>
 <h2 id="basic-usage">Basic Usage</h2>
@@ -165,7 +165,7 @@
 </code></pre><p>It will:</p>
 <ul>
 <li>
-<p>Create a single node kubernetes cluster called &quot;kind&quot; using docker on your local machine</p>
+<p>Create a single node kubernetes cluster called &ldquo;kind&rdquo; using docker on your local machine</p>
 </li>
 <li>
 <p>Automatically configure your <strong>kubectl</strong> cli tool to point at this cluster</p>
@@ -174,7 +174,7 @@
 <p>We can see that with a couple of commands:</p>
 <pre tabindex="0"><code>$ docker container ls -a
 CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS                       NAMES
-78e981f32e68        kindest/node:v1.18.2   &amp;#34;/usr/local/bin/entr…&amp;#34;   4 minutes ago       Up 4 minutes        127.0.0.1:39743-&amp;gt;6443/tcp   kind-control-plane
+78e981f32e68        kindest/node:v1.18.2   &#34;/usr/local/bin/entr…&#34;   4 minutes ago       Up 4 minutes        127.0.0.1:39743-&gt;6443/tcp   kind-control-plane
 
 $ kubectl get nodes -A
 NAME                 STATUS   ROLES    AGE    VERSION
@@ -184,7 +184,7 @@ $ kubectl get deployments -n kube-system
 NAME      READY   UP-TO-DATE   AVAILABLE   AGE
 coredns   2/2     2            2           4m35s
 </code></pre><h2 id="multi-node-cluster-configuration">Multi Node Cluster Configuration</h2>
-<p>We can control the type of cluster that gets created with a <a href="https://kind.sigs.k8s.io/docs/user/configuration/">custom kind config file</a> [let's call this one <strong>my-kind-config.yaml</strong>]:</p>
+<p>We can control the type of cluster that gets created with a <a href="https://kind.sigs.k8s.io/docs/user/configuration/">custom kind config file</a> [let&rsquo;s call this one <strong>my-kind-config.yaml</strong>]:</p>
 <pre tabindex="0"><code>kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 # 1 control plane node and 3 workers
@@ -193,15 +193,15 @@ nodes:
 - role: worker
 - role: worker
 - role: worker
-</code></pre><p>Pretty obviously, this is a config for 1 kubernetes manager [control plane] node and 3 kubernetes worker nodes [often just called &quot;nodes&quot;]. We can create this cluster with:</p>
+</code></pre><p>Pretty obviously, this is a config for 1 kubernetes manager [control plane] node and 3 kubernetes worker nodes [often just called &ldquo;nodes&rdquo;]. We can create this cluster with:</p>
 <pre tabindex="0"><code>kind create cluster --config my-kind-config.yaml
-</code></pre><p>After like thirty seconds you'll be able to verify this with:</p>
+</code></pre><p>After like thirty seconds you&rsquo;ll be able to verify this with:</p>
 <pre tabindex="0"><code>$ kubectl get nodes -A
 NAME                 STATUS     ROLES    AGE   VERSION
 kind-control-plane   NotReady   master   60s   v1.18.2
-kind-worker          Ready      &amp;lt;none&amp;gt;   20s   v1.18.2
-kind-worker2         NotReady   &amp;lt;none&amp;gt;   20s   v1.18.2
-kind-worker3         NotReady   &amp;lt;none&amp;gt;   24s   v1.18.2
+kind-worker          Ready      &lt;none&gt;   20s   v1.18.2
+kind-worker2         NotReady   &lt;none&gt;   20s   v1.18.2
+kind-worker3         NotReady   &lt;none&gt;   24s   v1.18.2
 </code></pre></section>
 
   

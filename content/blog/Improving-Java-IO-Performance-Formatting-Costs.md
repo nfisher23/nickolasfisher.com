@@ -7,14 +7,14 @@ tags: [java, i/o, performance testing, jmh]
 
 The sample code associated with this blog post can be found [on GitHub](https://github.com/nfisher23/io-tuning).
 
-Another potential source of I/O bottlenecks, across any medium, could be the process you choose to format the data in in the first place. For example, XML used to be a standard way to send information across the wire or store in a backend system, but the size overhead of XML as compared to JSON is about double (not to mention it&#39;s somehow harder to read when formatted compared to JSON).
+Another potential source of I/O bottlenecks, across any medium, could be the process you choose to format the data in in the first place. For example, XML used to be a standard way to send information across the wire or store in a backend system, but the size overhead of XML as compared to JSON is about double (not to mention it's somehow harder to read when formatted compared to JSON).
 
 We can compare the performance of a couple of different options related to formatting by comparing the MessageFormatter class with simple addition. With a test setup like so:
 
 ```java
     public static void runBenchmark(Class clazz) throws Exception {
         Options options = new OptionsBuilder()
-                .include(clazz.getName() &#43; &#34;.*&#34;)
+                .include(clazz.getName() + ".*")
                 .mode(Mode.AverageTime)
                 .warmupTime(TimeValue.seconds(1))
                 .warmupIterations(2)
@@ -47,11 +47,11 @@ We can compare the performance of a MessageFormatter in both a precompiled state
 
     @Benchmark
     public void formatUsingMessageFormatter_preCompiled() {
-        MessageFormat formatter = new MessageFormat(&#34;The square of {0} is {1}\n&#34;);
+        MessageFormat formatter = new MessageFormat("The square of {0} is {1}\n");
         Integer[] values = new Integer[2];
         values[0] = NUM;
         values[1] = NUM * NUM;
-        for (int i = 0; i &lt; COUNT; i&#43;&#43;) {
+        for (int i = 0; i < COUNT; i++) {
             String s = formatter.format(values);
             System.out.print(s);
         }
@@ -59,11 +59,11 @@ We can compare the performance of a MessageFormatter in both a precompiled state
 
     @Benchmark
     public void formatWithoutPrecompiling() {
-        String format = &#34;The square of {0} is {1}\n&#34;;
+        String format = "The square of {0} is {1}\n";
         Integer[] values = new Integer[2];
         values[0] = NUM;
         values[1] = NUM * NUM;
-        for (int i = 0; i &lt; COUNT; i&#43;&#43;) {
+        for (int i = 0; i < COUNT; i++) {
             String s = MessageFormat.format(format, values);
             System.out.print(s);
         }
@@ -84,15 +84,15 @@ Now, we can achieve the same result using garden variety addition, and compare t
 ```java
     @Benchmark
     public void printingWithNoFormattingCosts() {
-        for (int i = 0; i &lt; COUNT; i&#43;&#43;) {
-            System.out.print(&#34;The square of 7 is 49\n&#34;);
+        for (int i = 0; i < COUNT; i++) {
+            System.out.print("The square of 7 is 49\n");
         }
     }
 
     @Benchmark
     public void formatUsingAddition() {
-        for (int i = 0; i &lt; COUNT; i&#43;&#43;) {
-            String s = &#34;The square of &#34; &#43; NUM &#43; &#34; is &#34; &#43; NUM * NUM &#43; &#34;\n&#34;;
+        for (int i = 0; i < COUNT; i++) {
+            String s = "The square of " + NUM + " is " + NUM * NUM + "\n";
             System.out.print(s);
         }
     }

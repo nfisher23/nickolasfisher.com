@@ -8,7 +8,7 @@
 <title>OpenAPI and Spring Boot Webflux: A Working Introduction</title>
 <meta
   name="description"
-  content="The OpenAPI Specification is an &quot;industry standard&quot; way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code&ndash;better yet, displayed while the app is running."
+  content="The OpenAPI Specification is an &ldquo;industry standard&rdquo; way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code&ndash;better yet, displayed while the app is running."
 />
 <link rel="canonical" href="http://localhost:1313/blog/openapi-and-spring-boot-webflux-a-working-introduction/" />
 <link rel="robots" href="/robots.txt" />
@@ -152,15 +152,15 @@
 
   
 
-  <section><p>The <a href="http://spec.openapis.org/oas/v3.0.3">OpenAPI Specification</a> is an &quot;industry standard&quot; way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code&ndash;better yet, displayed while the app is running.</p>
-<p>Let's set this up for spring boot webflux and start messing with it.</p>
+  <section><p>The <a href="http://spec.openapis.org/oas/v3.0.3">OpenAPI Specification</a> is an &ldquo;industry standard&rdquo; way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code&ndash;better yet, displayed while the app is running.</p>
+<p>Let&rsquo;s set this up for spring boot webflux and start messing with it.</p>
 <h2 id="bootstrap-the-application">Bootstrap the Application</h2>
-<p>Use the <a href="https://start.spring.io/">spring boot initalizr</a> to create an application with the &quot;reactive web&quot; option. Then add this to your dependencies:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;org.springdoc&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;springdoc-openapi-webflux-ui&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;version&amp;gt;1.4.4&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
+<p>Use the <a href="https://start.spring.io/">spring boot initalizr</a> to create an application with the &ldquo;reactive web&rdquo; option. Then add this to your dependencies:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springdoc<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>springdoc-openapi-webflux-ui<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;version&gt;</span>1.4.4<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
 </span></span></code></pre></div><p>If you start up your application:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mvn spring-boot:run
 </span></span></code></pre></div><p>Then you can go into another terminal and see this in action:</p>
@@ -169,22 +169,22 @@
 </span></span><span style="display:flex;"><span>                                 Dload  Upload   Total   Spent    Left  Speed
 </span></span><span style="display:flex;"><span><span style="color:#bd93f9">100</span>   <span style="color:#bd93f9">180</span>  <span style="color:#bd93f9">100</span>   <span style="color:#bd93f9">180</span>    <span style="color:#bd93f9">0</span>     <span style="color:#bd93f9">0</span>    <span style="color:#bd93f9">584</span>      <span style="color:#bd93f9">0</span> --:--:-- --:--:-- --:--:--   <span style="color:#bd93f9">584</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>
-</span></span><span style="display:flex;"><span>   &amp;<span style="color:#6272a4">#34;components&amp;#34; : {},</span>
-</span></span><span style="display:flex;"><span>   &amp;<span style="color:#6272a4">#34;openapi&amp;#34; : &amp;#34;3.0.1&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>   &amp;<span style="color:#6272a4">#34;paths&amp;#34; : {},</span>
-</span></span><span style="display:flex;"><span>   &amp;<span style="color:#6272a4">#34;servers&amp;#34; : [</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f1fa8c">&#34;components&#34;</span> : <span style="color:#ff79c6">{}</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f1fa8c">&#34;openapi&#34;</span> : <span style="color:#f1fa8c">&#34;3.0.1&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f1fa8c">&#34;paths&#34;</span> : <span style="color:#ff79c6">{}</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f1fa8c">&#34;servers&#34;</span> : <span style="color:#ff79c6">[</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">{</span>
-</span></span><span style="display:flex;"><span>         &amp;<span style="color:#6272a4">#34;url&amp;#34; : &amp;#34;http://localhost:8080&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>         &amp;<span style="color:#6272a4">#34;description&amp;#34; : &amp;#34;Generated server url&amp;#34;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#f1fa8c">&#34;url&#34;</span> : <span style="color:#f1fa8c">&#34;http://localhost:8080&#34;</span>,
+</span></span><span style="display:flex;"><span>         <span style="color:#f1fa8c">&#34;description&#34;</span> : <span style="color:#f1fa8c">&#34;Generated server url&#34;</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>
 </span></span><span style="display:flex;"><span>   <span style="color:#ff79c6">]</span>,
-</span></span><span style="display:flex;"><span>   &amp;<span style="color:#6272a4">#34;info&amp;#34; : {</span>
-</span></span><span style="display:flex;"><span>      &amp;<span style="color:#6272a4">#34;version&amp;#34; : &amp;#34;v0&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>      &amp;<span style="color:#6272a4">#34;title&amp;#34; : &amp;#34;OpenAPI definition&amp;#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f1fa8c">&#34;info&#34;</span> : <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;version&#34;</span> : <span style="color:#f1fa8c">&#34;v0&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;title&#34;</span> : <span style="color:#f1fa8c">&#34;OpenAPI definition&#34;</span>
 </span></span><span style="display:flex;"><span>   <span style="color:#ff79c6">}</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
-</span></span></code></pre></div><p>You can also navigate to <strong>http://localhost:8080/swagger-ui.html</strong> by default and poke around. You won't see any operations defined yet, we're about to do that.</p>
-<p>Let's create a simple entity and a simple controller and try that again:</p>
+</span></span></code></pre></div><p>You can also navigate to <strong>http://localhost:8080/swagger-ui.html</strong> by default and poke around. You won&rsquo;t see any operations defined yet, we&rsquo;re about to do that.</p>
+<p>Let&rsquo;s create a simple entity and a simple controller and try that again:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Hello</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> String firstName;
 </span></span><span style="display:flex;"><span>
@@ -210,40 +210,40 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@RestController
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">DocumentedController</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>hello<span style="color:#ff79c6">&amp;</span>#34;)
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;ResponseEntity<span style="color:#ff79c6">&amp;</span>lt;Hello<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; getHello() {
+</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#f1fa8c">&#34;/hello&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>ResponseEntity<span style="color:#ff79c6">&lt;</span>Hello<span style="color:#ff79c6">&gt;&gt;</span> <span style="color:#50fa7b">getHello</span>() {
 </span></span><span style="display:flex;"><span>        Hello hello <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Hello();
-</span></span><span style="display:flex;"><span>        hello.<span style="color:#50fa7b">setFirstName</span>(<span style="color:#ff79c6">&amp;</span>#34;yeah<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        hello.<span style="color:#50fa7b">setLastName</span>(<span style="color:#ff79c6">&amp;</span>#34;bauer<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        hello.<span style="color:#50fa7b">setFirstName</span>(<span style="color:#f1fa8c">&#34;yeah&#34;</span>);
+</span></span><span style="display:flex;"><span>        hello.<span style="color:#50fa7b">setLastName</span>(<span style="color:#f1fa8c">&#34;bauer&#34;</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">just</span>(ResponseEntity.<span style="color:#50fa7b">ok</span>(hello));
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    @PostMapping(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>hello<span style="color:#ff79c6">&amp;</span>#34;)
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;ResponseEntity<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; postHello(Hello hello) {
+</span></span><span style="display:flex;"><span>    @PostMapping(<span style="color:#f1fa8c">&#34;/hello&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>ResponseEntity<span style="color:#ff79c6">&lt;</span>Void<span style="color:#ff79c6">&gt;&gt;</span> <span style="color:#50fa7b">postHello</span>(Hello hello) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">just</span>(ResponseEntity.<span style="color:#50fa7b">accepted</span>().<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>If you reboot the application then hit <strong>/v3/api-docs</strong> again, you will see a huge json object including:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>....
-</span></span><span style="display:flex;"><span>   &amp;#<span style="color:#bd93f9">34</span>;paths&amp;#<span style="color:#bd93f9">34</span>; : {
-</span></span><span style="display:flex;"><span>      &amp;#34;/hello&amp;#34; : {
-</span></span><span style="display:flex;"><span>         &amp;#34;post&amp;#34; : {
-</span></span><span style="display:flex;"><span>            &amp;#34;operationId&amp;#34; : &amp;#34;postHello&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;tags&amp;#34; : [
-</span></span><span style="display:flex;"><span>               &amp;#34;documented-controller&amp;#34;
+</span></span><span style="display:flex;"><span>   <span style="color:#f1fa8c">&#34;paths&#34;</span> : {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&#34;/hello&#34;</span> : {
+</span></span><span style="display:flex;"><span>         <span style="color:#ff79c6">&#34;post&#34;</span> : {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;operationId&#34;</span> : <span style="color:#f1fa8c">&#34;postHello&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;tags&#34;</span> : [
+</span></span><span style="display:flex;"><span>               <span style="color:#f1fa8c">&#34;documented-controller&#34;</span>
 </span></span><span style="display:flex;"><span>            ],
-</span></span><span style="display:flex;"><span>            &amp;#34;requestBody&amp;#34; : {
-</span></span><span style="display:flex;"><span>               &amp;#34;content&amp;#34; : {
-</span></span><span style="display:flex;"><span>                  &amp;#34;application/json&amp;#34; : {
-</span></span><span style="display:flex;"><span>                     &amp;#34;schema&amp;#34; : {
-</span></span><span style="display:flex;"><span>                        &amp;#34;$ref&amp;#34; : &amp;#34;#/components/schemas/Hello&amp;#34;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;requestBody&#34;</span> : {
+</span></span><span style="display:flex;"><span>               <span style="color:#ff79c6">&#34;content&#34;</span> : {
+</span></span><span style="display:flex;"><span>                  <span style="color:#ff79c6">&#34;application/json&#34;</span> : {
+</span></span><span style="display:flex;"><span>                     <span style="color:#ff79c6">&#34;schema&#34;</span> : {
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&#34;$ref&#34;</span> : <span style="color:#f1fa8c">&#34;#/components/schemas/Hello&#34;</span>
 </span></span><span style="display:flex;"><span>                     }
 </span></span><span style="display:flex;"><span>                  }
 </span></span><span style="display:flex;"><span>               }
 </span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            &amp;#<span style="color:#bd93f9">34</span>;responses&amp;#<span style="color:#bd93f9">34</span>; : {
-</span></span><span style="display:flex;"><span>               &amp;#34;200&amp;#34; : {
-</span></span><span style="display:flex;"><span>                  &amp;#34;description&amp;#34; : &amp;#34;OK&amp;#34;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;responses&#34;</span> : {
+</span></span><span style="display:flex;"><span>               <span style="color:#ff79c6">&#34;200&#34;</span> : {
+</span></span><span style="display:flex;"><span>                  <span style="color:#ff79c6">&#34;description&#34;</span> : <span style="color:#f1fa8c">&#34;OK&#34;</span>
 </span></span><span style="display:flex;"><span>               }
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>         },
@@ -261,22 +261,22 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>...<span style="color:#50fa7b">getters</span> and setters...
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Reboot the app and you'll see a section on that api docs endpoint:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>   &amp;#<span style="color:#bd93f9">34</span>;components&amp;#<span style="color:#bd93f9">34</span>; : {
-</span></span><span style="display:flex;"><span>      &amp;#34;schemas&amp;#34; : {
-</span></span><span style="display:flex;"><span>         &amp;#34;Hello&amp;#34; : {
-</span></span><span style="display:flex;"><span>            &amp;#34;type&amp;#34; : &amp;#34;object&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;required&amp;#34; : [
-</span></span><span style="display:flex;"><span>               &amp;#34;lastName&amp;#34;
+</span></span></code></pre></div><p>Reboot the app and you&rsquo;ll see a section on that api docs endpoint:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>   <span style="color:#f1fa8c">&#34;components&#34;</span> : {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&#34;schemas&#34;</span> : {
+</span></span><span style="display:flex;"><span>         <span style="color:#ff79c6">&#34;Hello&#34;</span> : {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;type&#34;</span> : <span style="color:#f1fa8c">&#34;object&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;required&#34;</span> : [
+</span></span><span style="display:flex;"><span>               <span style="color:#f1fa8c">&#34;lastName&#34;</span>
 </span></span><span style="display:flex;"><span>            ],
-</span></span><span style="display:flex;"><span>            &amp;#34;properties&amp;#34; : {
-</span></span><span style="display:flex;"><span>               &amp;#34;firstName&amp;#34; : {
-</span></span><span style="display:flex;"><span>                  &amp;#34;type&amp;#34; : &amp;#34;string&amp;#34;,
-</span></span><span style="display:flex;"><span>                  &amp;#34;maxLength&amp;#34; : 250,
-</span></span><span style="display:flex;"><span>                  &amp;#34;minLength&amp;#34; : 0
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;properties&#34;</span> : {
+</span></span><span style="display:flex;"><span>               <span style="color:#ff79c6">&#34;firstName&#34;</span> : {
+</span></span><span style="display:flex;"><span>                  <span style="color:#ff79c6">&#34;type&#34;</span> : <span style="color:#f1fa8c">&#34;string&#34;</span>,
+</span></span><span style="display:flex;"><span>                  <span style="color:#ff79c6">&#34;maxLength&#34;</span> : <span style="color:#bd93f9">250</span>,
+</span></span><span style="display:flex;"><span>                  <span style="color:#ff79c6">&#34;minLength&#34;</span> : <span style="color:#bd93f9">0</span>
 </span></span><span style="display:flex;"><span>               },
-</span></span><span style="display:flex;"><span>               &amp;#<span style="color:#bd93f9">34</span>;lastName&amp;#<span style="color:#bd93f9">34</span>; : {
-</span></span><span style="display:flex;"><span>                  &amp;#34;type&amp;#34; : &amp;#34;string&amp;#34;
+</span></span><span style="display:flex;"><span>               <span style="color:#ff79c6">&#34;lastName&#34;</span> : {
+</span></span><span style="display:flex;"><span>                  <span style="color:#ff79c6">&#34;type&#34;</span> : <span style="color:#f1fa8c">&#34;string&#34;</span>
 </span></span><span style="display:flex;"><span>               }
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>         }
@@ -286,19 +286,19 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@RestController
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">DocumentedController</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    @Operation(summary <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;wattt<span style="color:#ff79c6">&amp;</span>#34;, responses <span style="color:#ff79c6">=</span> {
-</span></span><span style="display:flex;"><span>            @ApiResponse(description <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;woot<span style="color:#ff79c6">&amp;</span>#34;, responseCode <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;202<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>    @Operation(summary <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;wattt&#34;</span>, responses <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>            @ApiResponse(description <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;woot&#34;</span>, responseCode <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;202&#34;</span>)
 </span></span><span style="display:flex;"><span>    })
-</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>hello<span style="color:#ff79c6">&amp;</span>#34;)
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;ResponseEntity<span style="color:#ff79c6">&amp;</span>lt;Hello<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; getHello() {
+</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#f1fa8c">&#34;/hello&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>ResponseEntity<span style="color:#ff79c6">&lt;</span>Hello<span style="color:#ff79c6">&gt;&gt;</span> <span style="color:#50fa7b">getHello</span>() {
 </span></span><span style="display:flex;"><span>        Hello hello <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Hello();
-</span></span><span style="display:flex;"><span>        hello.<span style="color:#50fa7b">setFirstName</span>(<span style="color:#ff79c6">&amp;</span>#34;yeah<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        hello.<span style="color:#50fa7b">setLastName</span>(<span style="color:#ff79c6">&amp;</span>#34;bauer<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        hello.<span style="color:#50fa7b">setFirstName</span>(<span style="color:#f1fa8c">&#34;yeah&#34;</span>);
+</span></span><span style="display:flex;"><span>        hello.<span style="color:#50fa7b">setLastName</span>(<span style="color:#f1fa8c">&#34;bauer&#34;</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">just</span>(ResponseEntity.<span style="color:#50fa7b">ok</span>(hello));
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    @PostMapping(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>hello<span style="color:#ff79c6">&amp;</span>#34;)
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;ResponseEntity<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; postHello(Hello hello) {
+</span></span><span style="display:flex;"><span>    @PostMapping(<span style="color:#f1fa8c">&#34;/hello&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>ResponseEntity<span style="color:#ff79c6">&lt;</span>Void<span style="color:#ff79c6">&gt;&gt;</span> <span style="color:#50fa7b">postHello</span>(Hello hello) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">just</span>(ResponseEntity.<span style="color:#50fa7b">accepted</span>().<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}

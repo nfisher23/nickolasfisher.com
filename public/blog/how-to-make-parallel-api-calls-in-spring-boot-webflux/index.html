@@ -155,7 +155,7 @@ Following up on the last post, which was making sequential calls to downstream s
 
   <section><p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience">can be found on Github</a>.</p>
 <p>Following up on the last post, which was making sequential calls to downstream services, sometimes you are in a position where you can make calls in parallel and merge the results. In this case, we want to use <strong>zip</strong>.</p>
-<p>Let's take the framework we started in the last post and demonstrate how this might work.</p>
+<p>Let&rsquo;s take the framework we started in the last post and demonstrate how this might work.</p>
 <h3 id="dtos">DTOs</h3>
 <p>Recall we had two simple DTOs:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">FirstCallDTO</span> {
@@ -183,7 +183,7 @@ Following up on the last post, which was making sequential calls to downstream s
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">fieldFromSecondCall</span> <span style="color:#ff79c6">=</span> fieldFromSecondCall;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Let's now add a DTO that will serve to merge the results of the these two DTOs:</p>
+</span></span></code></pre></div><p>Let&rsquo;s now add a DTO that will serve to merge the results of the these two DTOs:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">MergedCallsDTO</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> Integer fieldOne;
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> String fieldTwo;
@@ -204,8 +204,8 @@ Following up on the last post, which was making sequential calls to downstream s
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">fieldTwo</span> <span style="color:#ff79c6">=</span> fieldTwo;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>With that in place, let's follow TDD and set up a bare bones method in our <strong>CombiningCallsService</strong>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;MergedCallsDTO<span style="color:#ff79c6">&amp;</span>gt; mergedCalls(Integer firstEndpointParam, Integer secondEndpointParam) {
+</span></span></code></pre></div><p>With that in place, let&rsquo;s follow TDD and set up a bare bones method in our <strong>CombiningCallsService</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>MergedCallsDTO<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">mergedCalls</span>(Integer firstEndpointParam, Integer secondEndpointParam) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">null</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>Our test should:</p>
@@ -219,56 +219,56 @@ Following up on the last post, which was making sequential calls to downstream s
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">mergedCalls_callsBothEndpointsAndMergesResults</span>() {
 </span></span><span style="display:flex;"><span>        HttpRequest expectedFirstRequest <span style="color:#ff79c6">=</span> HttpRequest.<span style="color:#50fa7b">request</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>first<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>25<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#f1fa8c">&#34;/first/endpoint/25&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>.<span style="color:#50fa7b">when</span>(
 </span></span><span style="display:flex;"><span>                expectedFirstRequest
 </span></span><span style="display:flex;"><span>        ).<span style="color:#50fa7b">respond</span>(
 </span></span><span style="display:flex;"><span>                HttpResponse.<span style="color:#50fa7b">response</span>()
-</span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">withBody</span>(<span style="color:#ff79c6">&amp;</span>#34;{\<span style="color:#ff79c6">&amp;</span>#34;fieldFromFirstCall\<span style="color:#ff79c6">&amp;</span>#34;: 250}<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">withBody</span>(<span style="color:#f1fa8c">&#34;{\&#34;fieldFromFirstCall\&#34;: 250}&#34;</span>)
 </span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">withContentType</span>(MediaType.<span style="color:#50fa7b">APPLICATION_JSON</span>)
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        HttpRequest expectedSecondRequest <span style="color:#ff79c6">=</span> HttpRequest.<span style="color:#50fa7b">request</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>second<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>45<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#f1fa8c">&#34;/second/endpoint/45&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>.<span style="color:#50fa7b">when</span>(
 </span></span><span style="display:flex;"><span>                expectedSecondRequest
 </span></span><span style="display:flex;"><span>        ).<span style="color:#50fa7b">respond</span>(
 </span></span><span style="display:flex;"><span>                HttpResponse.<span style="color:#50fa7b">response</span>()
-</span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">withBody</span>(<span style="color:#ff79c6">&amp;</span>#34;{\<span style="color:#ff79c6">&amp;</span>#34;fieldFromSecondCall\<span style="color:#ff79c6">&amp;</span>#34;: \<span style="color:#ff79c6">&amp;</span>#34;something\<span style="color:#ff79c6">&amp;</span>#34;}<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">withBody</span>(<span style="color:#f1fa8c">&#34;{\&#34;fieldFromSecondCall\&#34;: \&#34;something\&#34;}&#34;</span>)
 </span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">withContentType</span>(MediaType.<span style="color:#50fa7b">APPLICATION_JSON</span>)
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">combiningCallsService</span>.<span style="color:#50fa7b">mergedCalls</span>(25, 45))
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(mergedCallsDTO <span style="color:#ff79c6">-&amp;</span>gt; 250 <span style="color:#ff79c6">==</span> mergedCallsDTO.<span style="color:#50fa7b">getFieldOne</span>()
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; <span style="color:#ff79c6">&amp;</span>#34;something<span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#50fa7b">equals</span>(mergedCallsDTO.<span style="color:#50fa7b">getFieldTwo</span>())
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(mergedCallsDTO <span style="color:#ff79c6">-&gt;</span> 250 <span style="color:#ff79c6">==</span> mergedCallsDTO.<span style="color:#50fa7b">getFieldOne</span>()
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; <span style="color:#f1fa8c">&#34;something&#34;</span>.<span style="color:#50fa7b">equals</span>(mergedCallsDTO.<span style="color:#50fa7b">getFieldTwo</span>())
 </span></span><span style="display:flex;"><span>                )
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>.<span style="color:#50fa7b">verify</span>(expectedFirstRequest, VerificationTimes.<span style="color:#50fa7b">once</span>());
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>.<span style="color:#50fa7b">verify</span>(expectedSecondRequest, VerificationTimes.<span style="color:#50fa7b">once</span>());
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>While pretty self explanatory, we are using the reactor test's <strong>StepVerifier</strong> to verify that the mono, upon completing and calling back, will return an object that matches the assertion in the <strong>expectNextMatches</strong> block.</p>
-<p>You will, predictably, see this test fail without any code to make it pass, so let's write that code now:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;MergedCallsDTO<span style="color:#ff79c6">&amp;</span>gt; mergedCalls(Integer firstEndpointParam, Integer secondEndpointParam) {
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;FirstCallDTO<span style="color:#ff79c6">&amp;</span>gt; firstCallDTOMono <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">serviceAWebClient</span>.<span style="color:#50fa7b">get</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(uriBuilder <span style="color:#ff79c6">-&amp;</span>gt; uriBuilder.<span style="color:#50fa7b">path</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>first<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>{param}<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">build</span>(firstEndpointParam))
+</span></span></code></pre></div><p>While pretty self explanatory, we are using the reactor test&rsquo;s <strong>StepVerifier</strong> to verify that the mono, upon completing and calling back, will return an object that matches the assertion in the <strong>expectNextMatches</strong> block.</p>
+<p>You will, predictably, see this test fail without any code to make it pass, so let&rsquo;s write that code now:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>MergedCallsDTO<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">mergedCalls</span>(Integer firstEndpointParam, Integer secondEndpointParam) {
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>FirstCallDTO<span style="color:#ff79c6">&gt;</span> firstCallDTOMono <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">serviceAWebClient</span>.<span style="color:#50fa7b">get</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(uriBuilder <span style="color:#ff79c6">-&gt;</span> uriBuilder.<span style="color:#50fa7b">path</span>(<span style="color:#f1fa8c">&#34;/first/endpoint/{param}&#34;</span>).<span style="color:#50fa7b">build</span>(firstEndpointParam))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">retrieve</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">bodyToMono</span>(FirstCallDTO.<span style="color:#50fa7b">class</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;SecondCallDTO<span style="color:#ff79c6">&amp;</span>gt; secondCallDTOMono <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">serviceAWebClient</span>.<span style="color:#50fa7b">get</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(uriBuilder <span style="color:#ff79c6">-&amp;</span>gt; uriBuilder.<span style="color:#50fa7b">path</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>second<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>{param}<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">build</span>(secondEndpointParam))
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>SecondCallDTO<span style="color:#ff79c6">&gt;</span> secondCallDTOMono <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">serviceAWebClient</span>.<span style="color:#50fa7b">get</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(uriBuilder <span style="color:#ff79c6">-&gt;</span> uriBuilder.<span style="color:#50fa7b">path</span>(<span style="color:#f1fa8c">&#34;/second/endpoint/{param}&#34;</span>).<span style="color:#50fa7b">build</span>(secondEndpointParam))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">retrieve</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">bodyToMono</span>(SecondCallDTO.<span style="color:#50fa7b">class</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// nothing has been subscribed to, those calls above are not waiting for anything and are not subscribed to, yet</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// zipping the monos will invoke the callback in &amp;#34;map&amp;#34; once both of them have completed, merging the results</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// zipping the monos will invoke the callback in &#34;map&#34; once both of them have completed, merging the results</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// into a tuple.</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">zip</span>(firstCallDTOMono, secondCallDTOMono)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">map</span>(objects <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">map</span>(objects <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>                    MergedCallsDTO mergedCallsDTO <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> MergedCallsDTO();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>                    mergedCallsDTO.<span style="color:#50fa7b">setFieldOne</span>(objects.<span style="color:#50fa7b">getT1</span>().<span style="color:#50fa7b">getFieldFromFirstCall</span>());
@@ -277,7 +277,7 @@ Following up on the last post, which was making sequential calls to downstream s
 </span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">return</span> mergedCallsDTO;
 </span></span><span style="display:flex;"><span>                });
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>As you can see in the code comments, simply making a block of code return a <strong>Mono</strong> doesn't actually do anything until it is subscribed to. In the case of our test, we are subscribing directly to it. If we wrote an endpoint that were invoked when someone made an http request to our application, then it would get subscribed to only at the end of the chain and we wouldn't ever actually write <strong>subscribe</strong> anywhere.</p>
+</span></span></code></pre></div><p>As you can see in the code comments, simply making a block of code return a <strong>Mono</strong> doesn&rsquo;t actually do anything until it is subscribed to. In the case of our test, we are subscribing directly to it. If we wrote an endpoint that were invoked when someone made an http request to our application, then it would get subscribed to only at the end of the chain and we wouldn&rsquo;t ever actually write <strong>subscribe</strong> anywhere.</p>
 <p>So, by using <strong>zip</strong>, they are both kicked off at the same time, and we wait for both of them to complete, merging the results with <strong>map</strong>. If you run the test, it will now pass.</p>
 </section>
 

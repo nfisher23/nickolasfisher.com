@@ -6,8 +6,8 @@ tags: [distributed systems]
 ---
 
 While you can always spin up a [Digital Ocean](https://www.digitalocean.com/) or [Linode](https://www.linode.com/) Virtual Private Server to toy around with,
-that both costs money (pennies, at most a dollar or two, admittedly) and isn&#39;t an extremely fast feedback loop for server provisioning. What we really want, as developers, is a way to test out an idea, see its feasibility, and preferably
-tinker with that idea until it&#39;s solid.
+that both costs money (pennies, at most a dollar or two, admittedly) and isn't an extremely fast feedback loop for server provisioning. What we really want, as developers, is a way to test out an idea, see its feasibility, and preferably
+tinker with that idea until it's solid.
 
 The goal can be summed up with an example: say we have a chunk of distributed microservices across various machines, and to debug, to date, we have had to go onto each machine and manually inspect the logs for that particular microservice. If there are multiple microservices, we might have to look in three or four different places for log information to track down the problem. So, we say to ourselves, we want to aggregate our logs into one place to save time, monitor security abnormalities, and track down any problems before they become big problems. After researching a bit, we realize that [The Elastic Stack](https://www.elastic.co/products) is the best option for us moving forward.
 
@@ -16,20 +16,20 @@ How are we going to prove that this can actually work without having multiple ma
 how can we _quickly_ and _cheaply_ prove that this will actually work? We need a place
 to toy around with these applications, and shorten our feedback loop as tightly as possible.
 
-One way, as mentioned above, was to spin up some DO or Linode VPS&#39;s and do our tinkering on there. Another option is to use [VirtualBox](https://www.virtualbox.org/) to create local,
+One way, as mentioned above, was to spin up some DO or Linode VPS's and do our tinkering on there. Another option is to use [VirtualBox](https://www.virtualbox.org/) to create local,
 virtual machines, and configure them to accept connections just like a virtual private server in the cloud would. That is the subject of this tutorial (the next step, and the subject of the next post, is to [use Vagrant](https://nickolasfisher.com/blog/How-to-Simulate-Distributed-Systems-in-the-Cloud-with-Vagrant). **Vagrant is awesome**.)
 
 ### Prerequisites
 
-Download virtual box, and [download the latest ubuntu server](https://www.ubuntu.com/download/server). The version we&#39;ll use for this tutorial is 18.04 LTS. Then, you can follow this [tutorial on setting up Ubuntu Server on Virtual Box](https://ilearnstack.com/2013/04/13/setting-ubuntu-vm-in-virtualbox/).
+Download virtual box, and [download the latest ubuntu server](https://www.ubuntu.com/download/server). The version we'll use for this tutorial is 18.04 LTS. Then, you can follow this [tutorial on setting up Ubuntu Server on Virtual Box](https://ilearnstack.com/2013/04/13/setting-ubuntu-vm-in-virtualbox/).
 
-### How to talk to a &#34;guest&#34; virtual machine from your &#34;host&#34; machine
+### How to talk to a "guest" virtual machine from your "host" machine
 
-In virtual box world, your &#34;host&#34; machine is your regular operating system, which boots up when you start your computer. Any &#34;guest&#34; machine, then, is
+In virtual box world, your "host" machine is your regular operating system, which boots up when you start your computer. Any "guest" machine, then, is
 whatever virtual box instance you have set up. Since what we want is to be able to connect to a server using ssh, as we would in a real VM, we have to
 tinker a bit with our virtual box instance.
 
-Make sure your ubuntu VM guest machine is powered off, then go to **Global Tools**. Click on &#34;VirtualBox Host-Only Ethernet Adapter,
+Make sure your ubuntu VM guest machine is powered off, then go to **Global Tools**. Click on "VirtualBox Host-Only Ethernet Adapter,
 and have the following settings configured:
 
 - Server Address: 192.168.56.100
@@ -50,7 +50,7 @@ You should see a localhost loopback instance, and two named ethernet interfaces.
 talk to the internet) and the host-only ethernet adapter. By default, the host-only ethernet adapter will not advertise itself anywhere.
 
 For me, the NAT interface was enp0s3, and the host-only interface was named enp0s8. We will have to change the host-only interface to be a static IP address, which, for Ubuntu 18.04, is done in the
-`/etc/netplan/99_config.yaml` file. If the file doesn&#39;t exist, create it.
+`/etc/netplan/99_config.yaml` file. If the file doesn't exist, create it.
 
 Your configuration file should be changed to look like this:
 

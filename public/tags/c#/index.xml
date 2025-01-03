@@ -14,7 +14,7 @@
       <link>http://localhost:1313/blog/how-to-set-up-clickonce-continuous-deployment-for-wpf-via-nginx/</link>
       <pubDate>Wed, 08 Aug 2018 00:08:00 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-set-up-clickonce-continuous-deployment-for-wpf-via-nginx/</guid>
-      <description>&lt;p&gt;I&#39;ve been working on a small wpf project on GitHub that let&#39;s you &lt;a href=&#34;https://github.com/nfisher23/SEPubViewer&#34;&gt;view SEC filings on your desktop&lt;/a&gt; in an intuitive way. Since EDGAR kind of sucks for a casual user, this is much more appealing.&lt;/p&gt;</description>
+      <description>&lt;p&gt;I&amp;rsquo;ve been working on a small wpf project on GitHub that let&amp;rsquo;s you &lt;a href=&#34;https://github.com/nfisher23/SEPubViewer&#34;&gt;view SEC filings on your desktop&lt;/a&gt; in an intuitive way. Since EDGAR kind of sucks for a casual user, this is much more appealing.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to Configure Visual Studio to Implement the Yarn Package Manager</title>

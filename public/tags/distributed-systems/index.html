@@ -164,7 +164,7 @@
   <div class="description">
     
       <p>The source code for this article <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>Using Redis as a best effort locking mechanism can be very useful in practice, to prevent two logical threads from clobbering each other. While redis locking is certainly not perfect, and <a href="https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html">you shouldn't use redis locking if the underlying operation can't be occasionally done twice</a>, it can still be useful for that &quot;best effort, do this once&quot; use case.</p>
+<p>Using Redis as a best effort locking mechanism can be very useful in practice, to prevent two logical threads from clobbering each other. While redis locking is certainly not perfect, and <a href="https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html">you shouldn&rsquo;t use redis locking if the underlying operation can&rsquo;t be occasionally done twice</a>, it can still be useful for that &ldquo;best effort, do this once&rdquo; use case.</p>
     
   </div>
 
@@ -196,7 +196,7 @@
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on github</a>.</p>
-<p>In a previous article, we showed how to <a href="https://nickolasfisher.com/blog/Pre-Loading-a-Lua-Script-into-Redis-With-Lettuce">efficiently execute a lua script in redis using lettuce</a>. To really scale our caching solution horizontally [and elegantly deal with many scaling headaches], we will also want to make sure we can execute our lua scripts against clustered redis, which as we'll see here is pretty straightforward.</p>
+<p>In a previous article, we showed how to <a href="https://nickolasfisher.com/blog/Pre-Loading-a-Lua-Script-into-Redis-With-Lettuce">efficiently execute a lua script in redis using lettuce</a>. To really scale our caching solution horizontally [and elegantly deal with many scaling headaches], we will also want to make sure we can execute our lua scripts against clustered redis, which as we&rsquo;ll see here is pretty straightforward.</p>
     
   </div>
 
@@ -290,7 +290,7 @@
   <div class="description">
     
       <p>The source code for this article <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis">can be found on Github</a>.</p>
-<p><a href="https://github.com/lettuce-io/lettuce-core">Lettuce</a> is a redis client with reactive support. There is a super handy <a href="https://github.com/kstyrc/embedded-redis">embedded redis for java project</a> out there, and this kind of integration testing inside your service is worth its weight in gold, in my humble opinion. This post will detail how to merge both of these worlds together, and set up redis integration tests when you're using a lettuce client.</p>
+<p><a href="https://github.com/lettuce-io/lettuce-core">Lettuce</a> is a redis client with reactive support. There is a super handy <a href="https://github.com/kstyrc/embedded-redis">embedded redis for java project</a> out there, and this kind of integration testing inside your service is worth its weight in gold, in my humble opinion. This post will detail how to merge both of these worlds together, and set up redis integration tests when you&rsquo;re using a lettuce client.</p>
     
   </div>
 

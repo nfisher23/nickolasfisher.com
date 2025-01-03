@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="You can view the sample code associated with this post on GitHub.
-JMH is a lightweight code generator that can benchmark Java code. While many of the performance bottlenecks in today&#39;s world are related to network calls and/or database queries, it&#39;s still a good idea to understand the performance of our code at a lower level. In particular, by automating performance tests on our code, we can usually at least ensure that the performance was not accidentally made worse by some refactoring effort."
+JMH is a lightweight code generator that can benchmark Java code. While many of the performance bottlenecks in today&rsquo;s world are related to network calls and/or database queries, it&rsquo;s still a good idea to understand the performance of our code at a lower level. In particular, by automating performance tests on our code, we can usually at least ensure that the performance was not accidentally made worse by some refactoring effort."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-benchmark-java-code-using-junit-and-jmh/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,20 +154,20 @@ JMH is a lightweight code generator that can benchmark Java code. While many of 
   
 
   <section><p>You can view the sample code associated with this post <a href="https://github.com/nfisher23/jmh-junit-intro">on GitHub</a>.</p>
-<p><a href="https://openjdk.java.net/projects/code-tools/jmh/">JMH</a> is a lightweight code generator that can benchmark Java code. While many of the performance bottlenecks in today's world are related to network calls and/or database queries, it's still a good idea to understand the performance of our code at a lower level. In particular, by automating performance tests on our code, we can usually at least ensure that the performance was not accidentally made worse by some refactoring effort.</p>
-<p>By insisting on running our JMH benchmarks in JUnit code, we can quickly and easily set up continuous integration. While this is not the &quot;recommended&quot; approach, in my experience it has been consistent in its results. Especially since this is best used as a learning tool, let's just get from zero to one as quickly as possible.</p>
-<p>First, you'll need the maven dependency:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>&amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;groupId&amp;gt;org.openjdk.jmh&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;artifactId&amp;gt;jmh-generator-annprocess&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;version&amp;gt;1.21&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>&amp;lt;/dependency&amp;gt;
+<p><a href="https://openjdk.java.net/projects/code-tools/jmh/">JMH</a> is a lightweight code generator that can benchmark Java code. While many of the performance bottlenecks in today&rsquo;s world are related to network calls and/or database queries, it&rsquo;s still a good idea to understand the performance of our code at a lower level. In particular, by automating performance tests on our code, we can usually at least ensure that the performance was not accidentally made worse by some refactoring effort.</p>
+<p>By insisting on running our JMH benchmarks in JUnit code, we can quickly and easily set up continuous integration. While this is not the &ldquo;recommended&rdquo; approach, in my experience it has been consistent in its results. Especially since this is best used as a learning tool, let&rsquo;s just get from zero to one as quickly as possible.</p>
+<p>First, you&rsquo;ll need the maven dependency:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;groupId&gt;</span>org.openjdk.jmh<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;artifactId&gt;</span>jmh-generator-annprocess<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;version&gt;</span>1.21<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;scope&gt;</span>test<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/dependency&gt;</span>
 </span></span></code></pre></div><p>All you need is one JUnit test case, which will be the entry point for all of the benchmarks in your file:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">runBenchmarks</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>    Options options <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> OptionsBuilder()
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">include</span>(<span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getClass</span>().<span style="color:#50fa7b">getName</span>() <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#ff79c6">*&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">include</span>(<span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getClass</span>().<span style="color:#50fa7b">getName</span>() <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;.*&#34;</span>)
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">mode</span>(Mode.<span style="color:#50fa7b">AverageTime</span>)
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">warmupTime</span>(TimeValue.<span style="color:#50fa7b">seconds</span>(1))
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">warmupIterations</span>(6)
@@ -180,35 +180,35 @@ JMH is a lightweight code generator that can benchmark Java code. While many of 
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">new</span> Runner(options).<span style="color:#50fa7b">run</span>();
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Be sure to configure the options as you see fit. The fluent API makes it all pretty intuitive. Do be careful if you're using OS resources, however, because if you have multiple threads running at the same time, then you will likely see inconsistent results as all the threads battle for the same resources.</p>
-<p>Then, each benchmark case you want to run will be annotated with <code>@Benchmark</code>. For these examples, we are going to compare the performance difference between using a <code>StringBuilder</code> and concatenating Strings. Since Strings are immutable, when we choose to concatenate them, the runtime engine reinitializes another String and populates it with each character that came before it. That is, something like <code>str1 = str1 &amp;#43; &amp;#34;something&amp;#34;;</code> would create a new string by iterating through each character in <code>str1</code> and &quot;something&quot;.</p>
+</span></span></code></pre></div><p>Be sure to configure the options as you see fit. The fluent API makes it all pretty intuitive. Do be careful if you&rsquo;re using OS resources, however, because if you have multiple threads running at the same time, then you will likely see inconsistent results as all the threads battle for the same resources.</p>
+<p>Then, each benchmark case you want to run will be annotated with <code>@Benchmark</code>. For these examples, we are going to compare the performance difference between using a <code>StringBuilder</code> and concatenating Strings. Since Strings are immutable, when we choose to concatenate them, the runtime engine reinitializes another String and populates it with each character that came before it. That is, something like <code>str1 = str1 + &quot;something&quot;;</code> would create a new string by iterating through each character in <code>str1</code> and &ldquo;something&rdquo;.</p>
 <p>A <code>StringBuilder</code> fixes all of this, because it creates an ArrayList that takes existing strings and populates them into the ArrayList. When we are done, it concatenates everything in the data structure one time, which is much less costly. Here we will run the sub-optimal version described above:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> String hello <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;not another hello world<span style="color:#ff79c6">&amp;</span>#34;;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> String hello <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;not another hello world&#34;</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>@Benchmark
 </span></span><span style="display:flex;"><span>@OutputTimeUnit(TimeUnit.<span style="color:#50fa7b">MILLISECONDS</span>)
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">stringsWithoutStringBuilder</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
-</span></span><span style="display:flex;"><span>    String hellos <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">&amp;</span>#34;;
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; 1000; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
-</span></span><span style="display:flex;"><span>        hellos <span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">=</span> hello;
+</span></span><span style="display:flex;"><span>    String hellos <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> 1000; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>        hellos <span style="color:#ff79c6">+=</span> hello;
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (i <span style="color:#ff79c6">!=</span> 999) {
-</span></span><span style="display:flex;"><span>            hellos <span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;\n<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>            hellos <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">&#34;\n&#34;</span>;
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    assertTrue(hellos.<span style="color:#50fa7b">startsWith</span>((hello <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34;\n<span style="color:#ff79c6">&amp;</span>#34;)));
+</span></span><span style="display:flex;"><span>    assertTrue(hellos.<span style="color:#50fa7b">startsWith</span>((hello <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;\n&#34;</span>)));
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>And here, we show the method that uses <code>StringBuilder</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Benchmark
 </span></span><span style="display:flex;"><span>@OutputTimeUnit(TimeUnit.<span style="color:#50fa7b">MILLISECONDS</span>)
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">stringsWithStringBuilder</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>    StringBuilder hellosBuilder <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> StringBuilder();
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; 1000; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> 1000; i<span style="color:#ff79c6">++</span>) {
 </span></span><span style="display:flex;"><span>        hellosBuilder.<span style="color:#50fa7b">append</span>(hello);
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (i <span style="color:#ff79c6">!=</span> 999) {
-</span></span><span style="display:flex;"><span>            hellosBuilder.<span style="color:#50fa7b">append</span>(<span style="color:#ff79c6">&amp;</span>#34;\n<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>            hellosBuilder.<span style="color:#50fa7b">append</span>(<span style="color:#f1fa8c">&#34;\n&#34;</span>);
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    assertTrue(hellosBuilder.<span style="color:#50fa7b">toString</span>().<span style="color:#50fa7b">startsWith</span>((hello <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34;\n<span style="color:#ff79c6">&amp;</span>#34;)));
+</span></span><span style="display:flex;"><span>    assertTrue(hellosBuilder.<span style="color:#50fa7b">toString</span>().<span style="color:#50fa7b">startsWith</span>((hello <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;\n&#34;</span>)));
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>The JMH benchmarks output the following on my machine (be sure to get the code and try them yourself):</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Benchmark                                                   Mode  Cnt  Score   Error  Units

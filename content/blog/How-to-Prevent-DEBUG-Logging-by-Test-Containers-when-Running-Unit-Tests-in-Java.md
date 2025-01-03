@@ -10,20 +10,20 @@ I have been playing around with test containers lately \[ [redis test containers
 At least when using spring boot, the answer is that test containers uses logback by default, and you need to add a **logback-test.xml** file to your **src/test/resources** directory that looks like this:
 
 ```java
-&lt;configuration&gt;
-    &lt;appender name=&#34;STDOUT&#34; class=&#34;ch.qos.logback.core.ConsoleAppender&#34;&gt;
-        &lt;encoder&gt;
-            &lt;pattern&gt;%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n&lt;/pattern&gt;
-        &lt;/encoder&gt;
-    &lt;/appender&gt;
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
 
-    &lt;root level=&#34;info&#34;&gt;
-        &lt;appender-ref ref=&#34;STDOUT&#34;/&gt;
-    &lt;/root&gt;
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+    </root>
 
-    &lt;logger name=&#34;org.testcontainers&#34; level=&#34;INFO&#34;/&gt;
-    &lt;logger name=&#34;com.github.dockerjava&#34; level=&#34;WARN&#34;/&gt;
-&lt;/configuration&gt;
+    <logger name="org.testcontainers" level="INFO"/>
+    <logger name="com.github.dockerjava" level="WARN"/>
+</configuration>
 
 ```
 

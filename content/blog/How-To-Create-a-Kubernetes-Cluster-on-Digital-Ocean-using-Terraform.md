@@ -7,42 +7,42 @@ tags: [DevOps, digital ocean, terraform, kubernetes]
 
 The source code for this post can be found [on Github](https://github.com/nfisher23/digitalocean-terraform-examples/tree/master/kubernetes).
 
-Kubernetes has democratized the cloud more than any piece of software before or since. What used to be proprietary APIs by AWS, Azure, or GCP for things like auto scaling groups, load balancers, or virtual machines is now abstracted away behind never ending yaml configuration. Combine this wonderful abstraction with the pricing model of [Digital Ocean](https://www.digitalocean.com/) and you&#39;ve got all the makings of a developer party.
+Kubernetes has democratized the cloud more than any piece of software before or since. What used to be proprietary APIs by AWS, Azure, or GCP for things like auto scaling groups, load balancers, or virtual machines is now abstracted away behind never ending yaml configuration. Combine this wonderful abstraction with the pricing model of [Digital Ocean](https://www.digitalocean.com/) and you've got all the makings of a developer party.
 
 To spin up a simple digital ocean kubernetes cluster to play around with, I decided to use terraform:
 
 ```yaml
-provider &#34;digitalocean&#34; {
+provider "digitalocean" {
   // token automatically picked up using env variables
 }
 
-variable &#34;region&#34; {
+variable "region" {
   # `doctl kubernetes options regions` for full list
-  default = &#34;sfo3&#34;
+  default = "sfo3"
 }
 
-data &#34;digitalocean_kubernetes_versions&#34; &#34;do_k8s_versions&#34; {}
+data "digitalocean_kubernetes_versions" "do_k8s_versions" {}
 
-output &#34;k8s-versions&#34; {
+output "k8s-versions" {
   value = data.digitalocean_kubernetes_versions.do_k8s_versions.latest_version
 }
 
-resource &#34;digitalocean_kubernetes_cluster&#34; &#34;hellok8s&#34; {
-  name    = &#34;hellok8s&#34;
+resource "digitalocean_kubernetes_cluster" "hellok8s" {
+  name    = "hellok8s"
   region  = var.region
   # Or grab the latest version slug from `doctl kubernetes options versions`
   version = data.digitalocean_kubernetes_versions.do_k8s_versions.latest_version
 
   node_pool {
-    name       = &#34;worker-pool&#34;
-    size       = &#34;s-2vcpu-2gb&#34;
+    name       = "worker-pool"
+    size       = "s-2vcpu-2gb"
     node_count = 1
   }
 }
 
 ```
 
-You&#39;ll need to set an environment variable for terraform to pick up the credentials necessary to actually run this \[DIGITALOCEAN\_ACCESS\_TOKEN\]. Here, I&#39;m using a [terraform data source](https://www.terraform.io/docs/providers/do/d/kubernetes_versions.html) to provide the version to use, since digital ocean changes the versions that they are supporting on a regular basis. This kubernetes cluster will not be dynamically spinning up and down DO infrastructure, instead it will have a single worker node. I also have elected to use the third San Fransisco data center. If you want to find out what data centers can support this, you can run:
+You'll need to set an environment variable for terraform to pick up the credentials necessary to actually run this \[DIGITALOCEAN\_ACCESS\_TOKEN\]. Here, I'm using a [terraform data source](https://www.terraform.io/docs/providers/do/d/kubernetes_versions.html) to provide the version to use, since digital ocean changes the versions that they are supporting on a regular basis. This kubernetes cluster will not be dynamically spinning up and down DO infrastructure, instead it will have a single worker node. I also have elected to use the third San Fransisco data center. If you want to find out what data centers can support this, you can run:
 
 ```
 $ doctl kubernetes options regions
@@ -80,4 +80,4 @@ kube-system   coredns                2/2     2            2           18m
 kube-system   kubelet-rubber-stamp   1/1     1            1           18m
 ```
 
-And you&#39;re good to go.
+And you're good to go.

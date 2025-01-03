@@ -154,68 +154,68 @@
 
   <section><p>In a previous post, we saw <a href="https://nickolasfisher.com/blog/How-to-Provision-a-Consul-ClientServer-Cluster-using-Ansible">how to provision a simple consul client/server cluster using Ansible</a>. We will now look at interacting with that cluster by showing how to register a spring boot application to it, using <a href="https://cloud.spring.io/spring-cloud-consul/spring-cloud-consul.html">spring cloud consul</a>.</p>
 <p>First, pull up the <a href="https://start.spring.io/">spring boot initializer</a>. Select web and spring cloud, then download and unpack the project. Your pom.xml should look something like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>&amp;lt;?xml version=&amp;#34;1.0&amp;#34; encoding=&amp;#34;UTF-8&amp;#34;?&amp;gt;
-</span></span><span style="display:flex;"><span>&amp;lt;project xmlns=&amp;#34;http://maven.apache.org/POM/4.0.0&amp;#34; xmlns:xsi=&amp;#34;http://www.w3.org/2001/XMLSchema-instance&amp;#34;
-</span></span><span style="display:flex;"><span>         xsi:schemaLocation=&amp;#34;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&amp;#34;&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;modelVersion&amp;gt;4.0.0&amp;lt;/modelVersion&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;parent&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;artifactId&amp;gt;spring-boot-starter-parent&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;version&amp;gt;2.1.5.RELEASE&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;relativePath/&amp;gt; &amp;lt;!-- lookup parent from repository --&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/parent&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;groupId&amp;gt;com.nickolasfisher&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;artifactId&amp;gt;consulregister&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;version&amp;gt;0.0.1-SNAPSHOT&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;name&amp;gt;consulregister&amp;lt;/name&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;description&amp;gt;Sample app that registers to Consul&amp;lt;/description&amp;gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#ff79c6">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;project</span> <span style="color:#50fa7b">xmlns=</span><span style="color:#f1fa8c">&#34;http://maven.apache.org/POM/4.0.0&#34;</span> <span style="color:#50fa7b">xmlns:xsi=</span><span style="color:#f1fa8c">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#50fa7b">xsi:schemaLocation=</span><span style="color:#f1fa8c">&#34;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span style="color:#ff79c6">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;modelVersion&gt;</span>4.0.0<span style="color:#ff79c6">&lt;/modelVersion&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;parent&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-boot-starter-parent<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;version&gt;</span>2.1.5.RELEASE<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;relativePath/&gt;</span> <span style="color:#6272a4">&lt;!-- lookup parent from repository --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/parent&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;groupId&gt;</span>com.nickolasfisher<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;artifactId&gt;</span>consulregister<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;version&gt;</span>0.0.1-SNAPSHOT<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;name&gt;</span>consulregister<span style="color:#ff79c6">&lt;/name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;description&gt;</span>Sample app that registers to Consul<span style="color:#ff79c6">&lt;/description&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    &amp;lt;properties&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;java.version&amp;gt;11&amp;lt;/java.version&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;spring-cloud.version&amp;gt;Greenwich.SR1&amp;lt;/spring-cloud.version&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/properties&amp;gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;properties&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;java.version&gt;</span>11<span style="color:#ff79c6">&lt;/java.version&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;spring-cloud.version&gt;</span>Greenwich.SR1<span style="color:#ff79c6">&lt;/spring-cloud.version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/properties&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    &amp;lt;dependencies&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;org.springframework.cloud&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;spring-cloud-starter-consul-discovery&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-cloud-starter-consul-discovery<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;version&amp;gt;2.1.5.RELEASE&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-boot-starter-web<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;version&gt;</span>2.1.5.RELEASE<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;spring-boot-starter-test&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/dependencies&amp;gt;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-boot-starter-test<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;scope&gt;</span>test<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/dependencies&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    &amp;lt;dependencyManagement&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;dependencies&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;groupId&amp;gt;org.springframework.cloud&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;artifactId&amp;gt;spring-cloud-dependencies&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;version&amp;gt;${spring-cloud.version}&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;type&amp;gt;pom&amp;lt;/type&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;scope&amp;gt;import&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependencies&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/dependencyManagement&amp;gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;dependencyManagement&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-cloud-dependencies<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;version&gt;</span>${spring-cloud.version}<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;type&gt;</span>pom<span style="color:#ff79c6">&lt;/type&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;scope&gt;</span>import<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/dependencyManagement&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    &amp;lt;build&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;plugins&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;plugin&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;artifactId&amp;gt;spring-boot-maven-plugin&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;/plugin&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/plugins&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/build&amp;gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;build&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;plugins&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;plugin&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;/plugin&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/plugins&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/build&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>&amp;lt;/project&amp;gt;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/project&gt;</span>
 </span></span></code></pre></div><p>You will need the web dependency to allow Consul to check your health endpoint, and you will need the spring cloud dependency to have your application register to consul on startup time.</p>
 <p>What remains is some spring boot automagic. If you took after the post on provisioning your consul cluster and <a href="https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server">you started it using the sample code</a>, you will have a Consul agent running in client mode available at <strong>192.168.56.212</strong>, and it will be receiving communications on port <strong>8500</strong>. All you will need to make this happen is some changes to your <strong>application.yml</strong> inside of your resources folder:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">spring</span>:
@@ -229,30 +229,30 @@
 </span></span></code></pre></div><p>You can then go to your application directory and run:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ mvn spring-boot:run
 </span></span></code></pre></div><p>After a bit, you should see your application register to consul with a log entry containing something similar to:</p>
-<pre tabindex="0"><code>...Registering service with consul: NewService{id=&amp;#39;consulregister&amp;#39;, name=&amp;#39;consulregister&amp;#39;, tags=[secure=false], address=&amp;#39;192.168.0.20&amp;#39;, meta=null, port=8080, enableTagOverride=null, check=Check{script=&amp;#39;null&amp;#39;, interval=&amp;#39;10s&amp;#39;, ttl=&amp;#39;null&amp;#39;, http=&amp;#39;http://192.168.0.20:8080/actuator/health&amp;#39;, method=&amp;#39;null&amp;#39;, header={}, tcp=&amp;#39;null&amp;#39;, timeout=&amp;#39;null&amp;#39;, deregisterCriticalServiceAfter=&amp;#39;null&amp;#39;, tlsSkipVerify=null, status=&amp;#39;null&amp;#39;}, checks=null}
+<pre tabindex="0"><code>...Registering service with consul: NewService{id=&#39;consulregister&#39;, name=&#39;consulregister&#39;, tags=[secure=false], address=&#39;192.168.0.20&#39;, meta=null, port=8080, enableTagOverride=null, check=Check{script=&#39;null&#39;, interval=&#39;10s&#39;, ttl=&#39;null&#39;, http=&#39;http://192.168.0.20:8080/actuator/health&#39;, method=&#39;null&#39;, header={}, tcp=&#39;null&#39;, timeout=&#39;null&#39;, deregisterCriticalServiceAfter=&#39;null&#39;, tlsSkipVerify=null, status=&#39;null&#39;}, checks=null}
 </code></pre><p>You can then ask consul to verify that it contains the service:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl http://192.168.68.212:8500/v1/agent/services | json_pp
 </span></span><span style="display:flex;"><span>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
 </span></span><span style="display:flex;"><span>                                 Dload  Upload   Total   Spent    Left  Speed
 </span></span><span style="display:flex;"><span><span style="color:#bd93f9">100</span>   <span style="color:#bd93f9">202</span>  <span style="color:#bd93f9">100</span>   <span style="color:#bd93f9">202</span>    <span style="color:#bd93f9">0</span>     <span style="color:#bd93f9">0</span>   197k      <span style="color:#bd93f9">0</span> --:--:-- --:--:-- --:--:--  197k
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>
-</span></span><span style="display:flex;"><span>   &amp;<span style="color:#6272a4">#34;consulregister&amp;#34; : {</span>
-</span></span><span style="display:flex;"><span>      &amp;<span style="color:#6272a4">#34;Port&amp;#34; : 8080,</span>
-</span></span><span style="display:flex;"><span>      &amp;<span style="color:#6272a4">#34;Tags&amp;#34; : [</span>
-</span></span><span style="display:flex;"><span>         &amp;<span style="color:#6272a4">#34;secure=false&amp;#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f1fa8c">&#34;consulregister&#34;</span> : <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Port&#34;</span> : 8080,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Tags&#34;</span> : <span style="color:#ff79c6">[</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#f1fa8c">&#34;secure=false&#34;</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">]</span>,
-</span></span><span style="display:flex;"><span>      &amp;<span style="color:#6272a4">#34;Address&amp;#34; : &amp;#34;192.168.0.20&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>      &amp;<span style="color:#6272a4">#34;ID&amp;#34; : &amp;#34;consulregister&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>      &amp;<span style="color:#6272a4">#34;Meta&amp;#34; : {},</span>
-</span></span><span style="display:flex;"><span>      &amp;<span style="color:#6272a4">#34;Service&amp;#34; : &amp;#34;consulregister&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>      &amp;<span style="color:#6272a4">#34;Weights&amp;#34; : {</span>
-</span></span><span style="display:flex;"><span>         &amp;<span style="color:#6272a4">#34;Warning&amp;#34; : 1,</span>
-</span></span><span style="display:flex;"><span>         &amp;<span style="color:#6272a4">#34;Passing&amp;#34; : 1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Address&#34;</span> : <span style="color:#f1fa8c">&#34;192.168.0.20&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;ID&#34;</span> : <span style="color:#f1fa8c">&#34;consulregister&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Meta&#34;</span> : <span style="color:#ff79c6">{}</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Service&#34;</span> : <span style="color:#f1fa8c">&#34;consulregister&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;Weights&#34;</span> : <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#f1fa8c">&#34;Warning&#34;</span> : 1,
+</span></span><span style="display:flex;"><span>         <span style="color:#f1fa8c">&#34;Passing&#34;</span> : <span style="color:#bd93f9">1</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">}</span>,
-</span></span><span style="display:flex;"><span>      &amp;<span style="color:#6272a4">#34;EnableTagOverride&amp;#34; : false</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;EnableTagOverride&#34;</span> : <span style="color:#8be9fd;font-style:italic">false</span>
 </span></span><span style="display:flex;"><span>   <span style="color:#ff79c6">}</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
-</span></span></code></pre></div><p>And you're good to go.</p>
+</span></span></code></pre></div><p>And you&rsquo;re good to go.</p>
 </section>
 
   

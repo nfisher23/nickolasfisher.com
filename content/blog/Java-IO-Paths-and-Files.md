@@ -14,10 +14,10 @@ You can find the absolute path:
 ```java
 @Test
 public void visitingDirectories_walkSubDirectories() throws Exception {
-    try (Stream&lt;Path&gt; entries  = Files.walk(Paths.get(Utils.pathToResources))) {
-        System.out.println(&#34;counting via walk&#34;);
+    try (Stream<Path> entries  = Files.walk(Paths.get(Utils.pathToResources))) {
+        System.out.println("counting via walk");
         long count = entries.peek(System.out::println).count();
-        assertTrue(count &gt; 0);
+        assertTrue(count > 0);
     }
 }
 
@@ -28,7 +28,7 @@ With the absolute path of your current working directory in place, you can then 
 ```java
 @Test
 public void someUsefulStuff() {
-    Path absolutePath = Paths.get(&#34;&#34;).toAbsolutePath();
+    Path absolutePath = Paths.get("").toAbsolutePath();
 
     Path parentOfAbsolutePath = absolutePath.getParent();
     System.out.println(parentOfAbsolutePath);
@@ -53,7 +53,7 @@ public void getScannerFromPath() throws Exception {
     Path pathToExampleFile = Paths.get(Utils.simpleExampleFilePath);
 
     try (Scanner scanner = new Scanner(pathToExampleFile)) {
-        System.out.println(scanner.useDelimiter(&#34;\\Z&#34;).next());
+        System.out.println(scanner.useDelimiter("\\Z").next());
         assertNotNull(scanner);
     }
 }
@@ -70,21 +70,21 @@ public void files_readAllBytes_thenStrings() throws Exception {
     byte[] bytes = Files.readAllBytes(pathToExampleFile);
     String content = new String(bytes, StandardCharsets.UTF_8);
 
-    assertEquals(content, &#34;this is some text&#34;);
+    assertEquals(content, "this is some text");
 }
 
 ```
 
-You can, similarly, read in all the lines as a `List&lt;String&gt;`:
+You can, similarly, read in all the lines as a `List<String>`:
 
 ```java
 @Test
 public void files_sequenceOfLines() throws Exception {
     Path pathToExampleFile = Paths.get(Utils.simpleExampleFilePath);
 
-    List&lt;String&gt; allLines = Files.readAllLines(pathToExampleFile);
+    List<String> allLines = Files.readAllLines(pathToExampleFile);
 
-    assertEquals(&#34;this is some text&#34;, allLines.get(0));
+    assertEquals("this is some text", allLines.get(0));
 }
 
 ```
@@ -94,9 +94,9 @@ For write operations, you can write a string by converting them to bytes, with t
 ```java
 @Test
 public void files_writeStringToFile() throws Exception {
-    String stuffToWrite = &#34;some new text&#34;;
+    String stuffToWrite = "some new text";
 
-    Path newFilePath = Paths.get(Utils.pathToResources &#43; &#34;new-file-with-text.txt&#34;);
+    Path newFilePath = Paths.get(Utils.pathToResources + "new-file-with-text.txt");
 
     Files.write(newFilePath, stuffToWrite.getBytes(StandardCharsets.UTF_8));
 
@@ -110,18 +110,18 @@ The default behavior of `Files.write(..)` is to overwrite a file if it already e
 ```java
 @Test
 public void files_appendToFile() throws Exception {
-    String beginnings = &#34;some next text\n&#34;;
+    String beginnings = "some next text\n";
 
-    Path newFilePath = Paths.get(Utils.pathToResources, &#34;append-string-ex.txt&#34;);
+    Path newFilePath = Paths.get(Utils.pathToResources, "append-string-ex.txt");
     Files.write(newFilePath, beginnings.getBytes(StandardCharsets.UTF_8));
 
     // append
-    for (int i = 0; i &lt; 5; i&#43;&#43;) {
+    for (int i = 0; i < 5; i++) {
         Files.write(newFilePath, beginnings.getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
     }
 
     String writtenText = Utils.readFileAsText(newFilePath);
-    assertTrue(writtenText.startsWith(beginnings &#43; beginnings));
+    assertTrue(writtenText.startsWith(beginnings + beginnings));
 }
 
 ```

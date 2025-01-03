@@ -8,7 +8,7 @@
 <title>Why Redis Pub/Sub is not SQS, and Vice Versa</title>
 <meta
   name="description"
-  content="Redis has a pub/sub feature whereby there are publishers and subscribers, and publishers can fanout messages to subscribers. SQS [ amazon&#39;s simple queue service] has message senders and receivers. They can both be useful, but in practice they produce different results."
+  content="Redis has a pub/sub feature whereby there are publishers and subscribers, and publishers can fanout messages to subscribers. SQS [ amazon&rsquo;s simple queue service] has message senders and receivers. They can both be useful, but in practice they produce different results."
 />
 <link rel="canonical" href="http://localhost:1313/blog/why-redis-pubsub-is-not-sqs-and-vice-versa/" />
 <link rel="robots" href="/robots.txt" />
@@ -152,53 +152,53 @@
 
   
 
-  <section><p><a href="https://redis.io/topics/pubsub">Redis has a pub/sub feature</a> whereby there are publishers and subscribers, and publishers can fanout messages to subscribers. SQS [ <a href="https://aws.amazon.com/sqs/">amazon's simple queue service</a>] has message senders and receivers. They can both be useful, but in practice they produce different results.</p>
+  <section><p><a href="https://redis.io/topics/pubsub">Redis has a pub/sub feature</a> whereby there are publishers and subscribers, and publishers can fanout messages to subscribers. SQS [ <a href="https://aws.amazon.com/sqs/">amazon&rsquo;s simple queue service</a>] has message senders and receivers. They can both be useful, but in practice they produce different results.</p>
 <h3 id="how-redis-pubsub-works-an-example">How Redis Pub/Sub Works: An Example</h3>
-<p>Every subscriber to a channel in redis will receive the message sent by the publisher. I can demonstrate this with a simple example. Let's say you start up a local redis instance with docker, something like:</p>
+<p>Every subscriber to a channel in redis will receive the message sent by the publisher. I can demonstrate this with a simple example. Let&rsquo;s say you start up a local redis instance with docker, something like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run --rm -d -p 127.0.0.1:6379:6379/tcp redis
 </span></span><span style="display:flex;"><span>814a1bcb5abcb17dcb1b657fd3e8563ada0a2b1d9df5e4f1b09c229139f8964a
 </span></span></code></pre></div><p>Now you connect to redis from two different terminals and subscribe to the same channel:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># first terminal</span>
 </span></span><span style="display:flex;"><span>$ redis-cli
-</span></span><span style="display:flex;"><span>127.0.0.1:6379&amp;gt; SUBSCRIBE a-channel
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; SUBSCRIBE a-channel
 </span></span><span style="display:flex;"><span>Reading messages... <span style="color:#ff79c6">(</span>press Ctrl-C to quit<span style="color:#ff79c6">)</span>
-</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;subscribe&amp;#34;</span>
-</span></span><span style="display:flex;"><span>2<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;a-channel&amp;#34;</span>
+</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;subscribe&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;a-channel&#34;</span>
 </span></span><span style="display:flex;"><span>3<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">(</span>integer<span style="color:#ff79c6">)</span> <span style="color:#bd93f9">1</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># second terminal</span>
 </span></span><span style="display:flex;"><span>$ redis-cli
-</span></span><span style="display:flex;"><span>127.0.0.1:6379&amp;gt; SUBSCRIBE a-channel
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; SUBSCRIBE a-channel
 </span></span><span style="display:flex;"><span>Reading messages... <span style="color:#ff79c6">(</span>press Ctrl-C to quit<span style="color:#ff79c6">)</span>
-</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;subscribe&amp;#34;</span>
-</span></span><span style="display:flex;"><span>2<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;a-channel&amp;#34;</span>
+</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;subscribe&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;a-channel&#34;</span>
 </span></span><span style="display:flex;"><span>3<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">(</span>integer<span style="color:#ff79c6">)</span> <span style="color:#bd93f9">1</span>
 </span></span></code></pre></div><p>In a third terminal, you publish to <strong>a-channel</strong>, which is what we are subscribing to in the previously opened two terminals:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ redis-cli
-</span></span><span style="display:flex;"><span>127.0.0.1:6379&amp;gt; PUBLISH a-channel &amp;<span style="color:#6272a4">#34;everyone sees this&amp;#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; PUBLISH a-channel <span style="color:#f1fa8c">&#34;everyone sees this&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">(</span>integer<span style="color:#ff79c6">)</span> <span style="color:#bd93f9">2</span>
 </span></span></code></pre></div><p>The returned number is 2, which means two subscribers received this response. Here is the terminal output from both of them:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># first terminal</span>
-</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;message&amp;#34;</span>
-</span></span><span style="display:flex;"><span>2<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;a-channel&amp;#34;</span>
-</span></span><span style="display:flex;"><span>3<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;everyone sees this&amp;#34;</span>
+</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;message&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;a-channel&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;everyone sees this&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># second terminal</span>
-</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;message&amp;#34;</span>
-</span></span><span style="display:flex;"><span>2<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;a-channel&amp;#34;</span>
-</span></span><span style="display:flex;"><span>3<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;everyone sees this&amp;#34;</span>
-</span></span></code></pre></div><p>This means that, if you're running multiple instances of the same application, then every instance of the application will get your message.</p>
+</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;message&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;a-channel&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#ff79c6">)</span> <span style="color:#f1fa8c">&#34;everyone sees this&#34;</span>
+</span></span></code></pre></div><p>This means that, if you&rsquo;re running multiple instances of the same application, then every instance of the application will get your message.</p>
 <h3 id="how-sqs-works-an-example">How SQS Works: An Example</h3>
-<p>Let's say you start up a local SQS mock using localstack, with a docker-compose.yaml like so:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>version: &amp;<span style="color:#6272a4">#39;2.1&amp;#39;</span>
+<p>Let&rsquo;s say you start up a local SQS mock using localstack, with a docker-compose.yaml like so:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>version: <span style="color:#f1fa8c">&#39;2.1&#39;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>services:
 </span></span><span style="display:flex;"><span>  localstack:
-</span></span><span style="display:flex;"><span>    container_name: &amp;<span style="color:#6272a4">#34;${LOCALSTACK_DOCKER_NAME-localstack_main}&amp;#34;</span>
+</span></span><span style="display:flex;"><span>    container_name: <span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">LOCALSTACK_DOCKER_NAME</span>-localstack_main<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">&#34;</span>
 </span></span><span style="display:flex;"><span>    image: localstack/localstack
 </span></span><span style="display:flex;"><span>    ports:
-</span></span><span style="display:flex;"><span>      - &amp;<span style="color:#6272a4">#34;4566-4599:4566-4599&amp;#34;</span>
-</span></span><span style="display:flex;"><span>      - &amp;<span style="color:#6272a4">#34;${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}&amp;#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;4566-4599:4566-4599&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">PORT_WEB_UI</span>-8080<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">:</span><span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">PORT_WEB_UI</span>-8080<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">&#34;</span>
 </span></span><span style="display:flex;"><span>    environment:
 </span></span><span style="display:flex;"><span>      - <span style="color:#8be9fd;font-style:italic">SERVICES</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">SERVICES</span>- <span style="color:#f1fa8c">}</span>
 </span></span><span style="display:flex;"><span>      - <span style="color:#8be9fd;font-style:italic">DEBUG</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">DEBUG</span>- <span style="color:#f1fa8c">}</span>
@@ -209,34 +209,34 @@
 </span></span><span style="display:flex;"><span>      - <span style="color:#8be9fd;font-style:italic">DOCKER_HOST</span><span style="color:#ff79c6">=</span>unix:///var/run/docker.sock
 </span></span><span style="display:flex;"><span>      - <span style="color:#8be9fd;font-style:italic">HOST_TMP_FOLDER</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">TMPDIR</span><span style="color:#f1fa8c">}</span>
 </span></span><span style="display:flex;"><span>    volumes:
-</span></span><span style="display:flex;"><span>      - &amp;<span style="color:#6272a4">#34;${TMPDIR:-/tmp/localstack}:/tmp/localstack&amp;#34;</span>
-</span></span><span style="display:flex;"><span>      - &amp;<span style="color:#6272a4">#34;/var/run/docker.sock:/var/run/docker.sock&amp;#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">TMPDIR</span><span style="color:#ff79c6">:-</span>/tmp/localstack<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">:/tmp/localstack&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;/var/run/docker.sock:/var/run/docker.sock&#34;</span>
 </span></span></code></pre></div><p>You then bring up your localstack container with:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker-compose up -d
-</span></span></code></pre></div><p>Now let's repeat what is effectively the same experiment. First, if you're following along, you need to make sure you have credentials or your aws cli tool will complain:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_SECRET_ACCESS_KEY</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_ACCESS_KEY_ID</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
+</span></span></code></pre></div><p>Now let&rsquo;s repeat what is effectively the same experiment. First, if you&rsquo;re following along, you need to make sure you have credentials or your aws cli tool will complain:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_SECRET_ACCESS_KEY</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;FAKE&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_ACCESS_KEY_ID</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;FAKE&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_DEFAULT_REGION</span><span style="color:#ff79c6">=</span>us-east-1
-</span></span></code></pre></div><p>Note that you'll also unfortunately need to specify those environment variables for each of the three terminals we are about to open. In the first and second terminal, run this command to pull a message off of the SQS queue as soon as one becomes available:</p>
+</span></span></code></pre></div><p>Note that you&rsquo;ll also unfortunately need to specify those environment variables for each of the three terminals we are about to open. In the first and second terminal, run this command to pull a message off of the SQS queue as soon as one becomes available:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># first and second terminal</span>
 </span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sqs receive-message --queue-url http://localhost:4566/000000000000/test-queue --wait-time-seconds <span style="color:#bd93f9">20</span>
 </span></span></code></pre></div><p>While those two commands are waiting for a response [note: you have 20 seconds until they just give up, so you might need to rerun those before this final one to really get the point of this article], in your third terminal run this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sqs send-message --message-body &amp;<span style="color:#6272a4">#34;hello&amp;#34; --queue-url http://localhost:4566/0000000000/test-queue</span>
-</span></span></code></pre></div><p>What should happen under low throughput, from &quot;real&quot; SQS, is that one of the clients trying to get a message actually get it. The other client is still waiting. SQS guarantees at-least-once delivery, but under normal circumstances and most of the time you will get about-once delivery. On my computer, I saw this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sqs send-message --message-body <span style="color:#f1fa8c">&#34;hello&#34;</span> --queue-url http://localhost:4566/0000000000/test-queue
+</span></span></code></pre></div><p>What should happen under low throughput, from &ldquo;real&rdquo; SQS, is that one of the clients trying to get a message actually get it. The other client is still waiting. SQS guarantees at-least-once delivery, but under normal circumstances and most of the time you will get about-once delivery. On my computer, I saw this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># first terminal</span>
 </span></span><span style="display:flex;"><span>$ aws --endpoint-url http://localhost:4566 sqs receive-message --queue-url http://localhost:4566/000000000000/test-queue --wait-time-seconds <span style="color:#bd93f9">20</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>
-</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;Messages&amp;#34;: [</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;Messages&#34;</span>: <span style="color:#ff79c6">[</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">{</span>
-</span></span><span style="display:flex;"><span>            &amp;<span style="color:#6272a4">#34;MessageId&amp;#34;: &amp;#34;ca46e741-6522-b27b-e454-76f514a9a851&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>            &amp;<span style="color:#6272a4">#34;ReceiptHandle&amp;#34;: &amp;#34;mkdoaefeokewmrbqxmhnovuokoslnvwhkcxnkzafvxuwzbrkritnqweummmquejiajlcjkpnzhezwolaodklfrutbjeutggqfoefaypapvzihvhbuvfohxjzjxdtkmhclnxqdmiqwkrykghrmywomdlitbnsxjgkhojdoeynpxjpgoujeyxkhovsi&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>            &amp;<span style="color:#6272a4">#34;MD5OfBody&amp;#34;: &amp;#34;5d41402abc4b2a76b9719d911017c592&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>            &amp;<span style="color:#6272a4">#34;Body&amp;#34;: &amp;#34;hello&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>            &amp;<span style="color:#6272a4">#34;Attributes&amp;#34;: {</span>
-</span></span><span style="display:flex;"><span>                &amp;<span style="color:#6272a4">#34;SenderId&amp;#34;: &amp;#34;AIDAIT2UOQQY3AUEKVGXU&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>                &amp;<span style="color:#6272a4">#34;SentTimestamp&amp;#34;: &amp;#34;1619914864555&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>                &amp;<span style="color:#6272a4">#34;ApproximateReceiveCount&amp;#34;: &amp;#34;1&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>                &amp;<span style="color:#6272a4">#34;ApproximateFirstReceiveTimestamp&amp;#34;: &amp;#34;1619914864566&amp;#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#34;MessageId&#34;</span>: <span style="color:#f1fa8c">&#34;ca46e741-6522-b27b-e454-76f514a9a851&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#34;ReceiptHandle&#34;</span>: <span style="color:#f1fa8c">&#34;mkdoaefeokewmrbqxmhnovuokoslnvwhkcxnkzafvxuwzbrkritnqweummmquejiajlcjkpnzhezwolaodklfrutbjeutggqfoefaypapvzihvhbuvfohxjzjxdtkmhclnxqdmiqwkrykghrmywomdlitbnsxjgkhojdoeynpxjpgoujeyxkhovsi&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#34;MD5OfBody&#34;</span>: <span style="color:#f1fa8c">&#34;5d41402abc4b2a76b9719d911017c592&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#34;Body&#34;</span>: <span style="color:#f1fa8c">&#34;hello&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#34;Attributes&#34;</span>: <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#34;SenderId&#34;</span>: <span style="color:#f1fa8c">&#34;AIDAIT2UOQQY3AUEKVGXU&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#34;SentTimestamp&#34;</span>: <span style="color:#f1fa8c">&#34;1619914864555&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#34;ApproximateReceiveCount&#34;</span>: <span style="color:#f1fa8c">&#34;1&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#34;ApproximateFirstReceiveTimestamp&#34;</span>: <span style="color:#f1fa8c">&#34;1619914864566&#34;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">}</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">}</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">]</span>
@@ -247,7 +247,7 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>$ <span style="color:#6272a4"># timed out waiting for a response</span>
 </span></span></code></pre></div><h3 id="what-this-means-in-practice">What this means in practice</h3>
-<p>So, which one should I use? Well, it depends on whether you want <em>all instances of your application to get the message</em> or not. If your just sending a message as a job [to do a piece of work, like update the database], then you want SQS [both because of its about-once-delivery characteristics, but also because of its durability guarantees, which redis does not offer because it's in memory]. If you need to send a message to every instance in your application, for example to invalidate an in memory cache, then you probably want to use redis pub/sub.</p>
+<p>So, which one should I use? Well, it depends on whether you want <em>all instances of your application to get the message</em> or not. If your just sending a message as a job [to do a piece of work, like update the database], then you want SQS [both because of its about-once-delivery characteristics, but also because of its durability guarantees, which redis does not offer because it&rsquo;s in memory]. If you need to send a message to every instance in your application, for example to invalidate an in memory cache, then you probably want to use redis pub/sub.</p>
 </section>
 
   

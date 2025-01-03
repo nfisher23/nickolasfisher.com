@@ -164,7 +164,7 @@
   <div class="description">
     
       <p>The source code for this article <a href="https://github.com/nfisher23/webflux-and-dynamo">can be found on Github</a>.</p>
-<p>Using <a href="https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing">embedded dynamodb for testing</a> is, in my experience, kind of flakey and unpredictable. Because of the weird way it pulls in SQLite on a per operating system basis, it can sometimes work locally and not work on the build server. Sometimes it's just not working for some unexplained reason and wiping the directory that the code is in and re-cloning fixes it. Not a fun time.</p>
+<p>Using <a href="https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing">embedded dynamodb for testing</a> is, in my experience, kind of flakey and unpredictable. Because of the weird way it pulls in SQLite on a per operating system basis, it can sometimes work locally and not work on the build server. Sometimes it&rsquo;s just not working for some unexplained reason and wiping the directory that the code is in and re-cloning fixes it. Not a fun time.</p>
     
   </div>
 
@@ -258,7 +258,7 @@
 
   <div class="description">
     
-      <p>DynamoDB transactions can be used for <em>atomic</em> updates. Atomic updates in DynamoDB without transactions can be difficult to implement&ndash;you'll often have to manage the current state of the update yourself in something like a saga, and have business logic specific rollback procedures. Further, without a transaction manager, the data will be in an inconsistent state at some point in time while the saga is ongoing. An alternative to that is a Two Phase Commit, but that's also expensive both from the standpoint of developers making it work as well as performance [2PC typically call for a lock being held during the operation, and even then there's a possibility that the operation ends up in an inconsistent state at some point].</p>
+      <p>DynamoDB transactions can be used for <em>atomic</em> updates. Atomic updates in DynamoDB without transactions can be difficult to implement&ndash;you&rsquo;ll often have to manage the current state of the update yourself in something like a saga, and have business logic specific rollback procedures. Further, without a transaction manager, the data will be in an inconsistent state at some point in time while the saga is ongoing. An alternative to that is a Two Phase Commit, but that&rsquo;s also expensive both from the standpoint of developers making it work as well as performance [2PC typically call for a lock being held during the operation, and even then there&rsquo;s a possibility that the operation ends up in an inconsistent state at some point].</p>
     
   </div>
 

@@ -8,7 +8,7 @@
 <title>The Difference Between a Reactive Non-Blocking Model and Classic Asynchronous Code</title>
 <meta
   name="description"
-  content="Reactive Programming is a very different way of thinking about doing work in a microservices environment. Anyone who has worked with a GUI, dating back to even to windows forms, is familiar with the event based model, but what does that mean when there is unpredictable latency involved? How does handing off to a thread to make a remote call differ from this new &quot;reactive web&quot;?"
+  content="Reactive Programming is a very different way of thinking about doing work in a microservices environment. Anyone who has worked with a GUI, dating back to even to windows forms, is familiar with the event based model, but what does that mean when there is unpredictable latency involved? How does handing off to a thread to make a remote call differ from this new &ldquo;reactive web&rdquo;?"
 />
 <link rel="canonical" href="http://localhost:1313/blog/the-difference-between-a-reactive-nonblocking-model-and-classic-asynchronous-code/" />
 <link rel="robots" href="/robots.txt" />
@@ -152,10 +152,10 @@
 
   
 
-  <section><p>Reactive Programming is a very different way of thinking about doing work in a microservices environment. Anyone who has worked with a GUI, dating back to even to windows forms, is familiar with the event based model, but what does that mean when there is unpredictable latency involved? How does handing off to a thread to make a remote call differ from this new &quot;reactive web&quot;?</p>
-<p>This was confusing to me at first, so I dug in and got a solid example working to illustrate what's really going on here.</p>
+  <section><p>Reactive Programming is a very different way of thinking about doing work in a microservices environment. Anyone who has worked with a GUI, dating back to even to windows forms, is familiar with the event based model, but what does that mean when there is unpredictable latency involved? How does handing off to a thread to make a remote call differ from this new &ldquo;reactive web&rdquo;?</p>
+<p>This was confusing to me at first, so I dug in and got a solid example working to illustrate what&rsquo;s really going on here.</p>
 <h3 id="some-background-on-theory">Some Background On Theory</h3>
-<p>Reactive Programming across network boundaries is fundamentally different from just making asynchronous calls in exactly one way. We'll start with an example from a <a href="https://nickolasfisher.com/blog/How-to-Make-Concurrent-Service-API-Calls-in-Java-Using-Spring-Boot">previous blog post on making concurrent API calls in Spring Boot</a>. In that example, the primary block to consider was this:</p>
+<p>Reactive Programming across network boundaries is fundamentally different from just making asynchronous calls in exactly one way. We&rsquo;ll start with an example from a <a href="https://nickolasfisher.com/blog/How-to-Make-Concurrent-Service-API-Calls-in-Java-Using-Spring-Boot">previous blog post on making concurrent API calls in Spring Boot</a>. In that example, the primary block to consider was this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Component
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">ConcurrentRunner</span> <span style="color:#8be9fd;font-style:italic">implements</span> CommandLineRunner {
 </span></span><span style="display:flex;"><span>
@@ -165,19 +165,19 @@
 </span></span><span style="display:flex;"><span>    @Override
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">run</span>(String... args) <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        Instant start <span style="color:#ff79c6">=</span> Instant.<span style="color:#50fa7b">now</span>();
-</span></span><span style="display:flex;"><span>        List<span style="color:#ff79c6">&amp;</span>lt;CompletableFuture<span style="color:#ff79c6">&amp;</span>lt;JsonNode<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; allFutures <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ArrayList<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">&amp;</span>gt;();
+</span></span><span style="display:flex;"><span>        List<span style="color:#ff79c6">&lt;</span>CompletableFuture<span style="color:#ff79c6">&lt;</span>JsonNode<span style="color:#ff79c6">&gt;&gt;</span> allFutures <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ArrayList<span style="color:#ff79c6">&lt;&gt;</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; 10; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> 10; i<span style="color:#ff79c6">++</span>) {
 </span></span><span style="display:flex;"><span>            allFutures.<span style="color:#50fa7b">add</span>(slowServiceCaller.<span style="color:#50fa7b">callOtherService</span>());
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        CompletableFuture.<span style="color:#50fa7b">allOf</span>(allFutures.<span style="color:#50fa7b">toArray</span>(<span style="color:#ff79c6">new</span> CompletableFuture<span style="color:#ff79c6">[</span>0<span style="color:#ff79c6">]</span>)).<span style="color:#50fa7b">join</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; 10; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
-</span></span><span style="display:flex;"><span>            System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;response: <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; allFutures.<span style="color:#50fa7b">get</span>(i).<span style="color:#50fa7b">get</span>().<span style="color:#50fa7b">toString</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> 10; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;response: &#34;</span> <span style="color:#ff79c6">+</span> allFutures.<span style="color:#50fa7b">get</span>(i).<span style="color:#50fa7b">get</span>().<span style="color:#50fa7b">toString</span>());
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;Total time: <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; Duration.<span style="color:#50fa7b">between</span>(start, Instant.<span style="color:#50fa7b">now</span>()).<span style="color:#50fa7b">getSeconds</span>());
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;Total time: &#34;</span> <span style="color:#ff79c6">+</span> Duration.<span style="color:#50fa7b">between</span>(start, Instant.<span style="color:#50fa7b">now</span>()).<span style="color:#50fa7b">getSeconds</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>When configured with an Executor of 5 threads, and hitting an endpoint that takes exactly 2 seconds to resolve and respond, the whole operation takes 4 seconds. This is roughly what happens:</p>
@@ -188,10 +188,10 @@
 <li>Once the response gets in, which will involve more TCP layer chatter to validate the correct message gets there, the thread processes it, drops it into a <code>CompletableFuture</code>, and then releases.</li>
 </ol>
 <p>This is asynchronous, and blocking. Each thread that gets a task will have to wait, in this case two seconds each time, until the service it is calling can send the message back.</p>
-<p>Reactive programming basically came out of this realization: This thread we're handing off to is spending the vast majority of its time <em>waiting</em>, and doing <em>nothing</em>. It sends the request, then waits for a much longer period of time, then eventually gets a response and continues work.</p>
+<p>Reactive programming basically came out of this realization: This thread we&rsquo;re handing off to is spending the vast majority of its time <em>waiting</em>, and doing <em>nothing</em>. It sends the request, then waits for a much longer period of time, then eventually gets a response and continues work.</p>
 <p>So, what if we could design a model where our threads were always working? What would that look like? Well, one way to do it would be to have each thread focus on sending the request, then immediately rejoining the work pool. When the response comes in, we can generate an event that either that thread or another thread can pick up, and process the response. That is the reactive model in a nutshell: we try to make sure that our threads are always working on something, and not waiting.</p>
 <h3 id="an-example">An Example</h3>
-<p>From that previous blog post, make sure that you have a slow service that we can interact with. In a nutshell, the endpoint we'll hit can look like this:</p>
+<p>From that previous blog post, make sure that you have a slow service that we can interact with. In a nutshell, the endpoint we&rsquo;ll hit can look like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@SpringBootApplication
 </span></span><span style="display:flex;"><span>@RestController
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">SlowApplication</span> {
@@ -200,10 +200,10 @@
 </span></span><span style="display:flex;"><span>        SpringApplication.<span style="color:#50fa7b">run</span>(SlowApplication.<span style="color:#50fa7b">class</span>, args);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>slow<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#f1fa8c">&#34;/slow&#34;</span>)
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">slow</span>() <span style="color:#8be9fd;font-style:italic">throws</span> InterruptedException {
 </span></span><span style="display:flex;"><span>        Thread.<span style="color:#50fa7b">sleep</span>(2000);
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>#34;{\<span style="color:#ff79c6">&amp;</span>#34;hello\<span style="color:#ff79c6">&amp;</span>#34;:\<span style="color:#ff79c6">&amp;</span>#34;hello\<span style="color:#ff79c6">&amp;</span>#34;}<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;{\&#34;hello\&#34;:\&#34;hello\&#34;}&#34;</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>If we have this service running on <strong>port 9000</strong>, then we can configure a reactive <code>WebClient</code> to use that as a base url. Going off a previous post on <a href="https://nickolasfisher.com/blog/How-to-Configure-Reactive-Netty-in-Spring-Boot-in-Depth">configuring Reactive Netty in Spring Boot</a>, we can modify our event loop group to have just five threads:</p>
@@ -215,9 +215,9 @@
 </span></span><span style="display:flex;"><span>    @Bean
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> WebClient <span style="color:#50fa7b">webClient</span>(ReactorClientHttpConnector r) {
 </span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// root url to localhost:9000, where our slow service should be running</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> WebClient.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">baseUrl</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:9000&amp;#34;).clientConnector(r).build();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> WebClient.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">baseUrl</span>(<span style="color:#f1fa8c">&#34;http://localhost:9000&#34;</span>).<span style="color:#50fa7b">clientConnector</span>(r).<span style="color:#50fa7b">build</span>();
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>We can then implement a command line runner. In this case, we'll have it loop one thousand times:</p>
+</span></span></code></pre></div><p>We can then implement a command line runner. In this case, we&rsquo;ll have it loop one thousand times:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Component
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">ReactiveCallsRunner</span> <span style="color:#8be9fd;font-style:italic">implements</span> CommandLineRunner {
 </span></span><span style="display:flex;"><span>
@@ -228,15 +228,15 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Override
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">run</span>(String... args) <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; 1000; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
-</span></span><span style="display:flex;"><span>            webClient.<span style="color:#50fa7b">get</span>().<span style="color:#50fa7b">uri</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>slow<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">accept</span>(MediaType.<span style="color:#50fa7b">APPLICATION_JSON</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> 1000; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>            webClient.<span style="color:#50fa7b">get</span>().<span style="color:#50fa7b">uri</span>(<span style="color:#f1fa8c">&#34;/slow&#34;</span>).<span style="color:#50fa7b">accept</span>(MediaType.<span style="color:#50fa7b">APPLICATION_JSON</span>)
 </span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">retrieve</span>()
 </span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">bodyToMono</span>(JsonNode.<span style="color:#50fa7b">class</span>)
-</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">doOnSuccess</span>(jsonNode <span style="color:#ff79c6">-&amp;</span>gt; logger.<span style="color:#50fa7b">info</span>(<span style="color:#ff79c6">&amp;</span>#34;thread: <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; Thread.<span style="color:#50fa7b">currentThread</span>()))
+</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">doOnSuccess</span>(jsonNode <span style="color:#ff79c6">-&gt;</span> logger.<span style="color:#50fa7b">info</span>(<span style="color:#f1fa8c">&#34;thread: &#34;</span> <span style="color:#ff79c6">+</span> Thread.<span style="color:#50fa7b">currentThread</span>()))
 </span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">subscribe</span>();
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        logger.<span style="color:#50fa7b">info</span>(<span style="color:#ff79c6">&amp;</span>#34;done with command line runner<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        logger.<span style="color:#50fa7b">info</span>(<span style="color:#f1fa8c">&#34;done with command line runner&#34;</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Before we run this, what do we expect to see? Well, the service that we are hitting is running on an embedded Tomcat webserver. In Spring Boot, that defaults to 200 threads. Because we know that our reactive <code>WebClient</code> is nonblocking, five threads should be able to send out all of the requests at once, but the client that we are hitting will max out at 200 responses every two seconds. Therefore, all of the calls should complete within about ten seconds or so.</p>
@@ -263,8 +263,8 @@
 08:44:09.964  INFO 25590 --- [ntLoopGroup-2-2] c.n.reactiveex.ReactiveCallsRunner       : thread: Thread[nioEventLoopGroup-2-2,10,com.nickolasfisher.reactiveex.ReactiveexApplication]
 08:44:09.965  INFO 25590 --- [ntLoopGroup-2-3] c.n.reactiveex.ReactiveCallsRunner       : thread: Thread[nioEventLoopGroup-2-3,10,com.nickolasfisher.reactiveex.ReactiveexApplication]
 08:44:09.965  INFO 25590 --- [ntLoopGroup-2-5] c.n.reactiveex.ReactiveCallsRunner       : thread: Thread[nioEventLoopGroup-2-5,10,com.nickolasfisher.reactiveex.ReactiveexApplication]
-</code></pre><p>We can see that we are reusing the same five threads, and that all of these calls go out within about 5 milliseconds of each other. This is where the real advantage of reactive web comes into play: when you have latency and it's unpredictable, then this kind of architecture will still be consistent.</p>
-<p>Even if you set the thread pool size to 1, we can still send out 1000 requests in under a few hundred milliseconds, despite the fact that the service we're calling takes two seconds to respond.</p>
+</code></pre><p>We can see that we are reusing the same five threads, and that all of these calls go out within about 5 milliseconds of each other. This is where the real advantage of reactive web comes into play: when you have latency and it&rsquo;s unpredictable, then this kind of architecture will still be consistent.</p>
+<p>Even if you set the thread pool size to 1, we can still send out 1000 requests in under a few hundred milliseconds, despite the fact that the service we&rsquo;re calling takes two seconds to respond.</p>
 </section>
 
   

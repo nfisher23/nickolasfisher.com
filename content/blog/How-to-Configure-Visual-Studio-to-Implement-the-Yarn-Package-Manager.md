@@ -15,24 +15,24 @@ to get automatic installation of the packages into your real project.
 
 ### Getting Yarn Installed
 
-First, if you don&#39;t have Node.js, [install Node.js here](https://nodejs.org/en/).
+First, if you don't have Node.js, [install Node.js here](https://nodejs.org/en/).
 Then, head over to the [Yarn download page](https://yarnpkg.com/en/docs/install) and get Yarn installed on your box.
 
 ### Use a Convienent Add On
 
-I use a good visual studio extension by Mads Kristensen to get VS to use package.json in the same way that bower.json works, which is located [here](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.YarnInstaller). Per the instructions on that page, after you install it, for Visual Studio 2017 you have to make sure you set the Yarn Installer &#34;Install on save&#34; and disable the npm restore options.
+I use a good visual studio extension by Mads Kristensen to get VS to use package.json in the same way that bower.json works, which is located [here](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.YarnInstaller). Per the instructions on that page, after you install it, for Visual Studio 2017 you have to make sure you set the Yarn Installer "Install on save" and disable the npm restore options.
 
 ### Add and manipulate the .yarnrc file
 
-Finally, what we (I, I&#39;m guessing you do too) really would like is to have packages installed in the _wwwroot/lib_ folder on saving the _package.json_ file. As it currently stands, if you add bootstrap in your package.json file like so:
+Finally, what we (I, I'm guessing you do too) really would like is to have packages installed in the _wwwroot/lib_ folder on saving the _package.json_ file. As it currently stands, if you add bootstrap in your package.json file like so:
 
 ```
 {
-  &#34;version&#34;: &#34;1.0.0&#34;,
-  &#34;name&#34;: &#34;asp.net&#34;,
-  &#34;private&#34;: true,
-  &#34;devDependencies&#34;: {
-    &#34;bootstrap&#34;: &#34;4.0.0&#34;
+  "version": "1.0.0",
+  "name": "asp.net",
+  "private": true,
+  "devDependencies": {
+    "bootstrap": "4.0.0"
   }
 }
 ```
@@ -40,7 +40,7 @@ Finally, what we (I, I&#39;m guessing you do too) really would like is to have p
 Yarn will install the package in a node\_modules folder, which is inside the project folder but not, by default, visible to Visual Studio. To change this, we need to add a _[.yarnrc](https://yarnpkg.com/en/docs/yarnrc)_ file. The _.yarnrc_ file will let us configure additional features when the yarn command is run in the background by VS. In my case, I want new packages to be downloaded and saved to the wwwroot/lib folder, so I will add this line to my _.yarnrc_ file:
 
 ```
---install.modules-folder &#34;./wwwroot/lib&#34;
+--install.modules-folder "./wwwroot/lib"
 
 ```
 

@@ -155,22 +155,22 @@ have to resort to using, say, Java 8, instead of the latest version with all of 
 
   <section><p>While we would all like to be up to date, sometimes legacy systems handcuff us into using an older version of software. Java is no exception, and in some cases we
 have to resort to using, say, Java 8, instead of the latest version with all of the security updates that we need.</p>
-<p>From my scrounging on the internet, it turns out this isn't an extremely straightforward process via any package manager. Some solutions flat out don't work on newer
-systems. So, it's in everyone's best interest to try to understand a little bit more about how a Linux OS works and unpack the tarball from the source.</p>
+<p>From my scrounging on the internet, it turns out this isn&rsquo;t an extremely straightforward process via any package manager. Some solutions flat out don&rsquo;t work on newer
+systems. So, it&rsquo;s in everyone&rsquo;s best interest to try to understand a little bit more about how a Linux OS works and unpack the tarball from the source.</p>
 <p>First, head over to the <a href="https://jdk.java.net/archive/">OpenJDK archives page</a> and select the link appropriate for your needs.
 This tutorial will use Open-JDK 10.0.1, which (as of this writing), has the link:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>https://download.java.net/java/GA/jdk10/10.0.1/fb4372174a714e6b8c52526dc134031e/10/openjdk-10.0.1_linux-x64_bin.tar.gz
 </span></span></code></pre></div><p>Once you have that, run a wget on your target system:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># Get tarball for JDK 10.0.1</span>
 </span></span><span style="display:flex;"><span>wget https://download.java.net/java/GA/jdk10/10.0.1/fb4372174a714e6b8c52526dc134031e/10/openjdk-10.0.1_linux-x64_bin.tar.gz
-</span></span></code></pre></div><p>You'll also need to create a target directory to actually keep the version of java you're installing:</p>
+</span></span></code></pre></div><p>You&rsquo;ll also need to create a target directory to actually keep the version of java you&rsquo;re installing:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># make java 10 directory</span>
 </span></span><span style="display:flex;"><span>mkdir -p /usr/lib/java10
 </span></span></code></pre></div><p>Then unpack the tarball into your freshly minted directory:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># unpack tarball</span>
 </span></span><span style="display:flex;"><span>tar -C /usr/lib/java10/ -xvzf ./openjdk-10.0.1_linux-x64_bin.tar.gz
-</span></span></code></pre></div><p>You'll need to <a href="https://linux.die.net/man/8/update-alternatives">update alternatives</a> for Java. Updating alternatives is like creating a hierarchical <a href="https://wiki.debian.org/SymLink">symbolic link</a>. Recall that a symbolic link is just a fake file that points to a real one.</p>
-<p>The advantage of updating alternatives is that you can have multiple version in your system and more easily change between all of them, but that's a subject for another post. Here's the commands you need:</p>
+</span></span></code></pre></div><p>You&rsquo;ll need to <a href="https://linux.die.net/man/8/update-alternatives">update alternatives</a> for Java. Updating alternatives is like creating a hierarchical <a href="https://wiki.debian.org/SymLink">symbolic link</a>. Recall that a symbolic link is just a fake file that points to a real one.</p>
+<p>The advantage of updating alternatives is that you can have multiple version in your system and more easily change between all of them, but that&rsquo;s a subject for another post. Here&rsquo;s the commands you need:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># update alternatives</span>
 </span></span><span style="display:flex;"><span>update-alternatives --install /usr/bin/java java /usr/lib/java10/jdk-10.0.1/bin/java <span style="color:#bd93f9">20000</span>
 </span></span><span style="display:flex;"><span>update-alternatives --install /usr/bin/javac javac /usr/lib/java10/jdk-10.0.1/bin/javac <span style="color:#bd93f9">20000</span>

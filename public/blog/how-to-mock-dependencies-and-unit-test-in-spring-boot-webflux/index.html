@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The source code for this post can be found on Github.
-The most straightforward way to write unit tests in spring boot webflux is to leverage project reactor&#39;s StepVerifier. StepVerifier allows you to pull each item in a Flux or the only potential item in a Mono and make assertions about each item as it&#39;s pulled through the chain, or make assertions about certain errors that should be thrown in the process. I&#39;m going to quickly walk you through an example integrating mockito with it and webflux."
+The most straightforward way to write unit tests in spring boot webflux is to leverage project reactor&rsquo;s StepVerifier. StepVerifier allows you to pull each item in a Flux or the only potential item in a Mono and make assertions about each item as it&rsquo;s pulled through the chain, or make assertions about certain errors that should be thrown in the process. I&rsquo;m going to quickly walk you through an example integrating mockito with it and webflux."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-mock-dependencies-and-unit-test-in-spring-boot-webflux/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,10 +154,10 @@ The most straightforward way to write unit tests in spring boot webflux is to le
   
 
   <section><p>The source code for this post can be found <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing">on Github</a>.</p>
-<p>The most straightforward way to write unit tests in spring boot webflux is to leverage <a href="https://projectreactor.io/docs/test/release/api/reactor/test/StepVerifier.html">project reactor's StepVerifier</a>. StepVerifier allows you to pull each item in a <strong>Flux</strong> or the only potential item in a <strong>Mono</strong> and make assertions about each item as it's pulled through the chain, or make assertions about certain errors that should be thrown in the process. I'm going to quickly walk you through an example integrating mockito with it and webflux.</p>
+<p>The most straightforward way to write unit tests in spring boot webflux is to leverage <a href="https://projectreactor.io/docs/test/release/api/reactor/test/StepVerifier.html">project reactor&rsquo;s StepVerifier</a>. StepVerifier allows you to pull each item in a <strong>Flux</strong> or the only potential item in a <strong>Mono</strong> and make assertions about each item as it&rsquo;s pulled through the chain, or make assertions about certain errors that should be thrown in the process. I&rsquo;m going to quickly walk you through an example integrating mockito with it and webflux.</p>
 <h2 id="bootstrap-the-project">Bootstrap the Project</h2>
-<p>We're going to make a single endpoint whose job is to filter the results from a downstream call to prevent sensitive information from travelling arbitrarily to the client.</p>
-<p>Go to the <a href="https://start.spring.io/">spring initializr</a> and select the reactive web option. After you have unzipped it, let's set up our data models, service, web client config, and controller:</p>
+<p>We&rsquo;re going to make a single endpoint whose job is to filter the results from a downstream call to prevent sensitive information from travelling arbitrarily to the client.</p>
+<p>Go to the <a href="https://start.spring.io/">spring initializr</a> and select the reactive web option. After you have unzipped it, let&rsquo;s set up our data models, service, web client config, and controller:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">DownstreamResponseDTO</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> String firstName;
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> String lastName;
@@ -219,7 +219,7 @@ The most straightforward way to write unit tests in spring boot webflux is to le
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">lastName</span> <span style="color:#ff79c6">=</span> lastName;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>As we can see, the downstream service will respond with the users SSN and deepest fear. Let's say for the sake of this example that our clients don't need that information. Here's our controller:</p>
+</span></span></code></pre></div><p>As we can see, the downstream service will respond with the users SSN and deepest fear. Let&rsquo;s say for the sake of this example that our clients don&rsquo;t need that information. Here&rsquo;s our controller:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@RestController
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">MyController</span> {
 </span></span><span style="display:flex;"><span>
@@ -229,9 +229,9 @@ The most straightforward way to write unit tests in spring boot webflux is to le
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">service</span> <span style="color:#ff79c6">=</span> service;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>persons<span style="color:#ff79c6">&amp;</span>#34;)
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Flux<span style="color:#ff79c6">&amp;</span>lt;PersonDTO<span style="color:#ff79c6">&amp;</span>gt; getPersons() {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> service.<span style="color:#50fa7b">getAllPeople</span>().<span style="color:#50fa7b">map</span>(downstreamResponseDTO <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#f1fa8c">&#34;/persons&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Flux<span style="color:#ff79c6">&lt;</span>PersonDTO<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">getPersons</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> service.<span style="color:#50fa7b">getAllPeople</span>().<span style="color:#50fa7b">map</span>(downstreamResponseDTO <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>            PersonDTO personDTO <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> PersonDTO();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>            personDTO.<span style="color:#50fa7b">setFirstName</span>(downstreamResponseDTO.<span style="color:#50fa7b">getFirstName</span>());
@@ -251,9 +251,9 @@ The most straightforward way to write unit tests in spring boot webflux is to le
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">webClient</span> <span style="color:#ff79c6">=</span> webClient;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Flux<span style="color:#ff79c6">&amp;</span>lt;DownstreamResponseDTO<span style="color:#ff79c6">&amp;</span>gt; getAllPeople() {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Flux<span style="color:#ff79c6">&lt;</span>DownstreamResponseDTO<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">getAllPeople</span>() {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">webClient</span>.<span style="color:#50fa7b">get</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>legacy<span style="color:#ff79c6">/</span>persons<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(<span style="color:#f1fa8c">&#34;/legacy/persons&#34;</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">retrieve</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">bodyToFlux</span>(DownstreamResponseDTO.<span style="color:#50fa7b">class</span>);
 </span></span><span style="display:flex;"><span>    }
@@ -265,7 +265,7 @@ The most straightforward way to write unit tests in spring boot webflux is to le
 </span></span><span style="display:flex;"><span>    @Bean
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> WebClient <span style="color:#50fa7b">webClient</span>() {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> WebClient.<span style="color:#50fa7b">builder</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">baseUrl</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:9000&amp;#34;)</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">baseUrl</span>(<span style="color:#f1fa8c">&#34;http://localhost:9000&#34;</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">defaultHeader</span>(CONTENT_TYPE, MediaType.<span style="color:#50fa7b">APPLICATION_JSON_VALUE</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
 </span></span><span style="display:flex;"><span>    }
@@ -285,30 +285,30 @@ The most straightforward way to write unit tests in spring boot webflux is to le
 </span></span><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">verifyTransformsCorrectly</span>() {
 </span></span><span style="display:flex;"><span>        DownstreamResponseDTO downstreamResponseDTO_1 <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> DownstreamResponseDTO();
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO_1.<span style="color:#50fa7b">setFirstName</span>(<span style="color:#ff79c6">&amp;</span>#34;jack<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO_1.<span style="color:#50fa7b">setLastName</span>(<span style="color:#ff79c6">&amp;</span>#34;attack<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO_1.<span style="color:#50fa7b">setDeepesetFear</span>(<span style="color:#ff79c6">&amp;</span>#34;spiders<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO_1.<span style="color:#50fa7b">setSsn</span>(<span style="color:#ff79c6">&amp;</span>#34;123<span style="color:#ff79c6">-</span>45<span style="color:#ff79c6">-</span>6789<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO_1.<span style="color:#50fa7b">setFirstName</span>(<span style="color:#f1fa8c">&#34;jack&#34;</span>);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO_1.<span style="color:#50fa7b">setLastName</span>(<span style="color:#f1fa8c">&#34;attack&#34;</span>);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO_1.<span style="color:#50fa7b">setDeepesetFear</span>(<span style="color:#f1fa8c">&#34;spiders&#34;</span>);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO_1.<span style="color:#50fa7b">setSsn</span>(<span style="color:#f1fa8c">&#34;123-45-6789&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        DownstreamResponseDTO downstreamResponseDTO_2 <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> DownstreamResponseDTO();
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO_2.<span style="color:#50fa7b">setFirstName</span>(<span style="color:#ff79c6">&amp;</span>#34;karen<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO_2.<span style="color:#50fa7b">setLastName</span>(<span style="color:#ff79c6">&amp;</span>#34;cool<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO_2.<span style="color:#50fa7b">setDeepesetFear</span>(<span style="color:#ff79c6">&amp;</span>#34;snakes<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO_2.<span style="color:#50fa7b">setSsn</span>(<span style="color:#ff79c6">&amp;</span>#34;000<span style="color:#ff79c6">-</span>00<span style="color:#ff79c6">-</span>0000<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO_2.<span style="color:#50fa7b">setFirstName</span>(<span style="color:#f1fa8c">&#34;karen&#34;</span>);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO_2.<span style="color:#50fa7b">setLastName</span>(<span style="color:#f1fa8c">&#34;cool&#34;</span>);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO_2.<span style="color:#50fa7b">setDeepesetFear</span>(<span style="color:#f1fa8c">&#34;snakes&#34;</span>);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO_2.<span style="color:#50fa7b">setSsn</span>(<span style="color:#f1fa8c">&#34;000-00-0000&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        Mockito.<span style="color:#50fa7b">when</span>(myServiceMock.<span style="color:#50fa7b">getAllPeople</span>())
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">thenReturn</span>(Flux.<span style="color:#50fa7b">just</span>(downstreamResponseDTO_1, downstreamResponseDTO_2));
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(myController.<span style="color:#50fa7b">getPersons</span>())
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(personDTO <span style="color:#ff79c6">-&amp;</span>gt; personDTO.<span style="color:#50fa7b">getLastName</span>().<span style="color:#50fa7b">equals</span>(downstreamResponseDTO_1.<span style="color:#50fa7b">getLastName</span>())
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(personDTO <span style="color:#ff79c6">-&gt;</span> personDTO.<span style="color:#50fa7b">getLastName</span>().<span style="color:#50fa7b">equals</span>(downstreamResponseDTO_1.<span style="color:#50fa7b">getLastName</span>())
 </span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; personDTO.<span style="color:#50fa7b">getFirstName</span>().<span style="color:#50fa7b">equals</span>(downstreamResponseDTO_1.<span style="color:#50fa7b">getFirstName</span>()))
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(personDTO <span style="color:#ff79c6">-&amp;</span>gt; personDTO.<span style="color:#50fa7b">getLastName</span>().<span style="color:#50fa7b">equals</span>(downstreamResponseDTO_2.<span style="color:#50fa7b">getLastName</span>())
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(personDTO <span style="color:#ff79c6">-&gt;</span> personDTO.<span style="color:#50fa7b">getLastName</span>().<span style="color:#50fa7b">equals</span>(downstreamResponseDTO_2.<span style="color:#50fa7b">getLastName</span>())
 </span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; personDTO.<span style="color:#50fa7b">getFirstName</span>().<span style="color:#50fa7b">equals</span>(downstreamResponseDTO_2.<span style="color:#50fa7b">getFirstName</span>()))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>The key parts we are looking at are towards the end of <strong>verifyTransformsCorrectly</strong>, where we first say that &quot;any call to <strong>myServiceMock.getAllPeople()</strong> will respond with
-a <strong>Flux</strong> of <strong>DownstreamResponseDTO</strong> s.&quot; By putting it into the step verifier, it will handle subscribing for us and ensuring that each item gets pulled through appropriately.
+</span></span></code></pre></div><p>The key parts we are looking at are towards the end of <strong>verifyTransformsCorrectly</strong>, where we first say that &ldquo;any call to <strong>myServiceMock.getAllPeople()</strong> will respond with
+a <strong>Flux</strong> of <strong>DownstreamResponseDTO</strong> s.&rdquo; By putting it into the step verifier, it will handle subscribing for us and ensuring that each item gets pulled through appropriately.
 We finally assert that the first and last name of the mocked out objects are indeed mapped to the correct fields on the <strong>PersonDTO</strong>.</p>
 <p>That basic structure should handle 80% of your unit testing needs in webflux. If you want to run these tests you can simply:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mvn clean install

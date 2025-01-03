@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The source code for what follows can be found on Github.
-Redis does not allow you to set the expiration on individual members in a set, it only allows you to set an expiration on the entire set itself. If you want to have a sort of expiry on individual elements in a set, this article shares a workaround to that problem that works well in practice. Because I have already written a lot of boilerplate code for testing any redis operation using lettuce, I&#39;m going to be showing you this technique using a reactive lettuce client, however the basic concept should transfer easily to any other client."
+Redis does not allow you to set the expiration on individual members in a set, it only allows you to set an expiration on the entire set itself. If you want to have a sort of expiry on individual elements in a set, this article shares a workaround to that problem that works well in practice. Because I have already written a lot of boilerplate code for testing any redis operation using lettuce, I&rsquo;m going to be showing you this technique using a reactive lettuce client, however the basic concept should transfer easily to any other client."
 />
 <link rel="canonical" href="http://localhost:1313/blog/expiring-individual-elements-in-a-redis-set/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,34 +154,34 @@ Redis does not allow you to set the expiration on individual members in a set, i
   
 
   <section><p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>Redis does not allow you to set the expiration on individual members in a set, it only allows you to set an expiration on the entire set itself. If you want to have a sort of expiry on individual elements in a set, this article shares a workaround to that problem that works well in practice. Because I have already written a lot of <a href="https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux">boilerplate code for testing any redis operation using lettuce</a>, I'm going to be showing you this technique using a reactive lettuce client, however the basic concept should transfer easily to any other client.</p>
+<p>Redis does not allow you to set the expiration on individual members in a set, it only allows you to set an expiration on the entire set itself. If you want to have a sort of expiry on individual elements in a set, this article shares a workaround to that problem that works well in practice. Because I have already written a lot of <a href="https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux">boilerplate code for testing any redis operation using lettuce</a>, I&rsquo;m going to be showing you this technique using a reactive lettuce client, however the basic concept should transfer easily to any other client.</p>
 <h3 id="use-a-sorted-set">Use A Sorted Set</h3>
-<p>To start with, instead of using a vanilla set, we're going to use a sorted set where the score of each element is the current epoch timestamp, represented in this example using the number of milliseconds since epoch [here's <a href="https://nickolasfisher.com/blog/A-Guide-to-Operating-on-Sorted-Sets-in-Redis-with-Lettuce">an introduction to sorted sets in redis using lettuce</a> for those not sure how to follow along just yet].</p>
-<p>So let's add three entries in our sorted set, sleeping for 100 milliseconds in between adding each one, and every time we add an element we specify the <strong>score</strong> as the current number of milliseconds since epoch:</p>
+<p>To start with, instead of using a vanilla set, we&rsquo;re going to use a sorted set where the score of each element is the current epoch timestamp, represented in this example using the number of milliseconds since epoch [here&rsquo;s <a href="https://nickolasfisher.com/blog/A-Guide-to-Operating-on-Sorted-Sets-in-Redis-with-Lettuce">an introduction to sorted sets in redis using lettuce</a> for those not sure how to follow along just yet].</p>
+<p>So let&rsquo;s add three entries in our sorted set, sleeping for 100 milliseconds in between adding each one, and every time we add an element we specify the <strong>score</strong> as the current number of milliseconds since epoch:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">expireElementsPeriodically</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
-</span></span><span style="display:flex;"><span>        String setKey <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;values<span style="color:#ff79c6">-</span>set<span style="color:#ff79c6">-</span>key<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>        String setKey <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;values-set-key&#34;</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        addValueToSet(setKey, <span style="color:#ff79c6">&amp;</span>#34;first<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        addValueToSet(setKey, <span style="color:#f1fa8c">&#34;first&#34;</span>);
 </span></span><span style="display:flex;"><span>        Thread.<span style="color:#50fa7b">sleep</span>(100);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        addValueToSet(setKey, <span style="color:#ff79c6">&amp;</span>#34;second<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        addValueToSet(setKey, <span style="color:#f1fa8c">&#34;second&#34;</span>);
 </span></span><span style="display:flex;"><span>        Thread.<span style="color:#50fa7b">sleep</span>(100);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        addValueToSet(setKey, <span style="color:#ff79c6">&amp;</span>#34;third<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        addValueToSet(setKey, <span style="color:#f1fa8c">&#34;third&#34;</span>);
 </span></span><span style="display:flex;"><span>        Thread.<span style="color:#50fa7b">sleep</span>(100);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">addValueToSet</span>(String setKey, String value) {
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Long<span style="color:#ff79c6">&amp;</span>gt; addValueWithEpochMilliScore <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">zadd</span>(setKey, ScoredValue.<span style="color:#50fa7b">just</span>(Instant.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">toEpochMilli</span>(), value));
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Long<span style="color:#ff79c6">&gt;</span> addValueWithEpochMilliScore <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">zadd</span>(setKey, ScoredValue.<span style="color:#50fa7b">just</span>(Instant.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">toEpochMilli</span>(), value));
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(addValueWithEpochMilliScore)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNext</span>(1L)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>Now you'll have three entries in the set [&quot;first&quot;, &quot;second&quot;, and &quot;third&quot;]. Each entry will have a score that is the epoch millisecond timestamp of when it was entered. It's important to note that redis doesn't know that&ndash;it just keeps the entries sorted by an arbitrary score. If we want to expire them, we now just have to issue one command, which is to pick a time that we consider entries in the set to be invalid and remove them by score:</p>
+</span></span></code></pre></div><p>Now you&rsquo;ll have three entries in the set [&ldquo;first&rdquo;, &ldquo;second&rdquo;, and &ldquo;third&rdquo;]. Each entry will have a score that is the epoch millisecond timestamp of when it was entered. It&rsquo;s important to note that redis doesn&rsquo;t know that&ndash;it just keeps the entries sorted by an arbitrary score. If we want to expire them, we now just have to issue one command, which is to pick a time that we consider entries in the set to be invalid and remove them by score:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        <span style="color:#6272a4">// expire everything older than 250ms ago</span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Long<span style="color:#ff79c6">&amp;</span>gt; expireOldEntriesMono <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">zremrangebyscore</span>(setKey,
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Long<span style="color:#ff79c6">&gt;</span> expireOldEntriesMono <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">zremrangebyscore</span>(setKey,
 </span></span><span style="display:flex;"><span>                Range.<span style="color:#50fa7b">create</span>(0, Instant.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">minus</span>(250, ChronoUnit.<span style="color:#50fa7b">MILLIS</span>).<span style="color:#50fa7b">toEpochMilli</span>())
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>
@@ -190,27 +190,27 @@ Redis does not allow you to set the expiration on individual members in a set, i
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// get all entries</span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(redisReactiveCommands.<span style="color:#50fa7b">zrevrangebyscore</span>(setKey, Range.<span style="color:#50fa7b">unbounded</span>()))
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(val <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">&amp;</span>#34;third<span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#50fa7b">equals</span>(val))
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(val <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">&amp;</span>#34;second<span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#50fa7b">equals</span>(val))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(val <span style="color:#ff79c6">-&gt;</span> <span style="color:#f1fa8c">&#34;third&#34;</span>.<span style="color:#50fa7b">equals</span>(val))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(val <span style="color:#ff79c6">-&gt;</span> <span style="color:#f1fa8c">&#34;second&#34;</span>.<span style="color:#50fa7b">equals</span>(val))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
-</span></span></code></pre></div><p>Here we're expiring everything older than 250ms ago, which should just delete our first entry since it's been 300 milliseconds since we put it in there.</p>
+</span></span></code></pre></div><p>Here we&rsquo;re expiring everything older than 250ms ago, which should just delete our first entry since it&rsquo;s been 300 milliseconds since we put it in there.</p>
 <h3 id="a-better-approach">A Better Approach</h3>
-<p>In the above example, we didn't <em>really</em> set the expiry of every element in the set. What we did was specify when we put the element in there, and then later decided what was &quot;too old&quot; for us at some future date. A better way to do this would be to make the score associated with each element to be the <em>actual time it should expire</em>, then periodically remove entries older than right now:</p>
+<p>In the above example, we didn&rsquo;t <em>really</em> set the expiry of every element in the set. What we did was specify when we put the element in there, and then later decided what was &ldquo;too old&rdquo; for us at some future date. A better way to do this would be to make the score associated with each element to be the <em>actual time it should expire</em>, then periodically remove entries older than right now:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">expireElementsPeriodically</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
-</span></span><span style="display:flex;"><span>        String setKey <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;values<span style="color:#ff79c6">-</span>set<span style="color:#ff79c6">-</span>key<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>        String setKey <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;values-set-key&#34;</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        addValueToSet(setKey, <span style="color:#ff79c6">&amp;</span>#34;first<span style="color:#ff79c6">&amp;</span>#34;, Instant.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">plus</span>(450, ChronoUnit.<span style="color:#50fa7b">MILLIS</span>).<span style="color:#50fa7b">toEpochMilli</span>());
+</span></span><span style="display:flex;"><span>        addValueToSet(setKey, <span style="color:#f1fa8c">&#34;first&#34;</span>, Instant.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">plus</span>(450, ChronoUnit.<span style="color:#50fa7b">MILLIS</span>).<span style="color:#50fa7b">toEpochMilli</span>());
 </span></span><span style="display:flex;"><span>        Thread.<span style="color:#50fa7b">sleep</span>(100);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        addValueToSet(setKey, <span style="color:#ff79c6">&amp;</span>#34;second<span style="color:#ff79c6">&amp;</span>#34;, Instant.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">plus</span>(150, ChronoUnit.<span style="color:#50fa7b">MILLIS</span>).<span style="color:#50fa7b">toEpochMilli</span>());
+</span></span><span style="display:flex;"><span>        addValueToSet(setKey, <span style="color:#f1fa8c">&#34;second&#34;</span>, Instant.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">plus</span>(150, ChronoUnit.<span style="color:#50fa7b">MILLIS</span>).<span style="color:#50fa7b">toEpochMilli</span>());
 </span></span><span style="display:flex;"><span>        Thread.<span style="color:#50fa7b">sleep</span>(100);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        addValueToSet(setKey, <span style="color:#ff79c6">&amp;</span>#34;third<span style="color:#ff79c6">&amp;</span>#34;, Instant.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">plus</span>(500, ChronoUnit.<span style="color:#50fa7b">MILLIS</span>).<span style="color:#50fa7b">toEpochMilli</span>());
+</span></span><span style="display:flex;"><span>        addValueToSet(setKey, <span style="color:#f1fa8c">&#34;third&#34;</span>, Instant.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">plus</span>(500, ChronoUnit.<span style="color:#50fa7b">MILLIS</span>).<span style="color:#50fa7b">toEpochMilli</span>());
 </span></span><span style="display:flex;"><span>        Thread.<span style="color:#50fa7b">sleep</span>(100);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// expire everything based on score, or time to expire as epoch millisecond</span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Long<span style="color:#ff79c6">&amp;</span>gt; expireOldEntriesMono <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">zremrangebyscore</span>(setKey,
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Long<span style="color:#ff79c6">&gt;</span> expireOldEntriesMono <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">zremrangebyscore</span>(setKey,
 </span></span><span style="display:flex;"><span>                Range.<span style="color:#50fa7b">create</span>(0, Instant.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">toEpochMilli</span>())
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>
@@ -219,13 +219,13 @@ Redis does not allow you to set the expiration on individual members in a set, i
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// get all entries</span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(redisReactiveCommands.<span style="color:#50fa7b">zrevrangebyscore</span>(setKey, Range.<span style="color:#50fa7b">unbounded</span>()))
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(val <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">&amp;</span>#34;third<span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#50fa7b">equals</span>(val))
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(val <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">&amp;</span>#34;first<span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#50fa7b">equals</span>(val))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(val <span style="color:#ff79c6">-&gt;</span> <span style="color:#f1fa8c">&#34;third&#34;</span>.<span style="color:#50fa7b">equals</span>(val))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(val <span style="color:#ff79c6">-&gt;</span> <span style="color:#f1fa8c">&#34;first&#34;</span>.<span style="color:#50fa7b">equals</span>(val))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">addValueToSet</span>(String setKey, String value, <span style="color:#8be9fd">long</span> epochMilliToExpire) {
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Long<span style="color:#ff79c6">&amp;</span>gt; addValueWithEpochMilliScore <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">zadd</span>(
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Long<span style="color:#ff79c6">&gt;</span> addValueWithEpochMilliScore <span style="color:#ff79c6">=</span> redisReactiveCommands.<span style="color:#50fa7b">zadd</span>(
 </span></span><span style="display:flex;"><span>                setKey,
 </span></span><span style="display:flex;"><span>                ScoredValue.<span style="color:#50fa7b">just</span>(epochMilliToExpire, value)
 </span></span><span style="display:flex;"><span>        );

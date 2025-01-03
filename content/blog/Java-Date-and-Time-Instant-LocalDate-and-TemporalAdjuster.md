@@ -39,7 +39,7 @@ Then we can get the difference between any two of them, and validate expectation
     public void differenceBetweenTwoInstants() throws Exception {
         Duration timeElapsed = Duration.between(start1, end1);
         long milliseconds = timeElapsed.toMillis();
-        assertTrue(milliseconds &gt;= 14 &amp;&amp; milliseconds &lt;= 16);
+        assertTrue(milliseconds >= 14 &amp;&amp; milliseconds <= 16);
     }
 ```
 
@@ -69,7 +69,7 @@ A LocalDate is a meant to represent something like a calendar day. We can get th
 
 ```
 
-We can also construct any LocalDate using LocalDate.of(..), shown below. There are two quirks I believe important to point out about LocalDate. The first is that it&#39;s aware of leap years:
+We can also construct any LocalDate using LocalDate.of(..), shown below. There are two quirks I believe important to point out about LocalDate. The first is that it's aware of leap years:
 
 ```java
     @Test
@@ -86,7 +86,7 @@ We can also construct any LocalDate using LocalDate.of(..), shown below. There a
 
 ```
 
-The second is the behavior of plusMonths(..), which will effectively truncate the end of a month if they have a different number of days between them. If two months have a different number of days and you&#39;re near the end of the month, it will reduce the day of the month if necessary to ensure you&#39;re only moving forward one calendar month.
+The second is the behavior of plusMonths(..), which will effectively truncate the end of a month if they have a different number of days between them. If two months have a different number of days and you're near the end of the month, it will reduce the day of the month if necessary to ensure you're only moving forward one calendar month.
 
 For example, January has 31 days and February has 28 days. If we use plusMonths(1) from January 31st, we will get (in a non Leap Year) February 28th. No exceptions are thrown:
 
@@ -108,7 +108,7 @@ The days of the week start at 1, which is a Monday in LocalDate-speak. That impl
     public void localDate_dayOfWeek() {
         DayOfWeek monday = LocalDate.of(1900,1,1).getDayOfWeek();
 
-        assertEquals(&#34;MONDAY&#34;, monday.toString());
+        assertEquals("MONDAY", monday.toString());
         assertEquals(1, monday.getValue());
     }
 
@@ -122,7 +122,7 @@ Finally, you can adjust any LocalDate in ways beyond just adding and subtracting
         LocalDate firstTuesday = LocalDate.of(2018, 6,1)
             .with(TemporalAdjusters.nextOrSame(DayOfWeek.TUESDAY));
 
-        assertEquals(&#34;TUESDAY&#34;, firstTuesday.getDayOfWeek().toString());
+        assertEquals("TUESDAY", firstTuesday.getDayOfWeek().toString());
     }
 
 ```

@@ -169,22 +169,22 @@ We spent the last post figuring out how to migrate an embedded PostgreSQL databa
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">spring.datasource.username</span>: postgres
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">spring.datasource.url</span>: jdbc:postgresql://192.168.56.111:5432/testdb
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">spring.datasource.driver-class-name</span>: org.postgresql.Driver
-</span></span></code></pre></div><p>Here, we are telling Spring Boot to use the &quot;dev&quot; profile by default, and if we decide to use the &quot;stage&quot; profile, then the application will attempt to connect to a PostgreSQL database at the 192.168.56.111 IP address, at port 5432. It will connect to the <strong>testdb</strong> database and use postgres/postgres as the username/password combo.</p>
+</span></span></code></pre></div><p>Here, we are telling Spring Boot to use the &ldquo;dev&rdquo; profile by default, and if we decide to use the &ldquo;stage&rdquo; profile, then the application will attempt to connect to a PostgreSQL database at the 192.168.56.111 IP address, at port 5432. It will connect to the <strong>testdb</strong> database and use postgres/postgres as the username/password combo.</p>
 <p><strong>Note</strong>: Never use postgres/postgres as the username/password combo for a database that you actually want to protect. This will last about five seconds on the internet.</p>
-<p>With the work we have already done, this will ensure that our application runs the database migration scripts on application start time in an idempotent way. We just need a real database to validate this against, and I will use <a href="https://www.vagrantup.com/">Vagrant</a>. I've created a <strong>postgres-vm/Vagrantfile</strong> like:</p>
-<pre tabindex="0"><code>Vagrant.configure(&amp;#34;2&amp;#34;) do |config|
-  config.vm.box = &amp;#34;ubuntu/bionic64&amp;#34;
+<p>With the work we have already done, this will ensure that our application runs the database migration scripts on application start time in an idempotent way. We just need a real database to validate this against, and I will use <a href="https://www.vagrantup.com/">Vagrant</a>. I&rsquo;ve created a <strong>postgres-vm/Vagrantfile</strong> like:</p>
+<pre tabindex="0"><code>Vagrant.configure(&#34;2&#34;) do |config|
+  config.vm.box = &#34;ubuntu/bionic64&#34;
 
-  config.vm.provider &amp;#34;virtualbox&amp;#34; do |v|
+  config.vm.provider &#34;virtualbox&#34; do |v|
     v.memory = 2048
     v.cpus = 1
   end
 
-  config.vm.provision &amp;#34;file&amp;#34;, source: &amp;#34;~/.ssh/id_rsa.pub&amp;#34;, destination: &amp;#34;~/.ssh/me.pub&amp;#34;
-  config.vm.provision &amp;#34;shell&amp;#34;, inline: &amp;#34;cat /home/vagrant/.ssh/me.pub &amp;gt;&amp;gt; /home/vagrant/.ssh/authorized_keys&amp;#34;
-  config.vm.provision &amp;#34;shell&amp;#34;, inline: &amp;#34;mkdir -p /root &amp;amp;&amp;amp; mkdir -p /root/.ssh/ &amp;amp;&amp;amp; cat /home/vagrant/.ssh/me.pub &amp;gt;&amp;gt; /root/.ssh/authorized_keys&amp;#34;
-  config.vm.provision :shell, path: &amp;#34;postgres-provision.sh&amp;#34;
-  config.vm.network &amp;#34;private_network&amp;#34;, ip: &amp;#34;192.168.56.111&amp;#34;
+  config.vm.provision &#34;file&#34;, source: &#34;~/.ssh/id_rsa.pub&#34;, destination: &#34;~/.ssh/me.pub&#34;
+  config.vm.provision &#34;shell&#34;, inline: &#34;cat /home/vagrant/.ssh/me.pub &gt;&gt; /home/vagrant/.ssh/authorized_keys&#34;
+  config.vm.provision &#34;shell&#34;, inline: &#34;mkdir -p /root &amp;amp;&amp;amp; mkdir -p /root/.ssh/ &amp;amp;&amp;amp; cat /home/vagrant/.ssh/me.pub &gt;&gt; /root/.ssh/authorized_keys&#34;
+  config.vm.provision :shell, path: &#34;postgres-provision.sh&#34;
+  config.vm.network &#34;private_network&#34;, ip: &#34;192.168.56.111&#34;
 end
 </code></pre><p>This Vagrantfile needs a <strong>postgres-provision.sh</strong> bash script in the same directory, which looks like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#ff79c6">#!/bin/bash
@@ -192,13 +192,13 @@ end
 </span></span><span style="display:flex;"><span>sudo apt-get update &amp;amp;&amp;amp; sudo apt-get -y install postgresql
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># set the default to listen to all addresses</span>
-</span></span><span style="display:flex;"><span>sudo sed -i &amp;<span style="color:#6272a4">#34;/port*/a listen_addresses = &amp;#39;*&amp;#39;&amp;#34; /etc/postgresql/10/main/postgresql.conf</span>
+</span></span><span style="display:flex;"><span>sudo sed -i <span style="color:#f1fa8c">&#34;/port*/a listen_addresses = &#39;*&#39;&#34;</span> /etc/postgresql/10/main/postgresql.conf
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># allow any authentication mechanism from any client</span>
-</span></span><span style="display:flex;"><span>sudo sed -i &amp;<span style="color:#6272a4">#34;$ a host all all all trust&amp;#34; /etc/postgresql/10/main/pg_hba.conf</span>
+</span></span><span style="display:flex;"><span>sudo sed -i <span style="color:#f1fa8c">&#34;</span>$<span style="color:#f1fa8c"> a host all all all trust&#34;</span> /etc/postgresql/10/main/pg_hba.conf
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># create db named testdb</span>
-</span></span><span style="display:flex;"><span>sudo su postgres -c &amp;<span style="color:#6272a4">#34;createdb testdb&amp;#34;</span>
+</span></span><span style="display:flex;"><span>sudo su postgres -c <span style="color:#f1fa8c">&#34;createdb testdb&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># restart the service to allow changes to take effect</span>
 </span></span><span style="display:flex;"><span>sudo service postgresql restart
@@ -219,7 +219,7 @@ end
 </span></span></code></pre></div><p>You should get an output like this:</p>
 <pre tabindex="0"><code>                 List of relations
  Schema |         Name          | Type  |  Owner
---------&amp;#43;-----------------------&amp;#43;-------&amp;#43;----------
+--------+-----------------------+-------+----------
  public | employee              | table | postgres
  public | flyway_schema_history | table | postgres
 (2 rows)

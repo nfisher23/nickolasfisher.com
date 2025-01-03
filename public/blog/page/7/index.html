@@ -163,7 +163,7 @@
 
   <div class="description">
     
-      <p>In general, you will want to keep your development environment and your higher environments as similar as makes sense [times it doesn't make sense: when it costs too much], to catch bugs early and often. Here, we'll quickly run through how to set up a leader/follower topology for redis using docker/docker-compose on your local machine.</p>
+      <p>In general, you will want to keep your development environment and your higher environments as similar as makes sense [times it doesn&rsquo;t make sense: when it costs too much], to catch bugs early and often. Here, we&rsquo;ll quickly run through how to set up a leader/follower topology for redis using docker/docker-compose on your local machine.</p>
     
   </div>
 
@@ -195,7 +195,7 @@
   <div class="description">
     
       <p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis">can be found on Github</a>.</p>
-<p>In a previous post, we detailed <a href="https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux">how to write integration tests for lettuce clients in spring boot webflux</a> using a redis test container. That's fine and well when you're just writing code for a quick feedback loop, but is useless when it comes to running the application in real life. This post will start up redis locally and then explain how to best connect to it using lettuce in webflux.</p>
+<p>In a previous post, we detailed <a href="https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux">how to write integration tests for lettuce clients in spring boot webflux</a> using a redis test container. That&rsquo;s fine and well when you&rsquo;re just writing code for a quick feedback loop, but is useless when it comes to running the application in real life. This post will start up redis locally and then explain how to best connect to it using lettuce in webflux.</p>
     
   </div>
 
@@ -259,7 +259,7 @@
   <div class="description">
     
       <p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis">can be found on Github</a>.</p>
-<p>Another way to write integration tests for code that verifies your interactions with redis actually make sense is to use a <a href="https://www.testcontainers.org/">test container</a>. This framework assumes you have docker up and running, but if you do it will pull a specified container image [typically you'll just use docker hub, though it's important to note that they rate limit you, so don't go overboard], then you can interact with that container in your integration tests.</p>
+<p>Another way to write integration tests for code that verifies your interactions with redis actually make sense is to use a <a href="https://www.testcontainers.org/">test container</a>. This framework assumes you have docker up and running, but if you do it will pull a specified container image [typically you&rsquo;ll just use docker hub, though it&rsquo;s important to note that they rate limit you, so don&rsquo;t go overboard], then you can interact with that container in your integration tests.</p>
     
   </div>
 
@@ -291,7 +291,7 @@
   <div class="description">
     
       <p>The source code for this article <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis">can be found on Github</a>.</p>
-<p><a href="https://github.com/lettuce-io/lettuce-core">Lettuce</a> is a redis client with reactive support. There is a super handy <a href="https://github.com/kstyrc/embedded-redis">embedded redis for java project</a> out there, and this kind of integration testing inside your service is worth its weight in gold, in my humble opinion. This post will detail how to merge both of these worlds together, and set up redis integration tests when you're using a lettuce client.</p>
+<p><a href="https://github.com/lettuce-io/lettuce-core">Lettuce</a> is a redis client with reactive support. There is a super handy <a href="https://github.com/kstyrc/embedded-redis">embedded redis for java project</a> out there, and this kind of integration testing inside your service is worth its weight in gold, in my humble opinion. This post will detail how to merge both of these worlds together, and set up redis integration tests when you&rsquo;re using a lettuce client.</p>
     
   </div>
 

@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The sample code for this post can be found on GitHub.
-While we can always install PostgreSQL on our host machine, it&#39;s a much cleaner solution to create something like a local virtual machine with Vagrant or a container using Docker. That way, any changes we make to the database and then forget about are not around as soon as we destroy either the container or the virtual machine. It is one more way to tighten that feedback loop we need as developers."
+While we can always install PostgreSQL on our host machine, it&rsquo;s a much cleaner solution to create something like a local virtual machine with Vagrant or a container using Docker. That way, any changes we make to the database and then forget about are not around as soon as we destroy either the container or the virtual machine. It is one more way to tighten that feedback loop we need as developers."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-set-up-a-local-unsecured-postgres-virtual-machine-for-testing/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,40 +154,40 @@ While we can always install PostgreSQL on our host machine, it&#39;s a much clea
   
 
   <section><p>The sample code for this post can be found <a href="https://github.com/nfisher23/integration-testing-postgres-and-spring/tree/master/postgres-vm-sandbox">on GitHub</a>.</p>
-<p>While we can always install <a href="https://www.postgresql.org/">PostgreSQL</a> on our host machine, it's a much cleaner solution to create something like a local virtual machine with <a href="https://www.vagrantup.com/">Vagrant</a> or a container using <a href="https://www.docker.com/">Docker.</a> That way, any changes we make to the database and then forget about are not around as soon as we destroy either the container or the virtual machine. It is one more way to tighten that feedback loop we need as developers.</p>
-<p>I'll provide an example using Vagrant in this post, though migrating to Docker should be fairly straightforward once you get the steps. Note that the following example is not even remotely secure, and if you use this method for anything but local sandboxing you will almost certainly get a cyber smack across the face at some point in the future.</p>
-<p>First, let's set up a simple VagrantFile that defaults to using the IP 192.168.56.111:</p>
-<pre tabindex="0"><code>Vagrant.configure(&amp;#34;2&amp;#34;) do |config|
-  config.vm.box = &amp;#34;ubuntu/bionic64&amp;#34;
+<p>While we can always install <a href="https://www.postgresql.org/">PostgreSQL</a> on our host machine, it&rsquo;s a much cleaner solution to create something like a local virtual machine with <a href="https://www.vagrantup.com/">Vagrant</a> or a container using <a href="https://www.docker.com/">Docker.</a> That way, any changes we make to the database and then forget about are not around as soon as we destroy either the container or the virtual machine. It is one more way to tighten that feedback loop we need as developers.</p>
+<p>I&rsquo;ll provide an example using Vagrant in this post, though migrating to Docker should be fairly straightforward once you get the steps. Note that the following example is not even remotely secure, and if you use this method for anything but local sandboxing you will almost certainly get a cyber smack across the face at some point in the future.</p>
+<p>First, let&rsquo;s set up a simple VagrantFile that defaults to using the IP 192.168.56.111:</p>
+<pre tabindex="0"><code>Vagrant.configure(&#34;2&#34;) do |config|
+  config.vm.box = &#34;ubuntu/bionic64&#34;
 
-  config.vm.provider &amp;#34;virtualbox&amp;#34; do |v|
+  config.vm.provider &#34;virtualbox&#34; do |v|
     v.memory = 2048
     v.cpus = 1
   end
 
-  config.vm.provision :shell, path: &amp;#34;postgres-provision.sh&amp;#34;
-  config.vm.network &amp;#34;private_network&amp;#34;, ip: &amp;#34;192.168.56.111&amp;#34;
+  config.vm.provision :shell, path: &#34;postgres-provision.sh&#34;
+  config.vm.network &#34;private_network&#34;, ip: &#34;192.168.56.111&#34;
 end
-</code></pre><p>In the same directory as the VagrantFile, we're going to need a file called &quot;postgres-provision.sh&quot;. We need to:</p>
+</code></pre><p>In the same directory as the VagrantFile, we&rsquo;re going to need a file called &ldquo;postgres-provision.sh&rdquo;. We need to:</p>
 <ol>
 <li>Install PostgreSQL</li>
 <li>Set the default behavior (which is normally just localhost) to listen to all addresses (which will include our static, local IP).</li>
 <li>Allow any authentication mechanism</li>
 <li>Restart the service</li>
 </ol>
-<p>The following bash script accomplishes that, and also creates a test database called &quot;testdb&quot; as another place to toy around:</p>
+<p>The following bash script accomplishes that, and also creates a test database called &ldquo;testdb&rdquo; as another place to toy around:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#ff79c6">#!/bin/bash
 </span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
 </span></span><span style="display:flex;"><span>sudo apt-get update &amp;amp;&amp;amp; sudo apt-get -y install postgresql
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># set the default to listen to all addresses</span>
-</span></span><span style="display:flex;"><span>sudo sed -i &amp;<span style="color:#6272a4">#34;/port*/a listen_addresses = &amp;#39;*&amp;#39;&amp;#34; /etc/postgresql/10/main/postgresql.conf</span>
+</span></span><span style="display:flex;"><span>sudo sed -i <span style="color:#f1fa8c">&#34;/port*/a listen_addresses = &#39;*&#39;&#34;</span> /etc/postgresql/10/main/postgresql.conf
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># allow any authentication mechanism from any client</span>
-</span></span><span style="display:flex;"><span>sudo sed -i &amp;<span style="color:#6272a4">#34;$ a host all all all trust&amp;#34; /etc/postgresql/10/main/pg_hba.conf</span>
+</span></span><span style="display:flex;"><span>sudo sed -i <span style="color:#f1fa8c">&#34;</span>$<span style="color:#f1fa8c"> a host all all all trust&#34;</span> /etc/postgresql/10/main/pg_hba.conf
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># create db named testdb</span>
-</span></span><span style="display:flex;"><span>sudo su postgres -c &amp;<span style="color:#6272a4">#34;createdb testdb&amp;#34;</span>
+</span></span><span style="display:flex;"><span>sudo su postgres -c <span style="color:#f1fa8c">&#34;createdb testdb&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># restart the service to allow changes to take effect</span>
 </span></span><span style="display:flex;"><span>sudo service postgresql restart

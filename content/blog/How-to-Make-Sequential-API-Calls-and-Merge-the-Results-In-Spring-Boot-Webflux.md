@@ -7,7 +7,7 @@ tags: [java, spring, reactive, webflux]
 
 The source code for this article [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience).
 
-In reactive programming, it&#39;s a game of callbacks. In the vast majority of cases, you will want to defer all of your I/O operations to the library you are using \[typically, netty, under the hood\], and stay focused on setting up the flow so that the right functions are invoked in the right order. Sometimes you will want to make calls in parallel, sometimes you need data from a previous call or operation available in order to invoke that right function.
+In reactive programming, it's a game of callbacks. In the vast majority of cases, you will want to defer all of your I/O operations to the library you are using \[typically, netty, under the hood\], and stay focused on setting up the flow so that the right functions are invoked in the right order. Sometimes you will want to make calls in parallel, sometimes you need data from a previous call or operation available in order to invoke that right function.
 
 The key to coordinating operations like this is to defer to the [various operations on Mono](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html), or in the streaming case, [those on flux](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html). This post is focused on a very specific need:
 
@@ -19,20 +19,20 @@ In this case, we need **zipWhen**.
 
 ## Setup the App
 
-You can spin up an application in the sprint boot initializr or whatever is most comfortable to you \[ensure you&#39;re selecting the **Spring Reactive Web** option\]. Since we&#39;re making a network call, we will want to start by setting up our WebClient:
+You can spin up an application in the sprint boot initializr or whatever is most comfortable to you \[ensure you're selecting the **Spring Reactive Web** option\]. Since we're making a network call, we will want to start by setting up our WebClient:
 
 ```java
 public class Config {
 
-    @Bean(&#34;service-a-web-client&#34;)
+    @Bean("service-a-web-client")
     public WebClient serviceAWebClient() {
-        HttpClient httpClient = HttpClient.create().tcpConfiguration(tcpClient -&gt;
+        HttpClient httpClient = HttpClient.create().tcpConfiguration(tcpClient ->
                 tcpClient.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000)
-                        .doOnConnected(connection -&gt; connection.addHandlerLast(new ReadTimeoutHandler(1000, TimeUnit.MILLISECONDS)))
+                        .doOnConnected(connection -> connection.addHandlerLast(new ReadTimeoutHandler(1000, TimeUnit.MILLISECONDS)))
         );
 
         return WebClient.builder()
-                .baseUrl(&#34;http://your-base-url.com&#34;)
+                .baseUrl("http://your-base-url.com")
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .build();
     }
@@ -40,9 +40,9 @@ public class Config {
 
 ```
 
-Here I&#39;ve included a connection and read timeout of 1 second just because the default is like 30 seconds which nobody in their right mind would ever want to use.
+Here I've included a connection and read timeout of 1 second just because the default is like 30 seconds which nobody in their right mind would ever want to use.
 
-Now let&#39;s set up the situation, first we will make two DTOs, expected to be received on two different calls: **FirstCallDTO** and **SecondCallDTO**:
+Now let's set up the situation, first we will make two DTOs, expected to be received on two different calls: **FirstCallDTO** and **SecondCallDTO**:
 
 ```java
 package com.nickolasfisher.webflux.model;
@@ -77,20 +77,20 @@ public class SecondCallDTO {
 
 ```
 
-I&#39;m also going to add mockserver as a test dependency and write the test first \[TDD\]. So you can modify your **pom.xml** to include:
+I'm also going to add mockserver as a test dependency and write the test first \[TDD\]. So you can modify your **pom.xml** to include:
 
 ```java
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.mock-server&lt;/groupId&gt;
-            &lt;artifactId&gt;mockserver-junit-jupiter&lt;/artifactId&gt;
-            &lt;version&gt;5.11.1&lt;/version&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.mock-server&lt;/groupId&gt;
-            &lt;artifactId&gt;mockserver-netty&lt;/artifactId&gt;
-            &lt;version&gt;5.11.0&lt;/version&gt;
-            &lt;scope&gt;test&lt;/scope&gt;
-        &lt;/dependency&gt;
+        <dependency>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-junit-jupiter</artifactId>
+            <version>5.11.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-netty</artifactId>
+            <version>5.11.0</version>
+            <scope>test</scope>
+        </dependency>
 
 ```
 
@@ -102,18 +102,18 @@ public class CombiningCallsService {
 
     private final WebClient serviceAWebClient;
 
-    public CombiningCallsService(@Qualifier(&#34;service-a-web-client&#34;) WebClient serviceAWebClient) {
+    public CombiningCallsService(@Qualifier("service-a-web-client") WebClient serviceAWebClient) {
         this.serviceAWebClient = serviceAWebClient;
     }
 
-    public Mono&lt;SecondCallDTO&gt; sequentialCalls(Integer key) {
+    public Mono<SecondCallDTO> sequentialCalls(Integer key) {
         return null;
     }
 }
 
 ```
 
-Then we can write the test, leveraging mockserver&#39;s direct integration with junit by just using an annotation, and setting up data:
+Then we can write the test, leveraging mockserver's direct integration with junit by just using an annotation, and setting up data:
 
 ```java
 @ExtendWith(MockServerExtension.class)
@@ -126,7 +126,7 @@ public class CombiningCallsServiceIT {
     public CombiningCallsServiceIT(ClientAndServer clientAndServer) {
         this.clientAndServer = clientAndServer;
         this.webClient = WebClient.builder()
-                .baseUrl(&#34;http://localhost:&#34; &#43; clientAndServer.getPort())
+                .baseUrl("http://localhost:" + clientAndServer.getPort())
                 .build();
     }
 
@@ -144,30 +144,30 @@ public class CombiningCallsServiceIT {
     public void callsFirstAndUsesCallToGetSecond() {
         HttpRequest expectedFirstRequest = HttpRequest.request()
                 .withMethod(HttpMethod.GET.name())
-                .withPath(&#34;/first/endpoint/10&#34;);
+                .withPath("/first/endpoint/10");
 
         this.clientAndServer.when(
                 expectedFirstRequest
         ).respond(
                 HttpResponse.response()
-                        .withBody(&#34;{\&#34;fieldFromFirstCall\&#34;: 100}&#34;)
+                        .withBody("{\"fieldFromFirstCall\": 100}")
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
         HttpRequest expectedSecondRequest = HttpRequest.request()
                 .withMethod(HttpMethod.GET.name())
-                .withPath(&#34;/second/endpoint/100&#34;);
+                .withPath("/second/endpoint/100");
 
         this.clientAndServer.when(
                 expectedSecondRequest
         ).respond(
                 HttpResponse.response()
-                        .withBody(&#34;{\&#34;fieldFromSecondCall\&#34;: \&#34;hello\&#34;}&#34;)
+                        .withBody("{\"fieldFromSecondCall\": \"hello\"}")
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
         StepVerifier.create(this.combiningCallsService.sequentialCalls(10))
-                .expectNextMatches(secondCallDTO -&gt; &#34;hello&#34;.equals(secondCallDTO.getFieldFromSecondCall()))
+                .expectNextMatches(secondCallDTO -> "hello".equals(secondCallDTO.getFieldFromSecondCall()))
                 .verifyComplete();
 
         this.clientAndServer.verify(expectedFirstRequest, VerificationTimes.once());
@@ -180,7 +180,7 @@ public class CombiningCallsServiceIT {
 The one test in this class with:
 
 1. Sets up two expectations on mock server: if you make a GET request to **/first/endpoint/10** then we will respond with a json body. If you make a GET request to **/second/endpoint/100** we respond with a different json body.
-2. Leverages **StepVerifier** to subscribe to the **Mono** returned from our custom service, and asserts that we will see a single result that matches the lambda passed in \[&#34;hello&#34; must equal the field in the result for this test to pass\]
+2. Leverages **StepVerifier** to subscribe to the **Mono** returned from our custom service, and asserts that we will see a single result that matches the lambda passed in \["hello" must equal the field in the result for this test to pass\]
 3. Verifies that both requests were actually made.
 
 
@@ -192,23 +192,23 @@ public class CombiningCallsService {
 
     private final WebClient serviceAWebClient;
 
-    public CombiningCallsService(@Qualifier(&#34;service-a-web-client&#34;) WebClient serviceAWebClient) {
+    public CombiningCallsService(@Qualifier("service-a-web-client") WebClient serviceAWebClient) {
         this.serviceAWebClient = serviceAWebClient;
     }
 
-    public Mono&lt;SecondCallDTO&gt; sequentialCalls(Integer key) {
+    public Mono<SecondCallDTO> sequentialCalls(Integer key) {
         return this.serviceAWebClient.get()
-                .uri(uriBuilder -&gt; uriBuilder.path(&#34;/first/endpoint/{param}&#34;).build(key))
+                .uri(uriBuilder -> uriBuilder.path("/first/endpoint/{param}").build(key))
                 .retrieve()
                 .bodyToMono(FirstCallDTO.class)
-                .zipWhen(firstCallDTO -&gt;
+                .zipWhen(firstCallDTO ->
                     serviceAWebClient.get().uri(
-                            uriBuilder -&gt;
-                                    uriBuilder.path(&#34;/second/endpoint/{param}&#34;)
+                            uriBuilder ->
+                                    uriBuilder.path("/second/endpoint/{param}")
                                             .build(firstCallDTO.getFieldFromFirstCall()))
                             .retrieve()
                             .bodyToMono(SecondCallDTO.class),
-                    (firstCallDTO, secondCallDTO) -&gt; secondCallDTO
+                    (firstCallDTO, secondCallDTO) -> secondCallDTO
                 );
     }
 }

@@ -196,7 +196,7 @@
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/java-failure-and-resilience">can be found on Github</a>.</p>
-<p>The circuit breaker pattern, popularized by Netflix [using Hystrix], exists for a couple of reasons, the most prominent being that it reduces load on a downstream service when it is not responding properly [presumably because it's under duress]. By wrapping operations that might fail and get overloaded in a circuit breaker, we can prematurely prevent cascading failure and stop overloading those services.</p>
+<p>The circuit breaker pattern, popularized by Netflix [using Hystrix], exists for a couple of reasons, the most prominent being that it reduces load on a downstream service when it is not responding properly [presumably because it&rsquo;s under duress]. By wrapping operations that might fail and get overloaded in a circuit breaker, we can prematurely prevent cascading failure and stop overloading those services.</p>
     
   </div>
 
@@ -228,7 +228,7 @@
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/java-failure-and-resilience">can be found on Github</a>.</p>
-<p>When you're working with distributed systems, it is often the case that some clones of a service running can be slow to respond, while still others are functioning perfectly normally. Therefore, when you just hit a load balancer and the load balancer chooses a backend, it can sometimes be beneficial to retry the request. Other things like periodic and small database stalls or random GC stop-the-worlds are examples where retries can smooth the experience for the client of your service.</p>
+<p>When you&rsquo;re working with distributed systems, it is often the case that some clones of a service running can be slow to respond, while still others are functioning perfectly normally. Therefore, when you just hit a load balancer and the load balancer chooses a backend, it can sometimes be beneficial to retry the request. Other things like periodic and small database stalls or random GC stop-the-worlds are examples where retries can smooth the experience for the client of your service.</p>
     
   </div>
 

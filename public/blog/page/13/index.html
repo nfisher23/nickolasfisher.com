@@ -164,7 +164,7 @@
   <div class="description">
     
       <p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux">is available on GitHub</a>.</p>
-<p>One of the nice things about a reactive programming model is there is a significantly lower risk of doomsday when things start getting latent all at once. You don't have threads upstream blocking and waiting for a response, therefore they won't all seize up and stop serving requests [or they won't short circuit if you're using a resiliency library like hystrix].</p>
+<p>One of the nice things about a reactive programming model is there is a significantly lower risk of doomsday when things start getting latent all at once. You don&rsquo;t have threads upstream blocking and waiting for a response, therefore they won&rsquo;t all seize up and stop serving requests [or they won&rsquo;t short circuit if you&rsquo;re using a resiliency library like hystrix].</p>
     
   </div>
 
@@ -195,7 +195,7 @@
 
   <div class="description">
     
-      <p><a href="https://docs.aws.amazon.com/sns/latest/dg/welcome.html">Amazon SNS</a> is AWS's solution to pub/sub. In a large, distributed system, decoupling <em>events</em> from services that <em>need to act on those events</em> allows for teams that own different services to better work in parallel, and also prevents the need for coordinating code deploys to deliver new features. If a services is already publishing a generic event, other services can hook into that event and act on them without needing anything but a bit of infrastructure.</p>
+      <p><a href="https://docs.aws.amazon.com/sns/latest/dg/welcome.html">Amazon SNS</a> is AWS&rsquo;s solution to pub/sub. In a large, distributed system, decoupling <em>events</em> from services that <em>need to act on those events</em> allows for teams that own different services to better work in parallel, and also prevents the need for coordinating code deploys to deliver new features. If a services is already publishing a generic event, other services can hook into that event and act on them without needing anything but a bit of infrastructure.</p>
     
   </div>
 
@@ -259,7 +259,7 @@
   <div class="description">
     
       <p>The source code for this post can be found <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing">on Github</a>.</p>
-<p>The most straightforward way to write unit tests in spring boot webflux is to leverage <a href="https://projectreactor.io/docs/test/release/api/reactor/test/StepVerifier.html">project reactor's StepVerifier</a>. StepVerifier allows you to pull each item in a <strong>Flux</strong> or the only potential item in a <strong>Mono</strong> and make assertions about each item as it's pulled through the chain, or make assertions about certain errors that should be thrown in the process. I'm going to quickly walk you through an example integrating mockito with it and webflux.</p>
+<p>The most straightforward way to write unit tests in spring boot webflux is to leverage <a href="https://projectreactor.io/docs/test/release/api/reactor/test/StepVerifier.html">project reactor&rsquo;s StepVerifier</a>. StepVerifier allows you to pull each item in a <strong>Flux</strong> or the only potential item in a <strong>Mono</strong> and make assertions about each item as it&rsquo;s pulled through the chain, or make assertions about certain errors that should be thrown in the process. I&rsquo;m going to quickly walk you through an example integrating mockito with it and webflux.</p>
     
   </div>
 
@@ -290,7 +290,7 @@
 
   <div class="description">
     
-      <p>The <a href="http://spec.openapis.org/oas/v3.0.3">OpenAPI Specification</a> is an &quot;industry standard&quot; way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code&ndash;better yet, displayed while the app is running.</p>
+      <p>The <a href="http://spec.openapis.org/oas/v3.0.3">OpenAPI Specification</a> is an &ldquo;industry standard&rdquo; way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code&ndash;better yet, displayed while the app is running.</p>
     
   </div>
 

@@ -7,13 +7,13 @@ tags: [java, i/o, performance testing, jmh]
 
 ﻿You can view the sample code associated with this post [on GitHub](https://github.com/nfisher23/io-tuning).
 
-Now that we know [how to benchmark using junit and jmh](https://nickolasfisher.com/blog/How-to-Benchmark-Java-Code-Using-JUnit-and-JMH), let&#39;s put it to the test and try to optimize some basic I/O operations. While filesystem tasks are much less common in the web-enabled world, understanding the basics can help us when we move on to streams across network connections.
+Now that we know [how to benchmark using junit and jmh](https://nickolasfisher.com/blog/How-to-Benchmark-Java-Code-Using-JUnit-and-JMH), let's put it to the test and try to optimize some basic I/O operations. While filesystem tasks are much less common in the web-enabled world, understanding the basics can help us when we move on to streams across network connections.
 
-First, we&#39;ll create a file to read from. I opt to make a comma separated variable (csv) file that has 10,000 lines of 1,2,3...,8,9:
+First, we'll create a file to read from. I opt to make a comma separated variable (csv) file that has 10,000 lines of 1,2,3...,8,9:
 
 ```java
-private static String pathToResources = &#34;src/test/resources&#34;;
-private static String csvFilePath = pathToResources &#43; &#34;/simple-csv-file.csv&#34;;
+private static String pathToResources = "src/test/resources";
+private static String csvFilePath = pathToResources + "/simple-csv-file.csv";
 
 private static final int numberOfNewlines = 10000;
 
@@ -22,11 +22,11 @@ public void setupFile() throws Exception {
     Path csvPathAsPath = Paths.get(csvFilePath);
     // run once to create the sample data we need for testing
     StringBuilder builder = new StringBuilder();
-    for (int i = 0; i &lt; numberOfNewlines; i&#43;&#43;) {
-        for (int j = 0; j &lt; 10; j&#43;&#43;) {
-            builder.append(Integer.toString(j)).append(&#34;,&#34;);
+    for (int i = 0; i < numberOfNewlines; i++) {
+        for (int j = 0; j < 10; j++) {
+            builder.append(Integer.toString(j)).append(",");
         }
-        builder.replace(builder.length() - 1, builder.length(), &#34;\n&#34;);
+        builder.replace(builder.length() - 1, builder.length(), "\n");
     }
 
     String csvDataToWrite = builder.toString();
@@ -40,7 +40,7 @@ Then we have to configure the options we want to run the tests under, and put it
 @Test
 public void launchBenchmark() throws Exception {
     Options opt﻿ions = new OptionsBuilder()
-            .include(this.getClass().getName() &#43; &#34;.*&#34;)
+            .include(this.getClass().getName() + ".*")
             .mode(Mode.AverageTime)
             .warmupTime(TimeValue.seconds(1))
             .warmupIterations(2)
@@ -60,9 +60,9 @@ public void launchBenchmark() throws Exception {
 
 ```
 
-Now for some theory. As it turns out, when we ask for bytes from the file system, under the hood Java is asking the operating system to perform the action for us. Since OS&#39;s control files, it&#39;s not possible for Java to act any other way.
+Now for some theory. As it turns out, when we ask for bytes from the file system, under the hood Java is asking the operating system to perform the action for us. Since OS's control files, it's not possible for Java to act any other way.
 
-When we ask for bytes from the OS, it&#39;s a fairly expensive operation end to end. That is, it&#39;s expensive to _start_ asking for bytes, but it&#39;s not expensive _while_ we are asking for bytes. From this idea, buffering was born. Buffering is basically picking up a chunk of bytes at one time from the operating system rather than asking for one at a time, which is (in theory) much slower if you want to read a bunch of bytes.
+When we ask for bytes from the OS, it's a fairly expensive operation end to end. That is, it's expensive to _start_ asking for bytes, but it's not expensive _while_ we are asking for bytes. From this idea, buffering was born. Buffering is basically picking up a chunk of bytes at one time from the operating system rather than asking for one at a time, which is (in theory) much slower if you want to read a bunch of bytes.
 
 This benchmarked-method asks the OS to get us a byte with each call to `read()`:
 
@@ -80,8 +80,8 @@ private int countNewLinesUsingStream(InputStream inputStream) throws Exception {
     int count = 0;
     int bytesRead;
     while ((bytesRead = inputStream.read()) != -1) {
-        if (bytesRead == &#39;\n&#39;) {
-            count&#43;&#43;;
+        if (bytesRead == '\n') {
+            count++;
         }
     }
     return count;
@@ -95,7 +95,7 @@ Benchmark                                      Mode  Cnt    Score   Error  Units
 BufferingBenchmarkTests.noBuffering            avgt    2  170.308          ms/op
 ```
 
-So on two tries (after the warmups) we averaged 170 milliseconds per try. Now we will use Java&#39;s built in BufferedInputStream:
+So on two tries (after the warmups) we averaged 170 milliseconds per try. Now we will use Java's built in BufferedInputStream:
 
 ```java
 @Benchmark
@@ -134,9 +134,9 @@ private int countNewLinesManually(InputStream inputStream, int customBytesToBuff
     int count = 0;
     int bytesRead;
     while ((bytesRead = inputStream.read(buff)) != -1) {
-        for (int i = 0; i &lt; bytesRead; i&#43;&#43;) {
-            if (buff[i] == &#39;\n&#39;) {
-                count&#43;&#43;;
+        for (int i = 0; i < bytesRead; i++) {
+            if (buff[i] == '\n') {
+                count++;
             }
         }
     }

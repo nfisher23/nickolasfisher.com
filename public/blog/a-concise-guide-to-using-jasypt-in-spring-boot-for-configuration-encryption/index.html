@@ -153,35 +153,35 @@
   
 
   <section><p><a href="http://www.jasypt.org/">Jasypt</a> is a simple encryption library. You can use it to encrypt anything, but one good use case is just encrypting your application configuration directly in your config file, so that if someone obtained access to your source control directory or had a copy of your source code, they would not also have access to any of your secrets.</p>
-<p>Spring boot is&hellip;you know what spring boot is, let's get started.</p>
+<p>Spring boot is&hellip;you know what spring boot is, let&rsquo;s get started.</p>
 <h3 id="encrypting-the-secret-via-the-cli">Encrypting the secret via the CLI</h3>
-<p>You can <a href="https://github.com/jasypt/jasypt">download the jasypt CLI zip file</a> directly from github (you'll need java, but I know you already have that because you're writing a spring boot application), and run:</p>
-<pre tabindex="0"><code>unzip jasypt-&amp;lt;version&amp;gt;-dist.zip
+<p>You can <a href="https://github.com/jasypt/jasypt">download the jasypt CLI zip file</a> directly from github (you&rsquo;ll need java, but I know you already have that because you&rsquo;re writing a spring boot application), and run:</p>
+<pre tabindex="0"><code>unzip jasypt-&lt;version&gt;-dist.zip
 cd jasypt*
-chmod &amp;#43;x bin/*
-./bin/encrypt.sh input=&amp;lt;thing-you-want-to-decrypt&amp;gt; password=&amp;lt;your-password&amp;gt;
+chmod +x bin/*
+./bin/encrypt.sh input=&lt;thing-you-want-to-decrypt&gt; password=&lt;your-password&gt;
 </code></pre><p>For example, I have a secret database password called <strong>immapanda123</strong> and I have a password named <strong>youcantguessme</strong>:</p>
 <pre tabindex="0"><code>./bin/encrypt.sh input=immapanda123 password=youcantguessme
-</code></pre><p>What it outputs is non deterministic, if you run it over and over again you'll get a different string. Here's one that it generated for me:</p>
-<pre tabindex="0"><code>2WCwqzn&amp;#43;ClzAP44UFAxiHYcKxJ9uiJQU
+</code></pre><p>What it outputs is non deterministic, if you run it over and over again you&rsquo;ll get a different string. Here&rsquo;s one that it generated for me:</p>
+<pre tabindex="0"><code>2WCwqzn+ClzAP44UFAxiHYcKxJ9uiJQU
 </code></pre><p><strong>Important note</strong>: the CLI is using the default algorithm of:</p>
 <pre tabindex="0"><code>PBEWithMD5AndDES
 </code></pre><p>And a default <a href="https://en.wikipedia.org/wiki/Initialization_vector">IV generator</a> of:</p>
 <pre tabindex="0"><code>org.jasypt.iv.NoIvGenerator
-</code></pre><p>The newest integration between jasypt and spring boot means that these defaults do not align, see the <a href="https://github.com/ulisesbocchio/jasypt-spring-boot#update-11242019-version-300-release-includes">github notes on the 3.xx release</a>. I'll show you how to deal with that in just a bit.</p>
+</code></pre><p>The newest integration between jasypt and spring boot means that these defaults do not align, see the <a href="https://github.com/ulisesbocchio/jasypt-spring-boot#update-11242019-version-300-release-includes">github notes on the 3.xx release</a>. I&rsquo;ll show you how to deal with that in just a bit.</p>
 <h3 id="using-the-secret-in-a-spring-boot-application">Using the secret in a spring boot application</h3>
 <p>Continuing with the above example&hellip;</p>
 <p>Start by pulling down a spring boot project, e.g. the spring initializer. Then add this dependency:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;com.github.ulisesbocchio&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;jasypt-spring-boot-starter&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;version&amp;gt;3.0.2&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>com.github.ulisesbocchio<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>jasypt-spring-boot-starter<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;version&gt;</span>3.0.2<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
 </span></span></code></pre></div><p>Set up a configuration class called <strong>AppConfig</strong> like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Component
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">AppConfig</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    @Value(<span style="color:#ff79c6">&amp;</span>#34;${my.<span style="color:#50fa7b">secret</span>}<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>    @Value(<span style="color:#f1fa8c">&#34;${my.secret}&#34;</span>)
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> String mySecret;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">getMySecret</span>() {
@@ -202,12 +202,12 @@ chmod &amp;#43;x bin/*
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">config</span> <span style="color:#ff79c6">=</span> config;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>secret<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#f1fa8c">&#34;/secret&#34;</span>)
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> ResponseEntity <span style="color:#50fa7b">getSecret</span>() {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> ResponseEntity.<span style="color:#50fa7b">ok</span>(config.<span style="color:#50fa7b">getMySecret</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Don't forget to add the <strong>@EnableEncryptableProperties</strong> annotation:</p>
+</span></span></code></pre></div><p>Don&rsquo;t forget to add the <strong>@EnableEncryptableProperties</strong> annotation:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@SpringBootApplication
 </span></span><span style="display:flex;"><span>@EnableEncryptableProperties
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">JasyptExampleApplication</span> {
@@ -224,7 +224,7 @@ chmod &amp;#43;x bin/*
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">algorithm</span>: PBEWithMD5AndDES
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">iv-generator-classname</span>: org.jasypt.iv.NoIvGenerator
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">my.secret</span>: ENC(2WCwqzn&amp;#43;ClzAP44UFAxiHYcKxJ9uiJQU)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">my.secret</span>: ENC(2WCwqzn+ClzAP44UFAxiHYcKxJ9uiJQU)
 </span></span></code></pre></div><p>You can start up your application and</p>
 <pre tabindex="0"><code>$ curl localhost:8080/secret
 immapanda123
@@ -233,24 +233,24 @@ immapanda123
 <pre tabindex="0"><code>PBEWITHHMACSHA512ANDAES_256
 </code></pre><p>This type of encryption does not work without a legit IV generator, and the jasypt cli by default does not use an iv generator. The spring boot default is:</p>
 <pre tabindex="0"><code>org.jasypt.iv.RandomIvGenerator
-</code></pre><p>So to use the CLI to generate an out-of-the-box compatible password you'll have to encrypt it like:</p>
+</code></pre><p>So to use the CLI to generate an out-of-the-box compatible password you&rsquo;ll have to encrypt it like:</p>
 <pre tabindex="0"><code>./encrypt.sh input=immapanda123 password=youcantguessme algorithm=PBEWITHHMACSHA512ANDAES_256 ivGeneratorClassName=org.jasypt.iv.RandomIvGenerator
-</code></pre><p>This is also non deterministic, here's one output I got:</p>
-<pre tabindex="0"><code>HU&amp;#43;pHQRhFmvgZ0p&amp;#43;AK1zMHP0ayzyu3liyGLbHvzNy1Lu6gkI&amp;#43;xapltrdescWNdAv
+</code></pre><p>This is also non deterministic, here&rsquo;s one output I got:</p>
+<pre tabindex="0"><code>HU+pHQRhFmvgZ0p+AK1zMHP0ayzyu3liyGLbHvzNy1Lu6gkI+xapltrdescWNdAv
 </code></pre><p>Your <strong>application.yml</strong> can now drop the <em>algorithm</em> and <em>iv-generator-classname</em> in the distinction:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">jasypt</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">encryptor</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">password</span>: youcantguessme
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">my.secret</span>: ENC(yVwuQNWRUgy7guzYcfdew3j4zyjTK4WB6MdJuiMZFfe0NRGD/ziX&amp;#43;p73ORWNze3I)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">my.secret</span>: ENC(yVwuQNWRUgy7guzYcfdew3j4zyjTK4WB6MdJuiMZFfe0NRGD/ziX+p73ORWNze3I)
 </span></span></code></pre></div><p>And your application should start up and serve the secret at <strong>localhost:8080/secret.</strong></p>
 <h3 id="actually-securing-your-app">Actually Securing your App</h3>
-<p>There's no point in including the password that you used to encrypt your secrets in plaintext right next to your secret. In reality, you'd have different <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-profiles">spring profiles</a> with a different encryption password for each profile. Then you would override the encryptor password with an environment variable at runtime, on whatever server this thing runs on. For example, change your <strong>application.yml</strong> to look like:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">my.secret</span>: ENC(yVwuQNWRUgy7guzYcfdew3j4zyjTK4WB6MdJuiMZFfe0NRGD/ziX&amp;#43;p73ORWNze3I)
+<p>There&rsquo;s no point in including the password that you used to encrypt your secrets in plaintext right next to your secret. In reality, you&rsquo;d have different <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-profiles">spring profiles</a> with a different encryption password for each profile. Then you would override the encryptor password with an environment variable at runtime, on whatever server this thing runs on. For example, change your <strong>application.yml</strong> to look like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">my.secret</span>: ENC(yVwuQNWRUgy7guzYcfdew3j4zyjTK4WB6MdJuiMZFfe0NRGD/ziX+p73ORWNze3I)
 </span></span></code></pre></div><p>If you start up your app now with no changes you should see this error:</p>
-<pre tabindex="0"><code>org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;#39;appConfig&amp;#39;: Injection of autowired dependencies failed;
-nested exception is java.lang.IllegalStateException: either &amp;#39;jasypt.encryptor.password&amp;#39; or one of
-[&amp;#39;jasypt.encryptor.private-key-string&amp;#39;, &amp;#39;jasypt.encryptor.private-key-location&amp;#39;] must be provided for Password-based or Asymmetric encryption
+<pre tabindex="0"><code>org.springframework.beans.factory.BeanCreationException: Error creating bean with name &#39;appConfig&#39;: Injection of autowired dependencies failed;
+nested exception is java.lang.IllegalStateException: either &#39;jasypt.encryptor.password&#39; or one of
+[&#39;jasypt.encryptor.private-key-string&#39;, &#39;jasypt.encryptor.private-key-location&#39;] must be provided for Password-based or Asymmetric encryption
 </code></pre><p>You can provide one using environment variables. Start up your application from the command line like:</p>
 <pre tabindex="0"><code>$ export JASYPT_ENCRYPTOR_PASSWORD=youcantguessme
 $ java -jar target/*.jar

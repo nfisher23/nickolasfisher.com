@@ -11,7 +11,7 @@
   content="You can find the sample code for this post on GitHub.
 From the knowledge gained via creating custom Java Stream objects, we can start
 to have a little bit of fun with this. The fibonacci number sequence starts with [0, 1], and adds each of the previous two elements to create the next element in the sequence.
-This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&hellip;], and goes on &quot;forever.&quot; We can thus create a template that computes all Fibonacci numbers by implementing a Supplier&lt;T&gt;. like so:"
+This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&hellip;], and goes on &ldquo;forever.&rdquo; We can thus create a template that computes all Fibonacci numbers by implementing a Supplier. like so:"
 />
 <link rel="canonical" href="http://localhost:1313/blog/the-java-stream-api-generating-fibonacci-numbers/" />
 <link rel="robots" href="/robots.txt" />
@@ -158,10 +158,10 @@ This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&hellip;], and goes on &quot;forever
   <section><p>You can find the sample code for this post <a href="https://github.com/nfisher23/java_stream_api_samples">on GitHub</a>.</p>
 <p>From the knowledge gained via <a href="https://nickolasfisher.com/blog/The-Java-Stream-API-Creating-Custom-Lazy-Infinite-Streams">creating custom Java Stream objects</a>, we can start
 to have a little bit of fun with this. The fibonacci number sequence starts with [0, 1], and adds each of the previous two elements to create the next element in the sequence.
-This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&hellip;], and goes on &quot;forever.&quot; We can thus create a template that computes all Fibonacci numbers by implementing a Supplier&lt;T&gt;. like so:</p>
+This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&hellip;], and goes on &ldquo;forever.&rdquo; We can thus create a template that computes all Fibonacci numbers by implementing a Supplier<!-- raw HTML omitted -->. like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> java.util.function.Supplier;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">SupplyFibonacci</span> <span style="color:#8be9fd;font-style:italic">implements</span> Supplier<span style="color:#ff79c6">&amp;</span>lt;Integer<span style="color:#ff79c6">&amp;</span>gt; {
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">SupplyFibonacci</span> <span style="color:#8be9fd;font-style:italic">implements</span> Supplier<span style="color:#ff79c6">&lt;</span>Integer<span style="color:#ff79c6">&gt;</span> {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">int</span><span style="color:#ff79c6">[]</span> lastTwoFibs <span style="color:#ff79c6">=</span> {0, 1};
 </span></span><span style="display:flex;"><span>
@@ -180,7 +180,7 @@ This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&hellip;], and goes on &quot;forever
 </span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span> 1;
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd">int</span> nextFib <span style="color:#ff79c6">=</span> lastTwoFibs<span style="color:#ff79c6">[</span>0<span style="color:#ff79c6">]</span> <span style="color:#ff79c6">&amp;</span>#43; lastTwoFibs<span style="color:#ff79c6">[</span>1<span style="color:#ff79c6">]</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd">int</span> nextFib <span style="color:#ff79c6">=</span> lastTwoFibs<span style="color:#ff79c6">[</span>0<span style="color:#ff79c6">]</span> <span style="color:#ff79c6">+</span> lastTwoFibs<span style="color:#ff79c6">[</span>1<span style="color:#ff79c6">]</span>;
 </span></span><span style="display:flex;"><span>        lastTwoFibs<span style="color:#ff79c6">[</span>0<span style="color:#ff79c6">]</span> <span style="color:#ff79c6">=</span> lastTwoFibs<span style="color:#ff79c6">[</span>1<span style="color:#ff79c6">]</span>;
 </span></span><span style="display:flex;"><span>        lastTwoFibs<span style="color:#ff79c6">[</span>1<span style="color:#ff79c6">]</span> <span style="color:#ff79c6">=</span> nextFib;
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> nextFib;
@@ -189,7 +189,7 @@ This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&hellip;], and goes on &quot;forever
 </span></span></code></pre></div><p>Which we can validate like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">validate_fibonacci</span>() {
-</span></span><span style="display:flex;"><span>        List<span style="color:#ff79c6">&amp;</span>lt;Integer<span style="color:#ff79c6">&amp;</span>gt; tenFibs <span style="color:#ff79c6">=</span> Stream.<span style="color:#50fa7b">generate</span>(<span style="color:#ff79c6">new</span> SupplyFibonacci()).<span style="color:#50fa7b">limit</span>(10).<span style="color:#50fa7b">collect</span>(Collectors.<span style="color:#50fa7b">toList</span>());
+</span></span><span style="display:flex;"><span>        List<span style="color:#ff79c6">&lt;</span>Integer<span style="color:#ff79c6">&gt;</span> tenFibs <span style="color:#ff79c6">=</span> Stream.<span style="color:#50fa7b">generate</span>(<span style="color:#ff79c6">new</span> SupplyFibonacci()).<span style="color:#50fa7b">limit</span>(10).<span style="color:#50fa7b">collect</span>(Collectors.<span style="color:#50fa7b">toList</span>());
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        assertEquals(0,tenFibs.<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">intValue</span>());
 </span></span><span style="display:flex;"><span>        assertEquals(1,tenFibs.<span style="color:#50fa7b">get</span>(1).<span style="color:#50fa7b">intValue</span>());

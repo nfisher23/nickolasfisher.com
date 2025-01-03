@@ -19,7 +19,7 @@ public void files_inputStreaming() throws Exception {
     try (InputStream inputStream = Files.newInputStream(pathToExampleFile)) {
         int readValue = inputStream.read();
 
-        assertEquals(&#39;t&#39;, readValue);
+        assertEquals('t', readValue);
     }
 }
 ```
@@ -29,7 +29,7 @@ You can create a directory with the `Files.createDirectory(..)` method:
 ```java
 @Test
 public void creatingDirsAndFiles_ex() throws Exception {
-    Path pathToNewDir = Paths.get(Utils.pathToResources &#43; &#34;new-directory-to-create&#34;);
+    Path pathToNewDir = Paths.get(Utils.pathToResources + "new-directory-to-create");
 
     Files.deleteIfExists(pathToNewDir);
 
@@ -47,7 +47,7 @@ If you have a directory beneath other directories that you want to create which 
 ```java
 @Test
 public void creatingDirectories_intermediateParentDirectories() throws Exception {
-    Path newChainedPath = Paths.get(Utils.pathToResources &#43; &#34;parent-dir/sub-dir&#34;);
+    Path newChainedPath = Paths.get(Utils.pathToResources + "parent-dir/sub-dir");
 
     Files.deleteIfExists(newChainedPath);
 
@@ -80,24 +80,24 @@ We can access all of the `Path` s immediately beneath a directory with `Files.li
 ```java
 @Test
 public void visitingDirectories_ex() throws Exception {
-    try (Stream&lt;Path&gt; entries = Files.list(Paths.get(Utils.pathToResources))) {
-        System.out.println(&#34;counting via list&#34;);
+    try (Stream<Path> entries = Files.list(Paths.get(Utils.pathToResources))) {
+        System.out.println("counting via list");
         long count = entries.peek(System.out::println).count();
-        assertTrue(count &gt; 0);
+        assertTrue(count > 0);
     }
 }
 
 ```
 
-The above method will only list the immediate children. If you want to see all the `Path` s recursively, through each child directory, you&#39;ll need to use `Files.walk(..)`:
+The above method will only list the immediate children. If you want to see all the `Path` s recursively, through each child directory, you'll need to use `Files.walk(..)`:
 
 ```java
 @Test
 public void visitingDirectories_walkSubDirectories() throws Exception {
-    try (Stream&lt;Path&gt; entries  = Files.walk(Paths.get(Utils.pathToResources))) {
-        System.out.println(&#34;counting via walk&#34;);
+    try (Stream<Path> entries  = Files.walk(Paths.get(Utils.pathToResources))) {
+        System.out.println("counting via walk");
         long count = entries.peek(System.out::println).count();
-        assertTrue(count &gt; 0);
+        assertTrue(count > 0);
     }
 }
 

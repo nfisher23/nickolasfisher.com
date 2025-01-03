@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The source code for this post can be found on Github.
-Kubernetes has democratized the cloud more than any piece of software before or since. What used to be proprietary APIs by AWS, Azure, or GCP for things like auto scaling groups, load balancers, or virtual machines is now abstracted away behind never ending yaml configuration. Combine this wonderful abstraction with the pricing model of Digital Ocean and you&#39;ve got all the makings of a developer party."
+Kubernetes has democratized the cloud more than any piece of software before or since. What used to be proprietary APIs by AWS, Azure, or GCP for things like auto scaling groups, load balancers, or virtual machines is now abstracted away behind never ending yaml configuration. Combine this wonderful abstraction with the pricing model of Digital Ocean and you&rsquo;ve got all the makings of a developer party."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-create-a-kubernetes-cluster-on-digital-ocean-using-terraform/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,36 +154,36 @@ Kubernetes has democratized the cloud more than any piece of software before or 
   
 
   <section><p>The source code for this post can be found <a href="https://github.com/nfisher23/digitalocean-terraform-examples/tree/master/kubernetes">on Github</a>.</p>
-<p>Kubernetes has democratized the cloud more than any piece of software before or since. What used to be proprietary APIs by AWS, Azure, or GCP for things like auto scaling groups, load balancers, or virtual machines is now abstracted away behind never ending yaml configuration. Combine this wonderful abstraction with the pricing model of <a href="https://www.digitalocean.com/">Digital Ocean</a> and you've got all the makings of a developer party.</p>
+<p>Kubernetes has democratized the cloud more than any piece of software before or since. What used to be proprietary APIs by AWS, Azure, or GCP for things like auto scaling groups, load balancers, or virtual machines is now abstracted away behind never ending yaml configuration. Combine this wonderful abstraction with the pricing model of <a href="https://www.digitalocean.com/">Digital Ocean</a> and you&rsquo;ve got all the makings of a developer party.</p>
 <p>To spin up a simple digital ocean kubernetes cluster to play around with, I decided to use terraform:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>provider &amp;#34;digitalocean&amp;#34; {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>provider &#34;digitalocean&#34; {
 </span></span><span style="display:flex;"><span>  // token automatically picked up using env variables
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>variable &amp;#34;region&amp;#34; {
+</span></span><span style="display:flex;"><span>variable &#34;region&#34; {
 </span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># `doctl kubernetes options regions` for full list</span>
-</span></span><span style="display:flex;"><span>  default = &amp;#34;sfo3&amp;#34;
+</span></span><span style="display:flex;"><span>  default = &#34;sfo3&#34;
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>data &amp;#34;digitalocean_kubernetes_versions&amp;#34; &amp;#34;do_k8s_versions&amp;#34; {}
+</span></span><span style="display:flex;"><span>data &#34;digitalocean_kubernetes_versions&#34; &#34;do_k8s_versions&#34; {}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>output &amp;#34;k8s-versions&amp;#34; {
+</span></span><span style="display:flex;"><span>output &#34;k8s-versions&#34; {
 </span></span><span style="display:flex;"><span>  value = data.digitalocean_kubernetes_versions.do_k8s_versions.latest_version
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>resource &amp;#34;digitalocean_kubernetes_cluster&amp;#34; &amp;#34;hellok8s&amp;#34; {
-</span></span><span style="display:flex;"><span>  name    = &amp;#34;hellok8s&amp;#34;
+</span></span><span style="display:flex;"><span>resource &#34;digitalocean_kubernetes_cluster&#34; &#34;hellok8s&#34; {
+</span></span><span style="display:flex;"><span>  name    = &#34;hellok8s&#34;
 </span></span><span style="display:flex;"><span>  region  = var.region
 </span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># Or grab the latest version slug from `doctl kubernetes options versions`</span>
 </span></span><span style="display:flex;"><span>  version = data.digitalocean_kubernetes_versions.do_k8s_versions.latest_version
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  node_pool {
-</span></span><span style="display:flex;"><span>    name       = &amp;#34;worker-pool&amp;#34;
-</span></span><span style="display:flex;"><span>    size       = &amp;#34;s-2vcpu-2gb&amp;#34;
+</span></span><span style="display:flex;"><span>    name       = &#34;worker-pool&#34;
+</span></span><span style="display:flex;"><span>    size       = &#34;s-2vcpu-2gb&#34;
 </span></span><span style="display:flex;"><span>    node_count = 1
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>You'll need to set an environment variable for terraform to pick up the credentials necessary to actually run this [DIGITALOCEAN_ACCESS_TOKEN]. Here, I'm using a <a href="https://www.terraform.io/docs/providers/do/d/kubernetes_versions.html">terraform data source</a> to provide the version to use, since digital ocean changes the versions that they are supporting on a regular basis. This kubernetes cluster will not be dynamically spinning up and down DO infrastructure, instead it will have a single worker node. I also have elected to use the third San Fransisco data center. If you want to find out what data centers can support this, you can run:</p>
+</span></span></code></pre></div><p>You&rsquo;ll need to set an environment variable for terraform to pick up the credentials necessary to actually run this [DIGITALOCEAN_ACCESS_TOKEN]. Here, I&rsquo;m using a <a href="https://www.terraform.io/docs/providers/do/d/kubernetes_versions.html">terraform data source</a> to provide the version to use, since digital ocean changes the versions that they are supporting on a regular basis. This kubernetes cluster will not be dynamically spinning up and down DO infrastructure, instead it will have a single worker node. I also have elected to use the third San Fransisco data center. If you want to find out what data centers can support this, you can run:</p>
 <pre tabindex="0"><code>$ doctl kubernetes options regions
 </code></pre><p>If you navigate to the directory where the above file (I called it <strong>kubs.tf</strong>) is located, run:</p>
 <pre tabindex="0"><code>$ terraform apply
@@ -199,7 +199,7 @@ NAMESPACE     NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
 kube-system   cilium-operator        1/1     1            1           18m
 kube-system   coredns                2/2     2            2           18m
 kube-system   kubelet-rubber-stamp   1/1     1            1           18m
-</code></pre><p>And you're good to go.</p>
+</code></pre><p>And you&rsquo;re good to go.</p>
 </section>
 
   

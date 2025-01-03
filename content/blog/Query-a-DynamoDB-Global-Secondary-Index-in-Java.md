@@ -13,13 +13,13 @@ This post will walk through some sample code in Java, using the AWS SDK 2.0, wit
 
 ## Create Table and GSI
 
-I will elect to create both the base table as well as the GSI at the same time for simplicity. Note that, when you&#39;re managing DynamoDB in native AWS \[i.e. not local development\], you should prefer to use something like terraform to manage tables and GSIs.
+I will elect to create both the base table as well as the GSI at the same time for simplicity. Note that, when you're managing DynamoDB in native AWS \[i.e. not local development\], you should prefer to use something like terraform to manage tables and GSIs.
 
 ```java
     @Test
     public void globalSecondaryIndex() throws Exception {
-        String currentTableName = &#34;GlobalSecondaryIndexTest&#34;;
-        String YEAR_GSI_NAME = &#34;YearModelIndex&#34;;
+        String currentTableName = "GlobalSecondaryIndexTest";
+        String YEAR_GSI_NAME = "YearModelIndex";
 
         ProvisionedThroughput defaultProvisionedThroughput = ProvisionedThroughput.builder()
                 .readCapacityUnits(100L)
@@ -77,48 +77,48 @@ I will elect to create both the base table as well as the GSI at the same time f
 
 ```
 
-This code is verbose for several reasons, but you can see that we&#39;re creating a table with a hash attribute and range attribute, as well as an accompanying global secondary index \[using **GlobalSecondaryIndex.builder** that has a completely different hash attribute \[though the same range attribute\]. We have elected to project all attributes from the base table to the GSI in this case, which is not the default.
+This code is verbose for several reasons, but you can see that we're creating a table with a hash attribute and range attribute, as well as an accompanying global secondary index \[using **GlobalSecondaryIndex.builder** that has a completely different hash attribute \[though the same range attribute\]. We have elected to project all attributes from the base table to the GSI in this case, which is not the default.
 
-Let&#39;s now set up some data to work with in our table:
+Let's now set up some data to work with in our table:
 
 ```java
-        String partitionKey = &#34;Google&#34;;
-        String rangeKey1 = &#34;Pixel 1&#34;;
-        String rangeKey2 = &#34;Future Phone&#34;;
-        String rangeKey3 = &#34;Pixel 2&#34;;
+        String partitionKey = "Google";
+        String rangeKey1 = "Pixel 1";
+        String rangeKey2 = "Future Phone";
+        String rangeKey3 = "Pixel 2";
 
         // create three items
-        Map&lt;String, AttributeValue&gt; pixel1ItemAttributes = getMapWith(partitionKey, rangeKey1);
-        pixel1ItemAttributes.put(COLOR, AttributeValue.builder().s(&#34;Blue&#34;).build());
-        pixel1ItemAttributes.put(YEAR, AttributeValue.builder().n(&#34;2012&#34;).build());
+        Map<String, AttributeValue> pixel1ItemAttributes = getMapWith(partitionKey, rangeKey1);
+        pixel1ItemAttributes.put(COLOR, AttributeValue.builder().s("Blue").build());
+        pixel1ItemAttributes.put(YEAR, AttributeValue.builder().n("2012").build());
         putItem(currentTableName, pixel1ItemAttributes);
 
-        Map&lt;String, AttributeValue&gt; futurePhoneAttributes = getMapWith(partitionKey, rangeKey2);
-        futurePhoneAttributes.put(COLOR, AttributeValue.builder().s(&#34;Silver&#34;).build());
-        futurePhoneAttributes.put(YEAR, AttributeValue.builder().n(&#34;2030&#34;).build());
+        Map<String, AttributeValue> futurePhoneAttributes = getMapWith(partitionKey, rangeKey2);
+        futurePhoneAttributes.put(COLOR, AttributeValue.builder().s("Silver").build());
+        futurePhoneAttributes.put(YEAR, AttributeValue.builder().n("2030").build());
         putItem(currentTableName, futurePhoneAttributes);
 
-        Map&lt;String, AttributeValue&gt; pixel2ItemAttributes = getMapWith(partitionKey, rangeKey3);
-        pixel2ItemAttributes.put(COLOR, AttributeValue.builder().s(&#34;Cyan&#34;).build());
-        pixel2ItemAttributes.put(YEAR, AttributeValue.builder().n(&#34;2014&#34;).build());
+        Map<String, AttributeValue> pixel2ItemAttributes = getMapWith(partitionKey, rangeKey3);
+        pixel2ItemAttributes.put(COLOR, AttributeValue.builder().s("Cyan").build());
+        pixel2ItemAttributes.put(YEAR, AttributeValue.builder().n("2014").build());
         putItem(currentTableName, pixel2ItemAttributes);
 
 ```
 
-We&#39;re reusing some code developed in a previous article to put three items in this table, all with the same hash attribute as **Google** and different range attributes.
+We're reusing some code developed in a previous article to put three items in this table, all with the same hash attribute as **Google** and different range attributes.
 
 ## Query the GSI
 
 With the table/GSI created and some sample data to work with, we can now query the GSI for data:
 
 ```java
-        Thread.sleep(1000); // GSI&#39;s are eventually consistent
+        Thread.sleep(1000); // GSI's are eventually consistent
 
         Condition equals2012Condition = Condition.builder()
                 .comparisonOperator(ComparisonOperator.EQ)
                 .attributeValueList(
                     AttributeValue.builder()
-                        .n(&#34;2012&#34;)
+                        .n("2012")
                         .build()
                 )
                 .build();
@@ -134,15 +134,15 @@ With the table/GSI created and some sample data to work with, we can now query t
                 .build();
 
         StepVerifier.create(Mono.fromFuture(dynamoDbAsyncClient.query(equals2012Query)))
-                .expectNextMatches(queryResponse -&gt;
+                .expectNextMatches(queryResponse ->
                     queryResponse.count() == 1
-                        &amp;&amp; queryResponse.items().get(0).get(COLOR).s().equals(&#34;Blue&#34;)
-                        &amp;&amp; queryResponse.items().get(0).get(MODEL).s().equals(&#34;Pixel 1&#34;)
+                        &amp;&amp; queryResponse.items().get(0).get(COLOR).s().equals("Blue")
+                        &amp;&amp; queryResponse.items().get(0).get(MODEL).s().equals("Pixel 1")
                 )
                 .verifyComplete();
 
 ```
 
-The first thing we&#39;ll do is add a small sleep so that our test will consistently pass \[Global Secondary Indexes are eventually consistent\]. We then create a query that gets all items that have the hash attribute of &#34;2012&#34;. We leverage **StepVerifier** and **Mono** to wrap our async call, finally verifying that the query returns the data we expect.
+The first thing we'll do is add a small sleep so that our test will consistently pass \[Global Secondary Indexes are eventually consistent\]. We then create a query that gets all items that have the hash attribute of "2012". We leverage **StepVerifier** and **Mono** to wrap our async call, finally verifying that the query returns the data we expect.
 
 If you run this test locally, you should see it pass. Remember to [check out the source code on Github](https://github.com/nfisher23/webflux-and-dynamo/blob/master/src/test/java/com/nickolasfisher/reactivedynamo/PhoneServiceTest.java#L456).

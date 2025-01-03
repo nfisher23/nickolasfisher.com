@@ -13,15 +13,15 @@ The completely rewritten [AWS SDK for Java 2.0](https://docs.aws.amazon.com/sdk-
 
 To start with, you will want to ensure you have docker and docker-compose installed. Then you can [copy the localstack docker-compose file from the github repo](https://github.com/localstack/localstack/blob/master/docker-compose.yml) into your own **docker-compose.yaml** file like so:
 
-```yaml&gt;version: &#39;2.1&#39;
+```yaml>version: '2.1'
 
 services:
   localstack:
-    container_name: &#34;${LOCALSTACK_DOCKER_NAME-localstack_main}&#34;
+    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
     image: localstack/localstack
     ports:
-      - &#34;4566-4599:4566-4599&#34;
-      - &#34;${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}&#34;
+      - "4566-4599:4566-4599"
+      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
     environment:
       - SERVICES=${SERVICES- }
       - DEBUG=${DEBUG- }
@@ -32,29 +32,29 @@ services:
       - DOCKER_HOST=unix:///var/run/docker.sock
       - HOST_TMP_FOLDER=${TMPDIR}
     volumes:
-      - &#34;${TMPDIR:-/tmp/localstack}:/tmp/localstack&#34;
-      - &#34;/var/run/docker.sock:/var/run/docker.sock&#34;
+      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
 
-&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
 
-&lt;p&gt;Navigate to the directory where that file lives and run:&lt;/p&gt;
+<p>Navigate to the directory where that file lives and run:</p>
 
-&lt;pre&gt;&lt;code class=
+<pre><code class=
 docker-compose up -d
 
 ```
 
-Now that we have a local AWS clone running, let&#39;s create a queue for us to use with the aws cli:
+Now that we have a local AWS clone running, let's create a queue for us to use with the aws cli:
 
 ```bash
 
-export AWS_SECRET_ACCESS_KEY=&#34;FAKE&#34;
-export AWS_ACCESS_KEY_ID=&#34;FAKE&#34;
+export AWS_SECRET_ACCESS_KEY="FAKE"
+export AWS_ACCESS_KEY_ID="FAKE"
 export AWS_DEFAULT_REGION=us-east-1
 
-QUEUE_NAME=&#34;my-queue&#34;
+QUEUE_NAME="my-queue"
 
-aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name &#34;$QUEUE_NAME&#34;
+aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name "$QUEUE_NAME"
 
 ```
 
@@ -65,61 +65,61 @@ Create a spring boot project \[e.g. use the spring initializr\]. You will want t
 ```xml
 ...metadata...
 
-    &lt;dependencyManagement&gt;
-        &lt;dependencies&gt;
-            &lt;dependency&gt;
-                &lt;groupId&gt;software.amazon.awssdk&lt;/groupId&gt;
-                &lt;artifactId&gt;bom&lt;/artifactId&gt;
-                &lt;version&gt;2.5.5&lt;/version&gt;
-                &lt;type&gt;pom&lt;/type&gt;
-                &lt;scope&gt;import&lt;/scope&gt;
-            &lt;/dependency&gt;
-        &lt;/dependencies&gt;
-    &lt;/dependencyManagement&gt;
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>2.5.5</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-    &lt;properties&gt;
-        &lt;java.version&gt;11&lt;/java.version&gt;
-    &lt;/properties&gt;
+    <properties>
+        <java.version>11</java.version>
+    </properties>
 
-    &lt;dependencies&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-starter-webflux&lt;/artifactId&gt;
-        &lt;/dependency&gt;
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
 
-        &lt;dependency&gt;
-            &lt;groupId&gt;software.amazon.awssdk&lt;/groupId&gt;
-            &lt;artifactId&gt;sqs&lt;/artifactId&gt;
-        &lt;/dependency&gt;
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>sqs</artifactId>
+        </dependency>
 
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
-            &lt;scope&gt;test&lt;/scope&gt;
-            &lt;exclusions&gt;
-                &lt;exclusion&gt;
-                    &lt;groupId&gt;org.junit.vintage&lt;/groupId&gt;
-                    &lt;artifactId&gt;junit-vintage-engine&lt;/artifactId&gt;
-                &lt;/exclusion&gt;
-            &lt;/exclusions&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;io.projectreactor&lt;/groupId&gt;
-            &lt;artifactId&gt;reactor-test&lt;/artifactId&gt;
-            &lt;scope&gt;test&lt;/scope&gt;
-        &lt;/dependency&gt;
-    &lt;/dependencies&gt;
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-    &lt;build&gt;
-        &lt;plugins&gt;
-            &lt;plugin&gt;
-                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
-            &lt;/plugin&gt;
-        &lt;/plugins&gt;
-    &lt;/build&gt;
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
-&lt;/project&gt;
+</project>
 
 ```
 
@@ -132,17 +132,17 @@ public class AwsSqsConfig {
     @Bean
     public SqsAsyncClient amazonSQSAsyncClient() {
         return SqsAsyncClient.builder()
-                .endpointOverride(URI.create(&#34;http://localhost:4566&#34;))
+                .endpointOverride(URI.create("http://localhost:4566"))
                 .region(Region.US_EAST_1)
                 .credentialsProvider(StaticCredentialsProvider.create(new AwsCredentials() {
                     @Override
                     public String accessKeyId() {
-                        return &#34;FAKE&#34;;
+                        return "FAKE";
                     }
 
                     @Override
                     public String secretAccessKey() {
-                        return &#34;FAKE&#34;;
+                        return "FAKE";
                     }
                 }))
                 .build();
@@ -167,14 +167,14 @@ public class SQSSenderBean {
 
     @PostConstruct
     public void sendHelloMessage() throws Exception {
-        LOG.info(&#34;hello!!!&#34;);
-        CompletableFuture wat = sqsAsyncClient.getQueueUrl(GetQueueUrlRequest.builder().queueName(&#34;my-queue&#34;).build());
+        LOG.info("hello!!!");
+        CompletableFuture wat = sqsAsyncClient.getQueueUrl(GetQueueUrlRequest.builder().queueName("my-queue").build());
         GetQueueUrlResponse getQueueUrlResponse = wat.get();
 
-        Mono.fromFuture(() -&gt; sqsAsyncClient.sendMessage(
+        Mono.fromFuture(() -> sqsAsyncClient.sendMessage(
                 SendMessageRequest.builder()
                         .queueUrl(getQueueUrlResponse.queueUrl())
-                        .messageBody(&#34;new message at second &#34; &#43; ZonedDateTime.now().getSecond())
+                        .messageBody("new message at second " + ZonedDateTime.now().getSecond())
                         .build()
             ))
                 .retryWhen(Retry.max(3))
@@ -188,12 +188,12 @@ public class SQSSenderBean {
 If you start up the application, then use the CLI to get a message off the queue:
 
 ```java
-export AWS_SECRET_ACCESS_KEY=&#34;FAKE&#34;
-export AWS_ACCESS_KEY_ID=&#34;FAKE&#34;
+export AWS_SECRET_ACCESS_KEY="FAKE"
+export AWS_ACCESS_KEY_ID="FAKE"
 export AWS_DEFAULT_REGION=us-east-1
 
-Q_URL=$(aws --endpoint-url http://localhost:4566 sqs get-queue-url --queue-name &#34;my-queue&#34; --output text)
-aws --endpoint-url http://localhost:4566 sqs receive-message --queue-url &#34;$Q_URL&#34;
+Q_URL=$(aws --endpoint-url http://localhost:4566 sqs get-queue-url --queue-name "my-queue" --output text)
+aws --endpoint-url http://localhost:4566 sqs receive-message --queue-url "$Q_URL"
 
 ```
 
@@ -201,17 +201,17 @@ You should see something like:
 
 ```json
 {
-    &#34;Messages&#34;: [
+    "Messages": [
         {
-            &#34;MessageId&#34;: &#34;5fef529f-8787-d931-b2f6-34127ae978cd&#34;,
-            &#34;ReceiptHandle&#34;: &#34;duytrocbgdfbfnyiqpsvnsqroimuegaigttaueclycefoxfwtlwvnykealgmvybwnckqjjgyoedzsmxulazjcyqdhaalwztyddxkssqhqycqctxhfhavmyylvpybljldflzavfghwwjdlgyvfbiprwrirappaocctdcqzilufjoobllvekbinirmt&#34;,
-            &#34;MD5OfBody&#34;: &#34;08550418f58bc838c192dc825693e5a6&#34;,
-            &#34;Body&#34;: &#34;new message at second 30&#34;,
-            &#34;Attributes&#34;: {
-                &#34;SenderId&#34;: &#34;AIDAIT2UOQQY3AUEKVGXU&#34;,
-                &#34;SentTimestamp&#34;: &#34;1600551210970&#34;,
-                &#34;ApproximateReceiveCount&#34;: &#34;1&#34;,
-                &#34;ApproximateFirstReceiveTimestamp&#34;: &#34;1600551215120&#34;
+            "MessageId": "5fef529f-8787-d931-b2f6-34127ae978cd",
+            "ReceiptHandle": "duytrocbgdfbfnyiqpsvnsqroimuegaigttaueclycefoxfwtlwvnykealgmvybwnckqjjgyoedzsmxulazjcyqdhaalwztyddxkssqhqycqctxhfhavmyylvpybljldflzavfghwwjdlgyvfbiprwrirappaocctdcqzilufjoobllvekbinirmt",
+            "MD5OfBody": "08550418f58bc838c192dc825693e5a6",
+            "Body": "new message at second 30",
+            "Attributes": {
+                "SenderId": "AIDAIT2UOQQY3AUEKVGXU",
+                "SentTimestamp": "1600551210970",
+                "ApproximateReceiveCount": "1",
+                "ApproximateFirstReceiveTimestamp": "1600551215120"
             }
         }
     ]

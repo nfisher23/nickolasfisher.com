@@ -155,9 +155,9 @@ Mock Server is a really simple and straightforward way to actually let your appl
 
   <section><p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing">can be found on Github</a>.</p>
 <p><a href="https://www.mock-server.com">Mock Server</a> is a really simple and straightforward way to actually let your application make downstream calls and intercept them. That level of abstraction is really nice to have, and gives at least me much more confidence that my code is actually working in a microservices environment.</p>
-<p>There are a few different ways to <a href="https://www.mock-server.com/mock_server/running_mock_server.html">run MockServer with junit</a>, depending on the junit version and how much manual work you want to do. I'll go with the most portable setup for this tutorial.</p>
+<p>There are a few different ways to <a href="https://www.mock-server.com/mock_server/running_mock_server.html">run MockServer with junit</a>, depending on the junit version and how much manual work you want to do. I&rsquo;ll go with the most portable setup for this tutorial.</p>
 <h2 id="the-service-using-webclient">The Service, Using WebClient</h2>
-<p>I'm going to reuse code from my last blog post on <a href="https://nickolasfisher.com/blog/How-to-Mock-Dependencies-and-Unit-Test-in-Spring-Boot-Webflux">mocking dependencies and unit testing in webflux</a>. If you recall, we had a really simple service with basically no logic:</p>
+<p>I&rsquo;m going to reuse code from my last blog post on <a href="https://nickolasfisher.com/blog/How-to-Mock-Dependencies-and-Unit-Test-in-Spring-Boot-Webflux">mocking dependencies and unit testing in webflux</a>. If you recall, we had a really simple service with basically no logic:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#ff79c6">package</span> com.nickolasfisher.testing.service;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> com.nickolasfisher.testing.dto.DownstreamResponseDTO;
@@ -175,19 +175,19 @@ Mock Server is a really simple and straightforward way to actually let your appl
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">webClient</span> <span style="color:#ff79c6">=</span> webClient;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Flux<span style="color:#ff79c6">&amp;</span>lt;DownstreamResponseDTO<span style="color:#ff79c6">&amp;</span>gt; getAllPeople() {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Flux<span style="color:#ff79c6">&lt;</span>DownstreamResponseDTO<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">getAllPeople</span>() {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">webClient</span>.<span style="color:#50fa7b">get</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>legacy<span style="color:#ff79c6">/</span>persons<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(<span style="color:#f1fa8c">&#34;/legacy/persons&#34;</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">retrieve</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">bodyToFlux</span>(DownstreamResponseDTO.<span style="color:#50fa7b">class</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>To write a test for this, let's first get mock server setting up properly. You will want to add the mock server dependency to your <strong>pom.xml</strong> if you're using maven, or your <strong>build.gradle</strong> if you're using gradle:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>&amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;groupId&amp;gt;org.mock-server&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;artifactId&amp;gt;mockserver-netty&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;version&amp;gt;5.11.1&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>&amp;lt;/dependency&amp;gt;
+</span></span></code></pre></div><p>To write a test for this, let&rsquo;s first get mock server setting up properly. You will want to add the mock server dependency to your <strong>pom.xml</strong> if you&rsquo;re using maven, or your <strong>build.gradle</strong> if you&rsquo;re using gradle:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;groupId&gt;</span>org.mock-server<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;artifactId&gt;</span>mockserver-netty<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;version&gt;</span>5.11.1<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/dependency&gt;</span>
 </span></span></code></pre></div><p>And create the test class somewhere in <strong>src/test/&hellip;</strong>. We will start and stop mock server as boilerplate:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">MyServiceTest</span> {
 </span></span><span style="display:flex;"><span>
@@ -203,7 +203,7 @@ Mock Server is a really simple and straightforward way to actually let your appl
 </span></span><span style="display:flex;"><span>        mockServer.<span style="color:#50fa7b">stop</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>I picked a static port in this case, but it's probably more robust to have java find you an available TCP port. Since we're using Spring Boot, you should check out <a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/util/SocketUtils.html#findAvailableTcpPort">SocketUtils to find an available TCP port</a> for you.</p>
+</span></span></code></pre></div><p>I picked a static port in this case, but it&rsquo;s probably more robust to have java find you an available TCP port. Since we&rsquo;re using Spring Boot, you should check out <a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/util/SocketUtils.html#findAvailableTcpPort">SocketUtils to find an available TCP port</a> for you.</p>
 <p>There are two things we would want to assert in a happy path test: first, that we are actually making the request and second, we are deserializing the response properly and it is making it into the <strong>Flux</strong>. One way to do this is by forcing the downstream call to block for us:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">MyServiceTest</span> {
 </span></span><span style="display:flex;"><span>
@@ -217,7 +217,7 @@ Mock Server is a really simple and straightforward way to actually let your appl
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">setupMockServer</span>() {
 </span></span><span style="display:flex;"><span>        mockServer <span style="color:#ff79c6">=</span> ClientAndServer.<span style="color:#50fa7b">startClientAndServer</span>(2001);
 </span></span><span style="display:flex;"><span>        myService <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> MyService(WebClient.<span style="color:#50fa7b">builder</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">baseUrl</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:&amp;#34; &amp;#43; mockServer.getLocalPort()).build());</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">baseUrl</span>(<span style="color:#f1fa8c">&#34;http://localhost:&#34;</span> <span style="color:#ff79c6">+</span> mockServer.<span style="color:#50fa7b">getLocalPort</span>()).<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @AfterEach
@@ -231,7 +231,7 @@ Mock Server is a really simple and straightforward way to actually let your appl
 </span></span><span style="display:flex;"><span>        mockServer.<span style="color:#50fa7b">when</span>(
 </span></span><span style="display:flex;"><span>                request()
 </span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
-</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>legacy<span style="color:#ff79c6">/</span>persons<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">withPath</span>(<span style="color:#f1fa8c">&#34;/legacy/persons&#34;</span>)
 </span></span><span style="display:flex;"><span>        ).<span style="color:#50fa7b">respond</span>(
 </span></span><span style="display:flex;"><span>                response()
 </span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">withStatusCode</span>(HttpStatus.<span style="color:#50fa7b">OK</span>.<span style="color:#50fa7b">value</span>())
@@ -239,37 +239,37 @@ Mock Server is a really simple and straightforward way to actually let your appl
 </span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">withBody</span>(responseBody)
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        List<span style="color:#ff79c6">&amp;</span>lt;DownstreamResponseDTO<span style="color:#ff79c6">&amp;</span>gt; responses <span style="color:#ff79c6">=</span> myService.<span style="color:#50fa7b">getAllPeople</span>().<span style="color:#50fa7b">collectList</span>().<span style="color:#50fa7b">block</span>();
+</span></span><span style="display:flex;"><span>        List<span style="color:#ff79c6">&lt;</span>DownstreamResponseDTO<span style="color:#ff79c6">&gt;</span> responses <span style="color:#ff79c6">=</span> myService.<span style="color:#50fa7b">getAllPeople</span>().<span style="color:#50fa7b">collectList</span>().<span style="color:#50fa7b">block</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        assertEquals(1, responses.<span style="color:#50fa7b">size</span>());
-</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#ff79c6">&amp;</span>#34;first<span style="color:#ff79c6">&amp;</span>#34;, responses.<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">getFirstName</span>());
-</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#ff79c6">&amp;</span>#34;last<span style="color:#ff79c6">&amp;</span>#34;, responses.<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">getLastName</span>());
+</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#f1fa8c">&#34;first&#34;</span>, responses.<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">getFirstName</span>());
+</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#f1fa8c">&#34;last&#34;</span>, responses.<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">getLastName</span>());
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        mockServer.<span style="color:#50fa7b">verify</span>(
 </span></span><span style="display:flex;"><span>                request().<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
-</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>legacy<span style="color:#ff79c6">/</span>persons<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">withPath</span>(<span style="color:#f1fa8c">&#34;/legacy/persons&#34;</span>)
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> String <span style="color:#50fa7b">getDownstreamResponseDTOAsString</span>() <span style="color:#8be9fd;font-style:italic">throws</span> JsonProcessingException {
 </span></span><span style="display:flex;"><span>        DownstreamResponseDTO downstreamResponseDTO <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> DownstreamResponseDTO();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setLastName</span>(<span style="color:#ff79c6">&amp;</span>#34;last<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setFirstName</span>(<span style="color:#ff79c6">&amp;</span>#34;first<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setSsn</span>(<span style="color:#ff79c6">&amp;</span>#34;123<span style="color:#ff79c6">-</span>12<span style="color:#ff79c6">-</span>1231<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setDeepesetFear</span>(<span style="color:#ff79c6">&amp;</span>#34;alligators<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setLastName</span>(<span style="color:#f1fa8c">&#34;last&#34;</span>);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setFirstName</span>(<span style="color:#f1fa8c">&#34;first&#34;</span>);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setSsn</span>(<span style="color:#f1fa8c">&#34;123-12-1231&#34;</span>);
+</span></span><span style="display:flex;"><span>        downstreamResponseDTO.<span style="color:#50fa7b">setDeepesetFear</span>(<span style="color:#f1fa8c">&#34;alligators&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> serializer.<span style="color:#50fa7b">writeValueAsString</span>(Arrays.<span style="color:#50fa7b">asList</span>(downstreamResponseDTO));
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>We are verifying that at least part of the response got loaded into our POJO properly with:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>assertEquals(1, responses.<span style="color:#50fa7b">size</span>());
-</span></span><span style="display:flex;"><span>assertEquals(<span style="color:#ff79c6">&amp;</span>#34;first<span style="color:#ff79c6">&amp;</span>#34;, responses.<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">getFirstName</span>());
-</span></span><span style="display:flex;"><span>assertEquals(<span style="color:#ff79c6">&amp;</span>#34;last<span style="color:#ff79c6">&amp;</span>#34;, responses.<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">getLastName</span>());
+</span></span><span style="display:flex;"><span>assertEquals(<span style="color:#f1fa8c">&#34;first&#34;</span>, responses.<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">getFirstName</span>());
+</span></span><span style="display:flex;"><span>assertEquals(<span style="color:#f1fa8c">&#34;last&#34;</span>, responses.<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">getLastName</span>());
 </span></span></code></pre></div><p>And we are verifying the request was made with:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>mockServer.<span style="color:#50fa7b">verify</span>(
 </span></span><span style="display:flex;"><span>        request().<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>legacy<span style="color:#ff79c6">/</span>persons<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">withPath</span>(<span style="color:#f1fa8c">&#34;/legacy/persons&#34;</span>)
 </span></span><span style="display:flex;"><span>);
 </span></span></code></pre></div><p>Note that you would never want to use those blocking methods in any production code, but for testing it helps simplify our life and gives us a high degree of confidence we are doing things properly.</p>
 <p>As a reminder, you can <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing">checkout and use this code on Github</a>.</p>

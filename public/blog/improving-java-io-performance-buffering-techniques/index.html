@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="﻿You can view the sample code associated with this post on GitHub.
-Now that we know how to benchmark using junit and jmh, let&#39;s put it to the test and try to optimize some basic I/O operations. While filesystem tasks are much less common in the web-enabled world, understanding the basics can help us when we move on to streams across network connections."
+Now that we know how to benchmark using junit and jmh, let&rsquo;s put it to the test and try to optimize some basic I/O operations. While filesystem tasks are much less common in the web-enabled world, understanding the basics can help us when we move on to streams across network connections."
 />
 <link rel="canonical" href="http://localhost:1313/blog/improving-java-io-performance-buffering-techniques/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,10 +154,10 @@ Now that we know how to benchmark using junit and jmh, let&#39;s put it to the t
   
 
   <section><p>﻿You can view the sample code associated with this post <a href="https://github.com/nfisher23/io-tuning">on GitHub</a>.</p>
-<p>Now that we know <a href="https://nickolasfisher.com/blog/How-to-Benchmark-Java-Code-Using-JUnit-and-JMH">how to benchmark using junit and jmh</a>, let's put it to the test and try to optimize some basic I/O operations. While filesystem tasks are much less common in the web-enabled world, understanding the basics can help us when we move on to streams across network connections.</p>
-<p>First, we'll create a file to read from. I opt to make a comma separated variable (csv) file that has 10,000 lines of 1,2,3&hellip;,8,9:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> String pathToResources <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;src<span style="color:#ff79c6">/</span>test<span style="color:#ff79c6">/</span>resources<span style="color:#ff79c6">&amp;</span>#34;;
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> String csvFilePath <span style="color:#ff79c6">=</span> pathToResources <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>simple<span style="color:#ff79c6">-</span>csv<span style="color:#ff79c6">-</span>file.<span style="color:#50fa7b">csv</span><span style="color:#ff79c6">&amp;</span>#34;;
+<p>Now that we know <a href="https://nickolasfisher.com/blog/How-to-Benchmark-Java-Code-Using-JUnit-and-JMH">how to benchmark using junit and jmh</a>, let&rsquo;s put it to the test and try to optimize some basic I/O operations. While filesystem tasks are much less common in the web-enabled world, understanding the basics can help us when we move on to streams across network connections.</p>
+<p>First, we&rsquo;ll create a file to read from. I opt to make a comma separated variable (csv) file that has 10,000 lines of 1,2,3&hellip;,8,9:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> String pathToResources <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;src/test/resources&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> String csvFilePath <span style="color:#ff79c6">=</span> pathToResources <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;/simple-csv-file.csv&#34;</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> <span style="color:#8be9fd">int</span> numberOfNewlines <span style="color:#ff79c6">=</span> 10000;
 </span></span><span style="display:flex;"><span>
@@ -166,11 +166,11 @@ Now that we know how to benchmark using junit and jmh, let&#39;s put it to the t
 </span></span><span style="display:flex;"><span>    Path csvPathAsPath <span style="color:#ff79c6">=</span> Paths.<span style="color:#50fa7b">get</span>(csvFilePath);
 </span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// run once to create the sample data we need for testing</span>
 </span></span><span style="display:flex;"><span>    StringBuilder builder <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> StringBuilder();
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; numberOfNewlines; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> j <span style="color:#ff79c6">=</span> 0; j <span style="color:#ff79c6">&amp;</span>lt; 10; j<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
-</span></span><span style="display:flex;"><span>            builder.<span style="color:#50fa7b">append</span>(Integer.<span style="color:#50fa7b">toString</span>(j)).<span style="color:#50fa7b">append</span>(<span style="color:#ff79c6">&amp;</span>#34;,<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> numberOfNewlines; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> j <span style="color:#ff79c6">=</span> 0; j <span style="color:#ff79c6">&lt;</span> 10; j<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>            builder.<span style="color:#50fa7b">append</span>(Integer.<span style="color:#50fa7b">toString</span>(j)).<span style="color:#50fa7b">append</span>(<span style="color:#f1fa8c">&#34;,&#34;</span>);
 </span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>        builder.<span style="color:#50fa7b">replace</span>(builder.<span style="color:#50fa7b">length</span>() <span style="color:#ff79c6">-</span> 1, builder.<span style="color:#50fa7b">length</span>(), <span style="color:#ff79c6">&amp;</span>#34;\n<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        builder.<span style="color:#50fa7b">replace</span>(builder.<span style="color:#50fa7b">length</span>() <span style="color:#ff79c6">-</span> 1, builder.<span style="color:#50fa7b">length</span>(), <span style="color:#f1fa8c">&#34;\n&#34;</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    String csvDataToWrite <span style="color:#ff79c6">=</span> builder.<span style="color:#50fa7b">toString</span>();
@@ -180,7 +180,7 @@ Now that we know how to benchmark using junit and jmh, let&#39;s put it to the t
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">launchBenchmark</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>    Options opt﻿ions <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> OptionsBuilder()
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">include</span>(<span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getClass</span>().<span style="color:#50fa7b">getName</span>() <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#ff79c6">*&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">include</span>(<span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getClass</span>().<span style="color:#50fa7b">getName</span>() <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;.*&#34;</span>)
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">mode</span>(Mode.<span style="color:#50fa7b">AverageTime</span>)
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">warmupTime</span>(TimeValue.<span style="color:#50fa7b">seconds</span>(1))
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">warmupIterations</span>(2)
@@ -197,8 +197,8 @@ Now that we know how to benchmark using junit and jmh, let&#39;s put it to the t
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">new</span> Runner(options).<span style="color:#50fa7b">run</span>();
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Now for some theory. As it turns out, when we ask for bytes from the file system, under the hood Java is asking the operating system to perform the action for us. Since OS's control files, it's not possible for Java to act any other way.</p>
-<p>When we ask for bytes from the OS, it's a fairly expensive operation end to end. That is, it's expensive to <em>start</em> asking for bytes, but it's not expensive <em>while</em> we are asking for bytes. From this idea, buffering was born. Buffering is basically picking up a chunk of bytes at one time from the operating system rather than asking for one at a time, which is (in theory) much slower if you want to read a bunch of bytes.</p>
+</span></span></code></pre></div><p>Now for some theory. As it turns out, when we ask for bytes from the file system, under the hood Java is asking the operating system to perform the action for us. Since OS&rsquo;s control files, it&rsquo;s not possible for Java to act any other way.</p>
+<p>When we ask for bytes from the OS, it&rsquo;s a fairly expensive operation end to end. That is, it&rsquo;s expensive to <em>start</em> asking for bytes, but it&rsquo;s not expensive <em>while</em> we are asking for bytes. From this idea, buffering was born. Buffering is basically picking up a chunk of bytes at one time from the operating system rather than asking for one at a time, which is (in theory) much slower if you want to read a bunch of bytes.</p>
 <p>This benchmarked-method asks the OS to get us a byte with each call to <code>read()</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Benchmark
 </span></span><span style="display:flex;"><span>@OutputTimeUnit(TimeUnit.<span style="color:#50fa7b">MILLISECONDS</span>)
@@ -213,8 +213,8 @@ Now that we know how to benchmark using junit and jmh, let&#39;s put it to the t
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">int</span> count <span style="color:#ff79c6">=</span> 0;
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">int</span> bytesRead;
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">while</span> ((bytesRead <span style="color:#ff79c6">=</span> inputStream.<span style="color:#50fa7b">read</span>()) <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">-</span>1) {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (bytesRead <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">&amp;</span>#39;\n<span style="color:#ff79c6">&amp;</span>#39;) {
-</span></span><span style="display:flex;"><span>            count<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> (bytesRead <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;\n&#39;</span>) {
+</span></span><span style="display:flex;"><span>            count<span style="color:#ff79c6">++</span>;
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> count;
@@ -222,7 +222,7 @@ Now that we know how to benchmark using junit and jmh, let&#39;s put it to the t
 </span></span></code></pre></div><p>The output on the benchmark on my machine from this method is:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Benchmark                                      Mode  Cnt    Score   Error  Units
 </span></span><span style="display:flex;"><span>BufferingBenchmarkTests.noBuffering            avgt    <span style="color:#bd93f9">2</span>  170.308          ms/op
-</span></span></code></pre></div><p>So on two tries (after the warmups) we averaged 170 milliseconds per try. Now we will use Java's built in BufferedInputStream:</p>
+</span></span></code></pre></div><p>So on two tries (after the warmups) we averaged 170 milliseconds per try. Now we will use Java&rsquo;s built in BufferedInputStream:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Benchmark
 </span></span><span style="display:flex;"><span>@OutputTimeUnit(TimeUnit.<span style="color:#50fa7b">MILLISECONDS</span>)
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">defaultJavaBuffering</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
@@ -250,9 +250,9 @@ Now that we know how to benchmark using junit and jmh, let&#39;s put it to the t
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">int</span> count <span style="color:#ff79c6">=</span> 0;
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">int</span> bytesRead;
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">while</span> ((bytesRead <span style="color:#ff79c6">=</span> inputStream.<span style="color:#50fa7b">read</span>(buff)) <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">-</span>1) {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; bytesRead; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
-</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">if</span> (buff<span style="color:#ff79c6">[</span>i<span style="color:#ff79c6">]</span> <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">&amp;</span>#39;\n<span style="color:#ff79c6">&amp;</span>#39;) {
-</span></span><span style="display:flex;"><span>                count<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> bytesRead; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">if</span> (buff<span style="color:#ff79c6">[</span>i<span style="color:#ff79c6">]</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;\n&#39;</span>) {
+</span></span><span style="display:flex;"><span>                count<span style="color:#ff79c6">++</span>;
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }

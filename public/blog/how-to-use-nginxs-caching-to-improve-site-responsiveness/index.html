@@ -5,11 +5,11 @@
 <meta charset="UTF-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>How to Use Nginx&amp;#39;s Caching to Improve Site Responsiveness</title>
+<title>How to Use Nginx&#39;s Caching to Improve Site Responsiveness</title>
 <meta
   name="description"
   content="The source code for this post can be found on Github.
-In my last post, I provided an example for how to set up an Nginx Reverse Proxy for a Spring MVC application. One such reason to set up a reverse proxy is to utilize caching of resources. If you have dynamically generated content that doesn&#39;t change very often, then adding caching at the site entry point can dramatically improve site responsiveness and reduce load on critical resources."
+In my last post, I provided an example for how to set up an Nginx Reverse Proxy for a Spring MVC application. One such reason to set up a reverse proxy is to utilize caching of resources. If you have dynamically generated content that doesn&rsquo;t change very often, then adding caching at the site entry point can dramatically improve site responsiveness and reduce load on critical resources."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-use-nginxs-caching-to-improve-site-responsiveness/" />
 <link rel="robots" href="/robots.txt" />
@@ -138,7 +138,7 @@ In my last post, I provided an example for how to set up an Nginx Reverse Proxy 
 
 <article class="flex flex-col gap-10">
   <header class="flex flex-col gap-2">
-    <h2 class="title-large">How to Use Nginx&amp;#39;s Caching to Improve Site Responsiveness</h2>
+    <h2 class="title-large">How to Use Nginx&#39;s Caching to Improve Site Responsiveness</h2>
 
     <div class="meta">
       
@@ -154,10 +154,10 @@ In my last post, I provided an example for how to set up an Nginx Reverse Proxy 
   
 
   <section><p>The source code for this post <a href="https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx">can be found on Github</a>.</p>
-<p>In my last post, I provided an example for <a href="https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy">how to set up an Nginx Reverse Proxy for a Spring MVC application</a>. One such reason to set up a reverse proxy is to utilize caching of resources. If you have dynamically generated content that doesn't change very often, then adding caching at the site entry point can dramatically improve site responsiveness and reduce load on critical resources.</p>
+<p>In my last post, I provided an example for <a href="https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy">how to set up an Nginx Reverse Proxy for a Spring MVC application</a>. One such reason to set up a reverse proxy is to utilize caching of resources. If you have dynamically generated content that doesn&rsquo;t change very often, then adding caching at the site entry point can dramatically improve site responsiveness and reduce load on critical resources.</p>
 <p>You will want to be sure to have a good background in setting up a reverse proxy with nginx to get the most out of this post, and I will be building on the work that was done in the last post.</p>
 <h3 id="simulating-a-long-running-process">Simulating a Long Running Process</h3>
-<p>First, we'll add an endpoint in our Spring MVC application that simulates taking a long time to get a result. Maybe the database is overwhelmed, or maybe a GC process stops the world more often than we would like:</p>
+<p>First, we&rsquo;ll add an endpoint in our Spring MVC application that simulates taking a long time to get a result. Maybe the database is overwhelmed, or maybe a GC process stops the world more often than we would like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#ff79c6">package</span> com.nickolasfisher.simplemvc;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> org.springframework.http.HttpStatus;
@@ -168,15 +168,15 @@ In my last post, I provided an example for how to set up an Nginx Reverse Proxy 
 </span></span><span style="display:flex;"><span>@Controller
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">SimpleController</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>slow<span style="color:#ff79c6">&amp;</span>#34;)
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> ResponseEntity<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt; slowEndpoint() <span style="color:#8be9fd;font-style:italic">throws</span> InterruptedException {
+</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#f1fa8c">&#34;/slow&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> ResponseEntity<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">slowEndpoint</span>() <span style="color:#8be9fd;font-style:italic">throws</span> InterruptedException {
 </span></span><span style="display:flex;"><span>        Thread.<span style="color:#50fa7b">sleep</span>(2500);
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">new</span> ResponseEntity<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">&amp;</span>gt;(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">&amp;</span>lt;p<span style="color:#ff79c6">&amp;</span>gt;Well... that took awhile<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">/</span>p<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>#34;, HttpStatus.<span style="color:#50fa7b">ACCEPTED</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">new</span> ResponseEntity<span style="color:#ff79c6">&lt;&gt;</span>(<span style="color:#f1fa8c">&#34;&lt;p&gt;Well... that took awhile&lt;/p&gt;&#34;</span>, HttpStatus.<span style="color:#50fa7b">ACCEPTED</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/&amp;</span>#34;)
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> ResponseEntity<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt; simpleResponder() {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">new</span> ResponseEntity<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">&amp;</span>gt;(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">&amp;</span>lt;h1<span style="color:#ff79c6">&amp;</span>gt;Welcome to my site<span style="color:#ff79c6">!&amp;</span>lt;<span style="color:#ff79c6">/</span>h1<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>#34;, HttpStatus.<span style="color:#50fa7b">ACCEPTED</span>);
+</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#f1fa8c">&#34;/&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> ResponseEntity<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">simpleResponder</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">new</span> ResponseEntity<span style="color:#ff79c6">&lt;&gt;</span>(<span style="color:#f1fa8c">&#34;&lt;h1&gt;Welcome to my site!&lt;/h1&gt;&#34;</span>, HttpStatus.<span style="color:#50fa7b">ACCEPTED</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Here, when we hit the /slow endpoint, it will take 2.5 seconds to get a response&ndash;an eternity on the internet. That represents ~25% loss in revenue for Amazon, should its site load that slowly.</p>
@@ -185,7 +185,7 @@ In my last post, I provided an example for how to set up an Nginx Reverse Proxy 
 </span></span></code></pre></div><p>And request <a href="http://192.168.56.202/slow,">http://192.168.56.202/slow,</a> you will see it in action. Moreover, it will take 2.5 seconds <em>every time</em>, despite the fact that the content is not changing. This is a perfect candidate for a caching layer.</p>
 <h3 id="set-up-the-cache-in-nginx">Set up the Cache in Nginx</h3>
 <p>Setting up a cache is relatively straightforward. We can specify a cache with <a href="http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_cache_path">proxy_cache_path</a>. Some common parameters are max_size, levels, and the use_temp_path flag. <strong>use_temp_path</strong> should be set to <strong>off</strong>, or else there will be an unnecessary intermediate step where nginx copies files.</p>
-<p>I'll declare a proxy_cache_path above the server block in our <strong>server.conf.j2</strong> Jinja2 template for our <strong>nginx role</strong>, which is called as a dependency in the reverse-proxy-nginx role. I will add some parameters, including a way to easily turn off the cache with a <strong>nginx_use_cache</strong> flag:</p>
+<p>I&rsquo;ll declare a proxy_cache_path above the server block in our <strong>server.conf.j2</strong> Jinja2 template for our <strong>nginx role</strong>, which is called as a dependency in the reverse-proxy-nginx role. I will add some parameters, including a way to easily turn off the cache with a <strong>nginx_use_cache</strong> flag:</p>
 <pre tabindex="0"><code>{% if nginx_use_cache %}
 proxy_cache_path {{ nginx_cache_path }} levels=1:2 keys_zone={{ nginx_cache_name }}:10m max_size=10g
                  inactive=60m use_temp_path=off;
@@ -207,7 +207,7 @@ server {
 </span></span></code></pre></div><p>If you deploy this now, the parsed nginx conf file will result in a proxy_cache_path declaration looking like:</p>
 <pre tabindex="0"><code>proxy_cache_path /etc/nginx/cache levels=1:2 keys_zone=my_cache:10m max_size=10g
                  inactive=60m use_temp_path=off;
-</code></pre><p>However, nothing will change yet&ndash;the slow endpoint will still take 2.5 seconds, because we aren't using the cache yet. To start using it, we have to declare the cache in the location block, then specify how long we want it to be valid for. In our case, we will also have to ensure that the proxy_cache_bypass declaration is not in place. Because Nginx, by default, honors the Cache-Control header (which is usually used to specify that the client wants the newest version of this resource) and <em>we know the content has not changed,</em> we will also tell Nginx to ignore the Cache-Control header. Our <strong>server.conf.j2</strong> file in the nginx role can finally look like:</p>
+</code></pre><p>However, nothing will change yet&ndash;the slow endpoint will still take 2.5 seconds, because we aren&rsquo;t using the cache yet. To start using it, we have to declare the cache in the location block, then specify how long we want it to be valid for. In our case, we will also have to ensure that the proxy_cache_bypass declaration is not in place. Because Nginx, by default, honors the Cache-Control header (which is usually used to specify that the client wants the newest version of this resource) and <em>we know the content has not changed,</em> we will also tell Nginx to ignore the Cache-Control header. Our <strong>server.conf.j2</strong> file in the nginx role can finally look like:</p>
 <pre tabindex="0"><code>{% if nginx_use_cache %}
 proxy_cache_path {{ nginx_cache_path }} levels=1:2 keys_zone={{ nginx_cache_name }}:10m max_size=10g
                  inactive=60m use_temp_path=off;

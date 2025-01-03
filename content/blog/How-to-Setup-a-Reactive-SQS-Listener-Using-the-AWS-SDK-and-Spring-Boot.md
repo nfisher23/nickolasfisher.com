@@ -20,17 +20,17 @@ public class AwsSqsConfig {
     @Bean
     public SqsAsyncClient amazonSQSAsyncClient() {
         return SqsAsyncClient.builder()
-                .endpointOverride(URI.create(&#34;http://localhost:4566&#34;))
+                .endpointOverride(URI.create("http://localhost:4566"))
                 .region(Region.US_EAST_1)
                 .credentialsProvider(StaticCredentialsProvider.create(new AwsCredentials() {
                     @Override
                     public String accessKeyId() {
-                        return &#34;FAKE&#34;;
+                        return "FAKE";
                     }
 
                     @Override
                     public String secretAccessKey() {
-                        return &#34;FAKE&#34;;
+                        return "FAKE";
                     }
                 }))
                 .build();
@@ -42,13 +42,13 @@ public class AwsSqsConfig {
 And where we had also set up a local SQS queue in localstack with the CLI:
 
 ```bash
-export AWS_SECRET_ACCESS_KEY=&#34;FAKE&#34;
-export AWS_ACCESS_KEY_ID=&#34;FAKE&#34;
+export AWS_SECRET_ACCESS_KEY="FAKE"
+export AWS_ACCESS_KEY_ID="FAKE"
 export AWS_DEFAULT_REGION=us-east-1
 
-QUEUE_NAME=&#34;my-queue&#34;
+QUEUE_NAME="my-queue"
 
-aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name &#34;$QUEUE_NAME&#34;
+aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name "$QUEUE_NAME"
 
 ```
 
@@ -71,7 +71,7 @@ public class SQSListenerBean {
     public SQSListenerBean(SqsAsyncClient sqsAsyncClient) {
         this.sqsAsyncClient = sqsAsyncClient;
         try {
-            this.queueUrl = this.sqsAsyncClient.getQueueUrl(GetQueueUrlRequest.builder().queueName(&#34;my-queue&#34;).build()).get().queueUrl();
+            this.queueUrl = this.sqsAsyncClient.getQueueUrl(GetQueueUrlRequest.builder().queueName("my-queue").build()).get().queueUrl();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -79,7 +79,7 @@ public class SQSListenerBean {
 
     @PostConstruct
     public void continuousListener() {
-        Mono&lt;ReceiveMessageResponse&gt; receiveMessageResponseMono = Mono.fromFuture(() -&gt;
+        Mono<ReceiveMessageResponse> receiveMessageResponseMono = Mono.fromFuture(() ->
                 sqsAsyncClient.receiveMessage(
                     ReceiveMessageRequest.builder()
                             .maxNumberOfMessages(5)
@@ -95,13 +95,13 @@ public class SQSListenerBean {
                 .retry()
                 .map(ReceiveMessageResponse::messages)
                 .map(Flux::fromIterable)
-                .flatMap(messageFlux -&gt; messageFlux)
-                .subscribe(message -&gt; {
-                    LOGGER.info(&#34;message body: &#34; &#43; message.body());
+                .flatMap(messageFlux -> messageFlux)
+                .subscribe(message -> {
+                    LOGGER.info("message body: " + message.body());
 
                     sqsAsyncClient.deleteMessage(DeleteMessageRequest.builder().queueUrl(queueUrl).receiptHandle(message.receiptHandle()).build())
-                        .thenAccept(deleteMessageResponse -&gt; {
-                            LOGGER.info(&#34;deleted message with handle &#34; &#43; message.receiptHandle());
+                        .thenAccept(deleteMessageResponse -> {
+                            LOGGER.info("deleted message with handle " + message.receiptHandle());
                         });
                 });
     }
@@ -113,12 +113,12 @@ In this case, the actual processing of the message is just a log message printin
 If you start up the app, and send a sample message to that queue with:
 
 ```bash
-export AWS_SECRET_ACCESS_KEY=&#34;FAKE&#34;
-export AWS_ACCESS_KEY_ID=&#34;FAKE&#34;
+export AWS_SECRET_ACCESS_KEY="FAKE"
+export AWS_ACCESS_KEY_ID="FAKE"
 export AWS_DEFAULT_REGION=us-east-1
 
-Q_URL=$(aws --endpoint-url http://localhost:4566 sqs get-queue-url --queue-name &#34;my-queue&#34; --output text)
-aws --endpoint-url http://localhost:4566 sqs send-message --queue-url &#34;$Q_URL&#34; --message-body &#34;hey there&#34;
+Q_URL=$(aws --endpoint-url http://localhost:4566 sqs get-queue-url --queue-name "my-queue" --output text)
+aws --endpoint-url http://localhost:4566 sqs send-message --queue-url "$Q_URL" --message-body "hey there"
 
 ```
 
@@ -130,4 +130,4 @@ INFO 17716 --- [c-response-0-22] c.n.reactivesqs.SQSListenerBean          : dele
 
 ```
 
-You could further tweak this to your heart&#39;s content.
+You could further tweak this to your heart's content.

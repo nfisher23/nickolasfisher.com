@@ -7,23 +7,23 @@ tags: [distributed systems, vagrant, ansible, DevOps]
 
 You can see the source code for this blog post [on GitHub](https://github.com/nfisher23/some-ansible-examples).
 
-In a previous post, we saw [how to provision a multi-node elasticsearch cluster using ansible](https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible). The problem with that post is that, by the time I was done writing it, _Elastic had already come out with a new version of elasticsearch_. I&#39;m being mildly facetious, but not really. They release new versions very quickly, even by the standards of modern software engineering.
+In a previous post, we saw [how to provision a multi-node elasticsearch cluster using ansible](https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible). The problem with that post is that, by the time I was done writing it, _Elastic had already come out with a new version of elasticsearch_. I'm being mildly facetious, but not really. They release new versions very quickly, even by the standards of modern software engineering.
 
 It would be wise, therefore, to think about upgrading from the very beginning. The recommended way to upgrade versions of elasticsearch from 5.6 onwards is a [rolling upgrade](https://www.elastic.co/guide/en/elasticsearch/reference/current/rolling-upgrades.html). As you can see from that article, upgrading (even in place) elasticsearch is not trivial by any stretch of the imagination.
 
-However, it can be done, and in this post I&#39;ll show you one way to do it using ansible.
+However, it can be done, and in this post I'll show you one way to do it using ansible.
 
 ### Doing the Upgrade
 
-To start with, I&#39;ll create an ansible role using molecule to demo what is required:
+To start with, I'll create an ansible role using molecule to demo what is required:
 
 ```bash
 $ molecule init role -r upgrade-elasticsearch-cluster -d vagrant
 ```
 
-I&#39;m choosing Vagrant as my VM driver and calling this role upgrade-elasticsearch-cluster.
+I'm choosing Vagrant as my VM driver and calling this role upgrade-elasticsearch-cluster.
 
-So I don&#39;t have to reinvent the wheel I&#39;m reusing the role that installs elasticsearch (version 6.3.0) by including it in my **meta/main.yml** file:
+So I don't have to reinvent the wheel I'm reusing the role that installs elasticsearch (version 6.3.0) by including it in my **meta/main.yml** file:
 
 ```yaml
 ---
@@ -32,7 +32,7 @@ dependencies:
 
 ```
 
-That role is still a WIP, and in fact I changed the discovery IP addresses to be 192.168.56.101-103, hardcoded in the configuration file. To demonstrate a minimum viable product for this example I&#39;ll reuse that **molecule/default/molecule.yml** platform&#39;s section:
+That role is still a WIP, and in fact I changed the discovery IP addresses to be 192.168.56.101-103, hardcoded in the configuration file. To demonstrate a minimum viable product for this example I'll reuse that **molecule/default/molecule.yml** platform's section:
 
 ```yaml
 platforms:
@@ -40,7 +40,7 @@ platforms:
     box: ubuntu/xenial64
     memory: 4096
     provider_raw_config_args:
-    - &#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;
+    - "customize ['modifyvm', :id, '--uartmode1', 'disconnected']"
     interfaces:
     - auto_config: true
       network_name: private_network
@@ -50,7 +50,7 @@ platforms:
     box: ubuntu/xenial64
     memory: 4096
     provider_raw_config_args:
-    - &#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;
+    - "customize ['modifyvm', :id, '--uartmode1', 'disconnected']"
     interfaces:
     - auto_config: true
       network_name: private_network
@@ -60,7 +60,7 @@ platforms:
     box: ubuntu/xenial64
     memory: 4096
     provider_raw_config_args:
-    - &#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;
+    - "customize ['modifyvm', :id, '--uartmode1', 'disconnected']"
     interfaces:
     - auto_config: true
       network_name: private_network
@@ -124,9 +124,9 @@ And create a **tasks/upgrade\_es.yml** file, which will house all of the upgrade
 
 - name: get elasticsearch to upgrade to
   get_url:
-    dest: &#34;/etc/{{ es_version_to_upgrade_to }}&#34;
-    url: &#34;https://artifacts.elastic.co/downloads/elasticsearch/{{ es_version_to_upgrade_to }}&#34;
-    checksum: &#34;sha512:https://artifacts.elastic.co/downloads/elasticsearch/{{ es_version_to_upgrade_to }}.sha512&#34;
+    dest: "/etc/{{ es_version_to_upgrade_to }}"
+    url: "https://artifacts.elastic.co/downloads/elasticsearch/{{ es_version_to_upgrade_to }}"
+    checksum: "sha512:https://artifacts.elastic.co/downloads/elasticsearch/{{ es_version_to_upgrade_to }}.sha512"
   become: yes
 
 - name: perform upgrade process as root
@@ -134,7 +134,7 @@ And create a **tasks/upgrade\_es.yml** file, which will house all of the upgrade
     - name: disable shard allocation
       uri:
         url: http://127.0.0.1:9200/_cluster/settings
-        body: &#39;{&#34;persistent&#34;:{&#34;cluster.routing.allocation.enable&#34;:&#34;none&#34;}}&#39; # specify no shard allocation
+        body: '{"persistent":{"cluster.routing.allocation.enable":"none"}}' # specify no shard allocation
         body_format: json
         method: PUT
 
@@ -156,7 +156,7 @@ And create a **tasks/upgrade\_es.yml** file, which will house all of the upgrade
 
     - name: upgrade node
       apt:
-        deb: &#34;/etc/{{ es_version_to_upgrade_to }}&#34;
+        deb: "/etc/{{ es_version_to_upgrade_to }}"
 
     - name: bring up node
       service:
@@ -177,7 +177,7 @@ And create a **tasks/upgrade\_es.yml** file, which will house all of the upgrade
     - name: reenable shard allocation
       uri:
         url: http://127.0.0.1:9200/_cluster/settings
-        body: &#39;{&#34;persistent&#34;:{&#34;cluster.routing.allocation.enable&#34;:null}}&#39; # reenabling the setting removes shard allocation
+        body: '{"persistent":{"cluster.routing.allocation.enable":null}}' # reenabling the setting removes shard allocation
         body_format: json
         method: PUT
 
@@ -199,10 +199,10 @@ There is one script that has to run located at **files/check\_es\_health.py**. T
 import urllib2
 import sys
 
-response = urllib2.urlopen(&#34;http://127.0.0.1:9200/_cat/health&#34;)
+response = urllib2.urlopen("http://127.0.0.1:9200/_cat/health")
 body = response.read()
 response.close()
-if &#34;green&#34; in body:
+if "green" in body:
     sys.exit(0)
 else:
     sys.exit(1)

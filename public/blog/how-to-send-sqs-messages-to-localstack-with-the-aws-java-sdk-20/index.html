@@ -157,14 +157,14 @@ The completely rewritten AWS SDK for Java 2.0 comes with full reactive programmi
 <p>The completely rewritten <a href="https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/welcome.html">AWS SDK for Java 2.0</a> comes with full reactive programming support all the way down. I wanted a way to test it out without spending any more or being at risk of spending too much money, so I used <a href="https://github.com/localstack/localstack">localstack</a>. This post is largely walking you through what I came up with.</p>
 <h2 id="the-infra">The Infra</h2>
 <p>To start with, you will want to ensure you have docker and docker-compose installed. Then you can <a href="https://github.com/localstack/localstack/blob/master/docker-compose.yml">copy the localstack docker-compose file from the github repo</a> into your own <strong>docker-compose.yaml</strong> file like so:</p>
-<pre tabindex="0"><code class="language-yaml&gt;version:" data-lang="yaml&gt;version:">
+<pre tabindex="0"><code class="language-yaml>version:" data-lang="yaml>version:">
 services:
   localstack:
-    container_name: &amp;#34;${LOCALSTACK_DOCKER_NAME-localstack_main}&amp;#34;
+    container_name: &#34;${LOCALSTACK_DOCKER_NAME-localstack_main}&#34;
     image: localstack/localstack
     ports:
-      - &amp;#34;4566-4599:4566-4599&amp;#34;
-      - &amp;#34;${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}&amp;#34;
+      - &#34;4566-4599:4566-4599&#34;
+      - &#34;${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}&#34;
     environment:
       - SERVICES=${SERVICES- }
       - DEBUG=${DEBUG- }
@@ -175,83 +175,83 @@ services:
       - DOCKER_HOST=unix:///var/run/docker.sock
       - HOST_TMP_FOLDER=${TMPDIR}
     volumes:
-      - &amp;#34;${TMPDIR:-/tmp/localstack}:/tmp/localstack&amp;#34;
-      - &amp;#34;/var/run/docker.sock:/var/run/docker.sock&amp;#34;
+      - &#34;${TMPDIR:-/tmp/localstack}:/tmp/localstack&#34;
+      - &#34;/var/run/docker.sock:/var/run/docker.sock&#34;
 
-&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
 
-&amp;lt;p&amp;gt;Navigate to the directory where that file lives and run:&amp;lt;/p&amp;gt;
+&lt;p&gt;Navigate to the directory where that file lives and run:&lt;/p&gt;
 
-&amp;lt;pre&amp;gt;&amp;lt;code class=
+&lt;pre&gt;&lt;code class=
 docker-compose up -d
-</code></pre><p>Now that we have a local AWS clone running, let's create a queue for us to use with the aws cli:</p>
+</code></pre><p>Now that we have a local AWS clone running, let&rsquo;s create a queue for us to use with the aws cli:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_SECRET_ACCESS_KEY</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_ACCESS_KEY_ID</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_SECRET_ACCESS_KEY</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;FAKE&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_ACCESS_KEY_ID</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;FAKE&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_DEFAULT_REGION</span><span style="color:#ff79c6">=</span>us-east-1
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_NAME</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;my-queue&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_NAME</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;my-queue&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name &amp;<span style="color:#6272a4">#34;$QUEUE_NAME&amp;#34;</span>
+</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$QUEUE_NAME</span><span style="color:#f1fa8c">&#34;</span>
 </span></span></code></pre></div><h2 id="the-application-now">The Application Now</h2>
 <p>Create a spring boot project [e.g. use the spring initializr]. You will want to make your <strong>pom.xml</strong> includes a similar <strong>dependencyManagement</strong> section as well as the aws sqs sdk:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>...metadata...
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    &amp;lt;dependencyManagement&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;dependencies&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;groupId&amp;gt;software.amazon.awssdk&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;artifactId&amp;gt;bom&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;version&amp;gt;2.5.5&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;type&amp;gt;pom&amp;lt;/type&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;scope&amp;gt;import&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependencies&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/dependencyManagement&amp;gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;dependencyManagement&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;groupId&gt;</span>software.amazon.awssdk<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;artifactId&gt;</span>bom<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;version&gt;</span>2.5.5<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;type&gt;</span>pom<span style="color:#ff79c6">&lt;/type&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;scope&gt;</span>import<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/dependencyManagement&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    &amp;lt;properties&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;java.version&amp;gt;11&amp;lt;/java.version&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/properties&amp;gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;properties&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;java.version&gt;</span>11<span style="color:#ff79c6">&lt;/java.version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/properties&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    &amp;lt;dependencies&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;spring-boot-starter-webflux&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-boot-starter-webflux<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;software.amazon.awssdk&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;sqs&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>software.amazon.awssdk<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>sqs<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;spring-boot-starter-test&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;exclusions&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;exclusion&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;groupId&amp;gt;org.junit.vintage&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;artifactId&amp;gt;junit-vintage-engine&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;/exclusion&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;/exclusions&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;io.projectreactor&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;reactor-test&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/dependencies&amp;gt;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-boot-starter-test<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;scope&gt;</span>test<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;exclusions&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;exclusion&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;groupId&gt;</span>org.junit.vintage<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;artifactId&gt;</span>junit-vintage-engine<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;/exclusion&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;/exclusions&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>io.projectreactor<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>reactor-test<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;scope&gt;</span>test<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/dependencies&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    &amp;lt;build&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;plugins&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;plugin&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;artifactId&amp;gt;spring-boot-maven-plugin&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;/plugin&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/plugins&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/build&amp;gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;build&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;plugins&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;plugin&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;/plugin&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/plugins&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/build&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>&amp;lt;/project&amp;gt;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/project&gt;</span>
 </span></span></code></pre></div><p>With that, we need to configure our <strong>SqsClient</strong> to communicate with local. We can do that with something like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Configuration
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">AwsSqsConfig</span> {
@@ -259,17 +259,17 @@ docker-compose up -d
 </span></span><span style="display:flex;"><span>    @Bean
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> SqsAsyncClient <span style="color:#50fa7b">amazonSQSAsyncClient</span>() {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> SqsAsyncClient.<span style="color:#50fa7b">builder</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">endpointOverride</span>(URI.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:4566&amp;#34;))</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">endpointOverride</span>(URI.<span style="color:#50fa7b">create</span>(<span style="color:#f1fa8c">&#34;http://localhost:4566&#34;</span>))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">region</span>(Region.<span style="color:#50fa7b">US_EAST_1</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">credentialsProvider</span>(StaticCredentialsProvider.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">new</span> AwsCredentials() {
 </span></span><span style="display:flex;"><span>                    @Override
 </span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">accessKeyId</span>() {
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;FAKE&#34;</span>;
 </span></span><span style="display:flex;"><span>                    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>                    @Override
 </span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">secretAccessKey</span>() {
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;FAKE&#34;</span>;
 </span></span><span style="display:flex;"><span>                    }
 </span></span><span style="display:flex;"><span>                }))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
@@ -289,14 +289,14 @@ docker-compose up -d
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @PostConstruct
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">sendHelloMessage</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
-</span></span><span style="display:flex;"><span>        LOG.<span style="color:#50fa7b">info</span>(<span style="color:#ff79c6">&amp;</span>#34;hello<span style="color:#ff79c6">!!!&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        CompletableFuture wat <span style="color:#ff79c6">=</span> sqsAsyncClient.<span style="color:#50fa7b">getQueueUrl</span>(GetQueueUrlRequest.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">queueName</span>(<span style="color:#ff79c6">&amp;</span>#34;my<span style="color:#ff79c6">-</span>queue<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">build</span>());
+</span></span><span style="display:flex;"><span>        LOG.<span style="color:#50fa7b">info</span>(<span style="color:#f1fa8c">&#34;hello!!!&#34;</span>);
+</span></span><span style="display:flex;"><span>        CompletableFuture wat <span style="color:#ff79c6">=</span> sqsAsyncClient.<span style="color:#50fa7b">getQueueUrl</span>(GetQueueUrlRequest.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">queueName</span>(<span style="color:#f1fa8c">&#34;my-queue&#34;</span>).<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>        GetQueueUrlResponse getQueueUrlResponse <span style="color:#ff79c6">=</span> wat.<span style="color:#50fa7b">get</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Mono.<span style="color:#50fa7b">fromFuture</span>(() <span style="color:#ff79c6">-&amp;</span>gt; sqsAsyncClient.<span style="color:#50fa7b">sendMessage</span>(
+</span></span><span style="display:flex;"><span>        Mono.<span style="color:#50fa7b">fromFuture</span>(() <span style="color:#ff79c6">-&gt;</span> sqsAsyncClient.<span style="color:#50fa7b">sendMessage</span>(
 </span></span><span style="display:flex;"><span>                SendMessageRequest.<span style="color:#50fa7b">builder</span>()
 </span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">queueUrl</span>(getQueueUrlResponse.<span style="color:#50fa7b">queueUrl</span>())
-</span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">messageBody</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">new</span> message at second <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; ZonedDateTime.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">getSecond</span>())
+</span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">messageBody</span>(<span style="color:#f1fa8c">&#34;new message at second &#34;</span> <span style="color:#ff79c6">+</span> ZonedDateTime.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">getSecond</span>())
 </span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">build</span>()
 </span></span><span style="display:flex;"><span>            ))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">retryWhen</span>(Retry.<span style="color:#50fa7b">max</span>(3))
@@ -305,25 +305,25 @@ docker-compose up -d
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>If you start up the application, then use the CLI to get a message off the queue:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>export AWS_SECRET_ACCESS_KEY<span style="color:#ff79c6">=&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;
-</span></span><span style="display:flex;"><span>export AWS_ACCESS_KEY_ID<span style="color:#ff79c6">=&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>export AWS_SECRET_ACCESS_KEY<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;FAKE&#34;</span>
+</span></span><span style="display:flex;"><span>export AWS_ACCESS_KEY_ID<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;FAKE&#34;</span>
 </span></span><span style="display:flex;"><span>export AWS_DEFAULT_REGION<span style="color:#ff79c6">=</span>us<span style="color:#ff79c6">-</span>east<span style="color:#ff79c6">-</span>1
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>Q_URL<span style="color:#ff79c6">=</span>$(aws <span style="color:#ff79c6">--</span>endpoint<span style="color:#ff79c6">-</span>url http:<span style="color:#6272a4">//localhost:4566 sqs get-queue-url --queue-name &amp;#34;my-queue&amp;#34; --output text)</span>
-</span></span><span style="display:flex;"><span>aws <span style="color:#ff79c6">--</span>endpoint<span style="color:#ff79c6">-</span>url http:<span style="color:#6272a4">//localhost:4566 sqs receive-message --queue-url &amp;#34;$Q_URL&amp;#34;</span>
+</span></span><span style="display:flex;"><span>Q_URL<span style="color:#ff79c6">=</span>$(aws <span style="color:#ff79c6">--</span>endpoint<span style="color:#ff79c6">-</span>url http:<span style="color:#6272a4">//localhost:4566 sqs get-queue-url --queue-name &#34;my-queue&#34; --output text)</span>
+</span></span><span style="display:flex;"><span>aws <span style="color:#ff79c6">--</span>endpoint<span style="color:#ff79c6">-</span>url http:<span style="color:#6272a4">//localhost:4566 sqs receive-message --queue-url &#34;$Q_URL&#34;</span>
 </span></span></code></pre></div><p>You should see something like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    &amp;#34;Messages&amp;#34;: [
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;Messages&#34;</span>: [
 </span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            &amp;#34;MessageId&amp;#34;: &amp;#34;5fef529f-8787-d931-b2f6-34127ae978cd&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;ReceiptHandle&amp;#34;: &amp;#34;duytrocbgdfbfnyiqpsvnsqroimuegaigttaueclycefoxfwtlwvnykealgmvybwnckqjjgyoedzsmxulazjcyqdhaalwztyddxkssqhqycqctxhfhavmyylvpybljldflzavfghwwjdlgyvfbiprwrirappaocctdcqzilufjoobllvekbinirmt&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;MD5OfBody&amp;#34;: &amp;#34;08550418f58bc838c192dc825693e5a6&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;Body&amp;#34;: &amp;#34;new message at second 30&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;Attributes&amp;#34;: {
-</span></span><span style="display:flex;"><span>                &amp;#34;SenderId&amp;#34;: &amp;#34;AIDAIT2UOQQY3AUEKVGXU&amp;#34;,
-</span></span><span style="display:flex;"><span>                &amp;#34;SentTimestamp&amp;#34;: &amp;#34;1600551210970&amp;#34;,
-</span></span><span style="display:flex;"><span>                &amp;#34;ApproximateReceiveCount&amp;#34;: &amp;#34;1&amp;#34;,
-</span></span><span style="display:flex;"><span>                &amp;#34;ApproximateFirstReceiveTimestamp&amp;#34;: &amp;#34;1600551215120&amp;#34;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;MessageId&#34;</span>: <span style="color:#f1fa8c">&#34;5fef529f-8787-d931-b2f6-34127ae978cd&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;ReceiptHandle&#34;</span>: <span style="color:#f1fa8c">&#34;duytrocbgdfbfnyiqpsvnsqroimuegaigttaueclycefoxfwtlwvnykealgmvybwnckqjjgyoedzsmxulazjcyqdhaalwztyddxkssqhqycqctxhfhavmyylvpybljldflzavfghwwjdlgyvfbiprwrirappaocctdcqzilufjoobllvekbinirmt&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;MD5OfBody&#34;</span>: <span style="color:#f1fa8c">&#34;08550418f58bc838c192dc825693e5a6&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;Body&#34;</span>: <span style="color:#f1fa8c">&#34;new message at second 30&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;Attributes&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;SenderId&#34;</span>: <span style="color:#f1fa8c">&#34;AIDAIT2UOQQY3AUEKVGXU&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;SentTimestamp&#34;</span>: <span style="color:#f1fa8c">&#34;1600551210970&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;ApproximateReceiveCount&#34;</span>: <span style="color:#f1fa8c">&#34;1&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&#34;ApproximateFirstReceiveTimestamp&#34;</span>: <span style="color:#f1fa8c">&#34;1600551215120&#34;</span>
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    ]

@@ -7,7 +7,7 @@ tags: [java, maven, testing, rest assured]
 
 Sample code associated with this post can be found [on Github](https://github.com/nfisher23/examples-testing-stuff).
 
-[Rest Assured](https://github.com/rest-assured/rest-assured/wiki/Usage) is a library that makes it easy to write api based automated tests in java. Recently I needed to find a way to record the latency of each request as well as some metadata about it \[request path, method, things of that nature\]. I found a nice way to do this with [rest assured filters](https://github.com/rest-assured/rest-assured/wiki/Usage#filters), and I&#39;m going to share that with you in this article.
+[Rest Assured](https://github.com/rest-assured/rest-assured/wiki/Usage) is a library that makes it easy to write api based automated tests in java. Recently I needed to find a way to record the latency of each request as well as some metadata about it \[request path, method, things of that nature\]. I found a nice way to do this with [rest assured filters](https://github.com/rest-assured/rest-assured/wiki/Usage#filters), and I'm going to share that with you in this article.
 
 You can get this started by bootstrapping a maven project:
 
@@ -17,43 +17,43 @@ mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -Darchetyp
 
 Follow the prompts, set it up to be whatever you want.
 
-You will then need to add a couple of dependencies, I&#39;ll just list out all of them here:
+You will then need to add a couple of dependencies, I'll just list out all of them here:
 
 ```xml
-  &lt;dependencies&gt;
-    &lt;dependency&gt;
-      &lt;groupId&gt;junit&lt;/groupId&gt;
-      &lt;artifactId&gt;junit&lt;/artifactId&gt;
-      &lt;version&gt;4.11&lt;/version&gt;
-      &lt;scope&gt;test&lt;/scope&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-      &lt;groupId&gt;io.rest-assured&lt;/groupId&gt;
-      &lt;artifactId&gt;rest-assured&lt;/artifactId&gt;
-      &lt;version&gt;3.0.0&lt;/version&gt;
-      &lt;scope&gt;test&lt;/scope&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-      &lt;groupId&gt;jakarta.xml.bind&lt;/groupId&gt;
-      &lt;artifactId&gt;jakarta.xml.bind-api&lt;/artifactId&gt;
-      &lt;version&gt;2.3.2&lt;/version&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-      &lt;groupId&gt;org.glassfish.jaxb&lt;/groupId&gt;
-      &lt;artifactId&gt;jaxb-runtime&lt;/artifactId&gt;
-      &lt;version&gt;2.3.2&lt;/version&gt;
-    &lt;/dependency&gt;
-  &lt;/dependencies&gt;
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <version>3.0.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>2.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>2.3.2</version>
+    </dependency>
+  </dependencies>
 
 ```
 
-I&#39;ll write out a couple of simple examples so I can demonstrate how to best do this:
+I'll write out a couple of simple examples so I can demonstrate how to best do this:
 
 ```java
     @Test
     public void getGoogleHomepage() {
         RestAssured.with()
-                .baseUri(&#34;https://www.google.com&#34;)
+                .baseUri("https://www.google.com")
                 .get()
                 .then()
                 .statusCode(200);
@@ -62,7 +62,7 @@ I&#39;ll write out a couple of simple examples so I can demonstrate how to best 
     @Test
     public void getDuckDuckGoHomepage() {
         RestAssured.with()
-                .baseUri(&#34;https://duckduckgo.com&#34;)
+                .baseUri("https://duckduckgo.com")
                 .get()
                 .then()
                 .statusCode(200);
@@ -81,7 +81,7 @@ And, provided google and duck duck go have their services available, you will se
 
 ### Track Latency With a Filter
 
-Now let&#39;s say we have a bunch of tests and we want to track the latency of each one, and further let&#39;s say we have to send that to a file in some form of custom logic. We can execute whatever custom logic we want with a [filter](https://github.com/rest-assured/rest-assured/wiki/Usage#filters).
+Now let's say we have a bunch of tests and we want to track the latency of each one, and further let's say we have to send that to a file in some form of custom logic. We can execute whatever custom logic we want with a [filter](https://github.com/rest-assured/rest-assured/wiki/Usage#filters).
 
 ```java
     static {
@@ -95,7 +95,7 @@ Now let&#39;s say we have a bunch of tests and we want to track the latency of e
                 sw.start();
                 Response response = filterContext.next(filterableRequestSpecification, filterableResponseSpecification);
                 sw.stop();
-                System.out.println(&#34;time: &#34; &#43; sw.getTime());
+                System.out.println("time: " + sw.getTime());
                 return response;
             }
         });
@@ -103,7 +103,7 @@ Now let&#39;s say we have a bunch of tests and we want to track the latency of e
 
 ```
 
-If I go to run this, I&#39;ll see a couple of times in milliseconds get printed out:
+If I go to run this, I'll see a couple of times in milliseconds get printed out:
 
 ```
 $ mvn test
@@ -113,4 +113,4 @@ time: 325
 
 ```
 
-This brings up an important point, and that&#39;s [JVM warmups](https://stackoverflow.com/questions/36198278/why-does-the-jvm-require-warmup). This specific type of analysis is really only going to be useful if you have a lot of tests, then it will tend to average itself out. But with only two tests, tracking latency like this is not particularly useful.
+This brings up an important point, and that's [JVM warmups](https://stackoverflow.com/questions/36198278/why-does-the-jvm-require-warmup). This specific type of analysis is really only going to be useful if you have a lot of tests, then it will tend to average itself out. But with only two tests, tracking latency like this is not particularly useful.

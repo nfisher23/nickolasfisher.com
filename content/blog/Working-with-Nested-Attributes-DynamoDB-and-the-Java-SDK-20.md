@@ -7,27 +7,27 @@ tags: [java, distributed systems, aws, dynamodb]
 
 [Nested attributes in DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.Attributes.html) are a way to group data within an item together. The attributes are said to be nested if they are embedded within another attribute.
 
-Building off a previous post where we [set up an embedded DynamoDB instance in a java test suite](https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing), I&#39;ll provide here some examples for working with nested attributes.
+Building off a previous post where we [set up an embedded DynamoDB instance in a java test suite](https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing), I'll provide here some examples for working with nested attributes.
 
 The source code that follows [can be seen on Github](https://github.com/nfisher23/webflux-and-dynamo/blob/master/src/test/java/com/nickolasfisher/reactivedynamo/PhoneServiceTest.java#L722).
 
-First let&#39;s create a table and insert some data:
+First let's create a table and insert some data:
 
 ```java
 
     @Test
     public void nestedAttributes() throws Exception {
-        String currentTableName = &#34;NestedAttributesTest&#34;;
+        String currentTableName = "NestedAttributesTest";
         createTableAndWaitForComplete(currentTableName);
 
-        Map&lt;String, AttributeValue&gt; attributes = Map.of(
-                COMPANY, AttributeValue.builder().s(&#34;Motorola&#34;).build(),
-                MODEL, AttributeValue.builder().s(&#34;G1&#34;).build(),
-                &#34;MetadataList&#34;, AttributeValue.builder().l(
-                        AttributeValue.builder().s(&#34;Super Cool&#34;).build(),
-                        AttributeValue.builder().n(&#34;100&#34;).build()).build(),
-                &#34;MetadataStringSet&#34;, AttributeValue.builder().ss(&#34;one&#34;, &#34;two&#34;, &#34;three&#34;).build(),
-                &#34;MetadataNumberSet&#34;, AttributeValue.builder()
+        Map<String, AttributeValue> attributes = Map.of(
+                COMPANY, AttributeValue.builder().s("Motorola").build(),
+                MODEL, AttributeValue.builder().s("G1").build(),
+                "MetadataList", AttributeValue.builder().l(
+                        AttributeValue.builder().s("Super Cool").build(),
+                        AttributeValue.builder().n("100").build()).build(),
+                "MetadataStringSet", AttributeValue.builder().ss("one", "two", "three").build(),
+                "MetadataNumberSet", AttributeValue.builder()
                         .bs(SdkBytes.fromByteArray(new byte[] {43, 123}), SdkBytes.fromByteArray(new byte[] {78, 100}))
                         .build()
             );
@@ -43,7 +43,7 @@ First let&#39;s create a table and insert some data:
 
 ```
 
-Given the primary key as a composite partition and sort key, where here it is &#34;Motorola&#34; as the partition and &#34;G1&#34; as the sort, there are three nested attribute types in play:
+Given the primary key as a composite partition and sort key, where here it is "Motorola" as the partition and "G1" as the sort, there are three nested attribute types in play:
 
 - **A list of attributes**. Note that these could be further nested attributes if we want, in this case we just put two scalar attributes in \[string and number\]
 - **String Set**. This is exactly what it sounds like: a set of string values.
@@ -56,19 +56,19 @@ We can now get this item out of dynamo, and the access patterns should be famili
 ```java
         GetItemRequest getItemRequest = GetItemRequest.builder()
                 .tableName(currentTableName)
-                .key(getMapWith(&#34;Motorola&#34;, &#34;G1&#34;))
+                .key(getMapWith("Motorola", "G1"))
                 .build();
 
         StepVerifier.create(Mono.fromFuture(dynamoDbAsyncClient.getItem(getItemRequest)))
-                .expectNextMatches(getItemResponse -&gt; {
-                    List&lt;AttributeValue&gt; listOfMetadata = getItemResponse.item().get(&#34;MetadataList&#34;).l();
-                    List&lt;String&gt; stringSetMetadata = getItemResponse.item().get(&#34;MetadataStringSet&#34;).ss();
+                .expectNextMatches(getItemResponse -> {
+                    List<AttributeValue> listOfMetadata = getItemResponse.item().get("MetadataList").l();
+                    List<String> stringSetMetadata = getItemResponse.item().get("MetadataStringSet").ss();
 
                     return listOfMetadata.size() == 2
-                            &amp;&amp; listOfMetadata.stream().anyMatch(attributeValue -&gt; &#34;Super Cool&#34;.equals(attributeValue.s()))
-                            &amp;&amp; listOfMetadata.stream().anyMatch(attributeValue -&gt; &#34;100&#34;.equals(attributeValue.n()))
-                            &amp;&amp; stringSetMetadata.contains(&#34;one&#34;)
-                            &amp;&amp; stringSetMetadata.contains(&#34;two&#34;);
+                            &amp;&amp; listOfMetadata.stream().anyMatch(attributeValue -> "Super Cool".equals(attributeValue.s()))
+                            &amp;&amp; listOfMetadata.stream().anyMatch(attributeValue -> "100".equals(attributeValue.n()))
+                            &amp;&amp; stringSetMetadata.contains("one")
+                            &amp;&amp; stringSetMetadata.contains("two");
                 }).verifyComplete();
     }
 

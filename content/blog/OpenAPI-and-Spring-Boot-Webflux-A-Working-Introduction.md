@@ -5,20 +5,20 @@ draft: false
 tags: [java, spring, maven, reactive, webflux]
 ---
 
-The [OpenAPI Specification](http://spec.openapis.org/oas/v3.0.3) is an &#34;industry standard&#34; way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code--better yet, displayed while the app is running.
+The [OpenAPI Specification](http://spec.openapis.org/oas/v3.0.3) is an "industry standard" way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code--better yet, displayed while the app is running.
 
-Let&#39;s set this up for spring boot webflux and start messing with it.
+Let's set this up for spring boot webflux and start messing with it.
 
 ## Bootstrap the Application
 
-Use the [spring boot initalizr](https://start.spring.io/) to create an application with the &#34;reactive web&#34; option. Then add this to your dependencies:
+Use the [spring boot initalizr](https://start.spring.io/) to create an application with the "reactive web" option. Then add this to your dependencies:
 
 ```xml
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springdoc&lt;/groupId&gt;
-            &lt;artifactId&gt;springdoc-openapi-webflux-ui&lt;/artifactId&gt;
-            &lt;version&gt;1.4.4&lt;/version&gt;
-        &lt;/dependency&gt;
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-webflux-ui</artifactId>
+            <version>1.4.4</version>
+        </dependency>
 
 ```
 
@@ -37,26 +37,26 @@ $ curl localhost:8080/v3/api-docs | json_pp
                                  Dload  Upload   Total   Spent    Left  Speed
 100   180  100   180    0     0    584      0 --:--:-- --:--:-- --:--:--   584
 {
-   &#34;components&#34; : {},
-   &#34;openapi&#34; : &#34;3.0.1&#34;,
-   &#34;paths&#34; : {},
-   &#34;servers&#34; : [
+   "components" : {},
+   "openapi" : "3.0.1",
+   "paths" : {},
+   "servers" : [
       {
-         &#34;url&#34; : &#34;http://localhost:8080&#34;,
-         &#34;description&#34; : &#34;Generated server url&#34;
+         "url" : "http://localhost:8080",
+         "description" : "Generated server url"
       }
    ],
-   &#34;info&#34; : {
-      &#34;version&#34; : &#34;v0&#34;,
-      &#34;title&#34; : &#34;OpenAPI definition&#34;
+   "info" : {
+      "version" : "v0",
+      "title" : "OpenAPI definition"
    }
 }
 
 ```
 
-You can also navigate to **http://localhost:8080/swagger-ui.html** by default and poke around. You won&#39;t see any operations defined yet, we&#39;re about to do that.
+You can also navigate to **http://localhost:8080/swagger-ui.html** by default and poke around. You won't see any operations defined yet, we're about to do that.
 
-Let&#39;s create a simple entity and a simple controller and try that again:
+Let's create a simple entity and a simple controller and try that again:
 
 ```java
 public class Hello {
@@ -89,16 +89,16 @@ Now the controller:
 @RestController
 public class DocumentedController {
 
-    @GetMapping(&#34;/hello&#34;)
-    public Mono&lt;ResponseEntity&lt;Hello&gt;&gt; getHello() {
+    @GetMapping("/hello")
+    public Mono<ResponseEntity<Hello>> getHello() {
         Hello hello = new Hello();
-        hello.setFirstName(&#34;yeah&#34;);
-        hello.setLastName(&#34;bauer&#34;);
+        hello.setFirstName("yeah");
+        hello.setLastName("bauer");
         return Mono.just(ResponseEntity.ok(hello));
     }
 
-    @PostMapping(&#34;/hello&#34;)
-    public Mono&lt;ResponseEntity&lt;Void&gt;&gt; postHello(Hello hello) {
+    @PostMapping("/hello")
+    public Mono<ResponseEntity<Void>> postHello(Hello hello) {
         return Mono.just(ResponseEntity.accepted().build());
     }
 }
@@ -109,25 +109,25 @@ If you reboot the application then hit **/v3/api-docs** again, you will see a hu
 
 ```json
 ....
-   &#34;paths&#34; : {
-      &#34;/hello&#34; : {
-         &#34;post&#34; : {
-            &#34;operationId&#34; : &#34;postHello&#34;,
-            &#34;tags&#34; : [
-               &#34;documented-controller&#34;
+   "paths" : {
+      "/hello" : {
+         "post" : {
+            "operationId" : "postHello",
+            "tags" : [
+               "documented-controller"
             ],
-            &#34;requestBody&#34; : {
-               &#34;content&#34; : {
-                  &#34;application/json&#34; : {
-                     &#34;schema&#34; : {
-                        &#34;$ref&#34; : &#34;#/components/schemas/Hello&#34;
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "schema" : {
+                        "$ref" : "#/components/schemas/Hello"
                      }
                   }
                }
             },
-            &#34;responses&#34; : {
-               &#34;200&#34; : {
-                  &#34;description&#34; : &#34;OK&#34;
+            "responses" : {
+               "200" : {
+                  "description" : "OK"
                }
             }
          },
@@ -153,24 +153,24 @@ public class Hello {
 
 ```
 
-Reboot the app and you&#39;ll see a section on that api docs endpoint:
+Reboot the app and you'll see a section on that api docs endpoint:
 
 ```json
-   &#34;components&#34; : {
-      &#34;schemas&#34; : {
-         &#34;Hello&#34; : {
-            &#34;type&#34; : &#34;object&#34;,
-            &#34;required&#34; : [
-               &#34;lastName&#34;
+   "components" : {
+      "schemas" : {
+         "Hello" : {
+            "type" : "object",
+            "required" : [
+               "lastName"
             ],
-            &#34;properties&#34; : {
-               &#34;firstName&#34; : {
-                  &#34;type&#34; : &#34;string&#34;,
-                  &#34;maxLength&#34; : 250,
-                  &#34;minLength&#34; : 0
+            "properties" : {
+               "firstName" : {
+                  "type" : "string",
+                  "maxLength" : 250,
+                  "minLength" : 0
                },
-               &#34;lastName&#34; : {
-                  &#34;type&#34; : &#34;string&#34;
+               "lastName" : {
+                  "type" : "string"
                }
             }
          }
@@ -185,19 +185,19 @@ If we want to modify the description or get more in depth about certain edge cas
 @RestController
 public class DocumentedController {
 
-    @Operation(summary = &#34;wattt&#34;, responses = {
-            @ApiResponse(description = &#34;woot&#34;, responseCode = &#34;202&#34;)
+    @Operation(summary = "wattt", responses = {
+            @ApiResponse(description = "woot", responseCode = "202")
     })
-    @GetMapping(&#34;/hello&#34;)
-    public Mono&lt;ResponseEntity&lt;Hello&gt;&gt; getHello() {
+    @GetMapping("/hello")
+    public Mono<ResponseEntity<Hello>> getHello() {
         Hello hello = new Hello();
-        hello.setFirstName(&#34;yeah&#34;);
-        hello.setLastName(&#34;bauer&#34;);
+        hello.setFirstName("yeah");
+        hello.setLastName("bauer");
         return Mono.just(ResponseEntity.ok(hello));
     }
 
-    @PostMapping(&#34;/hello&#34;)
-    public Mono&lt;ResponseEntity&lt;Void&gt;&gt; postHello(Hello hello) {
+    @PostMapping("/hello")
+    public Mono<ResponseEntity<Void>> postHello(Hello hello) {
         return Mono.just(ResponseEntity.accepted().build());
     }
 }

@@ -155,10 +155,10 @@ While you can achieve massive improvements in I/O operations via buffering, anot
 
   <section><p>You can view the sample code associated with this blog post <a href="https://github.com/nfisher23/io-tuning">on GitHub.</a></p>
 <p>While you can achieve massive improvements in I/O operations via <a href="https://nickolasfisher.com/blog/Improving-Java-IO-Performance-Buffering-Techniques">buffering</a>, another key part of tuning java code in general, which is applicable to I/O bound operations, is method call overhead. Methods that are unnecessarily called repeatedly can bog down operations.</p>
-<p>To prove my point, we'll set up benchmarking via JMH like so:</p>
+<p>To prove my point, we&rsquo;ll set up benchmarking via JMH like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">runBenchmark</span>(Class clazz) <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        Options options <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> OptionsBuilder()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">include</span>(clazz.<span style="color:#50fa7b">getName</span>() <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#ff79c6">*&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">include</span>(clazz.<span style="color:#50fa7b">getName</span>() <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;.*&#34;</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">mode</span>(Mode.<span style="color:#50fa7b">AverageTime</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">warmupTime</span>(TimeValue.<span style="color:#50fa7b">seconds</span>(1))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">warmupIterations</span>(2)
@@ -175,7 +175,7 @@ While you can achieve massive improvements in I/O operations via buffering, anot
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">new</span> Runner(options).<span style="color:#50fa7b">run</span>();
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>We'll have a benchmark that uses DataInputStream.readLine(), which calls read() under the hood on each character. Even though we are buffering the data, we are still calling read() on each byte that has already been loaded into memory:</p>
+</span></span></code></pre></div><p>We&rsquo;ll have a benchmark that uses DataInputStream.readLine(), which calls read() under the hood on each character. Even though we are buffering the data, we are still calling read() on each byte that has already been loaded into memory:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Benchmark
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">readEachCharacterUnderTheHood</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">try</span> (FileInputStream fileInputStream <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> FileInputStream(Utils.<span style="color:#50fa7b">smallCsvFilePath</span>);
@@ -183,7 +183,7 @@ While you can achieve massive improvements in I/O operations via buffering, anot
 </span></span><span style="display:flex;"><span>             DataInputStream dataInputStream <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> DataInputStream(bufferedInputStream)) {
 </span></span><span style="display:flex;"><span>            <span style="color:#8be9fd">int</span> count <span style="color:#ff79c6">=</span> 0;
 </span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">while</span> (dataInputStream.<span style="color:#50fa7b">readLine</span>() <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">null</span>) {
-</span></span><span style="display:flex;"><span>                count<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;;
+</span></span><span style="display:flex;"><span>                count<span style="color:#ff79c6">++</span>;
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>            assertEquals(Utils.<span style="color:#50fa7b">numberOfNewLines_inSmallCsv</span>, count);
@@ -193,13 +193,17 @@ While you can achieve massive improvements in I/O operations via buffering, anot
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Benchmark                                              Mode  Cnt  Score   Error  Units
 </span></span><span style="display:flex;"><span>MethodCallOverheadTests.readEachCharacterUnderTheHood  avgt    <span style="color:#bd93f9">2</span>  1.560          ms/op
 </span></span></code></pre></div><p>Conversely, BufferedReader is implemented to buffer the buffer, so that the underlying stream does not get hit with repeated method calls. From the <a href="https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html">Oracle documentation on the BufferedReader class</a>:</p>
-<p>&gt; In general, each read request made of a Reader causes a corresponding
-&gt; read request to be made of the underlying character or byte stream. It is
-&gt; therefore advisable to wrap a BufferedReader around any Reader whose read()
-&gt; operations may be costly, such as FileReaders and InputStreamReaders.</p>
+<blockquote>
+<p>In general, each read request made of a Reader causes a corresponding
+read request to be made of the underlying character or byte stream. It is
+therefore advisable to wrap a BufferedReader around any Reader whose read()
+operations may be costly, such as FileReaders and InputStreamReaders.</p>
+</blockquote>
 <p>And:</p>
-<p>&gt; Programs that use DataInputStreams for textual input can be localized by
-&gt; replacing each DataInputStream with an appropriate BufferedReader.</p>
+<blockquote>
+<p>Programs that use DataInputStreams for textual input can be localized by
+replacing each DataInputStream with an appropriate BufferedReader.</p>
+</blockquote>
 <p>So, a benchmark that achieves the same result would look like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Benchmark
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">faster_usingBufferedReader</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
@@ -207,7 +211,7 @@ While you can achieve massive improvements in I/O operations via buffering, anot
 </span></span><span style="display:flex;"><span>             BufferedReader bufferedReader <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> BufferedReader(fileReader)) {
 </span></span><span style="display:flex;"><span>            <span style="color:#8be9fd">int</span> count <span style="color:#ff79c6">=</span> 0;
 </span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">while</span> (bufferedReader.<span style="color:#50fa7b">readLine</span>() <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">null</span>) {
-</span></span><span style="display:flex;"><span>                count<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;;
+</span></span><span style="display:flex;"><span>                count<span style="color:#ff79c6">++</span>;
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>            assertEquals(Utils.<span style="color:#50fa7b">numberOfNewLines_inSmallCsv</span>, count);

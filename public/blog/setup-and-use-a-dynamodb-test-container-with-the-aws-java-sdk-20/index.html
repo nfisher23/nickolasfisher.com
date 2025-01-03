@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The source code for this article can be found on Github.
-Using embedded dynamodb for testing is, in my experience, kind of flakey and unpredictable. Because of the weird way it pulls in SQLite on a per operating system basis, it can sometimes work locally and not work on the build server. Sometimes it&#39;s just not working for some unexplained reason and wiping the directory that the code is in and re-cloning fixes it. Not a fun time."
+Using embedded dynamodb for testing is, in my experience, kind of flakey and unpredictable. Because of the weird way it pulls in SQLite on a per operating system basis, it can sometimes work locally and not work on the build server. Sometimes it&rsquo;s just not working for some unexplained reason and wiping the directory that the code is in and re-cloning fixes it. Not a fun time."
 />
 <link rel="canonical" href="http://localhost:1313/blog/setup-and-use-a-dynamodb-test-container-with-the-aws-java-sdk-20/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,23 +154,23 @@ Using embedded dynamodb for testing is, in my experience, kind of flakey and unp
   
 
   <section><p>The source code for this article <a href="https://github.com/nfisher23/webflux-and-dynamo">can be found on Github</a>.</p>
-<p>Using <a href="https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing">embedded dynamodb for testing</a> is, in my experience, kind of flakey and unpredictable. Because of the weird way it pulls in SQLite on a per operating system basis, it can sometimes work locally and not work on the build server. Sometimes it's just not working for some unexplained reason and wiping the directory that the code is in and re-cloning fixes it. Not a fun time.</p>
-<p>Enter <a href="https://www.testcontainers.org/">test containers</a>. The drawback of test containers is that you need a docker daemon running wherever you're building your app, but outside of that they work very well. And because docker was built specifically to handle the portability issues involved with supporting different OS flavors and versions, anytime you need a mock service or a real service it will work much more predictably. This article will walk you through how to setup a dynamodb test container and use it in java.</p>
+<p>Using <a href="https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing">embedded dynamodb for testing</a> is, in my experience, kind of flakey and unpredictable. Because of the weird way it pulls in SQLite on a per operating system basis, it can sometimes work locally and not work on the build server. Sometimes it&rsquo;s just not working for some unexplained reason and wiping the directory that the code is in and re-cloning fixes it. Not a fun time.</p>
+<p>Enter <a href="https://www.testcontainers.org/">test containers</a>. The drawback of test containers is that you need a docker daemon running wherever you&rsquo;re building your app, but outside of that they work very well. And because docker was built specifically to handle the portability issues involved with supporting different OS flavors and versions, anytime you need a mock service or a real service it will work much more predictably. This article will walk you through how to setup a dynamodb test container and use it in java.</p>
 <h3 id="the-example">The Example</h3>
-<p>To start with, you'll need to add a couple of dependencies to your <strong>pom.xml</strong> [or your build.gradle, but I'm using maven for this example]:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;org.testcontainers&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;testcontainers&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;version&amp;gt;1.15.2&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;org.testcontainers&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;junit-jupiter&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;version&amp;gt;1.15.2&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
-</span></span></code></pre></div><p>Assuming you're using junit 5, you're a couple of annotations away from having what you want:</p>
+<p>To start with, you&rsquo;ll need to add a couple of dependencies to your <strong>pom.xml</strong> [or your build.gradle, but I&rsquo;m using maven for this example]:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>org.testcontainers<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>testcontainers<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;version&gt;</span>1.15.2<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;scope&gt;</span>test<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>org.testcontainers<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>junit-jupiter<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;version&gt;</span>1.15.2<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;scope&gt;</span>test<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><p>Assuming you&rsquo;re using junit 5, you&rsquo;re a couple of annotations away from having what you want:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Testcontainers
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">DynamoTestContainerTest</span> {
 </span></span><span style="display:flex;"><span>
@@ -178,7 +178,7 @@ Using embedded dynamodb for testing is, in my experience, kind of flakey and unp
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Container
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> GenericContainer genericContainer <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> GenericContainer(
-</span></span><span style="display:flex;"><span>            DockerImageName.<span style="color:#50fa7b">parse</span>(<span style="color:#ff79c6">&amp;</span>#34;amazon<span style="color:#ff79c6">/</span>dynamodb<span style="color:#ff79c6">-</span>local<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>            DockerImageName.<span style="color:#50fa7b">parse</span>(<span style="color:#f1fa8c">&#34;amazon/dynamodb-local&#34;</span>)
 </span></span><span style="display:flex;"><span>    ).<span style="color:#50fa7b">withExposedPorts</span>(8000);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @BeforeEach
@@ -189,24 +189,24 @@ Using embedded dynamodb for testing is, in my experience, kind of flakey and unp
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> DynamoDbAsyncClient <span style="color:#50fa7b">getDynamoClient</span>() {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> DynamoDbAsyncClient.<span style="color:#50fa7b">builder</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">region</span>(Region.<span style="color:#50fa7b">US_EAST_1</span>)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">endpointOverride</span>(URI.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:&amp;#34; &amp;#43; genericContainer.getFirstMappedPort()))</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">endpointOverride</span>(URI.<span style="color:#50fa7b">create</span>(<span style="color:#f1fa8c">&#34;http://localhost:&#34;</span> <span style="color:#ff79c6">+</span> genericContainer.<span style="color:#50fa7b">getFirstMappedPort</span>()))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">credentialsProvider</span>(StaticCredentialsProvider.<span style="color:#50fa7b">create</span>(
-</span></span><span style="display:flex;"><span>                        AwsBasicCredentials.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;)))
+</span></span><span style="display:flex;"><span>                        AwsBasicCredentials.<span style="color:#50fa7b">create</span>(<span style="color:#f1fa8c">&#34;FAKE&#34;</span>, <span style="color:#f1fa8c">&#34;FAKE&#34;</span>)))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>If you're not using junit 5, you will basically need to start the container yourself with a <strong>@BeforeEach</strong> annotation. That is relatively straightforward and there's a similar example [using a different container image, but everything else is the same] in a previous article on <a href="https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux">a redis test container for lettuce</a>.</p>
-<p>With this in place, we have our container running and we can create a client ready to use it. I'll do a bad thing and copy-paste some code from the other test class to prove it will actually work once we use it. Here's the full example:</p>
+</span></span></code></pre></div><p>If you&rsquo;re not using junit 5, you will basically need to start the container yourself with a <strong>@BeforeEach</strong> annotation. That is relatively straightforward and there&rsquo;s a similar example [using a different container image, but everything else is the same] in a previous article on <a href="https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux">a redis test container for lettuce</a>.</p>
+<p>With this in place, we have our container running and we can create a client ready to use it. I&rsquo;ll do a bad thing and copy-paste some code from the other test class to prove it will actually work once we use it. Here&rsquo;s the full example:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">DynamoTestContainerTest</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String COMPANY <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;Company<span style="color:#ff79c6">&amp;</span>#34;;
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String MODEL <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;Model<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String COMPANY <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;Company&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String MODEL <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;Model&#34;</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> DynamoDbAsyncClient dynamoDbAsyncClient;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Container
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> GenericContainer genericContainer <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> GenericContainer(
-</span></span><span style="display:flex;"><span>            DockerImageName.<span style="color:#50fa7b">parse</span>(<span style="color:#ff79c6">&amp;</span>#34;amazon<span style="color:#ff79c6">/</span>dynamodb<span style="color:#ff79c6">-</span>local<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>            DockerImageName.<span style="color:#50fa7b">parse</span>(<span style="color:#f1fa8c">&#34;amazon/dynamodb-local&#34;</span>)
 </span></span><span style="display:flex;"><span>    ).<span style="color:#50fa7b">withExposedPorts</span>(8000);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @BeforeEach
@@ -220,23 +220,23 @@ Using embedded dynamodb for testing is, in my experience, kind of flakey and unp
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#8be9fd">int</span> totalTablesBeforeCreation <span style="color:#ff79c6">=</span> listTablesResponse.<span style="color:#50fa7b">tableNames</span>().<span style="color:#50fa7b">size</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        createTableAsync(<span style="color:#ff79c6">&amp;</span>#34;Phones<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">get</span>();
+</span></span><span style="display:flex;"><span>        createTableAsync(<span style="color:#f1fa8c">&#34;Phones&#34;</span>).<span style="color:#50fa7b">get</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        ListTablesResponse listTablesResponseAfterCreation <span style="color:#ff79c6">=</span> dynamoDbAsyncClient.<span style="color:#50fa7b">listTables</span>().<span style="color:#50fa7b">get</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        assertThat(listTablesResponseAfterCreation.<span style="color:#50fa7b">tableNames</span>().<span style="color:#50fa7b">size</span>()).<span style="color:#50fa7b">isEqualTo</span>(totalTablesBeforeCreation <span style="color:#ff79c6">&amp;</span>#43; 1);
+</span></span><span style="display:flex;"><span>        assertThat(listTablesResponseAfterCreation.<span style="color:#50fa7b">tableNames</span>().<span style="color:#50fa7b">size</span>()).<span style="color:#50fa7b">isEqualTo</span>(totalTablesBeforeCreation <span style="color:#ff79c6">+</span> 1);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> DynamoDbAsyncClient <span style="color:#50fa7b">getDynamoClient</span>() {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> DynamoDbAsyncClient.<span style="color:#50fa7b">builder</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">region</span>(Region.<span style="color:#50fa7b">US_EAST_1</span>)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">endpointOverride</span>(URI.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:&amp;#34; &amp;#43; genericContainer.getFirstMappedPort()))</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">endpointOverride</span>(URI.<span style="color:#50fa7b">create</span>(<span style="color:#f1fa8c">&#34;http://localhost:&#34;</span> <span style="color:#ff79c6">+</span> genericContainer.<span style="color:#50fa7b">getFirstMappedPort</span>()))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">credentialsProvider</span>(StaticCredentialsProvider.<span style="color:#50fa7b">create</span>(
-</span></span><span style="display:flex;"><span>                        AwsBasicCredentials.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;)))
+</span></span><span style="display:flex;"><span>                        AwsBasicCredentials.<span style="color:#50fa7b">create</span>(<span style="color:#f1fa8c">&#34;FAKE&#34;</span>, <span style="color:#f1fa8c">&#34;FAKE&#34;</span>)))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> CompletableFuture<span style="color:#ff79c6">&amp;</span>lt;CreateTableResponse<span style="color:#ff79c6">&amp;</span>gt; createTableAsync(String tableName) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> CompletableFuture<span style="color:#ff79c6">&lt;</span>CreateTableResponse<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">createTableAsync</span>(String tableName) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> dynamoDbAsyncClient.<span style="color:#50fa7b">createTable</span>(CreateTableRequest.<span style="color:#50fa7b">builder</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">keySchema</span>(
 </span></span><span style="display:flex;"><span>                        KeySchemaElement.<span style="color:#50fa7b">builder</span>()

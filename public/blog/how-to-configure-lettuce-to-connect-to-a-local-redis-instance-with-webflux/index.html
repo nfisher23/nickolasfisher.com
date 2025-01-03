@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The source code for this post can be found on Github.
-In a previous post, we detailed how to write integration tests for lettuce clients in spring boot webflux using a redis test container. That&#39;s fine and well when you&#39;re just writing code for a quick feedback loop, but is useless when it comes to running the application in real life. This post will start up redis locally and then explain how to best connect to it using lettuce in webflux."
+In a previous post, we detailed how to write integration tests for lettuce clients in spring boot webflux using a redis test container. That&rsquo;s fine and well when you&rsquo;re just writing code for a quick feedback loop, but is useless when it comes to running the application in real life. This post will start up redis locally and then explain how to best connect to it using lettuce in webflux."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-configure-lettuce-to-connect-to-a-local-redis-instance-with-webflux/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,32 +154,32 @@ In a previous post, we detailed how to write integration tests for lettuce clien
   
 
   <section><p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis">can be found on Github</a>.</p>
-<p>In a previous post, we detailed <a href="https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux">how to write integration tests for lettuce clients in spring boot webflux</a> using a redis test container. That's fine and well when you're just writing code for a quick feedback loop, but is useless when it comes to running the application in real life. This post will start up redis locally and then explain how to best connect to it using lettuce in webflux.</p>
-<p>We will build off of code from that previous blog post. If you'll recall, we had a service like so:</p>
+<p>In a previous post, we detailed <a href="https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux">how to write integration tests for lettuce clients in spring boot webflux</a> using a redis test container. That&rsquo;s fine and well when you&rsquo;re just writing code for a quick feedback loop, but is useless when it comes to running the application in real life. This post will start up redis locally and then explain how to best connect to it using lettuce in webflux.</p>
+<p>We will build off of code from that previous blog post. If you&rsquo;ll recall, we had a service like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Service
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">RedisDataService</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> RedisStringReactiveCommands<span style="color:#ff79c6">&amp;</span>lt;String, String<span style="color:#ff79c6">&amp;</span>gt; redisStringReactiveCommands;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> RedisStringReactiveCommands<span style="color:#ff79c6">&lt;</span>String, String<span style="color:#ff79c6">&gt;</span> redisStringReactiveCommands;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">RedisDataService</span>(RedisStringReactiveCommands<span style="color:#ff79c6">&amp;</span>lt;String, String<span style="color:#ff79c6">&amp;</span>gt; redisStringReactiveCommands) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">RedisDataService</span>(RedisStringReactiveCommands<span style="color:#ff79c6">&lt;</span>String, String<span style="color:#ff79c6">&gt;</span> redisStringReactiveCommands) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">redisStringReactiveCommands</span> <span style="color:#ff79c6">=</span> redisStringReactiveCommands;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt; writeThing(Thing thing) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>Void<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">writeThing</span>(Thing thing) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">redisStringReactiveCommands</span>
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">set</span>(thing.<span style="color:#50fa7b">getId</span>().<span style="color:#50fa7b">toString</span>(), thing.<span style="color:#50fa7b">getValue</span>())
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">then</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;Thing<span style="color:#ff79c6">&amp;</span>gt; getThing(Integer id) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>Thing<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">getThing</span>(Integer id) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">redisStringReactiveCommands</span>.<span style="color:#50fa7b">get</span>(id.<span style="color:#50fa7b">toString</span>())
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">map</span>(response <span style="color:#ff79c6">-&amp;</span>gt; Thing.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">id</span>(id).<span style="color:#50fa7b">value</span>(response).<span style="color:#50fa7b">build</span>());
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">map</span>(response <span style="color:#ff79c6">-&gt;</span> Thing.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">id</span>(id).<span style="color:#50fa7b">value</span>(response).<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>The current problem here is that there is no <strong>RedisStringReactiveCommands</strong> bean available as of now, we don't have any redis client set up under the hood.</p>
-<p>To do so is fairly straightforward. Let's start by creating a configuration class that contains the necessary host, port, and beans:</p>
+</span></span></code></pre></div><p>The current problem here is that there is no <strong>RedisStringReactiveCommands</strong> bean available as of now, we don&rsquo;t have any redis client set up under the hood.</p>
+<p>To do so is fairly straightforward. Let&rsquo;s start by creating a configuration class that contains the necessary host, port, and beans:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Configuration
-</span></span><span style="display:flex;"><span>@ConfigurationProperties(prefix <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;lettuce<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>@ConfigurationProperties(prefix <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;lettuce&#34;</span>)
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">RedisConfig</span> {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> String host;
@@ -202,7 +202,7 @@ In a previous post, we detailed how to write integration tests for lettuce clien
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Bean
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> RedisStringReactiveCommands<span style="color:#ff79c6">&amp;</span>lt;String, String<span style="color:#ff79c6">&amp;</span>gt; getRedis(RedisClient redisClient) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> RedisStringReactiveCommands<span style="color:#ff79c6">&lt;</span>String, String<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">getRedis</span>(RedisClient redisClient) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> redisClient.<span style="color:#50fa7b">connect</span>().<span style="color:#50fa7b">reactive</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
@@ -211,15 +211,15 @@ In a previous post, we detailed how to write integration tests for lettuce clien
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> RedisClient.<span style="color:#50fa7b">create</span>(
 </span></span><span style="display:flex;"><span>                <span style="color:#6272a4">// adjust things like thread pool size with client resources</span>
 </span></span><span style="display:flex;"><span>                ClientResources.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">build</span>(),
-</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&amp;</span>#34;redis:<span style="color:#6272a4">//&amp;#34; &amp;#43; this.getHost() &amp;#43; &amp;#34;:&amp;#34; &amp;#43; this.getPort()</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f1fa8c">&#34;redis://&#34;</span> <span style="color:#ff79c6">+</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getHost</span>() <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;:&#34;</span> <span style="color:#ff79c6">+</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getPort</span>()
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>With this in place, we can now change our <strong>application.yaml</strong> configuration file to contain the host and port we're looking for. Since we're going to stand up a local redis instance, we'll use the loopback and a standard redis port:</p>
+</span></span></code></pre></div><p>With this in place, we can now change our <strong>application.yaml</strong> configuration file to contain the host and port we&rsquo;re looking for. Since we&rsquo;re going to stand up a local redis instance, we&rsquo;ll use the loopback and a standard redis port:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">lettuce</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">host</span>: <span style="color:#bd93f9">127.0.0.1</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">port</span>: <span style="color:#bd93f9">6379</span>
-</span></span></code></pre></div><p>Now let's run a quick manual verification of our setup. I'm first going to create a controller class that leverages our data service and just returns what's in redis for that integer key:</p>
+</span></span></code></pre></div><p>Now let&rsquo;s run a quick manual verification of our setup. I&rsquo;m first going to create a controller class that leverages our data service and just returns what&rsquo;s in redis for that integer key:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@RestController
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">SampleController</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> RedisDataService redisDataService;
@@ -228,30 +228,30 @@ In a previous post, we detailed how to write integration tests for lettuce clien
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">redisDataService</span> <span style="color:#ff79c6">=</span> redisDataService;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>redis<span style="color:#ff79c6">/</span>{key}<span style="color:#ff79c6">&amp;</span>#34;)
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;ResponseEntity<span style="color:#ff79c6">&amp;</span>lt;Thing<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; getRedisValue(@PathVariable(<span style="color:#ff79c6">&amp;</span>#34;key<span style="color:#ff79c6">&amp;</span>#34;) Integer key) {
+</span></span><span style="display:flex;"><span>    @GetMapping(<span style="color:#f1fa8c">&#34;/redis/{key}&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>ResponseEntity<span style="color:#ff79c6">&lt;</span>Thing<span style="color:#ff79c6">&gt;&gt;</span> <span style="color:#50fa7b">getRedisValue</span>(@PathVariable(<span style="color:#f1fa8c">&#34;key&#34;</span>) Integer key) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> redisDataService.<span style="color:#50fa7b">getThing</span>(key)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">flatMap</span>(thing <span style="color:#ff79c6">-&amp;</span>gt; Mono.<span style="color:#50fa7b">just</span>(ResponseEntity.<span style="color:#50fa7b">ok</span>(thing)))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">flatMap</span>(thing <span style="color:#ff79c6">-&gt;</span> Mono.<span style="color:#50fa7b">just</span>(ResponseEntity.<span style="color:#50fa7b">ok</span>(thing)))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">defaultIfEmpty</span>(ResponseEntity.<span style="color:#50fa7b">notFound</span>().<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>And I'll setup a <strong>docker-compose.yaml</strong> to provision my local redis:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#6272a4">#version: &amp;#34;3.3&amp;#34;</span>
+</span></span></code></pre></div><p>And I&rsquo;ll setup a <strong>docker-compose.yaml</strong> to provision my local redis:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#6272a4">#version: &#34;3.3&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">services</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">redis</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: <span style="color:#ff79c6">&amp;#34;redis:alpine&amp;#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: <span style="color:#f1fa8c">&#34;redis:alpine&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:
-</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">&amp;#34;6379:6379&amp;#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;6379:6379&#34;</span>
 </span></span></code></pre></div><p>If you hop to the directory where that docker compose file is defined, then run:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker-compose up
 </span></span></code></pre></div><p>Then you can start up your service.</p>
 <p>A quick test that everything is working properly could be:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ redis-cli <span style="color:#8be9fd;font-style:italic">set</span> <span style="color:#bd93f9">3</span> &amp;<span style="color:#6272a4">#34;something&amp;#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ redis-cli <span style="color:#8be9fd;font-style:italic">set</span> <span style="color:#bd93f9">3</span> <span style="color:#f1fa8c">&#34;something&#34;</span>
 </span></span><span style="display:flex;"><span>OK
 </span></span><span style="display:flex;"><span>$ curl localhost:8080/redis/3 | json_pp
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>
-</span></span><span style="display:flex;"><span>   &amp;<span style="color:#6272a4">#34;value&amp;#34; : &amp;#34;something&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>   &amp;<span style="color:#6272a4">#34;id&amp;#34; : 3</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f1fa8c">&#34;value&#34;</span> : <span style="color:#f1fa8c">&#34;something&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f1fa8c">&#34;id&#34;</span> : <span style="color:#bd93f9">3</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
 </span></span></code></pre></div><p>And you should be good to go</p>
 </section>

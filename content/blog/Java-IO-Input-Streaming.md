@@ -34,7 +34,7 @@ try (InputStream inputStream =
 
 ```
 
-Now, let&#39;s say we have a file that has a single line, in UTF-8 format:
+Now, let's say we have a file that has a single line, in UTF-8 format:
 
 ```
 1 this is some text
@@ -46,10 +46,10 @@ We can access that file in a primitive way using an InputStream:
 @Test
 public void fileInputStream_ex() throws Exception {
     try (InputStream fileInputStream = new FileInputStream(simpleExampleFilePath)) {
-        assertEquals(&#39;t&#39;, fileInputStream.read());
-        assertEquals(&#39;h&#39;, fileInputStream.read());
-        assertEquals(&#39;i&#39;, fileInputStream.read());
-        assertEquals(&#39;s&#39;, fileInputStream.read());
+        assertEquals('t', fileInputStream.read());
+        assertEquals('h', fileInputStream.read());
+        assertEquals('i', fileInputStream.read());
+        assertEquals('s', fileInputStream.read());
     }
 }
 
@@ -64,18 +64,18 @@ You can also work with double values, if desired, by enriching the InputStream i
 public void dataInputStream_ex() throws Exception {
     try (InputStream fileInputStream = new FileInputStream(simpleExampleFilePath);
             DataInputStream dataInputStream = new DataInputStream(fileInputStream)) {
-            // &#34;This method is suitable for reading bytes written by the writeDouble method of interface DataOutput&#34;
+            // "This method is suitable for reading bytes written by the writeDouble method of interface DataOutput"
             // namely--this is not the right application
             double readValue = dataInputStream.readDouble();
-            assertTrue(readValue &gt; 0);
+            assertTrue(readValue > 0);
     }
 }
 
 ```
 
-As you can see from the comment, the DataInputStream is usually only really useful when you&#39;re reading double values that were previously written using the writeDouble method from the DataOutput interface.
+As you can see from the comment, the DataInputStream is usually only really useful when you're reading double values that were previously written using the writeDouble method from the DataOutput interface.
 
-The problem with both of those examples is the default for InputStream, which requests data from the operating system one byte at a time. This is much more costly than asking for a &#34;chunk&#34; of bytes at a time, reading them into memory once, then processing them after they are loaded into memory. This process is called _buffering_, and it is accomplished in Java using the BufferedInputStream:
+The problem with both of those examples is the default for InputStream, which requests data from the operating system one byte at a time. This is much more costly than asking for a "chunk" of bytes at a time, reading them into memory once, then processing them after they are loaded into memory. This process is called _buffering_, and it is accomplished in Java using the BufferedInputStream:
 
 ```java
 @Test
@@ -84,8 +84,8 @@ public void bufferingData_ex() throws Exception {
         try (BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream)) {
 
             final int totalAvailable = bufferedInputStream.available();
-            String expectedText = &#34;this is some text&#34;;
-            for (int i = 0; i &lt; totalAvailable; i&#43;&#43;) {
+            String expectedText = "this is some text";
+            for (int i = 0; i < totalAvailable; i++) {
                 int read = bufferedInputStream.read();
                 System.out.println((char)read);
                 assertEquals(expectedText.charAt(i), read);
@@ -99,7 +99,7 @@ public void bufferingData_ex() throws Exception {
 
 [Buffering is usually much faster](https://nickolasfisher.com/blog/Improving-Java-IO-Performance-Buffering-Techniques) than requesting all data a byte at a time. The default buffer size is 8192 bytes--this number should be changed if you have a reasonable idea as to the size of the file and how much of the file you actually need to process. [Tweak and tinker with benchmarks](https://nickolasfisher.com/blog/Improving-Java-IO-Performance-Buffering-Techniques) liberally if performance is important.
 
-Finally, sometimes we want to &#34;peek&#34; the next byte into memory, which we can&#39;t do with a normal InputStream. We can move forward and backward with a I/O stream using the `PushbackInputStream`:
+Finally, sometimes we want to "peek" the next byte into memory, which we can't do with a normal InputStream. We can move forward and backward with a I/O stream using the `PushbackInputStream`:
 
 ```java
 @Test
@@ -107,9 +107,9 @@ public void pushbackInputStream_ex() throws Exception {
     try (InputStream fileInputStream = new FileInputStream(simpleExampleFilePath)) {
         try (DataInputStream dataInputStream = new DataInputStream(fileInputStream)) {
             try (PushbackInputStream pushbackInputStream = new PushbackInputStream(dataInputStream)) {
-                assertEquals(&#39;t&#39;, pushbackInputStream.read());
-                pushbackInputStream.unread(&#39;t&#39;);
-                assertEquals(&#39;t&#39;, pushbackInputStream.read());
+                assertEquals('t', pushbackInputStream.read());
+                pushbackInputStream.unread('t');
+                assertEquals('t', pushbackInputStream.read());
             }
         }
     }

@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="Sample code associated with this post can be found on Github.
-Rest Assured is a library that makes it easy to write api based automated tests in java. Recently I needed to find a way to record the latency of each request as well as some metadata about it [request path, method, things of that nature]. I found a nice way to do this with rest assured filters, and I&#39;m going to share that with you in this article."
+Rest Assured is a library that makes it easy to write api based automated tests in java. Recently I needed to find a way to record the latency of each request as well as some metadata about it [request path, method, things of that nature]. I found a nice way to do this with rest assured filters, and I&rsquo;m going to share that with you in this article."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-configure-rest-assured-to-record-the-latency-of-every-request-in-a-custom-way/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,40 +154,40 @@ Rest Assured is a library that makes it easy to write api based automated tests 
   
 
   <section><p>Sample code associated with this post can be found <a href="https://github.com/nfisher23/examples-testing-stuff">on Github</a>.</p>
-<p><a href="https://github.com/rest-assured/rest-assured/wiki/Usage">Rest Assured</a> is a library that makes it easy to write api based automated tests in java. Recently I needed to find a way to record the latency of each request as well as some metadata about it [request path, method, things of that nature]. I found a nice way to do this with <a href="https://github.com/rest-assured/rest-assured/wiki/Usage#filters">rest assured filters</a>, and I'm going to share that with you in this article.</p>
+<p><a href="https://github.com/rest-assured/rest-assured/wiki/Usage">Rest Assured</a> is a library that makes it easy to write api based automated tests in java. Recently I needed to find a way to record the latency of each request as well as some metadata about it [request path, method, things of that nature]. I found a nice way to do this with <a href="https://github.com/rest-assured/rest-assured/wiki/Usage#filters">rest assured filters</a>, and I&rsquo;m going to share that with you in this article.</p>
 <p>You can get this started by bootstrapping a maven project:</p>
 <pre tabindex="0"><code>mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4
 </code></pre><p>Follow the prompts, set it up to be whatever you want.</p>
-<p>You will then need to add a couple of dependencies, I'll just list out all of them here:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>  &amp;lt;dependencies&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>      &amp;lt;groupId&amp;gt;junit&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>      &amp;lt;artifactId&amp;gt;junit&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>      &amp;lt;version&amp;gt;4.11&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>      &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>      &amp;lt;groupId&amp;gt;io.rest-assured&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>      &amp;lt;artifactId&amp;gt;rest-assured&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>      &amp;lt;version&amp;gt;3.0.0&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>      &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>      &amp;lt;groupId&amp;gt;jakarta.xml.bind&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>      &amp;lt;artifactId&amp;gt;jakarta.xml.bind-api&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>      &amp;lt;version&amp;gt;2.3.2&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>      &amp;lt;groupId&amp;gt;org.glassfish.jaxb&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>      &amp;lt;artifactId&amp;gt;jaxb-runtime&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>      &amp;lt;version&amp;gt;2.3.2&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>  &amp;lt;/dependencies&amp;gt;
-</span></span></code></pre></div><p>I'll write out a couple of simple examples so I can demonstrate how to best do this:</p>
+<p>You will then need to add a couple of dependencies, I&rsquo;ll just list out all of them here:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>  <span style="color:#ff79c6">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&lt;groupId&gt;</span>junit<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&lt;artifactId&gt;</span>junit<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&lt;version&gt;</span>4.11<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&lt;scope&gt;</span>test<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&lt;groupId&gt;</span>io.rest-assured<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&lt;artifactId&gt;</span>rest-assured<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&lt;version&gt;</span>3.0.0<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&lt;scope&gt;</span>test<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&lt;groupId&gt;</span>jakarta.xml.bind<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&lt;artifactId&gt;</span>jakarta.xml.bind-api<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&lt;version&gt;</span>2.3.2<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&lt;groupId&gt;</span>org.glassfish.jaxb<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&lt;artifactId&gt;</span>jaxb-runtime<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&lt;version&gt;</span>2.3.2<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">&lt;/dependencies&gt;</span>
+</span></span></code></pre></div><p>I&rsquo;ll write out a couple of simple examples so I can demonstrate how to best do this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">getGoogleHomepage</span>() {
 </span></span><span style="display:flex;"><span>        RestAssured.<span style="color:#50fa7b">with</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">baseUri</span>(<span style="color:#ff79c6">&amp;</span>#34;https:<span style="color:#6272a4">//www.google.com&amp;#34;)</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">baseUri</span>(<span style="color:#f1fa8c">&#34;https://www.google.com&#34;</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">get</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">then</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">statusCode</span>(200);
@@ -196,7 +196,7 @@ Rest Assured is a library that makes it easy to write api based automated tests 
 </span></span><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">getDuckDuckGoHomepage</span>() {
 </span></span><span style="display:flex;"><span>        RestAssured.<span style="color:#50fa7b">with</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">baseUri</span>(<span style="color:#ff79c6">&amp;</span>#34;https:<span style="color:#6272a4">//duckduckgo.com&amp;#34;)</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">baseUri</span>(<span style="color:#f1fa8c">&#34;https://duckduckgo.com&#34;</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">get</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">then</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">statusCode</span>(200);
@@ -205,7 +205,7 @@ Rest Assured is a library that makes it easy to write api based automated tests 
 <pre tabindex="0"><code>mvn test
 </code></pre><p>And, provided google and duck duck go have their services available, you will see a couple of passing tests.</p>
 <h3 id="track-latency-with-a-filter">Track Latency With a Filter</h3>
-<p>Now let's say we have a bunch of tests and we want to track the latency of each one, and further let's say we have to send that to a file in some form of custom logic. We can execute whatever custom logic we want with a <a href="https://github.com/rest-assured/rest-assured/wiki/Usage#filters">filter</a>.</p>
+<p>Now let&rsquo;s say we have a bunch of tests and we want to track the latency of each one, and further let&rsquo;s say we have to send that to a file in some form of custom logic. We can execute whatever custom logic we want with a <a href="https://github.com/rest-assured/rest-assured/wiki/Usage#filters">filter</a>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">static</span> {
 </span></span><span style="display:flex;"><span>        RestAssured.<span style="color:#50fa7b">requestSpecification</span> <span style="color:#ff79c6">=</span> RestAssured.<span style="color:#50fa7b">with</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">filter</span>(<span style="color:#ff79c6">new</span> Filter() {
@@ -217,17 +217,17 @@ Rest Assured is a library that makes it easy to write api based automated tests 
 </span></span><span style="display:flex;"><span>                sw.<span style="color:#50fa7b">start</span>();
 </span></span><span style="display:flex;"><span>                Response response <span style="color:#ff79c6">=</span> filterContext.<span style="color:#50fa7b">next</span>(filterableRequestSpecification, filterableResponseSpecification);
 </span></span><span style="display:flex;"><span>                sw.<span style="color:#50fa7b">stop</span>();
-</span></span><span style="display:flex;"><span>                System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;time: <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; sw.<span style="color:#50fa7b">getTime</span>());
+</span></span><span style="display:flex;"><span>                System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;time: &#34;</span> <span style="color:#ff79c6">+</span> sw.<span style="color:#50fa7b">getTime</span>());
 </span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">return</span> response;
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>        });
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>If I go to run this, I'll see a couple of times in milliseconds get printed out:</p>
+</span></span></code></pre></div><p>If I go to run this, I&rsquo;ll see a couple of times in milliseconds get printed out:</p>
 <pre tabindex="0"><code>$ mvn test
 ...
 time: 1839
 time: 325
-</code></pre><p>This brings up an important point, and that's <a href="https://stackoverflow.com/questions/36198278/why-does-the-jvm-require-warmup">JVM warmups</a>. This specific type of analysis is really only going to be useful if you have a lot of tests, then it will tend to average itself out. But with only two tests, tracking latency like this is not particularly useful.</p>
+</code></pre><p>This brings up an important point, and that&rsquo;s <a href="https://stackoverflow.com/questions/36198278/why-does-the-jvm-require-warmup">JVM warmups</a>. This specific type of analysis is really only going to be useful if you have a lot of tests, then it will tend to average itself out. But with only two tests, tracking latency like this is not particularly useful.</p>
 </section>
 
   

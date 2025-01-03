@@ -179,53 +179,53 @@ Reduction operations are a way to consolidate collections into one simple result
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Override
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">toString</span>() {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>#34;name<span style="color:#ff79c6">-&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; name <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34;,id<span style="color:#ff79c6">-&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; id;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;name-&#34;</span> <span style="color:#ff79c6">+</span> name <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;,id-&#34;</span> <span style="color:#ff79c6">+</span> id;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>And a collection like:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> List<span style="color:#ff79c6">&amp;</span>lt;SimplePair<span style="color:#ff79c6">&amp;</span>gt; generateSimplePairs(<span style="color:#8be9fd">int</span> numToGenerate) {
-</span></span><span style="display:flex;"><span>    List<span style="color:#ff79c6">&amp;</span>lt;SimplePair<span style="color:#ff79c6">&amp;</span>gt; pairs <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ArrayList<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">&amp;</span>gt;();
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 1; i <span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">=</span> numToGenerate; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> List<span style="color:#ff79c6">&lt;</span>SimplePair<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">generateSimplePairs</span>(<span style="color:#8be9fd">int</span> numToGenerate) {
+</span></span><span style="display:flex;"><span>    List<span style="color:#ff79c6">&lt;</span>SimplePair<span style="color:#ff79c6">&gt;</span> pairs <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ArrayList<span style="color:#ff79c6">&lt;&gt;</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 1; i <span style="color:#ff79c6">&lt;=</span> numToGenerate; i<span style="color:#ff79c6">++</span>) {
 </span></span><span style="display:flex;"><span>        SimplePair pair <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> SimplePair();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        pair.<span style="color:#50fa7b">setId</span>(i);
-</span></span><span style="display:flex;"><span>        pair.<span style="color:#50fa7b">setName</span>(<span style="color:#ff79c6">&amp;</span>#34;pair<span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; i);
+</span></span><span style="display:flex;"><span>        pair.<span style="color:#50fa7b">setName</span>(<span style="color:#f1fa8c">&#34;pair&#34;</span> <span style="color:#ff79c6">+</span> i);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        pairs.<span style="color:#50fa7b">add</span>(pair);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> pairs;
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Often, we would want to use this to sum up or multiply members in a particular way. Here, we will
-sum all of the ids of our simple pairs (the id's in this collection are 1, 2, 3, 4, and 5):</p>
+sum all of the ids of our simple pairs (the id&rsquo;s in this collection are 1, 2, 3, 4, and 5):</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">reduce_sumAllIds</span>() {
-</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// sums like x_0 &amp;#43; x_1 &amp;#43; ... &amp;#43; x_n:</span>
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;Integer<span style="color:#ff79c6">&amp;</span>gt; idsSummed <span style="color:#ff79c6">=</span> pairs.<span style="color:#50fa7b">stream</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// sums like x_0 + x_1 + ... + x_n:</span>
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>Integer<span style="color:#ff79c6">&gt;</span> idsSummed <span style="color:#ff79c6">=</span> pairs.<span style="color:#50fa7b">stream</span>()
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">map</span>(SimplePair::getId)
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">reduce</span>((firstId, secondId) <span style="color:#ff79c6">-&amp;</span>gt; firstId <span style="color:#ff79c6">&amp;</span>#43; secondId);
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">reduce</span>((firstId, secondId) <span style="color:#ff79c6">-&gt;</span> firstId <span style="color:#ff79c6">+</span> secondId);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    assertEquals(15, idsSummed.<span style="color:#50fa7b">orElseThrow</span>(RuntimeException::<span style="color:#ff79c6">new</span>).<span style="color:#50fa7b">intValue</span>());
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>This above version of the reduce(..) method takes a BinaryOperator&lt;T&gt; object, which gets applied in sequence. In the
+</span></span></code></pre></div><p>This above version of the reduce(..) method takes a BinaryOperator<!-- raw HTML omitted --> object, which gets applied in sequence. In the
 above example, the result is a predictable addition of 1 + 2 + 3 + 4 + 5. It takes the resulting sum that has been accumulated
 so far and adds it to the next Integer in the sequence. If we wanted to multiply all of the ids together, we can do
 so by changing the addition operator to a multiplication operator, like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">reduce_multiplyAllIds</span>() {
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;Integer<span style="color:#ff79c6">&amp;</span>gt; idsMultiplied <span style="color:#ff79c6">=</span> pairs.<span style="color:#50fa7b">stream</span>()
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>Integer<span style="color:#ff79c6">&gt;</span> idsMultiplied <span style="color:#ff79c6">=</span> pairs.<span style="color:#50fa7b">stream</span>()
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">map</span>(SimplePair::getId)
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">reduce</span>((firstId, secondId) <span style="color:#ff79c6">-&amp;</span>gt; firstId <span style="color:#ff79c6">*</span> secondId);
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">reduce</span>((firstId, secondId) <span style="color:#ff79c6">-&gt;</span> firstId <span style="color:#ff79c6">*</span> secondId);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    assertEquals(1 <span style="color:#ff79c6">*</span> 2 <span style="color:#ff79c6">*</span> 3 <span style="color:#ff79c6">*</span> 4 <span style="color:#ff79c6">*</span> 5, idsMultiplied.<span style="color:#50fa7b">orElseThrow</span>(RuntimeException::<span style="color:#ff79c6">new</span>).<span style="color:#50fa7b">intValue</span>());
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Finally, we can seed an initial value in the reduce(..) method. Typically, this would be an identity operator, like zero for addition and one
-for multiplication, which allows you to drop the Optional&lt;T&gt; wrapper and just get a value, where the value returned would just be the seed value
+for multiplication, which allows you to drop the Optional<!-- raw HTML omitted --> wrapper and just get a value, where the value returned would just be the seed value
 if there is no data in the Stream. Here, we will add up all the ids, starting with the number 10:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">reduce_usingIdentityValue</span>() {
 </span></span><span style="display:flex;"><span>    Integer idsSummedWithIdentity <span style="color:#ff79c6">=</span> pairs.<span style="color:#50fa7b">stream</span>()
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">map</span>(SimplePair::getId)
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">reduce</span>(10, (firstId, secondId) <span style="color:#ff79c6">-&amp;</span>gt; firstId <span style="color:#ff79c6">&amp;</span>#43; secondId);
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">reduce</span>(10, (firstId, secondId) <span style="color:#ff79c6">-&gt;</span> firstId <span style="color:#ff79c6">+</span> secondId);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    assertEquals(25, idsSummedWithIdentity.<span style="color:#50fa7b">intValue</span>());
 </span></span><span style="display:flex;"><span>}

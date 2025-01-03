@@ -196,7 +196,7 @@
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/java-failure-and-resilience">can be found on Github</a>.</p>
-<p>The circuit breaker pattern, popularized by Netflix [using Hystrix], exists for a couple of reasons, the most prominent being that it reduces load on a downstream service when it is not responding properly [presumably because it's under duress]. By wrapping operations that might fail and get overloaded in a circuit breaker, we can prematurely prevent cascading failure and stop overloading those services.</p>
+<p>The circuit breaker pattern, popularized by Netflix [using Hystrix], exists for a couple of reasons, the most prominent being that it reduces load on a downstream service when it is not responding properly [presumably because it&rsquo;s under duress]. By wrapping operations that might fail and get overloaded in a circuit breaker, we can prematurely prevent cascading failure and stop overloading those services.</p>
     
   </div>
 
@@ -228,7 +228,7 @@
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/java-failure-and-resilience">can be found on Github</a>.</p>
-<p>When you're working with distributed systems, it is often the case that some clones of a service running can be slow to respond, while still others are functioning perfectly normally. Therefore, when you just hit a load balancer and the load balancer chooses a backend, it can sometimes be beneficial to retry the request. Other things like periodic and small database stalls or random GC stop-the-worlds are examples where retries can smooth the experience for the client of your service.</p>
+<p>When you&rsquo;re working with distributed systems, it is often the case that some clones of a service running can be slow to respond, while still others are functioning perfectly normally. Therefore, when you just hit a load balancer and the load balancer chooses a backend, it can sometimes be beneficial to retry the request. Other things like periodic and small database stalls or random GC stop-the-worlds are examples where retries can smooth the experience for the client of your service.</p>
     
   </div>
 
@@ -292,7 +292,7 @@
   <div class="description">
     
       <p>The source code for this article <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p><a href="https://redis.io/topics/streams-intro">Redis streams</a> are an interesting data structure that act as a sort of go-between for list and pub/sub operations: It's like <a href="https://nickolasfisher.com/blog/Working-with-Lists-in-Redis-using-Lettuce-and-Webflux">a list</a> in the sense that anything pushed onto the stream is retained, it's like <a href="https://nickolasfisher.com/blog/How-to-Publish-and-Subscribe-to-Redis-Using-Lettuce">pub/sub</a> in the sense that multiple consumers can see what is happening to it. There are many other features of streams that are covered in that article, but that's at least how you can think of it at the start.</p>
+<p><a href="https://redis.io/topics/streams-intro">Redis streams</a> are an interesting data structure that act as a sort of go-between for list and pub/sub operations: It&rsquo;s like <a href="https://nickolasfisher.com/blog/Working-with-Lists-in-Redis-using-Lettuce-and-Webflux">a list</a> in the sense that anything pushed onto the stream is retained, it&rsquo;s like <a href="https://nickolasfisher.com/blog/How-to-Publish-and-Subscribe-to-Redis-Using-Lettuce">pub/sub</a> in the sense that multiple consumers can see what is happening to it. There are many other features of streams that are covered in that article, but that&rsquo;s at least how you can think of it at the start.</p>
     
   </div>
 

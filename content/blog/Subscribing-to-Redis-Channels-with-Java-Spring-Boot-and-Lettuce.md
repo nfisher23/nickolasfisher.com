@@ -7,7 +7,7 @@ tags: [java, spring, reactive, webflux, lettuce, redis]
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).
 
-Pub/Sub in redis allows a publisher to send things to subscribers without knowing who is actually subscribed. In a previous post, we covered [a simple unit test for publishing and subscribing to lettuce](https://nickolasfisher.com/blog/How-to-Publish-and-Subscribe-to-Redis-Using-Lettuce), but if you want to have a subscription initialized on application startup, and respond to events, we&#39;ll have to do a bit more, which I&#39;ll demonstrate here.
+Pub/Sub in redis allows a publisher to send things to subscribers without knowing who is actually subscribed. In a previous post, we covered [a simple unit test for publishing and subscribing to lettuce](https://nickolasfisher.com/blog/How-to-Publish-and-Subscribe-to-Redis-Using-Lettuce), but if you want to have a subscription initialized on application startup, and respond to events, we'll have to do a bit more, which I'll demonstrate here.
 
 ### Subscribing on Application Startup
 
@@ -17,12 +17,12 @@ We will want to make sure we have [the right configuration to connect to redis u
 @Configuration
 public class RedisConfig {
 
-    @Bean(&#34;redis-primary-client&#34;)
+    @Bean("redis-primary-client")
     public RedisClient redisClient(RedisPrimaryConfig redisPrimaryConfig) {
         return RedisClient.create(
                 // adjust things like thread pool size with client resources
                 ClientResources.builder().build(),
-                &#34;redis://&#34; &#43; redisPrimaryConfig.getHost() &#43; &#34;:&#34; &#43; redisPrimaryConfig.getPort()
+                "redis://" + redisPrimaryConfig.getHost() + ":" + redisPrimaryConfig.getPort()
         );
     }
 }
@@ -33,7 +33,7 @@ Where our **RedisPrimaryConfig** looks like:
 
 ```java
 @Configuration
-@ConfigurationProperties(prefix = &#34;redis-primary&#34;)
+@ConfigurationProperties(prefix = "redis-primary")
 public class RedisPrimaryConfig {
     private String host;
     private Integer port;
@@ -69,8 +69,8 @@ redis-primary:
 We can then add our **RedisPubSubReactiveCommands** bean to our **RedisConfig** configuration class:
 
 ```java
-    @Bean(&#34;redis-subscription-commands&#34;)
-    public RedisPubSubReactiveCommands&lt;String, String&gt; redisPubSubReactiveCommands(RedisClient redisClient) {
+    @Bean("redis-subscription-commands")
+    public RedisPubSubReactiveCommands<String, String> redisPubSubReactiveCommands(RedisClient redisClient) {
         return redisClient.connectPubSub().reactive();
     }
 
@@ -84,19 +84,19 @@ public class RedisSubscriptionInitializer {
 
     private final Logger LOG = LoggerFactory.getLogger(RedisSubscriptionInitializer.class);
 
-    private final RedisPubSubReactiveCommands&lt;String, String&gt; redisPubSubReactiveCommands;
+    private final RedisPubSubReactiveCommands<String, String> redisPubSubReactiveCommands;
 
-    public RedisSubscriptionInitializer(RedisPubSubReactiveCommands&lt;String, String&gt; redisPubSubReactiveCommands) {
+    public RedisSubscriptionInitializer(RedisPubSubReactiveCommands<String, String> redisPubSubReactiveCommands) {
         this.redisPubSubReactiveCommands = redisPubSubReactiveCommands;
     }
 
     @PostConstruct
     public void setupSubscriber() {
-        redisPubSubReactiveCommands.subscribe(&#34;channel-1&#34;).subscribe();
+        redisPubSubReactiveCommands.subscribe("channel-1").subscribe();
 
-        redisPubSubReactiveCommands.observeChannels().doOnNext(stringStringChannelMessage -&gt; {
-            if (&#34;channel-1&#34;.equals(stringStringChannelMessage.getChannel())) {
-                LOG.info(&#34;found message in channel 1: {}&#34;, stringStringChannelMessage.getMessage());
+        redisPubSubReactiveCommands.observeChannels().doOnNext(stringStringChannelMessage -> {
+            if ("channel-1".equals(stringStringChannelMessage.getChannel())) {
+                LOG.info("found message in channel 1: {}", stringStringChannelMessage.getMessage());
             }
         }).subscribe();
     }
@@ -104,7 +104,7 @@ public class RedisSubscriptionInitializer {
 
 ```
 
-In this case, we&#39;re just logging all the messages we get from **channel-1**, you could obviously introduce whatever code you want there \[you could also do something other than **doOnNext**, for example **flatMap**\].
+In this case, we're just logging all the messages we get from **channel-1**, you could obviously introduce whatever code you want there \[you could also do something other than **doOnNext**, for example **flatMap**\].
 
 If I start up this application and have my local redis instance up and running, I can:
 

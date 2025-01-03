@@ -19,18 +19,18 @@ $ vagrant init -m
 This will create a VagrantFile in your current directory that looks like this:
 
 ```
-Vagrant.configure(&#34;2&#34;) do |config|
-  config.vm.box = &#34;base&#34;
+Vagrant.configure("2") do |config|
+  config.vm.box = "base"
 end
 
 ```
 
-The &#34;base&#34; image that we want here is found in the vagrant repository ubuntu/bionic64--that will typically contain the latest version of the Ubuntu 18 release. We also want to configure a virtual private network, just like we did before, so we will add networking information to make the IP recognizeable at 192.168.56.101:
+The "base" image that we want here is found in the vagrant repository ubuntu/bionic64--that will typically contain the latest version of the Ubuntu 18 release. We also want to configure a virtual private network, just like we did before, so we will add networking information to make the IP recognizeable at 192.168.56.101:
 
 ```
-Vagrant.configure(&#34;2&#34;) do |config|
-  config.vm.box = &#34;ubuntu/bionic64&#34;
-  config.vm.network &#34;private_network&#34;, ip: &#34;192.168.56.101&#34;
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.network "private_network", ip: "192.168.56.101"
 end
 
 ```
@@ -42,37 +42,37 @@ If you run `$ vagrant up` at this point, you will be able to ssh into the machin
 We can further specify how much memory and how many cores to dedicate to this virtual machine with:
 
 ```
-  config.vm.provider &#34;virtualbox&#34; do |vb|
-    vb.memory = &#34;1024&#34;
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "1024"
     vb.cpus = 1
   end
 
 ```
 
-You can then set up root access, just like you get when you spin up a VM in the cloud, with the following provisioning specifics (assuming you&#39;ve got your ssh keys generated already):
+You can then set up root access, just like you get when you spin up a VM in the cloud, with the following provisioning specifics (assuming you've got your ssh keys generated already):
 
 ```bash
-  config.vm.provision &#34;file&#34;, source: &#34;~/.ssh/id_rsa.pub&#34;, destination: &#34;~/.ssh/me.pub&#34;
-  config.vm.provision &#34;shell&#34;, inline: &#34;cat /home/vagrant/.ssh/me.pub &gt;&gt; /home/vagrant/.ssh/authorized_keys&#34;
-  config.vm.provision &#34;shell&#34;, inline: &#34;mkdir -p /root &amp;&amp; mkdir -p /root/.ssh/ &amp;&amp; cat /home/vagrant/.ssh/me.pub &gt;&gt; /root/.ssh/authorized_keys&#34;
+  config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/me.pub"
+  config.vm.provision "shell", inline: "cat /home/vagrant/.ssh/me.pub >> /home/vagrant/.ssh/authorized_keys"
+  config.vm.provision "shell", inline: "mkdir -p /root &amp;&amp; mkdir -p /root/.ssh/ &amp;&amp; cat /home/vagrant/.ssh/me.pub >> /root/.ssh/authorized_keys"
 
 ```
 
 Your entire VagrantFile should now look like:
 
 ```
-Vagrant.configure(&#34;2&#34;) do |config|
-  config.vm.box = &#34;ubuntu/bionic64&#34;
-  config.vm.network &#34;private_network&#34;, ip: &#34;192.168.56.101&#34;
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.network "private_network", ip: "192.168.56.101"
 
-  config.vm.provider &#34;virtualbox&#34; do |vb|
-    vb.memory = &#34;1024&#34;
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "1024"
     vb.cpus = 1
   end
 
-  config.vm.provision &#34;file&#34;, source: &#34;~/.ssh/id_rsa.pub&#34;, destination: &#34;~/.ssh/me.pub&#34;
-  config.vm.provision &#34;shell&#34;, inline: &#34;cat /home/vagrant/.ssh/me.pub &gt;&gt; /home/vagrant/.ssh/authorized_keys&#34;
-  config.vm.provision &#34;shell&#34;, inline: &#34;mkdir -p /root &amp;&amp; mkdir -p /root/.ssh/ &amp;&amp; cat /home/vagrant/.ssh/me.pub &gt;&gt; /root/.ssh/authorized_keys&#34;
+  config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/me.pub"
+  config.vm.provision "shell", inline: "cat /home/vagrant/.ssh/me.pub >> /home/vagrant/.ssh/authorized_keys"
+  config.vm.provision "shell", inline: "mkdir -p /root &amp;&amp; mkdir -p /root/.ssh/ &amp;&amp; cat /home/vagrant/.ssh/me.pub >> /root/.ssh/authorized_keys"
 end
 
 ```
@@ -81,7 +81,7 @@ If you run `$ vagrant up` in the directory where this VagrantFile is located, yo
 
 `$ ssh root@192.168.56.101`
 
-A word of warning: if you plan to do this consistently, your computer&#39;s default behavior is going to be to save the public key it gets from the local server, which will change every time you destroy and bring up virtual machines. You will then be understandably blocked if you try to connect to the same IP address which has a different SSH key on the other end. To fix this, on your **host system**, you can add this to your ~/.ssh/config file:
+A word of warning: if you plan to do this consistently, your computer's default behavior is going to be to save the public key it gets from the local server, which will change every time you destroy and bring up virtual machines. You will then be understandably blocked if you try to connect to the same IP address which has a different SSH key on the other end. To fix this, on your **host system**, you can add this to your ~/.ssh/config file:
 
 ```
 Host 192.168.56.*

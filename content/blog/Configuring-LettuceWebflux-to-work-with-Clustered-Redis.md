@@ -9,16 +9,16 @@ Lettuce has some pretty nice out of the box support for working with clustered r
 
 Demonstrating some basic configuration to make these two systems play nice will be the subject of this post.
 
-To follow along here, you&#39;re going to want to make sure you have [set up a locally running sharded redis cluster](https://nickolasfisher.com/blog/Bootstrap-a-Local-Sharded-Redis-Cluster-in-Five-Minutes). With that in place, steps to get lettuce working against it in a pretty seamless way are as follows.
+To follow along here, you're going to want to make sure you have [set up a locally running sharded redis cluster](https://nickolasfisher.com/blog/Bootstrap-a-Local-Sharded-Redis-Cluster-in-Five-Minutes). With that in place, steps to get lettuce working against it in a pretty seamless way are as follows.
 
 First, add lettuce to your **pom.xml**:
 
 ```xml
-        &lt;dependency&gt;
-            &lt;groupId&gt;io.lettuce&lt;/groupId&gt;
-            &lt;artifactId&gt;lettuce-core&lt;/artifactId&gt;
-            &lt;version&gt;6.1.0.RELEASE&lt;/version&gt;
-        &lt;/dependency&gt;
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <version>6.1.0.RELEASE</version>
+        </dependency>
 
 ```
 
@@ -26,7 +26,7 @@ Then add some configuration that sets up a **RedisClusterClient** and **RedisClu
 
 ```java
 @Configuration
-@ConfigurationProperties(&#34;redis-cluster&#34;)
+@ConfigurationProperties("redis-cluster")
 public class LettuceConfig {
     private String host;
     private int port;
@@ -48,7 +48,7 @@ public class LettuceConfig {
     }
 
     @Bean
-    public RedisClusterReactiveCommands&lt;String, String&gt; redisPrimaryReactiveCommands(RedisClusterClient redisClusterClient) {
+    public RedisClusterReactiveCommands<String, String> redisPrimaryReactiveCommands(RedisClusterClient redisClusterClient) {
         return redisClusterClient.connect().reactive();
     }
 
@@ -57,7 +57,7 @@ public class LettuceConfig {
         return RedisClusterClient.create(
                 // adjust things like thread pool size with client resources
                 ClientResources.builder().build(),
-                &#34;redis://&#34; &#43; this.getHost() &#43; &#34;:&#34; &#43; this.getPort()
+                "redis://" + this.getHost() + ":" + this.getPort()
         );
     }
 }
@@ -73,16 +73,16 @@ redis-cluster:
 
 ```
 
-Note that I&#39;ve chosen port **30001** because that&#39;s a primary node in my clustered redis configuration that was started up via the last post. Be sure to make sure that this config matches up with at least one of the nodes in your cluster \[it doesn&#39;t matter which one, for the sake of this tutorial\]
+Note that I've chosen port **30001** because that's a primary node in my clustered redis configuration that was started up via the last post. Be sure to make sure that this config matches up with at least one of the nodes in your cluster \[it doesn't matter which one, for the sake of this tutorial\]
 
-Now let&#39;s actually use this to write some data to our redis cluster:
+Now let's actually use this to write some data to our redis cluster:
 
 ```java
 @Service
 public class PostConstructExecutor {
-    private final RedisClusterReactiveCommands&lt;String, String&gt; redisClusterReactiveCommands;
+    private final RedisClusterReactiveCommands<String, String> redisClusterReactiveCommands;
 
-    public PostConstructExecutor(RedisClusterReactiveCommands&lt;String, String&gt; redisClusterReactiveCommands) {
+    public PostConstructExecutor(RedisClusterReactiveCommands<String, String> redisClusterReactiveCommands) {
         this.redisClusterReactiveCommands = redisClusterReactiveCommands;
     }
 
@@ -90,9 +90,9 @@ public class PostConstructExecutor {
     public void doStuffOnClusteredRedis() {
         SetArgs setArgs = new SetArgs();
         setArgs.ex(Duration.ofSeconds(10));
-        Mono&lt;String&gt; command = Mono.empty();
-        for (int i = 0; i &lt; 10; i&#43;&#43;) {
-            command = command.then(redisClusterReactiveCommands.set(&#34;hello-&#34; &#43; i, &#34;no &#34; &#43; i, setArgs));
+        Mono<String> command = Mono.empty();
+        for (int i = 0; i < 10; i++) {
+            command = command.then(redisClusterReactiveCommands.set("hello-" + i, "no " + i, setArgs));
         }
         command.block();
     }
@@ -100,22 +100,22 @@ public class PostConstructExecutor {
 
 ```
 
-When you start up this application, our chained set of commands will create 10 redis key/value pairs which are just strings, for example &#34; **hello-1&#34; -&gt; &#34;no 1&#34;**. It also, critically, sets the expiry of each of the items that we add in there to 10 seconds. If you start up this application, the **@PostConstruct** method will run and add those key/value pairs to the cluster.
+When you start up this application, our chained set of commands will create 10 redis key/value pairs which are just strings, for example " **hello-1" -> "no 1"**. It also, critically, sets the expiry of each of the items that we add in there to 10 seconds. If you start up this application, the **@PostConstruct** method will run and add those key/value pairs to the cluster.
 
-We can verify that with a simple script that iterates through each primary instance in our cluster and runs a &#34;KEYS \*&#34;, like so:
+We can verify that with a simple script that iterates through each primary instance in our cluster and runs a "KEYS \*", like so:
 
 ```bash
-$ for port in 30001 30002 30003; do redis-cli -p $port -c keys &#39;*&#39;; done
-1) &#34;hello-0&#34;
-2) &#34;hello-8&#34;
-3) &#34;hello-4&#34;
-1) &#34;hello-1&#34;
-2) &#34;hello-5&#34;
-3) &#34;hello-2&#34;
-4) &#34;hello-6&#34;
-5) &#34;hello-9&#34;
-1) &#34;hello-7&#34;
-2) &#34;hello-3&#34;
+$ for port in 30001 30002 30003; do redis-cli -p $port -c keys '*'; done
+1) "hello-0"
+2) "hello-8"
+3) "hello-4"
+1) "hello-1"
+2) "hello-5"
+3) "hello-2"
+4) "hello-6"
+5) "hello-9"
+1) "hello-7"
+2) "hello-3"
 
 ```
 

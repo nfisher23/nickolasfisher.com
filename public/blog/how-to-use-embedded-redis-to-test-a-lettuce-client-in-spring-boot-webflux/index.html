@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The source code for this article can be found on Github.
-Lettuce is a redis client with reactive support. There is a super handy embedded redis for java project out there, and this kind of integration testing inside your service is worth its weight in gold, in my humble opinion. This post will detail how to merge both of these worlds together, and set up redis integration tests when you&#39;re using a lettuce client."
+Lettuce is a redis client with reactive support. There is a super handy embedded redis for java project out there, and this kind of integration testing inside your service is worth its weight in gold, in my humble opinion. This post will detail how to merge both of these worlds together, and set up redis integration tests when you&rsquo;re using a lettuce client."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,40 +154,40 @@ Lettuce is a redis client with reactive support. There is a super handy embedded
   
 
   <section><p>The source code for this article <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis">can be found on Github</a>.</p>
-<p><a href="https://github.com/lettuce-io/lettuce-core">Lettuce</a> is a redis client with reactive support. There is a super handy <a href="https://github.com/kstyrc/embedded-redis">embedded redis for java project</a> out there, and this kind of integration testing inside your service is worth its weight in gold, in my humble opinion. This post will detail how to merge both of these worlds together, and set up redis integration tests when you're using a lettuce client.</p>
+<p><a href="https://github.com/lettuce-io/lettuce-core">Lettuce</a> is a redis client with reactive support. There is a super handy <a href="https://github.com/kstyrc/embedded-redis">embedded redis for java project</a> out there, and this kind of integration testing inside your service is worth its weight in gold, in my humble opinion. This post will detail how to merge both of these worlds together, and set up redis integration tests when you&rsquo;re using a lettuce client.</p>
 <p>You will want to start by ensuring that you add lettuce and embedded redis to your <strong>pom.xml</strong>[the config for gradle is analogous]:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;org.projectlombok&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;lombok&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;version&amp;gt;1.18.20&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;scope&amp;gt;provided&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;io.lettuce&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;lettuce-core&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;version&amp;gt;6.1.0.RELEASE&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;com.github.kstyrc&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;embedded-redis&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;version&amp;gt;0.6&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>org.projectlombok<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>lombok<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;version&gt;</span>1.18.20<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;scope&gt;</span>provided<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>io.lettuce<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>lettuce-core<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;version&gt;</span>6.1.0.RELEASE<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>com.github.kstyrc<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>embedded-redis<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;version&gt;</span>0.6<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;scope&gt;</span>test<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
 </span></span></code></pre></div><p>I also added lombok for convenience, as you can see.</p>
-<p>Let's set up a skeleton class with a couple methods which, when implemented, will expose get and set operations for a client:</p>
+<p>Let&rsquo;s set up a skeleton class with a couple methods which, when implemented, will expose get and set operations for a client:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">RedisDataService</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> RedisStringReactiveCommands<span style="color:#ff79c6">&amp;</span>lt;String, String<span style="color:#ff79c6">&amp;</span>gt; redisStringReactiveCommands;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> RedisStringReactiveCommands<span style="color:#ff79c6">&lt;</span>String, String<span style="color:#ff79c6">&gt;</span> redisStringReactiveCommands;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">RedisDataService</span>(RedisStringReactiveCommands<span style="color:#ff79c6">&amp;</span>lt;String, String<span style="color:#ff79c6">&amp;</span>gt; redisStringReactiveCommands) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">RedisDataService</span>(RedisStringReactiveCommands<span style="color:#ff79c6">&lt;</span>String, String<span style="color:#ff79c6">&gt;</span> redisStringReactiveCommands) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">redisStringReactiveCommands</span> <span style="color:#ff79c6">=</span> redisStringReactiveCommands;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt; writeThing(Thing thing) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>Void<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">writeThing</span>(Thing thing) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">empty</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;Thing<span style="color:#ff79c6">&amp;</span>gt; getThing(Integer id) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>Thing<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">getThing</span>(Integer id) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">empty</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
@@ -198,7 +198,7 @@ Lettuce is a redis client with reactive support. There is a super handy embedded
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> Integer id;
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> String value;
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Now we can write an automated test to target the behavior that we're about to write:</p>
+</span></span></code></pre></div><p>Now we can write an automated test to target the behavior that we&rsquo;re about to write:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">RedisDataServiceTest</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> RedisServer redisServer;
 </span></span><span style="display:flex;"><span>
@@ -226,20 +226,20 @@ Lettuce is a redis client with reactive support. There is a super handy embedded
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @BeforeEach
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">setupRedisClient</span>() {
-</span></span><span style="display:flex;"><span>        RedisClient redisClient <span style="color:#ff79c6">=</span> RedisClient.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">&amp;</span>#34;redis:<span style="color:#6272a4">//localhost:&amp;#34; &amp;#43; port);</span>
+</span></span><span style="display:flex;"><span>        RedisClient redisClient <span style="color:#ff79c6">=</span> RedisClient.<span style="color:#50fa7b">create</span>(<span style="color:#f1fa8c">&#34;redis://localhost:&#34;</span> <span style="color:#ff79c6">+</span> port);
 </span></span><span style="display:flex;"><span>        redisDataService <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> RedisDataService(redisClient.<span style="color:#50fa7b">connect</span>().<span style="color:#50fa7b">reactive</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">canWriteAndReadThing</span>() {
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt; writeMono <span style="color:#ff79c6">=</span> redisDataService.<span style="color:#50fa7b">writeThing</span>(Thing.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">id</span>(1).<span style="color:#50fa7b">value</span>(<span style="color:#ff79c6">&amp;</span>#34;hello<span style="color:#ff79c6">-</span>redis<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">build</span>());
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Void<span style="color:#ff79c6">&gt;</span> writeMono <span style="color:#ff79c6">=</span> redisDataService.<span style="color:#50fa7b">writeThing</span>(Thing.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">id</span>(1).<span style="color:#50fa7b">value</span>(<span style="color:#f1fa8c">&#34;hello-redis&#34;</span>).<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(writeMono).<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(redisDataService.<span style="color:#50fa7b">getThing</span>(1))
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(thing <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(thing <span style="color:#ff79c6">-&gt;</span>
 </span></span><span style="display:flex;"><span>                    thing.<span style="color:#50fa7b">getId</span>() <span style="color:#ff79c6">==</span> 1 <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp;
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>#34;hello<span style="color:#ff79c6">-</span>redis<span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#50fa7b">equals</span>(thing.<span style="color:#50fa7b">getValue</span>())
+</span></span><span style="display:flex;"><span>                        <span style="color:#f1fa8c">&#34;hello-redis&#34;</span>.<span style="color:#50fa7b">equals</span>(thing.<span style="color:#50fa7b">getValue</span>())
 </span></span><span style="display:flex;"><span>                )
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>    }
@@ -254,26 +254,26 @@ Lettuce is a redis client with reactive support. There is a super handy embedded
 <li>Before the entire test class runs, we grab a random, free open port</li>
 <li>We tell our embedded redis to start on that port</li>
 <li>Before each test runs, we create a redis client and tell it to connect to that port</li>
-<li>We pass in that redis client [ensuring it's reactive] to our class under test</li>
+<li>We pass in that redis client [ensuring it&rsquo;s reactive] to our class under test</li>
 </ol>
-<p>As far as the test itself, we are just persisting to and reading from redis and letting the service abstraction handle it for us. Obviously, since we've written no code yet, this will fail. To make it pass we can implement the code like so:</p>
+<p>As far as the test itself, we are just persisting to and reading from redis and letting the service abstraction handle it for us. Obviously, since we&rsquo;ve written no code yet, this will fail. To make it pass we can implement the code like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">RedisDataService</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> RedisStringReactiveCommands<span style="color:#ff79c6">&amp;</span>lt;String, String<span style="color:#ff79c6">&amp;</span>gt; redisStringReactiveCommands;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> RedisStringReactiveCommands<span style="color:#ff79c6">&lt;</span>String, String<span style="color:#ff79c6">&gt;</span> redisStringReactiveCommands;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">RedisDataService</span>(RedisStringReactiveCommands<span style="color:#ff79c6">&amp;</span>lt;String, String<span style="color:#ff79c6">&amp;</span>gt; redisStringReactiveCommands) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">RedisDataService</span>(RedisStringReactiveCommands<span style="color:#ff79c6">&lt;</span>String, String<span style="color:#ff79c6">&gt;</span> redisStringReactiveCommands) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">redisStringReactiveCommands</span> <span style="color:#ff79c6">=</span> redisStringReactiveCommands;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt; writeThing(Thing thing) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>Void<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">writeThing</span>(Thing thing) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">redisStringReactiveCommands</span>
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">set</span>(thing.<span style="color:#50fa7b">getId</span>().<span style="color:#50fa7b">toString</span>(), thing.<span style="color:#50fa7b">getValue</span>())
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">then</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;Thing<span style="color:#ff79c6">&amp;</span>gt; getThing(Integer id) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>Thing<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">getThing</span>(Integer id) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">redisStringReactiveCommands</span>.<span style="color:#50fa7b">get</span>(id.<span style="color:#50fa7b">toString</span>())
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">map</span>(response <span style="color:#ff79c6">-&amp;</span>gt; Thing.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">id</span>(id).<span style="color:#50fa7b">value</span>(response).<span style="color:#50fa7b">build</span>());
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">map</span>(response <span style="color:#ff79c6">-&gt;</span> Thing.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">id</span>(id).<span style="color:#50fa7b">value</span>(response).<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>This code is pretty straightforward: write to redis using a simple key/value <strong>set</strong>, and read from redis using a key/value <strong>get</strong>. Once you get the value out of redis, throw it into a data structure for the client.</p>

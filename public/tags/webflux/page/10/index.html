@@ -164,7 +164,7 @@
   <div class="description">
     
       <p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/context-api">can be found on Github</a>.</p>
-<p>When you make the switch to a reactive codebase, <a href="https://docs.oracle.com/javase/7/docs/api/java/lang/ThreadLocal.html">ThreadLocal</a> becomes effectively off limits to you, because you aren't guaranteed that the thread that starts the request processing remains the same, even if it's the same HTTP request. This has caused pain in many places: the original implementation of spring security, for example, relied very heavily on ThreadLocal variables to store state that happened in the start of the request, and then reuse the information stored in those variables later on to make access control decisions. <a href="https://netflixtechblog.com/zuul-2-the-netflix-journey-to-asynchronous-non-blocking-systems-45947377fb5c">Neflix spoke of their pain migrating to a reactive stack</a>, when they had relied so heavily on ThreadLocal variables in most of their shared libraries.</p>
+<p>When you make the switch to a reactive codebase, <a href="https://docs.oracle.com/javase/7/docs/api/java/lang/ThreadLocal.html">ThreadLocal</a> becomes effectively off limits to you, because you aren&rsquo;t guaranteed that the thread that starts the request processing remains the same, even if it&rsquo;s the same HTTP request. This has caused pain in many places: the original implementation of spring security, for example, relied very heavily on ThreadLocal variables to store state that happened in the start of the request, and then reuse the information stored in those variables later on to make access control decisions. <a href="https://netflixtechblog.com/zuul-2-the-netflix-journey-to-asynchronous-non-blocking-systems-45947377fb5c">Neflix spoke of their pain migrating to a reactive stack</a>, when they had relied so heavily on ThreadLocal variables in most of their shared libraries.</p>
     
   </div>
 
@@ -195,7 +195,7 @@
 
   <div class="description">
     
-      <p>In my last post on <a href="https://nickolasfisher.com/blog/DynamoDB-and-Spring-Boot-Webflux-A-Working-Introduction">getting started with spring boot webflux and AWS DynamoDB</a>, I mentioned that it wasn't immediately obvious to find a way to customize the response code in a spring boot <strong>RestController</strong>, so I opted to use handlers instead.</p>
+      <p>In my last post on <a href="https://nickolasfisher.com/blog/DynamoDB-and-Spring-Boot-Webflux-A-Working-Introduction">getting started with spring boot webflux and AWS DynamoDB</a>, I mentioned that it wasn&rsquo;t immediately obvious to find a way to customize the response code in a spring boot <strong>RestController</strong>, so I opted to use handlers instead.</p>
     
   </div>
 
@@ -227,7 +227,7 @@
   <div class="description">
     
       <p>The source code for this post <a href="https://github.com/nfisher23/webflux-and-dynamo">can be found on Github</a>.</p>
-<p>The <a href="https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/welcome.html">latest AWS SDK for java</a> uses a reactive client to send requests to various AWS services, including DynamoDB. Reactive programming is ultimately more robust at the edges&ndash;once you start experiencing latency anywhere in your stack, if your tech is not reactive, you're going to have a significantly worse time than if it were.</p>
+<p>The <a href="https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/welcome.html">latest AWS SDK for java</a> uses a reactive client to send requests to various AWS services, including DynamoDB. Reactive programming is ultimately more robust at the edges&ndash;once you start experiencing latency anywhere in your stack, if your tech is not reactive, you&rsquo;re going to have a significantly worse time than if it were.</p>
     
   </div>
 

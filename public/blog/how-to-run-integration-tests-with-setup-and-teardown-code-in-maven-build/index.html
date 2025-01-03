@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The sample code for this post can be found on GitHub.
-Unit testing with Maven is built in, and is the preferred way of validating code is performing correctly. However, sometimes you need integration testing, and most non-trivial applications built in the 21st century are reliant on network connections and databases&ndash;that is, things which are inherently third party to your application. If you don&#39;t adequately take that to account in your CI/CD pipeline, you might end up discovering that something very bad has happened after damage has already been done."
+Unit testing with Maven is built in, and is the preferred way of validating code is performing correctly. However, sometimes you need integration testing, and most non-trivial applications built in the 21st century are reliant on network connections and databases&ndash;that is, things which are inherently third party to your application. If you don&rsquo;t adequately take that to account in your CI/CD pipeline, you might end up discovering that something very bad has happened after damage has already been done."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-run-integration-tests-with-setup-and-teardown-code-in-maven-build/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,139 +154,139 @@ Unit testing with Maven is built in, and is the preferred way of validating code
   
 
   <section><p>The sample code for this post can be found <a href="https://github.com/nfisher23/integration-testing-postgres-and-spring">on GitHub</a>.</p>
-<p>Unit testing with Maven is built in, and is the preferred way of validating code is performing correctly. However, sometimes you need integration testing, and most non-trivial applications built in the 21st century are reliant on network connections and databases&ndash;that is, things which are inherently third party to your application. If you don't adequately take that to account in your CI/CD pipeline, you might end up discovering that something very bad has happened after damage has already been done.</p>
-<p>You can use the <a href="https://maven.apache.org/surefire/maven-failsafe-plugin/">maven failsafe plugin</a> to do integration tests, but it's often the case that integration tests rely on data already existing somewhere&ndash;e.g. a third party service or in a database. We need a way to run code and ensure that our environment is set up correctly, then tear down anything that was created in that process, if we want a truly robust pipeline. What is useful about the failsafe plugin is that it guarantees that the phase before (pre-integration-test) and the phase after (post-integration-test) will get run regardless of what happens inside the integration-test phase.</p>
+<p>Unit testing with Maven is built in, and is the preferred way of validating code is performing correctly. However, sometimes you need integration testing, and most non-trivial applications built in the 21st century are reliant on network connections and databases&ndash;that is, things which are inherently third party to your application. If you don&rsquo;t adequately take that to account in your CI/CD pipeline, you might end up discovering that something very bad has happened after damage has already been done.</p>
+<p>You can use the <a href="https://maven.apache.org/surefire/maven-failsafe-plugin/">maven failsafe plugin</a> to do integration tests, but it&rsquo;s often the case that integration tests rely on data already existing somewhere&ndash;e.g. a third party service or in a database. We need a way to run code and ensure that our environment is set up correctly, then tear down anything that was created in that process, if we want a truly robust pipeline. What is useful about the failsafe plugin is that it guarantees that the phase before (pre-integration-test) and the phase after (post-integration-test) will get run regardless of what happens inside the integration-test phase.</p>
 <p>To begin with, you should understand the <a href="https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html">Maven Phase Lifecycle</a>, in particular take a look at <a href="https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#Lifecycle_Reference">The Complete Maven Phase Lifecycle</a>. First, we need to bind our integration tests, which should exist in a separate directory as our unit tests, to the integration-test phase. Update your pom to include this (in the build/plugins section):</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>            &amp;lt;!-- use the codehaus plugin to add a new test source, to keep unit and integration tests separated --&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;plugin&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;groupId&amp;gt;org.codehaus.mojo&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;artifactId&amp;gt;build-helper-maven-plugin&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;executions&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;execution&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;id&amp;gt;add-test-source&amp;lt;/id&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;phase&amp;gt;process-resources&amp;lt;/phase&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;goals&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;goal&amp;gt;add-test-source&amp;lt;/goal&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;/goals&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;configuration&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;sources&amp;gt;
-</span></span><span style="display:flex;"><span>                                &amp;lt;source&amp;gt;src/testintegration/java/com/nickolasfisher/postgresintegration/tests&amp;lt;/source&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;/sources&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;/configuration&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;/execution&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;/executions&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;/plugin&amp;gt;
-</span></span></code></pre></div><p>We will then assume any integration tests will end in IT, and add this section to the pom as well. Here I'll assume your integration tests are in the <strong>src/testintegration/java/com/nickolasfisher/postgresintegration/tests</strong> directory:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>            &amp;lt;!-- the failsafe plugin runs our integration tests. By convention, we will consider every class ending in IT an integration test module--&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;plugin&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;groupId&amp;gt;org.apache.maven.plugins&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;artifactId&amp;gt;maven-failsafe-plugin&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;configuration&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;includes&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;include&amp;gt;**/*IT&amp;lt;/include&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;/includes&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;/configuration&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;executions&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;execution&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;id&amp;gt;integration-testing&amp;lt;/id&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;goals&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;goal&amp;gt;integration-test&amp;lt;/goal&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;/goals&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;/execution&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;execution&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;id&amp;gt;run-verify&amp;lt;/id&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;goals&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;goal&amp;gt;verify&amp;lt;/goal&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;/goals&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;/execution&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;/executions&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;/plugin&amp;gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>            <span style="color:#6272a4">&lt;!-- use the codehaus plugin to add a new test source, to keep unit and integration tests separated --&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;plugin&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;groupId&gt;</span>org.codehaus.mojo<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;artifactId&gt;</span>build-helper-maven-plugin<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;executions&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;execution&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;id&gt;</span>add-test-source<span style="color:#ff79c6">&lt;/id&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;phase&gt;</span>process-resources<span style="color:#ff79c6">&lt;/phase&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;goals&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;goal&gt;</span>add-test-source<span style="color:#ff79c6">&lt;/goal&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;/goals&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;configuration&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;sources&gt;</span>
+</span></span><span style="display:flex;"><span>                                <span style="color:#ff79c6">&lt;source&gt;</span>src/testintegration/java/com/nickolasfisher/postgresintegration/tests<span style="color:#ff79c6">&lt;/source&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;/sources&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;/configuration&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;/execution&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;/executions&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;/plugin&gt;</span>
+</span></span></code></pre></div><p>We will then assume any integration tests will end in IT, and add this section to the pom as well. Here I&rsquo;ll assume your integration tests are in the <strong>src/testintegration/java/com/nickolasfisher/postgresintegration/tests</strong> directory:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>            <span style="color:#6272a4">&lt;!-- the failsafe plugin runs our integration tests. By convention, we will consider every class ending in IT an integration test module--&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;plugin&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;groupId&gt;</span>org.apache.maven.plugins<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;artifactId&gt;</span>maven-failsafe-plugin<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;configuration&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;includes&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;include&gt;</span>**/*IT<span style="color:#ff79c6">&lt;/include&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;/includes&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;/configuration&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;executions&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;execution&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;id&gt;</span>integration-testing<span style="color:#ff79c6">&lt;/id&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;goals&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;goal&gt;</span>integration-test<span style="color:#ff79c6">&lt;/goal&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;/goals&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;/execution&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;execution&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;id&gt;</span>run-verify<span style="color:#ff79c6">&lt;/id&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;goals&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;goal&gt;</span>verify<span style="color:#ff79c6">&lt;/goal&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;/goals&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;/execution&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;/executions&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;/plugin&gt;</span>
 </span></span></code></pre></div><p>If we then have an integration test in the appropriate folder like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">PostgresAppIT</span> {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">simpleIntegrationTest</span>() {
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;integration test<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;integration test&#34;</span>);
 </span></span><span style="display:flex;"><span>        assertTrue(<span style="color:#ff79c6">true</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Then run</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ mvn verify
 </span></span></code></pre></div><p>You will see the integration tests run separately from the unit tests, and in particular it will run during the integration-test phase.</p>
-<p>Now we need a way to execute code in the pre-integration-test and post-integration-test phase. We can use another org.codehaus plugin, the <a href="https://www.mojohaus.org/exec-maven-plugin/">exec-maven-plugin</a>, to accomplish that. First we have to add sources, and here I'll assume your pre and post integration test code will reside in <strong>src/testintegration/java/com/nickolasfisher/postgresintegration/setup</strong> and <strong>src/testintegration/java/com/nickolasfisher/postgresintegration/teardown</strong>, respectively. We can update our build helper add sources section to look like:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>            &amp;lt;plugin&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;groupId&amp;gt;org.codehaus.mojo&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;artifactId&amp;gt;build-helper-maven-plugin&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;executions&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;execution&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;id&amp;gt;add-test-source&amp;lt;/id&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;phase&amp;gt;process-resources&amp;lt;/phase&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;goals&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;goal&amp;gt;add-test-source&amp;lt;/goal&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;/goals&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;configuration&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;sources&amp;gt;
-</span></span><span style="display:flex;"><span>                                &amp;lt;source&amp;gt;src/testintegration/java/com/nickolasfisher/postgresintegration/tests&amp;lt;/source&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;/sources&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;/configuration&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;/execution&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;execution&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;phase&amp;gt;process-resources&amp;lt;/phase&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;goals&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;goal&amp;gt;add-source&amp;lt;/goal&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;/goals&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;configuration&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;sources&amp;gt;
-</span></span><span style="display:flex;"><span>                                &amp;lt;source&amp;gt;src/testintegration/java/com/nickolasfisher/postgresintegration/setup&amp;lt;/source&amp;gt;
-</span></span><span style="display:flex;"><span>                                &amp;lt;source&amp;gt;src/testintegration/java/com/nickolasfisher/postgresintegration/teardown&amp;lt;/source&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;/sources&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;/configuration&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;/execution&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;/executions&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;/plugin&amp;gt;
+<p>Now we need a way to execute code in the pre-integration-test and post-integration-test phase. We can use another org.codehaus plugin, the <a href="https://www.mojohaus.org/exec-maven-plugin/">exec-maven-plugin</a>, to accomplish that. First we have to add sources, and here I&rsquo;ll assume your pre and post integration test code will reside in <strong>src/testintegration/java/com/nickolasfisher/postgresintegration/setup</strong> and <strong>src/testintegration/java/com/nickolasfisher/postgresintegration/teardown</strong>, respectively. We can update our build helper add sources section to look like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;plugin&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;groupId&gt;</span>org.codehaus.mojo<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;artifactId&gt;</span>build-helper-maven-plugin<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;executions&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;execution&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;id&gt;</span>add-test-source<span style="color:#ff79c6">&lt;/id&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;phase&gt;</span>process-resources<span style="color:#ff79c6">&lt;/phase&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;goals&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;goal&gt;</span>add-test-source<span style="color:#ff79c6">&lt;/goal&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;/goals&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;configuration&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;sources&gt;</span>
+</span></span><span style="display:flex;"><span>                                <span style="color:#ff79c6">&lt;source&gt;</span>src/testintegration/java/com/nickolasfisher/postgresintegration/tests<span style="color:#ff79c6">&lt;/source&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;/sources&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;/configuration&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;/execution&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;execution&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;phase&gt;</span>process-resources<span style="color:#ff79c6">&lt;/phase&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;goals&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;goal&gt;</span>add-source<span style="color:#ff79c6">&lt;/goal&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;/goals&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;configuration&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;sources&gt;</span>
+</span></span><span style="display:flex;"><span>                                <span style="color:#ff79c6">&lt;source&gt;</span>src/testintegration/java/com/nickolasfisher/postgresintegration/setup<span style="color:#ff79c6">&lt;/source&gt;</span>
+</span></span><span style="display:flex;"><span>                                <span style="color:#ff79c6">&lt;source&gt;</span>src/testintegration/java/com/nickolasfisher/postgresintegration/teardown<span style="color:#ff79c6">&lt;/source&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;/sources&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;/configuration&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;/execution&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;/executions&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;/plugin&gt;</span>
 </span></span></code></pre></div><p>And we can create PreIntegrationTest and PostIntegrationTest classes to run arbitrary Java code like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">PreIntegrationSetup</span> {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">main</span>(String args<span style="color:#ff79c6">[]</span>) {
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;executing set up tasks<span style="color:#ff79c6">!&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;executing set up tasks!&#34;</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>And:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">PostIntegrationTeardown</span> {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">main</span>(String args<span style="color:#ff79c6">[]</span>) {
-</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;executing teardown code<span style="color:#ff79c6">!&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;executing teardown code!&#34;</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Finally, we can update our pom file to include the exec-maven-plugin referenced above:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>            &amp;lt;plugin&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;groupId&amp;gt;org.codehaus.mojo&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;artifactId&amp;gt;exec-maven-plugin&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;executions&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;execution&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;id&amp;gt;pre-integration-test&amp;lt;/id&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;phase&amp;gt;pre-integration-test&amp;lt;/phase&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;goals&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;goal&amp;gt;java&amp;lt;/goal&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;/goals&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;configuration&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;mainClass&amp;gt;PreIntegrationSetup&amp;lt;/mainClass&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;/configuration&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;/execution&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;execution&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;id&amp;gt;post-integration-test&amp;lt;/id&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;phase&amp;gt;post-integration-test&amp;lt;/phase&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;goals&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;goal&amp;gt;java&amp;lt;/goal&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;/goals&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;configuration&amp;gt;
-</span></span><span style="display:flex;"><span>                            &amp;lt;mainClass&amp;gt;PostIntegrationTeardown&amp;lt;/mainClass&amp;gt;
-</span></span><span style="display:flex;"><span>                        &amp;lt;/configuration&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;/execution&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;/executions&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;/plugin&amp;gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;plugin&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;groupId&gt;</span>org.codehaus.mojo<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;artifactId&gt;</span>exec-maven-plugin<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;executions&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;execution&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;id&gt;</span>pre-integration-test<span style="color:#ff79c6">&lt;/id&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;phase&gt;</span>pre-integration-test<span style="color:#ff79c6">&lt;/phase&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;goals&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;goal&gt;</span>java<span style="color:#ff79c6">&lt;/goal&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;/goals&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;configuration&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;mainClass&gt;</span>PreIntegrationSetup<span style="color:#ff79c6">&lt;/mainClass&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;/configuration&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;/execution&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;execution&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;id&gt;</span>post-integration-test<span style="color:#ff79c6">&lt;/id&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;phase&gt;</span>post-integration-test<span style="color:#ff79c6">&lt;/phase&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;goals&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;goal&gt;</span>java<span style="color:#ff79c6">&lt;/goal&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;/goals&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;configuration&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">&lt;mainClass&gt;</span>PostIntegrationTeardown<span style="color:#ff79c6">&lt;/mainClass&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&lt;/configuration&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;/execution&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;/executions&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;/plugin&gt;</span>
 </span></span></code></pre></div><p><a href="https://github.com/nfisher23/integration-testing-postgres-and-spring">Go get the source code</a> and checkout the correct commit (991015831dd71bae58c8a045ffe76c390e9f2bf8) to see this in action.</p>
-<p>Finally, if you're using Spring, there is a way to <a href="https://nickolasfisher.com/blog/How-to-Use-Springs-Dependency-Injection-in-Setup-And-Teardown-Code-For-Integration-Tests-With-Maven">use Spring's ApplicationContext in your setup and teardown code</a>, which is a much more maintable way to ensure everything fits correctly together.</p>
+<p>Finally, if you&rsquo;re using Spring, there is a way to <a href="https://nickolasfisher.com/blog/How-to-Use-Springs-Dependency-Injection-in-Setup-And-Teardown-Code-For-Integration-Tests-With-Maven">use Spring&rsquo;s ApplicationContext in your setup and teardown code</a>, which is a much more maintable way to ensure everything fits correctly together.</p>
 </section>
 
   

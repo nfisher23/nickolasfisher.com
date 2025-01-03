@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The sample code associated with this blog post can be found on GitHub.
-The question &quot;does compression actually help?&quot; is admittedly pretty loaded. The real answer is sometimes, and it depends. I will not try to answer every use case, but I will provide a very specific example here that appears to provide a &quot;probably not&quot; answer (for this specific use case)."
+The question &ldquo;does compression actually help?&rdquo; is admittedly pretty loaded. The real answer is sometimes, and it depends. I will not try to answer every use case, but I will provide a very specific example here that appears to provide a &ldquo;probably not&rdquo; answer (for this specific use case)."
 />
 <link rel="canonical" href="http://localhost:1313/blog/improving-java-io-performance-does-compression-actually-help/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,11 +154,11 @@ The question &quot;does compression actually help?&quot; is admittedly pretty lo
   
 
   <section><p>The sample code associated with this blog post can be found <a href="https://github.com/nfisher23/io-tuning">on GitHub</a>.</p>
-<p>The question &quot;does compression actually help?&quot; is admittedly pretty loaded. The real answer is <em>sometimes</em>, and <em>it depends</em>. I will not try to answer every use case, but I will provide a very specific example here that appears to provide a &quot;probably not&quot; answer (for this specific use case).</p>
-<p>We'll write a CSV file that contains 1M lines, where each line looks like &quot;0,1,2,3&hellip;,8,9&quot;. First, I'll set up the benchmark runner JMH with JUnit:</p>
+<p>The question &ldquo;does compression actually help?&rdquo; is admittedly pretty loaded. The real answer is <em>sometimes</em>, and <em>it depends</em>. I will not try to answer every use case, but I will provide a very specific example here that appears to provide a &ldquo;probably not&rdquo; answer (for this specific use case).</p>
+<p>We&rsquo;ll write a CSV file that contains 1M lines, where each line looks like &ldquo;0,1,2,3&hellip;,8,9&rdquo;. First, I&rsquo;ll set up the benchmark runner JMH with JUnit:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">runBenchmark</span>(Class clazz) <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        Options options <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> OptionsBuilder()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">include</span>(clazz.<span style="color:#50fa7b">getName</span>() <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#ff79c6">*&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">include</span>(clazz.<span style="color:#50fa7b">getName</span>() <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;.*&#34;</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">mode</span>(Mode.<span style="color:#50fa7b">AverageTime</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">warmupTime</span>(TimeValue.<span style="color:#50fa7b">seconds</span>(1))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">warmupIterations</span>(2)
@@ -180,13 +180,13 @@ The question &quot;does compression actually help?&quot; is admittedly pretty lo
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">launchBenchmark</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        Utils.<span style="color:#50fa7b">runBenchmark</span>(<span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getClass</span>());
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>Then I'll set up a benchmark that writes and reads without compression, using the file size as the buffer in the second case:</p>
+</span></span></code></pre></div><p>Then I&rsquo;ll set up a benchmark that writes and reads without compression, using the file size as the buffer in the second case:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">int</span> NUMBER_OF_CSV_LINES <span style="color:#ff79c6">=</span> 1000000;
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Benchmark
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">readAndWriteWithoutCompression</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        writeUncompressedFileToDisk(Utils.<span style="color:#50fa7b">getCsv</span>(NUMBER_OF_CSV_LINES), millionLineCsvFilePath);
 </span></span><span style="display:flex;"><span>        String readValues <span style="color:#ff79c6">=</span> readUncompressedFileFromDisk(millionLineCsvFilePath);
-</span></span><span style="display:flex;"><span>        assertTrue(readValues.<span style="color:#50fa7b">startsWith</span>(<span style="color:#ff79c6">&amp;</span>#34;0,1,2,3,4,5<span style="color:#ff79c6">&amp;</span>#34;));
+</span></span><span style="display:flex;"><span>        assertTrue(readValues.<span style="color:#50fa7b">startsWith</span>(<span style="color:#f1fa8c">&#34;0,1,2,3,4,5&#34;</span>));
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">writeUncompressedFileToDisk</span>(String data, String fileOutPutPath) <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
@@ -203,12 +203,12 @@ The question &quot;does compression actually help?&quot; is admittedly pretty lo
 </span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">new</span> String(bytes);
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>And I'll set up a comparison benchmark that using compression, specifically using ZipInputStream and ZipOutputStream (using the ZIP algorithm):</p>
+</span></span></code></pre></div><p>And I&rsquo;ll set up a comparison benchmark that using compression, specifically using ZipInputStream and ZipOutputStream (using the ZIP algorithm):</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Benchmark
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">readAndWriteCompressedData</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        compressAndWriteFile(Utils.<span style="color:#50fa7b">getCsv</span>(NUMBER_OF_CSV_LINES), compressedLargeCsvFile);
 </span></span><span style="display:flex;"><span>        String dataFromCompressedFile <span style="color:#ff79c6">=</span> readCompressedFile(compressedLargeCsvFile);
-</span></span><span style="display:flex;"><span>        assertTrue(dataFromCompressedFile.<span style="color:#50fa7b">startsWith</span>(<span style="color:#ff79c6">&amp;</span>#34;0,1,2,3,4,5<span style="color:#ff79c6">&amp;</span>#34;));
+</span></span><span style="display:flex;"><span>        assertTrue(dataFromCompressedFile.<span style="color:#50fa7b">startsWith</span>(<span style="color:#f1fa8c">&#34;0,1,2,3,4,5&#34;</span>));
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">compressAndWriteFile</span>(String data, String fileOutputPath) <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
@@ -233,8 +233,8 @@ The question &quot;does compression actually help?&quot; is admittedly pretty lo
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Benchmark                                        Mode  Cnt    Score   Error  Units
 </span></span><span style="display:flex;"><span>CompressionTests.readAndWriteCompressedData      avgt    <span style="color:#bd93f9">2</span>  472.763          ms/op
 </span></span><span style="display:flex;"><span>CompressionTests.readAndWriteWithoutCompression  avgt    <span style="color:#bd93f9">2</span>  407.777          ms/op
-</span></span></code></pre></div><p>So, in this particular case, it's faster to write normal data size to disk and pull out the same size. However, the advantage of compression in this case could also be that you're saving on disk storage, which could provide value.</p>
-<p>I did run these benchmarks on another machine and noticed a ~3 times improvement in <em>speed</em> for compression, so the specific environment is probably important. Like everything else, tinker aggressively with these concepts if you're tasked with optimization.</p>
+</span></span></code></pre></div><p>So, in this particular case, it&rsquo;s faster to write normal data size to disk and pull out the same size. However, the advantage of compression in this case could also be that you&rsquo;re saving on disk storage, which could provide value.</p>
+<p>I did run these benchmarks on another machine and noticed a ~3 times improvement in <em>speed</em> for compression, so the specific environment is probably important. Like everything else, tinker aggressively with these concepts if you&rsquo;re tasked with optimization.</p>
 </section>
 
   

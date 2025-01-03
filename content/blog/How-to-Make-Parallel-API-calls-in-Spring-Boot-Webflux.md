@@ -9,7 +9,7 @@ The source code for this post [can be found on Github](https://github.com/nfishe
 
 Following up on the last post, which was making sequential calls to downstream services, sometimes you are in a position where you can make calls in parallel and merge the results. In this case, we want to use **zip**.
 
-Let&#39;s take the framework we started in the last post and demonstrate how this might work.
+Let's take the framework we started in the last post and demonstrate how this might work.
 
 ### DTOs
 
@@ -44,7 +44,7 @@ public class SecondCallDTO {
 
 ```
 
-Let&#39;s now add a DTO that will serve to merge the results of the these two DTOs:
+Let's now add a DTO that will serve to merge the results of the these two DTOs:
 
 ```java
 public class MergedCallsDTO {
@@ -70,10 +70,10 @@ public class MergedCallsDTO {
 
 ```
 
-With that in place, let&#39;s follow TDD and set up a bare bones method in our **CombiningCallsService**:
+With that in place, let's follow TDD and set up a bare bones method in our **CombiningCallsService**:
 
 ```java
-    public Mono&lt;MergedCallsDTO&gt; mergedCalls(Integer firstEndpointParam, Integer secondEndpointParam) {
+    public Mono<MergedCallsDTO> mergedCalls(Integer firstEndpointParam, Integer secondEndpointParam) {
         return null;
     }
 
@@ -92,31 +92,31 @@ That test, using mock server, can look like this:
     public void mergedCalls_callsBothEndpointsAndMergesResults() {
         HttpRequest expectedFirstRequest = HttpRequest.request()
                 .withMethod(HttpMethod.GET.name())
-                .withPath(&#34;/first/endpoint/25&#34;);
+                .withPath("/first/endpoint/25");
 
         this.clientAndServer.when(
                 expectedFirstRequest
         ).respond(
                 HttpResponse.response()
-                        .withBody(&#34;{\&#34;fieldFromFirstCall\&#34;: 250}&#34;)
+                        .withBody("{\"fieldFromFirstCall\": 250}")
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
         HttpRequest expectedSecondRequest = HttpRequest.request()
                 .withMethod(HttpMethod.GET.name())
-                .withPath(&#34;/second/endpoint/45&#34;);
+                .withPath("/second/endpoint/45");
 
         this.clientAndServer.when(
                 expectedSecondRequest
         ).respond(
                 HttpResponse.response()
-                        .withBody(&#34;{\&#34;fieldFromSecondCall\&#34;: \&#34;something\&#34;}&#34;)
+                        .withBody("{\"fieldFromSecondCall\": \"something\"}")
                         .withContentType(MediaType.APPLICATION_JSON)
         );
 
         StepVerifier.create(this.combiningCallsService.mergedCalls(25, 45))
-                .expectNextMatches(mergedCallsDTO -&gt; 250 == mergedCallsDTO.getFieldOne()
-                        &amp;&amp; &#34;something&#34;.equals(mergedCallsDTO.getFieldTwo())
+                .expectNextMatches(mergedCallsDTO -> 250 == mergedCallsDTO.getFieldOne()
+                        &amp;&amp; "something".equals(mergedCallsDTO.getFieldTwo())
                 )
                 .verifyComplete();
 
@@ -126,28 +126,28 @@ That test, using mock server, can look like this:
 
 ```
 
-While pretty self explanatory, we are using the reactor test&#39;s **StepVerifier** to verify that the mono, upon completing and calling back, will return an object that matches the assertion in the **expectNextMatches** block.
+While pretty self explanatory, we are using the reactor test's **StepVerifier** to verify that the mono, upon completing and calling back, will return an object that matches the assertion in the **expectNextMatches** block.
 
-You will, predictably, see this test fail without any code to make it pass, so let&#39;s write that code now:
+You will, predictably, see this test fail without any code to make it pass, so let's write that code now:
 
 ```java
-    public Mono&lt;MergedCallsDTO&gt; mergedCalls(Integer firstEndpointParam, Integer secondEndpointParam) {
-        Mono&lt;FirstCallDTO&gt; firstCallDTOMono = this.serviceAWebClient.get()
-                .uri(uriBuilder -&gt; uriBuilder.path(&#34;/first/endpoint/{param}&#34;).build(firstEndpointParam))
+    public Mono<MergedCallsDTO> mergedCalls(Integer firstEndpointParam, Integer secondEndpointParam) {
+        Mono<FirstCallDTO> firstCallDTOMono = this.serviceAWebClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/first/endpoint/{param}").build(firstEndpointParam))
                 .retrieve()
                 .bodyToMono(FirstCallDTO.class);
 
-        Mono&lt;SecondCallDTO&gt; secondCallDTOMono = this.serviceAWebClient.get()
-                .uri(uriBuilder -&gt; uriBuilder.path(&#34;/second/endpoint/{param}&#34;).build(secondEndpointParam))
+        Mono<SecondCallDTO> secondCallDTOMono = this.serviceAWebClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/second/endpoint/{param}").build(secondEndpointParam))
                 .retrieve()
                 .bodyToMono(SecondCallDTO.class);
 
         // nothing has been subscribed to, those calls above are not waiting for anything and are not subscribed to, yet
 
-        // zipping the monos will invoke the callback in &#34;map&#34; once both of them have completed, merging the results
+        // zipping the monos will invoke the callback in "map" once both of them have completed, merging the results
         // into a tuple.
         return Mono.zip(firstCallDTOMono, secondCallDTOMono)
-                .map(objects -&gt; {
+                .map(objects -> {
                     MergedCallsDTO mergedCallsDTO = new MergedCallsDTO();
 
                     mergedCallsDTO.setFieldOne(objects.getT1().getFieldFromFirstCall());
@@ -159,6 +159,6 @@ You will, predictably, see this test fail without any code to make it pass, so l
 
 ```
 
-As you can see in the code comments, simply making a block of code return a **Mono** doesn&#39;t actually do anything until it is subscribed to. In the case of our test, we are subscribing directly to it. If we wrote an endpoint that were invoked when someone made an http request to our application, then it would get subscribed to only at the end of the chain and we wouldn&#39;t ever actually write **subscribe** anywhere.
+As you can see in the code comments, simply making a block of code return a **Mono** doesn't actually do anything until it is subscribed to. In the case of our test, we are subscribing directly to it. If we wrote an endpoint that were invoked when someone made an http request to our application, then it would get subscribed to only at the end of the chain and we wouldn't ever actually write **subscribe** anywhere.
 
 So, by using **zip**, they are both kicked off at the same time, and we wait for both of them to complete, merging the results with **map**. If you run the test, it will now pass.

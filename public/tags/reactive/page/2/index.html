@@ -164,7 +164,7 @@
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>Pub/Sub in redis allows a publisher to send things to subscribers without knowing who is actually subscribed. In a previous post, we covered <a href="https://nickolasfisher.com/blog/How-to-Publish-and-Subscribe-to-Redis-Using-Lettuce">a simple unit test for publishing and subscribing to lettuce</a>, but if you want to have a subscription initialized on application startup, and respond to events, we'll have to do a bit more, which I'll demonstrate here.</p>
+<p>Pub/Sub in redis allows a publisher to send things to subscribers without knowing who is actually subscribed. In a previous post, we covered <a href="https://nickolasfisher.com/blog/How-to-Publish-and-Subscribe-to-Redis-Using-Lettuce">a simple unit test for publishing and subscribing to lettuce</a>, but if you want to have a subscription initialized on application startup, and respond to events, we&rsquo;ll have to do a bit more, which I&rsquo;ll demonstrate here.</p>
     
   </div>
 
@@ -260,7 +260,7 @@
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>Redis does not allow you to set the expiration on individual members in a set, it only allows you to set an expiration on the entire set itself. If you want to have a sort of expiry on individual elements in a set, this article shares a workaround to that problem that works well in practice. Because I have already written a lot of <a href="https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux">boilerplate code for testing any redis operation using lettuce</a>, I'm going to be showing you this technique using a reactive lettuce client, however the basic concept should transfer easily to any other client.</p>
+<p>Redis does not allow you to set the expiration on individual members in a set, it only allows you to set an expiration on the entire set itself. If you want to have a sort of expiry on individual elements in a set, this article shares a workaround to that problem that works well in practice. Because I have already written a lot of <a href="https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux">boilerplate code for testing any redis operation using lettuce</a>, I&rsquo;m going to be showing you this technique using a reactive lettuce client, however the basic concept should transfer easily to any other client.</p>
     
   </div>
 
@@ -292,7 +292,7 @@
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p><a href="https://redis.io/commands/msetnx">MSETNX</a> when you're working with a single redis primary node is simple enough to understand: it sets all of the key/value pairs, or none at all. If one of the keys already exists in the cluster, then all of them are rejected.</p>
+<p><a href="https://redis.io/commands/msetnx">MSETNX</a> when you&rsquo;re working with a single redis primary node is simple enough to understand: it sets all of the key/value pairs, or none at all. If one of the keys already exists in the cluster, then all of them are rejected.</p>
     
   </div>
 

@@ -153,10 +153,10 @@
   
 
   <section><p>The <a href="http://nginx.org/en/docs/http/ngx_http_map_module.html">nginx map module</a> is a nifty tool that allows you to programmatically change behavior based on things like http headers that come in.</p>
-<p>In this post, I'll show how to choose a different file to serve based on a custom header that comes in, then how to check multiple headers to make a final decision on where to go.</p>
+<p>In this post, I&rsquo;ll show how to choose a different file to serve based on a custom header that comes in, then how to check multiple headers to make a final decision on where to go.</p>
 <h3 id="setting-up-the-playground">Setting up the Playground</h3>
-<p>I'm going to use <a href="https://docs.docker.com/compose/">docker compose</a> to walk us through this. If you make a <strong>docker-compose.yml</strong> file and set it up like so:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">version</span>: <span style="color:#ff79c6">&amp;#34;3.3&amp;#34;</span>
+<p>I&rsquo;m going to use <a href="https://docs.docker.com/compose/">docker compose</a> to walk us through this. If you make a <strong>docker-compose.yml</strong> file and set it up like so:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">version</span>: <span style="color:#f1fa8c">&#34;3.3&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">services</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">nginx</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: nginx:latest
@@ -167,7 +167,7 @@
 </span></span><span style="display:flex;"><span>      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
 </span></span><span style="display:flex;"><span>      - ./nginx/primary.html:/usr/share/nginx/html/primary.html
 </span></span><span style="display:flex;"><span>      - ./nginx/secondary.html:/usr/share/nginx/html/secondary.html
-</span></span></code></pre></div><p>We'll then create an <strong>nginx</strong> directory and throw four files in it: <strong>nginx.conf</strong>, <strong>default.conf</strong>, <strong>primary.html</strong>, and <strong>secondary.html</strong>.</p>
+</span></span></code></pre></div><p>We&rsquo;ll then create an <strong>nginx</strong> directory and throw four files in it: <strong>nginx.conf</strong>, <strong>default.conf</strong>, <strong>primary.html</strong>, and <strong>secondary.html</strong>.</p>
 <p><strong>nginx.conf:</strong></p>
 <pre tabindex="0"><code>user  nginx;
 worker_processes  1;
@@ -184,9 +184,9 @@ http {
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
 
-    log_format  main  &amp;#39;$remote_addr - $remote_user [$time_local] &amp;#34;$request&amp;#34; &amp;#39;
-                      &amp;#39;$status $body_bytes_sent &amp;#34;$http_referer&amp;#34; &amp;#39;
-                      &amp;#39;&amp;#34;$http_user_agent&amp;#34; &amp;#34;$http_x_forwarded_for&amp;#34;&amp;#39;;
+    log_format  main  &#39;$remote_addr - $remote_user [$time_local] &#34;$request&#34; &#39;
+                      &#39;$status $body_bytes_sent &#34;$http_referer&#34; &#39;
+                      &#39;&#34;$http_user_agent&#34; &#34;$http_x_forwarded_for&#34;&#39;;
 
     access_log  /var/log/nginx/access.log  main;
 
@@ -209,7 +209,7 @@ http {
     root /usr/share/nginx/html;
 
     location / {
-        try_files &amp;#39;&amp;#39; /primary.html =404;
+        try_files &#39;&#39; /primary.html =404;
     }
 
     #error_page  404              /404.html;
@@ -222,61 +222,61 @@ http {
     }
 }
 </code></pre><p><strong>primary.html</strong></p>
-<pre tabindex="0"><code>&amp;lt;h1&amp;gt;The primary html page&amp;lt;/h1&amp;gt;
+<pre tabindex="0"><code>&lt;h1&gt;The primary html page&lt;/h1&gt;
 </code></pre><p><strong>secondary.html</strong></p>
-<pre tabindex="0"><code>&amp;lt;h1&amp;gt;The secondary, as in NOT primary, html page&amp;lt;/h1&amp;gt;
+<pre tabindex="0"><code>&lt;h1&gt;The secondary, as in NOT primary, html page&lt;/h1&gt;
 </code></pre><h3 id="working-with-maps">Working with maps</h3>
 <p>Right now, if you run:</p>
 <pre tabindex="0"><code>docker-compose up
 </code></pre><p>You can hit any endpoint on <strong>localhost:9000</strong> and get back the primary.html file. E.g.</p>
 <pre tabindex="0"><code>$ curl localhost:9000/one
-&amp;lt;h1&amp;gt;The primary html page&amp;lt;/h1&amp;gt;
+&lt;h1&gt;The primary html page&lt;/h1&gt;
 $ curl localhost:9000/two
-&amp;lt;h1&amp;gt;The primary html page&amp;lt;/h1&amp;gt;
+&lt;h1&gt;The primary html page&lt;/h1&gt;
 </code></pre><p>What if we want to serve up the secondary html page based only on a certain custom header coming in? Well, then we can use variables. If we modify:</p>
 <pre tabindex="0"><code>    location / {
-        try_files &amp;#39;&amp;#39; /$actual_variable =404;
+        try_files &#39;&#39; /$actual_variable =404;
     }
 </code></pre><p>Then we can use a map variable to serve up whatever file we want. Place this block of code outside the server block and restart the docker container:</p>
 <pre tabindex="0"><code>map $http_x_new_header $actual_variable {
-  ~secondary &amp;#34;secondary.html&amp;#34;;
-  default &amp;#34;primary.html&amp;#34;;
+  ~secondary &#34;secondary.html&#34;;
+  default &#34;primary.html&#34;;
 }
-</code></pre><p>Then you can still hit any endpoint like normal and get the primary.html page, but you can also specify a our x-new-header with the value of &quot;secondary&quot; and get the secondary.html page:</p>
+</code></pre><p>Then you can still hit any endpoint like normal and get the primary.html page, but you can also specify a our x-new-header with the value of &ldquo;secondary&rdquo; and get the secondary.html page:</p>
 <pre tabindex="0"><code>$ curl localhost:9000/something
-&amp;lt;h1&amp;gt;The primary html page&amp;lt;/h1&amp;gt;
-$ curl -H &amp;#34;X-New-Header: secondary&amp;#34; localhost:9000/something
-&amp;lt;h1&amp;gt;The secondary, as in NOT primary, html page&amp;lt;/h1&amp;gt;
+&lt;h1&gt;The primary html page&lt;/h1&gt;
+$ curl -H &#34;X-New-Header: secondary&#34; localhost:9000/something
+&lt;h1&gt;The secondary, as in NOT primary, html page&lt;/h1&gt;
 </code></pre><p>Pretty interesting. But one follow up question: what if we want two different headers to determine the outcome of this variable. For example, what if we have some legacy clients calling us with a legacy header, and we want to check the value of the legacy header as well as the new header? Well, we can nest maps:</p>
 <pre tabindex="0"><code>map $http_x_legacy_header $default_variable {
-  ~secondary &amp;#34;secondary.html&amp;#34;;
-  default &amp;#34;primary.html&amp;#34;;
+  ~secondary &#34;secondary.html&#34;;
+  default &#34;primary.html&#34;;
 }
 
 map $http_x_new_header $actual_variable {
-  ~secondary &amp;#34;secondary.html&amp;#34;;
+  ~secondary &#34;secondary.html&#34;;
   default $default_variable;
 }
 </code></pre><p>If you restart nginx now ( <strong>docker-compose down &amp;&amp; docker-compose up -d</strong>), you can see it in action:</p>
 <pre tabindex="0"><code># regular call
 $ curl localhost:9000/endpoint
-&amp;lt;h1&amp;gt;The primary html page&amp;lt;/h1&amp;gt;
+&lt;h1&gt;The primary html page&lt;/h1&gt;
 
 # using the new header like before
-$ curl -H &amp;#34;X-New-Header: secondary&amp;#34; localhost:9000/something
-&amp;lt;h1&amp;gt;The secondary, as in NOT primary, html page&amp;lt;/h1&amp;gt;
+$ curl -H &#34;X-New-Header: secondary&#34; localhost:9000/something
+&lt;h1&gt;The secondary, as in NOT primary, html page&lt;/h1&gt;
 
 # using the legacy header
-$ curl -H &amp;#34;X-Legacy-Header: secondary&amp;#34; localhost:9000/something
-&amp;lt;h1&amp;gt;The secondary, as in NOT primary, html page&amp;lt;/h1&amp;gt;
+$ curl -H &#34;X-Legacy-Header: secondary&#34; localhost:9000/something
+&lt;h1&gt;The secondary, as in NOT primary, html page&lt;/h1&gt;
 
 # using both headers cause why not
-$ curl -H &amp;#34;X-Legacy-Header: secondary&amp;#34; -H &amp;#34;X-New-Header: secondary&amp;#34; localhost:9000/something~
-&amp;lt;h1&amp;gt;The secondary, as in NOT primary, html page&amp;lt;/h1&amp;gt;
+$ curl -H &#34;X-Legacy-Header: secondary&#34; -H &#34;X-New-Header: secondary&#34; localhost:9000/something~
+&lt;h1&gt;The secondary, as in NOT primary, html page&lt;/h1&gt;
 
 # notice what happens when the value is changed
-$ curl -H &amp;#34;X-Legacy-Header: idk&amp;#34; -H &amp;#34;X-New-Header: huh&amp;#34; localhost:9000/something~
-&amp;lt;h1&amp;gt;The primary html page&amp;lt;/h1&amp;gt;
+$ curl -H &#34;X-Legacy-Header: idk&#34; -H &#34;X-New-Header: huh&#34; localhost:9000/something~
+&lt;h1&gt;The primary html page&lt;/h1&gt;
 </code></pre></section>
 
   

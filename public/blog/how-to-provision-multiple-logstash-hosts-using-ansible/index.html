@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The source code for this post can be found on GitHub.
-Logstash primarily exists to extract useful information out of plain-text logs. Most applications have custom logs which are in whatever format the person writing them thought would look reasonable&hellip;usually to a human, and not to a machine. While countless future developer hours would be preserved if everything were just in JSON, that is sadly not even remotely the case, and in particular it&#39;s not the case for log files. Logstash aims to be the intermediary between the various log formats and Elasticsearch, which is the document database provided by Elastic as well."
+Logstash primarily exists to extract useful information out of plain-text logs. Most applications have custom logs which are in whatever format the person writing them thought would look reasonable&hellip;usually to a human, and not to a machine. While countless future developer hours would be preserved if everything were just in JSON, that is sadly not even remotely the case, and in particular it&rsquo;s not the case for log files. Logstash aims to be the intermediary between the various log formats and Elasticsearch, which is the document database provided by Elastic as well."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-provision-multiple-logstash-hosts-using-ansible/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,19 +154,19 @@ Logstash primarily exists to extract useful information out of plain-text logs. 
   
 
   <section><p>The source code for this post can be found <a href="https://github.com/nfisher23/some-ansible-examples">on GitHub</a>.</p>
-<p><a href="https://www.elastic.co/products/logstash">Logstash</a> primarily exists to extract useful information out of plain-text logs. Most applications have custom logs which are in whatever format the person writing them thought would look reasonable&hellip;usually to a human, and not to a machine. While countless future developer hours would be preserved if everything were just in JSON, that is sadly not even remotely the case, and in particular it's not the case for log files. Logstash aims to be the intermediary between the various log formats and Elasticsearch, which is the document database provided by Elastic as well.</p>
+<p><a href="https://www.elastic.co/products/logstash">Logstash</a> primarily exists to extract useful information out of plain-text logs. Most applications have custom logs which are in whatever format the person writing them thought would look reasonable&hellip;usually to a human, and not to a machine. While countless future developer hours would be preserved if everything were just in JSON, that is sadly not even remotely the case, and in particular it&rsquo;s not the case for log files. Logstash aims to be the intermediary between the various log formats and Elasticsearch, which is the document database provided by Elastic as well.</p>
 <p>This post will focus on writing an ansible playbook to provision two logstash hosts, each of which will receive logs from a beats input and forward the output to an elasticsearch cluster. See a previous post on <a href="https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible">how to provision an elasticsearch cluster using ansible</a>.</p>
 <h3 id="create-the-ansible-role">Create the Ansible Role</h3>
 <p>Navigate to the directory you want to keep this ansible role and type:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule init role -d vagrant -r install-logstash
-</span></span></code></pre></div><p>I'm choosing to use vagrant as a local VM provider and I'm calling this role install-logstash.</p>
-<p>Since we want to demonstrate multiple nodes, we'll adjust our <strong>molecule/default/molecule.yml</strong> file's <em>platforms</em> section to look like this:</p>
+</span></span></code></pre></div><p>I&rsquo;m choosing to use vagrant as a local VM provider and I&rsquo;m calling this role install-logstash.</p>
+<p>Since we want to demonstrate multiple nodes, we&rsquo;ll adjust our <strong>molecule/default/molecule.yml</strong> file&rsquo;s <em>platforms</em> section to look like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">platforms</span>:
 </span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">name</span>: lsNode1
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">box</span>: ubuntu/xenial64
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">memory</span>: <span style="color:#bd93f9">4096</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">provider_raw_config_args</span>:
-</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">&amp;#34;customize</span> [<span style="color:#ff79c6">&amp;#39;modifyvm&amp;#39;,</span> :id, &amp;#39;--uartmode1&amp;#39;, &amp;#39;disconnected&amp;#39;]&amp;#34;
+</span></span><span style="display:flex;"><span>    - <span style="color:#f1fa8c">&#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">interfaces</span>:
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">auto_config</span>: <span style="color:#ff79c6">true</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">network_name</span>: private_network
@@ -176,7 +176,7 @@ Logstash primarily exists to extract useful information out of plain-text logs. 
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">box</span>: ubuntu/xenial64
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">memory</span>: <span style="color:#bd93f9">4096</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">provider_raw_config_args</span>:
-</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">&amp;#34;customize</span> [<span style="color:#ff79c6">&amp;#39;modifyvm&amp;#39;,</span> :id, &amp;#39;--uartmode1&amp;#39;, &amp;#39;disconnected&amp;#39;]&amp;#34;
+</span></span><span style="display:flex;"><span>    - <span style="color:#f1fa8c">&#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">interfaces</span>:
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">auto_config</span>: <span style="color:#ff79c6">true</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">network_name</span>: private_network
@@ -186,30 +186,30 @@ Logstash primarily exists to extract useful information out of plain-text logs. 
 <p>At this point, running:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule create
 </span></span></code></pre></div><p>Will give you the two virtual machines outlined above.</p>
-<p>I'll jump ahead here and set up a variable we're going to use in our playbook, which is the logstash version in a deb file that we're going to use:</p>
+<p>I&rsquo;ll jump ahead here and set up a variable we&rsquo;re going to use in our playbook, which is the logstash version in a deb file that we&rsquo;re going to use:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#6272a4"># vars file for install-logstash</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">logstash_deb_file</span>: logstash-6.4.0.deb
-</span></span></code></pre></div><p>Because I want this to be compatible with the post on <a href="https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible">installing a multi-node elasticsearch cluster,</a> I'm electing to use logstash version 6.4.0.</p>
+</span></span></code></pre></div><p>Because I want this to be compatible with the post on <a href="https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible">installing a multi-node elasticsearch cluster,</a> I&rsquo;m electing to use logstash version 6.4.0.</p>
 <p>We can setup our <strong>tasks/main.yml</strong> file to perform the necessary steps in an idempotent way. These are pretty straightforward:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># tasks file for install-logstash</span>
 </span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: ensure Java is installed
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">apt</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: <span style="color:#ff79c6">&amp;#34;openjdk-8-jdk&amp;#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: <span style="color:#f1fa8c">&#34;openjdk-8-jdk&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">state</span>: present
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">update_cache</span>: <span style="color:#ff79c6">yes</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: download deb package
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">get_url</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: <span style="color:#ff79c6">&amp;#34;/etc/{{</span> logstash_deb_file }}&amp;#34;
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">url</span>: <span style="color:#ff79c6">&amp;#34;https://artifacts.elastic.co/downloads/logstash/{{</span> logstash_deb_file }}&amp;#34;
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">checksum</span>: <span style="color:#ff79c6">&amp;#34;sha512:https://artifacts.elastic.co/downloads/logstash/{{</span> logstash_deb_file }}.sha512&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: <span style="color:#f1fa8c">&#34;/etc/{{ logstash_deb_file }}&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">url</span>: <span style="color:#f1fa8c">&#34;https://artifacts.elastic.co/downloads/logstash/{{ logstash_deb_file }}&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">checksum</span>: <span style="color:#f1fa8c">&#34;sha512:https://artifacts.elastic.co/downloads/logstash/{{ logstash_deb_file }}.sha512&#34;</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: install from deb package
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">apt</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">deb</span>: <span style="color:#ff79c6">&amp;#34;/etc/{{</span> logstash_deb_file }}&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">deb</span>: <span style="color:#f1fa8c">&#34;/etc/{{ logstash_deb_file }}&#34;</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">notify</span>: restart logstash
 </span></span><span style="display:flex;"><span>
@@ -221,12 +221,12 @@ Logstash primarily exists to extract useful information out of plain-text logs. 
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">mode</span>: <span style="color:#bd93f9">0644</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">notify</span>: restart logstash
-</span></span></code></pre></div><p>We use the logstash_deb_file variable liberally here, as you can see. We need java installed for logstash, and while I'd like to use Java 11, the Elastic Stack has been relatively slow in upgrading their code base to be supportive of it, so Java 8 is what it is for now. We then simply get and install logstash via the deb file, and move a jinja2 template (about to show you that one) into the <strong>conf.d</strong> folder so logstash can give us some pipelines to work with.</p>
+</span></span></code></pre></div><p>We use the logstash_deb_file variable liberally here, as you can see. We need java installed for logstash, and while I&rsquo;d like to use Java 11, the Elastic Stack has been relatively slow in upgrading their code base to be supportive of it, so Java 8 is what it is for now. We then simply get and install logstash via the deb file, and move a jinja2 template (about to show you that one) into the <strong>conf.d</strong> folder so logstash can give us some pipelines to work with.</p>
 <p>In the <strong>templates</strong> folder, create a file called <strong>my-pipeline.conf.j2</strong> and fill it with:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>input {
 </span></span><span style="display:flex;"><span>  beats {
-</span></span><span style="display:flex;"><span>    host =&amp;gt; &amp;#34;{{ ansible_facts[&amp;#39;all_ipv4_addresses&amp;#39;] | last }}&amp;#<span style="color:#bd93f9">34</span>;
-</span></span><span style="display:flex;"><span>    port =&amp;gt; &amp;#<span style="color:#bd93f9">34</span>;<span style="color:#bd93f9">5044</span>&amp;#<span style="color:#bd93f9">34</span>;
+</span></span><span style="display:flex;"><span>    host =&gt; <span style="color:#ff79c6">&#34;{{ ansible_facts[&#39;all_ipv4_addresses&#39;] | last }}&#34;</span>
+</span></span><span style="display:flex;"><span>    port =&gt; <span style="color:#f1fa8c">&#34;5044&#34;</span>
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>filter {
@@ -234,11 +234,11 @@ Logstash primarily exists to extract useful information out of plain-text logs. 
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>output {
 </span></span><span style="display:flex;"><span>  elasticsearch {
-</span></span><span style="display:flex;"><span>    hosts =&amp;gt; [&amp;#34;192.168.56.101:9200&amp;#34;, &amp;#34;192.168.56.102:9200&amp;#34;, &amp;#34;192.168.56.103:9200&amp;#34;]
+</span></span><span style="display:flex;"><span>    hosts =&gt; [<span style="color:#ff79c6">&#34;192.168.56.101:9200&#34;</span>, <span style="color:#ff79c6">&#34;192.168.56.102:9200&#34;</span>, <span style="color:#ff79c6">&#34;192.168.56.103:9200&#34;</span>]
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>This simple pipeline grabs the last IP address defined on our ansible host (192.168.56.111 for lsNode1) and sets up a listener on port 5044 to collect input from beats. There are no filters defined, and it will just pass any messages it gets straight onto an elasticsearch cluster.</p>
-<p>I've hardcoded three addresses for elasticsearch here. To make this more extensible, those should be externalized to variables and eventually pulled out of your inventory file.</p>
+<p>I&rsquo;ve hardcoded three addresses for elasticsearch here. To make this more extensible, those should be externalized to variables and eventually pulled out of your inventory file.</p>
 <p>You will also need a handler in the <strong>handlers/main.yml</strong> file:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># handlers file for install-logstash</span>

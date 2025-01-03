@@ -7,29 +7,29 @@ tags: [java, spring, DevOps, postgreSQL]
 
 You can see the sample code for this post [on GitHub](https://github.com/nfisher23/postgres-flyway-example).
 
-[PostgreSQL](https://www.postgresql.org/) is still my favorite database, and if a project I&#39;m working on makes sense as a relational database model, it&#39;s always what I reach for.
+[PostgreSQL](https://www.postgresql.org/) is still my favorite database, and if a project I'm working on makes sense as a relational database model, it's always what I reach for.
 
-Automating database tests, and maintaining consistency between environments, is one of the biggest pain points between working locally and deploying to higher environments. In particular, when you need to take advantage of native features of the database you&#39;re using (since consistency between vendors on some of the finer details is nearly a pipe-dream at this point), using a general in memory database (like H2) just doesn&#39;t cut it.
+Automating database tests, and maintaining consistency between environments, is one of the biggest pain points between working locally and deploying to higher environments. In particular, when you need to take advantage of native features of the database you're using (since consistency between vendors on some of the finer details is nearly a pipe-dream at this point), using a general in memory database (like H2) just doesn't cut it.
 
-To start using a PostgreSQL in memory database (with _as little_ spring boot magic as possible), you will first need to ensure that you have a PostgreSQL dependency. If you&#39;re using Maven, that&#39;s:
+To start using a PostgreSQL in memory database (with _as little_ spring boot magic as possible), you will first need to ensure that you have a PostgreSQL dependency. If you're using Maven, that's:
 
 ```xml
-&lt;dependency&gt;
-    &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
-    &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
-    &lt;scope&gt;runtime&lt;/scope&gt;
-&lt;/dependency&gt;
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <scope>runtime</scope>
+</dependency>
 ```
 
 We can then resort to using [opentable](https://github.com/opentable/otj-pg-embedded) as the in memory engine by adding another dependency:
 
 ```xml
-&lt;dependency&gt;
-    &lt;groupId&gt;com.opentable.components&lt;/groupId&gt;
-    &lt;artifactId&gt;otj-pg-embedded&lt;/artifactId&gt;
-    &lt;version&gt;0.13.1&lt;/version&gt;
-    &lt;scope&gt;compile&lt;/scope&gt;
-&lt;/dependency&gt;
+<dependency>
+    <groupId>com.opentable.components</groupId>
+    <artifactId>otj-pg-embedded</artifactId>
+    <version>0.13.1</version>
+    <scope>compile</scope>
+</dependency>
 ```
 
 Finally, wherever we want the embedded database, we can spin it up with default settings like:
@@ -41,7 +41,7 @@ package com.nickolasfisher.flywaystuff;
 
 @Configuration
 @ComponentScan
-@Profile(&#34;dev&#34;)
+@Profile("dev")
 public class DevConfig {
 
     @Bean
@@ -56,4 +56,4 @@ public class DevConfig {
 
 ```
 
-Next up, we&#39;ll look at using [Flyway](https://flywaydb.org/) to run idempotent database migration scripts against our database on application startup, giving the application flexible and full control over the state of the schemas it owns.
+Next up, we'll look at using [Flyway](https://flywaydb.org/) to run idempotent database migration scripts against our database on application startup, giving the application flexible and full control over the state of the schemas it owns.

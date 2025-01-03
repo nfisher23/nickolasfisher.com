@@ -163,7 +163,7 @@
 
   <div class="description">
     
-      <p>AWS Lambda functions were the first &quot;serverless&quot; way to run code. Of course, there are still servers, but the point is that you can nearly forget about managing those servers and all of that is owned by AWS.</p>
+      <p>AWS Lambda functions were the first &ldquo;serverless&rdquo; way to run code. Of course, there are still servers, but the point is that you can nearly forget about managing those servers and all of that is owned by AWS.</p>
     
   </div>
 
@@ -194,7 +194,7 @@
 
   <div class="description">
     
-      <p>DynamoDB transactions can be used for <em>atomic</em> updates. Atomic updates in DynamoDB without transactions can be difficult to implement&ndash;you'll often have to manage the current state of the update yourself in something like a saga, and have business logic specific rollback procedures. Further, without a transaction manager, the data will be in an inconsistent state at some point in time while the saga is ongoing. An alternative to that is a Two Phase Commit, but that's also expensive both from the standpoint of developers making it work as well as performance [2PC typically call for a lock being held during the operation, and even then there's a possibility that the operation ends up in an inconsistent state at some point].</p>
+      <p>DynamoDB transactions can be used for <em>atomic</em> updates. Atomic updates in DynamoDB without transactions can be difficult to implement&ndash;you&rsquo;ll often have to manage the current state of the update yourself in something like a saga, and have business logic specific rollback procedures. Further, without a transaction manager, the data will be in an inconsistent state at some point in time while the saga is ongoing. An alternative to that is a Two Phase Commit, but that&rsquo;s also expensive both from the standpoint of developers making it work as well as performance [2PC typically call for a lock being held during the operation, and even then there&rsquo;s a possibility that the operation ends up in an inconsistent state at some point].</p>
     
   </div>
 
@@ -287,7 +287,7 @@
 
   <div class="description">
     
-      <p><a href="https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html">Scanning in DynamoDB</a> is exactly what it sounds like: loop through every single record in a table, optionally filtering for items with a certain condition when dynamo returns them to you. In general, you <em>shouldn't do this</em>. DynamoDB is designed to store and manage a very large amount of data. Scanning through a large amount of data is very expensive, even in a distributed world. In the best case, you'll be waiting a long time to see results. In the worst case, you might see service outages as you burn through your RCUs.</p>
+      <p><a href="https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html">Scanning in DynamoDB</a> is exactly what it sounds like: loop through every single record in a table, optionally filtering for items with a certain condition when dynamo returns them to you. In general, you <em>shouldn&rsquo;t do this</em>. DynamoDB is designed to store and manage a very large amount of data. Scanning through a large amount of data is very expensive, even in a distributed world. In the best case, you&rsquo;ll be waiting a long time to see results. In the worst case, you might see service outages as you burn through your RCUs.</p>
     
   </div>
 

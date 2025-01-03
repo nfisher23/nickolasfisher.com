@@ -28,14 +28,14 @@ Can be called anywhere in the code like so:
 
 ```java
 Person person = Person.builder()
-                .firstName(&#34;Jack&#34;)
-                .lastName(&#34;Bauer&#34;)
+                .firstName("Jack")
+                .lastName("Bauer")
                 .height(100)
                 .build();
 
 ```
 
-But in practice this isn&#39;t particularly helpful. Typically this is combined with @Getter to access an immutable object after building it:
+But in practice this isn't particularly helpful. Typically this is combined with @Getter to access an immutable object after building it:
 
 ```java
 @Builder
@@ -53,20 +53,20 @@ Which can then be very practically applied like so:
     @Test
     public void testBuilder() {
         Person person = Person.builder()
-                .firstName(&#34;Jack&#34;)
-                .lastName(&#34;Bauer&#34;)
+                .firstName("Jack")
+                .lastName("Bauer")
                 .height(100)
                 .build();
 
-        assertEquals(&#34;Jack&#34;, person.getFirstName());
-        assertEquals(&#34;Bauer&#34;, person.getLastName());
+        assertEquals("Jack", person.getFirstName());
+        assertEquals("Bauer", person.getLastName());
         assertEquals(100, person.getHeight());
     }
 ```
 
 ### @Accessors
 
-The [accessors](https://projectlombok.org/features/experimental/Accessors) annotation is currently an &#34;experimental&#34; feature. The most powerful feature puts it in a similar camp to @Builder, which is it&#39;s **chain** option. This adjusts the behavior of setters to return **this** after setting the value, making modifications to existing objects more compact:
+The [accessors](https://projectlombok.org/features/experimental/Accessors) annotation is currently an "experimental" feature. The most powerful feature puts it in a similar camp to @Builder, which is it's **chain** option. This adjusts the behavior of setters to return **this** after setting the value, making modifications to existing objects more compact:
 
 ```java
 @Accessors(chain = true)
@@ -83,12 +83,12 @@ public class Person {
 public void testAccessors() {
     Person person = new Person();
 
-    person.setFirstName(&#34;Jack&#34;)
-        .setLastName(&#34;Bauer&#34;)
+    person.setFirstName("Jack")
+        .setLastName("Bauer")
         .setHeight(100);
 
-    assertEquals(&#34;Jack&#34;, person.getFirstName());
-    assertEquals(&#34;Bauer&#34;, person.getLastName());
+    assertEquals("Jack", person.getFirstName());
+    assertEquals("Bauer", person.getLastName());
     assertEquals(100, person.getHeight());
 }
 
@@ -121,15 +121,15 @@ We can then see that it properly clones the object like so:
 @Test
 public void testWither() {
     Person person = Person.builder()
-            .firstName(&#34;Jack&#34;)
-            .lastName(&#34;Bauer&#34;)
+            .firstName("Jack")
+            .lastName("Bauer")
             .height(100)
             .build();
 
-    Person clonedPerson = person.withFirstName(&#34;Joe&#34;);
+    Person clonedPerson = person.withFirstName("Joe");
 
-    assertEquals(&#34;Jack&#34;, person.getFirstName());
-    assertEquals(&#34;Joe&#34;, clonedPerson.getFirstName());
+    assertEquals("Jack", person.getFirstName());
+    assertEquals("Joe", clonedPerson.getFirstName());
 }
 
 ```

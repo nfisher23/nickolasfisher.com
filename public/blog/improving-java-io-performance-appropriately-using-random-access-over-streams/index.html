@@ -155,12 +155,14 @@ A flavor I/O performance optimization that applies specifically to the filesyste
 
   <section><p>The sample code for this blog post can be found <a href="https://github.com/nfisher23/io-tuning">on GitHub</a>.</p>
 <p>A flavor I/O performance optimization that applies specifically to the filesystem is the decision on when to use Random Access instead of something like a BufferedInputStream. Random access allows for accessing a file in a similar way as a large array of bytes stored on the filesystem. From the <a href="https://docs.oracle.com/javase/7/docs/api/java/io/RandomAccessFile.html">oracle documentation on the RandomAccessFile class</a>:</p>
-<p>&gt; There is a kind of cursor,
-&gt; or index into the implied array, called the <em>file pointer</em>;
-&gt; input operations read bytes starting at the file pointer and advance
-&gt; the file pointer past the bytes read.</p>
+<blockquote>
+<p>There is a kind of cursor,
+or index into the implied array, called the <em>file pointer</em>;
+input operations read bytes starting at the file pointer and advance
+the file pointer past the bytes read.</p>
+</blockquote>
 <p>Instead of reading every byte into memory, then, the cursor-ish implementation will allow us to scan to the next part of the file. In the case where we know the structure of the file and it is quite orderly (e.g. a custom database or csv file with predictable spacing), and when we want to grab specific information out of the file, this provides us with a powerful way to improve performance.</p>
-<p>Let's create a csv file with 100K lines, where each line is 0,1,2,&hellip;,8,9:</p>
+<p>Let&rsquo;s create a csv file with 100K lines, where each line is 0,1,2,&hellip;,8,9:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @BeforeClass
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">setupLargeCsv</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        Path pathToLargeCsv <span style="color:#ff79c6">=</span> Paths.<span style="color:#50fa7b">get</span>(Utils.<span style="color:#50fa7b">largeCsvFilePath</span>);
@@ -175,11 +177,11 @@ A flavor I/O performance optimization that applies specifically to the filesyste
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> String <span style="color:#50fa7b">getCsv</span>(<span style="color:#8be9fd">int</span> numberOfLines) {
 </span></span><span style="display:flex;"><span>        StringBuilder builder <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> StringBuilder();
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; numberOfLines; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
-</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> j <span style="color:#ff79c6">=</span> 0; j <span style="color:#ff79c6">&amp;</span>lt; 10; j<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
-</span></span><span style="display:flex;"><span>                builder.<span style="color:#50fa7b">append</span>(Integer.<span style="color:#50fa7b">toString</span>(j)).<span style="color:#50fa7b">append</span>(<span style="color:#ff79c6">&amp;</span>#34;,<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> numberOfLines; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> j <span style="color:#ff79c6">=</span> 0; j <span style="color:#ff79c6">&lt;</span> 10; j<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>                builder.<span style="color:#50fa7b">append</span>(Integer.<span style="color:#50fa7b">toString</span>(j)).<span style="color:#50fa7b">append</span>(<span style="color:#f1fa8c">&#34;,&#34;</span>);
 </span></span><span style="display:flex;"><span>            }
-</span></span><span style="display:flex;"><span>            builder.<span style="color:#50fa7b">replace</span>(builder.<span style="color:#50fa7b">length</span>() <span style="color:#ff79c6">-</span> 1, builder.<span style="color:#50fa7b">length</span>(), <span style="color:#ff79c6">&amp;</span>#34;\n<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>            builder.<span style="color:#50fa7b">replace</span>(builder.<span style="color:#50fa7b">length</span>() <span style="color:#ff79c6">-</span> 1, builder.<span style="color:#50fa7b">length</span>(), <span style="color:#f1fa8c">&#34;\n&#34;</span>);
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> builder.<span style="color:#50fa7b">toString</span>();
@@ -187,7 +189,7 @@ A flavor I/O performance optimization that applies specifically to the filesyste
 </span></span></code></pre></div><p>And set up our benchmark runner with JMH:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">runBenchmark</span>(Class clazz) <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        Options options <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> OptionsBuilder()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">include</span>(clazz.<span style="color:#50fa7b">getName</span>() <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#ff79c6">*&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">include</span>(clazz.<span style="color:#50fa7b">getName</span>() <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;.*&#34;</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">mode</span>(Mode.<span style="color:#50fa7b">AverageTime</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">warmupTime</span>(TimeValue.<span style="color:#50fa7b">seconds</span>(1))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">warmupIterations</span>(2)
@@ -209,21 +211,21 @@ A flavor I/O performance optimization that applies specifically to the filesyste
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">runBenchmark</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        Utils.<span style="color:#50fa7b">runBenchmark</span>(<span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getClass</span>());
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>Let's assume we want to stop off and read each character that is 20K characters in. Because of the structure of the csv file, we know that these will all be '0'. If we want to implement that using an InputStream/BufferedInputStream we would do this:</p>
+</span></span></code></pre></div><p>Let&rsquo;s assume we want to stop off and read each character that is 20K characters in. Because of the structure of the csv file, we know that these will all be &lsquo;0&rsquo;. If we want to implement that using an InputStream/BufferedInputStream we would do this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">int</span> INTERVAL <span style="color:#ff79c6">=</span> 20000;
 </span></span><span style="display:flex;"><span>    @Benchmark
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">scanningThroughWithBufferedInputStream</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">try</span> (FileInputStream fileInputStream <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> FileInputStream(Utils.<span style="color:#50fa7b">largeCsvFilePath</span>);
 </span></span><span style="display:flex;"><span>             BufferedInputStream bufferedInputStream <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> BufferedInputStream(fileInputStream)) {
-</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; 10; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> 10; i<span style="color:#ff79c6">++</span>) {
 </span></span><span style="display:flex;"><span>                <span style="color:#8be9fd">int</span> readVal <span style="color:#ff79c6">=</span> bufferedInputStream.<span style="color:#50fa7b">read</span>();
 </span></span><span style="display:flex;"><span>                <span style="color:#8be9fd">long</span> totalSkipped <span style="color:#ff79c6">=</span> 0;
 </span></span><span style="display:flex;"><span>                totalSkipped <span style="color:#ff79c6">=</span> bufferedInputStream.<span style="color:#50fa7b">skip</span>(INTERVAL <span style="color:#ff79c6">-</span> 1);
 </span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">while</span> (totalSkipped <span style="color:#ff79c6">!=</span> INTERVAL <span style="color:#ff79c6">-</span> 1) {
-</span></span><span style="display:flex;"><span>                    totalSkipped <span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">=</span> bufferedInputStream.<span style="color:#50fa7b">skip</span>(INTERVAL <span style="color:#ff79c6">-</span> totalSkipped <span style="color:#ff79c6">-</span> 1);
+</span></span><span style="display:flex;"><span>                    totalSkipped <span style="color:#ff79c6">+=</span> bufferedInputStream.<span style="color:#50fa7b">skip</span>(INTERVAL <span style="color:#ff79c6">-</span> totalSkipped <span style="color:#ff79c6">-</span> 1);
 </span></span><span style="display:flex;"><span>                }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>                assertEquals(<span style="color:#ff79c6">&amp;</span>#39;0<span style="color:#ff79c6">&amp;</span>#39;, readVal);
+</span></span><span style="display:flex;"><span>                assertEquals(<span style="color:#f1fa8c">&#39;0&#39;</span>, readVal);
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
@@ -234,11 +236,11 @@ A flavor I/O performance optimization that applies specifically to the filesyste
 </span></span></code></pre></div><p>Conversely, doing that with a RandomAccessFile would look like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Benchmark
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">seekingToPosition</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">try</span> (RandomAccessFile randomAccessFile <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> RandomAccessFile(Utils.<span style="color:#50fa7b">largeCsvFilePath</span>, <span style="color:#ff79c6">&amp;</span>#34;r<span style="color:#ff79c6">&amp;</span>#34;)) {
-</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; 10; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">try</span> (RandomAccessFile randomAccessFile <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> RandomAccessFile(Utils.<span style="color:#50fa7b">largeCsvFilePath</span>, <span style="color:#f1fa8c">&#34;r&#34;</span>)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> 10; i<span style="color:#ff79c6">++</span>) {
 </span></span><span style="display:flex;"><span>                randomAccessFile.<span style="color:#50fa7b">seek</span>(INTERVAL);
 </span></span><span style="display:flex;"><span>                <span style="color:#8be9fd">int</span> readValue <span style="color:#ff79c6">=</span> randomAccessFile.<span style="color:#50fa7b">read</span>();
-</span></span><span style="display:flex;"><span>                assertEquals(<span style="color:#ff79c6">&amp;</span>#39;0<span style="color:#ff79c6">&amp;</span>#39;, readValue);
+</span></span><span style="display:flex;"><span>                assertEquals(<span style="color:#f1fa8c">&#39;0&#39;</span>, readValue);
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }

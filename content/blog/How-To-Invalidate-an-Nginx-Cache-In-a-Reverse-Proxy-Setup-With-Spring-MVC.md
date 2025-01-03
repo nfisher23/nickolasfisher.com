@@ -7,11 +7,11 @@ tags: [java, ngnix, aspect oriented programming, ansible, spring, DevOps]
 
 You can see the sample code associated with this post [on Github](https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx).
 
-In two previous posts, we looked at how to [provision a reverse proxy using nginx](https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy) and then [how to add caching to the nginx reverse proxy](https://nickolasfisher.com/blog/How-to-Use-Nginxs-Caching-to-Improve-Site-Responsiveness). The implementation we ended up with at the end of the last post was a &#34;dumb&#34; cache, meaning that it doesn&#39;t know when or if any data gets updated--it just times out after 60 seconds and then asks for a new payload from the application it&#39;s acting as proxy for.
+In two previous posts, we looked at how to [provision a reverse proxy using nginx](https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy) and then [how to add caching to the nginx reverse proxy](https://nickolasfisher.com/blog/How-to-Use-Nginxs-Caching-to-Improve-Site-Responsiveness). The implementation we ended up with at the end of the last post was a "dumb" cache, meaning that it doesn't know when or if any data gets updated--it just times out after 60 seconds and then asks for a new payload from the application it's acting as proxy for.
 
-In this post, I&#39;ll demonstrate a simple way to invalidate the cache under predefined conditions using Spring Boot. This will allow us to programmatically and selectively notify Nginx to request a new payload. This way, users will get a fast page-load time combined with up-to-date information, depending on the use case.
+In this post, I'll demonstrate a simple way to invalidate the cache under predefined conditions using Spring Boot. This will allow us to programmatically and selectively notify Nginx to request a new payload. This way, users will get a fast page-load time combined with up-to-date information, depending on the use case.
 
-The first thing we will do is create a simple one-line bash script that &#34;invalidates&#34; the cache. For Nginx, that can simply mean removing the cache contents. In our Nginx ansible role, I&#39;m adding a Jinja2 template in **templates/invalidate\_cache.sh.j2**:
+The first thing we will do is create a simple one-line bash script that "invalidates" the cache. For Nginx, that can simply mean removing the cache contents. In our Nginx ansible role, I'm adding a Jinja2 template in **templates/invalidate\_cache.sh.j2**:
 
 ```bash
 #!/bin/bash
@@ -24,7 +24,7 @@ This uses our ansible variable to recursively remove all of the contents of the 
 - name: add invalidate cache script to path
   template:
     src: invalidate_cache.sh.j2
-    dest: &#34;/usr/bin/{{ nginx_cache_invalidate_script_name }}&#34;
+    dest: "/usr/bin/{{ nginx_cache_invalidate_script_name }}"
     mode: 0755
   become: yes
   notify: restart nginx
@@ -36,14 +36,14 @@ This also uses a variable, which we will have to add to **vars/main.yml** in our
 nginx_cache_invalidate_script_name: invalidate_nginx_cache
 ```
 
-Now this is available for our sample application to use. In the code itself, I have elected to leverage [Spring&#39;s Aspect Oriented Programming](https://docs.spring.io/spring/docs/2.5.x/reference/aop.html) to abstract over the cache invalidation process. We will first have to add the AOP dependency to our **pom.xml**:
+Now this is available for our sample application to use. In the code itself, I have elected to leverage [Spring's Aspect Oriented Programming](https://docs.spring.io/spring/docs/2.5.x/reference/aop.html) to abstract over the cache invalidation process. We will first have to add the AOP dependency to our **pom.xml**:
 
 ```xml
-&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-boot-starter-aop&lt;/artifactId&gt;
-    &lt;version&gt;2.1.3.RELEASE&lt;/version&gt;
-&lt;/dependency&gt;
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-aop</artifactId>
+    <version>2.1.3.RELEASE</version>
+</dependency>
 
 ```
 
@@ -72,21 +72,21 @@ import java.util.Map;
 @Component
 public class AutoCacheInvalidator {
 
-    @After(&#34;execution(* *(..)) &amp;&amp; @annotation(InvalidateNginxCache)&#34;)
+    @After("execution(* *(..)) &amp;&amp; @annotation(InvalidateNginxCache)")
     private void invalidateTheCache() {
-        ProcessBuilder pb = new ProcessBuilder(&#34;invalidate_nginx_cache&#34;);
+        ProcessBuilder pb = new ProcessBuilder("invalidate_nginx_cache");
         try {
             pb.start();
         } catch (Exception ignored) {
             // feel free to handle this differently
-            throw new RuntimeException(&#34;Houston, this didn&#39;t&#34;);
+            throw new RuntimeException("Houston, this didn't");
         }
     }
 }
 
 ```
 
-We can then use this anywhere a method gets executed--after the method completes, this code will run and invalidate the cache. I&#39;ve elected to demonstrate this in our **SimpleController.java** class:
+We can then use this anywhere a method gets executed--after the method completes, this code will run and invalidate the cache. I've elected to demonstrate this in our **SimpleController.java** class:
 
 ```java
 package com.nickolasfisher.simplemvc;
@@ -96,24 +96,24 @@ package com.nickolasfisher.simplemvc;
 @Controller
 public class SimpleController {
 
-    private static String hotValue = &#34;starter&#34;;
+    private static String hotValue = "starter";
 
-    @GetMapping(&#34;/slow&#34;)
-    public ResponseEntity&lt;String&gt; slowEndpoint() throws InterruptedException {
+    @GetMapping("/slow")
+    public ResponseEntity<String> slowEndpoint() throws InterruptedException {
         Thread.sleep(2500);
-        return new ResponseEntity&lt;&gt;(&#34;&lt;p&gt;Takes a while to get: &#34; &#43; hotValue &#43; &#34; &lt;/p&gt;&#34;, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("<p>Takes a while to get: " + hotValue + " </p>", HttpStatus.ACCEPTED);
     }
 
-    @PostMapping(&#34;/api/hotValue&#34;)
+    @PostMapping("/api/hotValue")
     @InvalidateNginxCache
     public RedirectView updateHotValue(@RequestBody JsonNode body) {
-        hotValue = body.get(&#34;hotValue&#34;).textValue();
-        return new RedirectView(&#34;/slow&#34;);
+        hotValue = body.get("hotValue").textValue();
+        return new RedirectView("/slow");
     }
 
-    @GetMapping(&#34;/&#34;)
-    public ResponseEntity&lt;String&gt; simpleResponder() {
-        return new ResponseEntity&lt;&gt;(&#34;&lt;h1&gt;Welcome to my site!&lt;/h1&gt;&#34;, HttpStatus.ACCEPTED);
+    @GetMapping("/")
+    public ResponseEntity<String> simpleResponder() {
+        return new ResponseEntity<>("<h1>Welcome to my site!</h1>", HttpStatus.ACCEPTED);
     }
 }
 
@@ -128,7 +128,7 @@ $ molecule create &amp;&amp; molecule converge
 Will then allow you to hit the [http://192.168.56.202/slow](http://192.168.56.202/slow) endpoint. It will cache after the first request like before. If you then hit the api endpoint:
 
 ```bash
-$ curl -XPOST http://192.168.56.202/api/hotValue -H &#34;Content-Type: application/json&#34; --data &#39;{&#34;hotValue&#34;:&#34;some new value&#34;}&#39;
+$ curl -XPOST http://192.168.56.202/api/hotValue -H "Content-Type: application/json" --data '{"hotValue":"some new value"}'
 
 ```
 

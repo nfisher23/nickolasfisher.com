@@ -196,7 +196,7 @@
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>Redis Transactions do not operate exactly the way you would expect if you're coming from a relational database management system like MySQL or postrgres. It's mostly useful for optimistic locking, but honestly there are better ways to accomplish many of the things you're probably trying to, like <a href="https://nickolasfisher.com/blog/How-to-Run-a-Lua-Script-against-Redis-using-Lettuce">running a lua script with arguments</a> [which is guaranteed to be atomic]. The <a href="https://redis.io/topics/transactions">documentation on transactions in redis</a> describes some of the caveats, the biggest one probably being that it does not support rollbacks, only commits or discards.</p>
+<p>Redis Transactions do not operate exactly the way you would expect if you&rsquo;re coming from a relational database management system like MySQL or postrgres. It&rsquo;s mostly useful for optimistic locking, but honestly there are better ways to accomplish many of the things you&rsquo;re probably trying to, like <a href="https://nickolasfisher.com/blog/How-to-Run-a-Lua-Script-against-Redis-using-Lettuce">running a lua script with arguments</a> [which is guaranteed to be atomic]. The <a href="https://redis.io/topics/transactions">documentation on transactions in redis</a> describes some of the caveats, the biggest one probably being that it does not support rollbacks, only commits or discards.</p>
     
   </div>
 
@@ -228,7 +228,7 @@
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>Pub/Sub in redis allows a publisher to send things to subscribers without knowing who is actually subscribed. In a previous post, we covered <a href="https://nickolasfisher.com/blog/How-to-Publish-and-Subscribe-to-Redis-Using-Lettuce">a simple unit test for publishing and subscribing to lettuce</a>, but if you want to have a subscription initialized on application startup, and respond to events, we'll have to do a bit more, which I'll demonstrate here.</p>
+<p>Pub/Sub in redis allows a publisher to send things to subscribers without knowing who is actually subscribed. In a previous post, we covered <a href="https://nickolasfisher.com/blog/How-to-Publish-and-Subscribe-to-Redis-Using-Lettuce">a simple unit test for publishing and subscribing to lettuce</a>, but if you want to have a subscription initialized on application startup, and respond to events, we&rsquo;ll have to do a bit more, which I&rsquo;ll demonstrate here.</p>
     
   </div>
 
@@ -292,7 +292,7 @@
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>Running a lua script against redis is done using <a href="https://redis.io/commands/eval">EVAL</a>. The primary benefit of using a lua script is that the entire script is guaranteed to be run at once, and nothing else will interfere with it [it's atomic]. This allows for operating on multiple keys, or check-then-set type operations on the same key.</p>
+<p>Running a lua script against redis is done using <a href="https://redis.io/commands/eval">EVAL</a>. The primary benefit of using a lua script is that the entire script is guaranteed to be run at once, and nothing else will interfere with it [it&rsquo;s atomic]. This allows for operating on multiple keys, or check-then-set type operations on the same key.</p>
     
   </div>
 

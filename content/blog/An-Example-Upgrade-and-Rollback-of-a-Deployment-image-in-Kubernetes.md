@@ -5,9 +5,9 @@ draft: false
 tags: [java, spring, DevOps, kubernetes, kind]
 ---
 
-In this article, I&#39;m going to show you how to bootstrap a local kubernetes cluster with a custom image, debug it, deploy a new image, then rollback to the old image.
+In this article, I'm going to show you how to bootstrap a local kubernetes cluster with a custom image, debug it, deploy a new image, then rollback to the old image.
 
-If you don&#39;t have a good way to get a local kubernetes cluster, you should check out: [how to setup and use kind locally](https://nickolasfisher.com/blog/How-to-Setup-and-Use-Kubernetes-in-Docker-kind). Big fan.
+If you don't have a good way to get a local kubernetes cluster, you should check out: [how to setup and use kind locally](https://nickolasfisher.com/blog/How-to-Setup-and-Use-Kubernetes-in-Docker-kind). Big fan.
 
 ## Create Cluster, Make Base Resources
 
@@ -17,9 +17,9 @@ Start by creating a local kubernetes cluster using [kind](https://kind.sigs.k8s.
 kind create cluster
 ```
 
-This will automatically configure your **kubectl** cli to communicate to your local cluster (called &#34;kind&#34; by default).
+This will automatically configure your **kubectl** cli to communicate to your local cluster (called "kind" by default).
 
-I have created [a sample repository in Docker Hub](https://hub.docker.com/repository/docker/nfisher23/simplesb) with a few different versions that we&#39;ll use for this demo. Specifically, there are two versions (both tags):
+I have created [a sample repository in Docker Hub](https://hub.docker.com/repository/docker/nfisher23/simplesb) with a few different versions that we'll use for this demo. Specifically, there are two versions (both tags):
 
 - **v2**: has just an **/actuator/health** endpoint
 - **v3**: added a GET **/hello** endpoint
@@ -75,7 +75,7 @@ kubectl apply -f deployment.yaml
 
 ```
 
-Finally, we&#39;ll expose a way for other pods in the cluster to communicate with the pods managed by the deployment (actually, the deployment manages ReplicaSets, which in turn ensure we have enough pods) with one more yaml for cluster ip:
+Finally, we'll expose a way for other pods in the cluster to communicate with the pods managed by the deployment (actually, the deployment manages ReplicaSets, which in turn ensure we have enough pods) with one more yaml for cluster ip:
 
 ```yaml
 apiVersion: v1
@@ -102,7 +102,7 @@ kubectl apply -f service.yaml
 
 ```
 
-Note that, while I have shown these examples as being in three different yaml files, they could technically all be in one. It&#39;s usually easier to keep them more isolated, but if you&#39;re just proving things out/sandboxing, you can do so by separating them with **--**.
+Note that, while I have shown these examples as being in three different yaml files, they could technically all be in one. It's usually easier to keep them more isolated, but if you're just proving things out/sandboxing, you can do so by separating them with **--**.
 
 ## Debugging
 
@@ -133,12 +133,12 @@ nick-sample-sb-7f65cbf9fc-kd95d   1/1     Running   0          17m   10.244.1.5 
 
 ```
 
-Because CoreDNS is included with this version of kubernetes and it is a cluster aware DNS service, our cluster ip will automatically allow us to communicate via a DNS entry **nick-sample-sb-clusterip** if we are in the same namespace. Let&#39;s prove that--we can exec onto one of the pods and send a curl to the health endpoint:
+Because CoreDNS is included with this version of kubernetes and it is a cluster aware DNS service, our cluster ip will automatically allow us to communicate via a DNS entry **nick-sample-sb-clusterip** if we are in the same namespace. Let's prove that--we can exec onto one of the pods and send a curl to the health endpoint:
 
 ```bash
-$ POD=$(kubectl get pods -n nick-sample-sb | grep nick-sample | awk &#39;{print $1}&#39; | head -1)
+$ POD=$(kubectl get pods -n nick-sample-sb | grep nick-sample | awk '{print $1}' | head -1)
 $ kubectl exec --namespace nick-sample-sb $POD -- curl nick-sample-sb-clusterip/actuator/health
-{&#34;status&#34;:&#34;UP&#34;,&#34;components&#34;:{&#34;diskSpace&#34;:{&#34;status&#34;:&#34;UP&#34;,&#34;details&#34;:{&#34;total&#34;:117610516480,&#34;free&#34;:57556758528,&#34;threshold&#34;:10485760}},&#34;ping&#34;:{&#34;status&#34;:&#34;UP&#34;}}}
+{"status":"UP","components":{"diskSpace":{"status":"UP","details":{"total":117610516480,"free":57556758528,"threshold":10485760}},"ping":{"status":"UP"}}}
 
 ```
 
@@ -146,7 +146,7 @@ We can also notice that our **/hello** endpoint is not available:
 
 ```bash
 $ kubectl exec --namespace nick-sample-sb $POD -- curl nick-sample-sb-clusterip/hello
-{&#34;timestamp&#34;:&#34;2020-06-27T23:38:46.663&#43;0000&#34;,&#34;status&#34;:404,&#34;error&#34;:&#34;Not Found&#34;,&#34;message&#34;:&#34;No message available&#34;,&#34;path&#34;:&#34;/hello&#34;}
+{"timestamp":"2020-06-27T23:38:46.663+0000","status":404,"error":"Not Found","message":"No message available","path":"/hello"}
 
 ```
 
@@ -161,7 +161,7 @@ deployment.apps/nick-sample-sb image updated
 This command will update to the latest version and after all the pods come up, we can see that our **/hello** endpoint exists:
 
 ```bash
-$ POD=$(kubectl get pods -n nick-sample-sb | grep nick-sample | awk &#39;{print $1}&#39; | head -1)
+$ POD=$(kubectl get pods -n nick-sample-sb | grep nick-sample | awk '{print $1}' | head -1)
 $ kubectl exec --namespace nick-sample-sb $POD -- curl nick-sample-sb-clusterip/hello
 hello
 

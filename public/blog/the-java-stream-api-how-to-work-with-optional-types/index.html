@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="You can find the sample code associated with this post on GitHub.
-If Java programmers had a generic Facebook page, they would collectively have an &quot;it&#39;s complicated&quot; relationship with the null value."
+If Java programmers had a generic Facebook page, they would collectively have an &ldquo;it&rsquo;s complicated&rdquo; relationship with the null value."
 />
 <link rel="canonical" href="http://localhost:1313/blog/the-java-stream-api-how-to-work-with-optional-types/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,69 +154,69 @@ If Java programmers had a generic Facebook page, they would collectively have an
   
 
   <section><p>You can find the sample code associated with this post <a href="https://github.com/nfisher23/java_stream_api_samples">on GitHub</a>.</p>
-<p>If Java programmers had a generic Facebook page, they would collectively have an &quot;it's complicated&quot; relationship with the null value.</p>
+<p>If Java programmers had a generic Facebook page, they would collectively have an &ldquo;it&rsquo;s complicated&rdquo; relationship with the null value.</p>
 <p>Constantly having to check for null values can certainly be a real boon, both in the readability of your code as well as in the hidden implication that not
 checking for null means something might blow up. Of course, you could enforce contracts that say to never return null, but there are unfortunately, valid use cases for null.
 For example, if you query for an Account using a primary key and there is no account in the database, letting the method responsible for that
-return an empty Account value would be disingenuous&ndash;it's not that the Account had empty fields, after all, but that there wasn't an Account at all.</p>
-<p>The Java Stream API has provided a thoughtful solution to this problem through its Optional&lt;T&gt; type. The Optional&lt;T&gt; types allows us to more easily
+return an empty Account value would be disingenuous&ndash;it&rsquo;s not that the Account had empty fields, after all, but that there wasn&rsquo;t an Account at all.</p>
+<p>The Java Stream API has provided a thoughtful solution to this problem through its Optional<!-- raw HTML omitted --> type. The Optional<!-- raw HTML omitted --> types allows us to more easily
 specify behavior that we want to take place if a value exists or not.</p>
 <p>For example, working with our familiar set of names:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> List<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt; getListOfNames() {
-</span></span><span style="display:flex;"><span>    List<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt; names <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ArrayList<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">&amp;</span>gt;();
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">getListOfNames</span>() {
+</span></span><span style="display:flex;"><span>    List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> names <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ArrayList<span style="color:#ff79c6">&lt;&gt;</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    names.<span style="color:#50fa7b">add</span>(<span style="color:#ff79c6">&amp;</span>#34;John<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>    names.<span style="color:#50fa7b">add</span>(<span style="color:#ff79c6">&amp;</span>#34;Jacob<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>    names.<span style="color:#50fa7b">add</span>(<span style="color:#ff79c6">&amp;</span>#34;Jerry<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>    names.<span style="color:#50fa7b">add</span>(<span style="color:#ff79c6">&amp;</span>#34;Josephine<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>    names.<span style="color:#50fa7b">add</span>(<span style="color:#ff79c6">&amp;</span>#34;Janine<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>    names.<span style="color:#50fa7b">add</span>(<span style="color:#ff79c6">&amp;</span>#34;Alan<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>    names.<span style="color:#50fa7b">add</span>(<span style="color:#ff79c6">&amp;</span>#34;Beverly<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>    names.<span style="color:#50fa7b">add</span>(<span style="color:#f1fa8c">&#34;John&#34;</span>);
+</span></span><span style="display:flex;"><span>    names.<span style="color:#50fa7b">add</span>(<span style="color:#f1fa8c">&#34;Jacob&#34;</span>);
+</span></span><span style="display:flex;"><span>    names.<span style="color:#50fa7b">add</span>(<span style="color:#f1fa8c">&#34;Jerry&#34;</span>);
+</span></span><span style="display:flex;"><span>    names.<span style="color:#50fa7b">add</span>(<span style="color:#f1fa8c">&#34;Josephine&#34;</span>);
+</span></span><span style="display:flex;"><span>    names.<span style="color:#50fa7b">add</span>(<span style="color:#f1fa8c">&#34;Janine&#34;</span>);
+</span></span><span style="display:flex;"><span>    names.<span style="color:#50fa7b">add</span>(<span style="color:#f1fa8c">&#34;Alan&#34;</span>);
+</span></span><span style="display:flex;"><span>    names.<span style="color:#50fa7b">add</span>(<span style="color:#f1fa8c">&#34;Beverly&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> names;
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>We can select the last element, sorted by case, with the
 max(String::comparingToIgnoreCase) declaration. When we do that, we get an Optional:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Optional<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt; maxName <span style="color:#ff79c6">=</span> names.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">max</span>(String::compareToIgnoreCase);
-</span></span></code></pre></div><p>Now, if we didn't get a maximum name&ndash;which might happen if the collection were empty&ndash;the Optional would be empty. But if we did, the Optional would contain a value.
-One way to deal with that is with the <code>OrElse(..)</code> method, which says &quot;if there is a value in the Optional, give me that value. If there is not a value in the Optional, then give me the value I pass in
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Optional<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> maxName <span style="color:#ff79c6">=</span> names.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">max</span>(String::compareToIgnoreCase);
+</span></span></code></pre></div><p>Now, if we didn&rsquo;t get a maximum name&ndash;which might happen if the collection were empty&ndash;the Optional would be empty. But if we did, the Optional would contain a value.
+One way to deal with that is with the <code>OrElse(..)</code> method, which says &ldquo;if there is a value in the Optional, give me that value. If there is not a value in the Optional, then give me the value I pass in
 to the OrElse method:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">optional_max</span>() {
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt; maxName <span style="color:#ff79c6">=</span> names.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">max</span>(String::compareToIgnoreCase);
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> maxName <span style="color:#ff79c6">=</span> names.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">max</span>(String::compareToIgnoreCase);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    assertEquals(<span style="color:#ff79c6">&amp;</span>#34;Josephine<span style="color:#ff79c6">&amp;</span>#34;, maxName.<span style="color:#50fa7b">orElse</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">&amp;</span>#34;));
+</span></span><span style="display:flex;"><span>    assertEquals(<span style="color:#f1fa8c">&#34;Josephine&#34;</span>, maxName.<span style="color:#50fa7b">orElse</span>(<span style="color:#f1fa8c">&#34;&#34;</span>));
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Above, we can see that Josephine is the max string, i.e. the one last alphabetically in the collection. But what if there is no value? The behavior is predictable:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">optional_orElse</span>() {
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt; doesntExist <span style="color:#ff79c6">=</span> names.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">filter</span>(name <span style="color:#ff79c6">-&amp;</span>gt; name.<span style="color:#50fa7b">startsWith</span>(<span style="color:#ff79c6">&amp;</span>#34;Z<span style="color:#ff79c6">&amp;</span>#34;)).<span style="color:#50fa7b">findAny</span>();
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> doesntExist <span style="color:#ff79c6">=</span> names.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">filter</span>(name <span style="color:#ff79c6">-&gt;</span> name.<span style="color:#50fa7b">startsWith</span>(<span style="color:#f1fa8c">&#34;Z&#34;</span>)).<span style="color:#50fa7b">findAny</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    assertEquals(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">default</span><span style="color:#ff79c6">&amp;</span>#34;, doesntExist.<span style="color:#50fa7b">orElse</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">default</span><span style="color:#ff79c6">&amp;</span>#34;));
+</span></span><span style="display:flex;"><span>    assertEquals(<span style="color:#f1fa8c">&#34;default&#34;</span>, doesntExist.<span style="color:#50fa7b">orElse</span>(<span style="color:#f1fa8c">&#34;default&#34;</span>));
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Sometimes, if the Optional&lt;T&gt; is empty, we want to run a method that generates a value for use. We can do that with <code>OrElseGet(..)</code>,
-which takes a Supplier&lt;T&gt;. Here, we will compute the current time value as a String:</p>
+</span></span></code></pre></div><p>Sometimes, if the Optional<!-- raw HTML omitted --> is empty, we want to run a method that generates a value for use. We can do that with <code>OrElseGet(..)</code>,
+which takes a Supplier<!-- raw HTML omitted -->. Here, we will compute the current time value as a String:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">optional_orElseGet</span>() {
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt; doesntExist <span style="color:#ff79c6">=</span> names.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">filter</span>(name <span style="color:#ff79c6">-&amp;</span>gt; name.<span style="color:#50fa7b">startsWith</span>(<span style="color:#ff79c6">&amp;</span>#34;Z<span style="color:#ff79c6">&amp;</span>#34;)).<span style="color:#50fa7b">findAny</span>();
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> doesntExist <span style="color:#ff79c6">=</span> names.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">filter</span>(name <span style="color:#ff79c6">-&gt;</span> name.<span style="color:#50fa7b">startsWith</span>(<span style="color:#f1fa8c">&#34;Z&#34;</span>)).<span style="color:#50fa7b">findAny</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    String stringTime <span style="color:#ff79c6">=</span> doesntExist.<span style="color:#50fa7b">orElseGet</span>(() <span style="color:#ff79c6">-&amp;</span>gt; Instant.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">toString</span>());
+</span></span><span style="display:flex;"><span>    String stringTime <span style="color:#ff79c6">=</span> doesntExist.<span style="color:#50fa7b">orElseGet</span>(() <span style="color:#ff79c6">-&gt;</span> Instant.<span style="color:#50fa7b">now</span>().<span style="color:#50fa7b">toString</span>());
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(stringTime);
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>If we don't get a value in an Optional, we might want to throw a custom exception. Without Optionals, our code would just throw a
+</span></span></code></pre></div><p>If we don&rsquo;t get a value in an Optional, we might want to throw a custom exception. Without Optionals, our code would just throw a
 NullPointerException, which might be too vague for us to easily find a solution to. We can throw a custom exception with
 <code>OrElseThrow(..)</code>. Here, we will throw a RuntimeException:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test(expected <span style="color:#ff79c6">=</span> RuntimeException.<span style="color:#50fa7b">class</span>)
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">optional_orElseThrow</span>() {
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt; doesntExist <span style="color:#ff79c6">=</span> names.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">filter</span>(name <span style="color:#ff79c6">-&amp;</span>gt; name.<span style="color:#50fa7b">startsWith</span>(<span style="color:#ff79c6">&amp;</span>#34;Z<span style="color:#ff79c6">&amp;</span>#34;)).<span style="color:#50fa7b">findAny</span>();
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> doesntExist <span style="color:#ff79c6">=</span> names.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">filter</span>(name <span style="color:#ff79c6">-&gt;</span> name.<span style="color:#50fa7b">startsWith</span>(<span style="color:#f1fa8c">&#34;Z&#34;</span>)).<span style="color:#50fa7b">findAny</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    doesntExist.<span style="color:#50fa7b">orElseThrow</span>(() <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">new</span> RuntimeException(<span style="color:#ff79c6">&amp;</span>#34;No names starting with <span style="color:#ff79c6">&amp;</span>#39;Z<span style="color:#ff79c6">&amp;</span>#39; in the collection<span style="color:#ff79c6">&amp;</span>#34;));
+</span></span><span style="display:flex;"><span>    doesntExist.<span style="color:#50fa7b">orElseThrow</span>(() <span style="color:#ff79c6">-&gt;</span> <span style="color:#ff79c6">new</span> RuntimeException(<span style="color:#f1fa8c">&#34;No names starting with &#39;Z&#39; in the collection&#34;</span>));
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Perhaps the most useful of the methods we can run on an Optional&lt;T&gt; is <code>ifPresent(..)</code>. <code>ifPresent(..)</code> runs only if the Optional
-contains a value, does nothing otherwise, and it takes a Consumer&lt;T&gt;. If we have a real simple Consumer that simply saves the value you
+</span></span></code></pre></div><p>Perhaps the most useful of the methods we can run on an Optional<!-- raw HTML omitted --> is <code>ifPresent(..)</code>. <code>ifPresent(..)</code> runs only if the Optional
+contains a value, does nothing otherwise, and it takes a Consumer<!-- raw HTML omitted -->. If we have a real simple Consumer that simply saves the value you
 pass into it:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">SimpleConsumer</span> <span style="color:#8be9fd;font-style:italic">implements</span> Consumer<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt; {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">SimpleConsumer</span> <span style="color:#8be9fd;font-style:italic">implements</span> Consumer<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> {
 </span></span><span style="display:flex;"><span>    String internalValue <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">null</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Override
@@ -227,29 +227,29 @@ pass into it:</p>
 </span></span></code></pre></div><p>We can then validate that the method does, in fact, run, with a test like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">optional_ifPresent_exists</span>() {
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt; alan <span style="color:#ff79c6">=</span> names.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">filter</span>(name <span style="color:#ff79c6">-&amp;</span>gt; name.<span style="color:#50fa7b">equals</span>(<span style="color:#ff79c6">&amp;</span>#34;Alan<span style="color:#ff79c6">&amp;</span>#34;)).<span style="color:#50fa7b">findFirst</span>();
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> alan <span style="color:#ff79c6">=</span> names.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">filter</span>(name <span style="color:#ff79c6">-&gt;</span> name.<span style="color:#50fa7b">equals</span>(<span style="color:#f1fa8c">&#34;Alan&#34;</span>)).<span style="color:#50fa7b">findFirst</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    SimpleConsumer shouldRun <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> SimpleConsumer();
 </span></span><span style="display:flex;"><span>    alan.<span style="color:#50fa7b">ifPresent</span>(shouldRun);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    assertEquals(<span style="color:#ff79c6">&amp;</span>#34;Alan<span style="color:#ff79c6">&amp;</span>#34;, shouldRun.<span style="color:#50fa7b">internalValue</span>);
+</span></span><span style="display:flex;"><span>    assertEquals(<span style="color:#f1fa8c">&#34;Alan&#34;</span>, shouldRun.<span style="color:#50fa7b">internalValue</span>);
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Whereas it does nothing if there isn't a value:</p>
+</span></span></code></pre></div><p>Whereas it does nothing if there isn&rsquo;t a value:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">optional_ifPresent_DNE</span>() {
-</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt; notHere <span style="color:#ff79c6">=</span> names.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">filter</span>(name <span style="color:#ff79c6">-&amp;</span>gt; name.<span style="color:#50fa7b">equals</span>(<span style="color:#ff79c6">&amp;</span>#34;Not a Real Name<span style="color:#ff79c6">&amp;</span>#34;)).<span style="color:#50fa7b">findFirst</span>();
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> notHere <span style="color:#ff79c6">=</span> names.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">filter</span>(name <span style="color:#ff79c6">-&gt;</span> name.<span style="color:#50fa7b">equals</span>(<span style="color:#f1fa8c">&#34;Not a Real Name&#34;</span>)).<span style="color:#50fa7b">findFirst</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    notHere.<span style="color:#50fa7b">ifPresent</span>(name <span style="color:#ff79c6">-&amp;</span>gt; { <span style="color:#ff79c6">throw</span> <span style="color:#ff79c6">new</span> RuntimeException(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">this</span> exception won<span style="color:#ff79c6">&amp;</span>#39;t get thrown<span style="color:#ff79c6">&amp;</span>#34;); });
+</span></span><span style="display:flex;"><span>    notHere.<span style="color:#50fa7b">ifPresent</span>(name <span style="color:#ff79c6">-&gt;</span> { <span style="color:#ff79c6">throw</span> <span style="color:#ff79c6">new</span> RuntimeException(<span style="color:#f1fa8c">&#34;this exception won&#39;t get thrown&#34;</span>); });
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>There are other methods we can run on Optionals as well, which have parallel concepts to Streams. In many ways, it's fair to think of
-an Optional&lt;T&gt; as a Stream with zero or one elements. We can map the value, if there is one, like so:</p>
+</span></span></code></pre></div><p>There are other methods we can run on Optionals as well, which have parallel concepts to Streams. In many ways, it&rsquo;s fair to think of
+an Optional<!-- raw HTML omitted --> as a Stream with zero or one elements. We can map the value, if there is one, like so:</p>
 <pre tabindex="0"><code>@Test
 public void optional_map() {
-    Optional&amp;lt;String&amp;gt; alan = names.stream().filter(name -&amp;gt; name.equals(&amp;#34;Alan&amp;#34;)).findFirst();
+    Optional&lt;String&gt; alan = names.stream().filter(name -&gt; name.equals(&#34;Alan&#34;)).findFirst();
 
-    Optional&amp;lt;String&amp;gt; firstChar = alan.map(name -&amp;gt; name.substring(0, 1));
+    Optional&lt;String&gt; firstChar = alan.map(name -&gt; name.substring(0, 1));
 
-    assertEquals(&amp;#34;A&amp;#34;, firstChar.orElseThrow(RuntimeException::new));
+    assertEquals(&#34;A&#34;, firstChar.orElseThrow(RuntimeException::new));
 }
 </code></pre></section>
 

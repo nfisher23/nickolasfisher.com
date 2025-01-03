@@ -155,16 +155,16 @@
   <section><p>SNS is a medium to broadcast messages to multiple subscribers. A common use case is to have multiple SQS queues subscribing to the same SNS topic&ndash;this way, the <em>publishing</em> application only needs to focus on events that are specific to its business use case, and <em>subscribing</em> applications can configure an SQS queue and consume the event independently of other services. This helps organizations scale and significantly reduces the need to communicate between teams&ndash;each team can focus on its contract and business use case.</p>
 <p>This article will show how to publish to an SNS topic with java, using the AWS SDK 2.0, which has full reactive support. The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
 <h2 id="setup-infra">Setup Infra</h2>
-<p>To start with, I'll leverage a previous article written which <a href="https://nickolasfisher.com/blog/How-to-Setup-SNS-Message-Forwarding-to-SQS-with-the-AWS-CLI">sets up a subscription for an SQS queue on an SNS topic</a>. There, we had a <strong>docker-compose.yaml</strong> file like:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">version</span>: <span style="color:#ff79c6">&amp;#39;2.1&amp;#39;</span>
+<p>To start with, I&rsquo;ll leverage a previous article written which <a href="https://nickolasfisher.com/blog/How-to-Setup-SNS-Message-Forwarding-to-SQS-with-the-AWS-CLI">sets up a subscription for an SQS queue on an SNS topic</a>. There, we had a <strong>docker-compose.yaml</strong> file like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">version</span>: <span style="color:#f1fa8c">&#39;2.1&#39;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">services</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">localstack</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">container_name</span>: <span style="color:#ff79c6">&amp;#34;${LOCALSTACK_DOCKER_NAME-localstack_main}&amp;#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">container_name</span>: <span style="color:#f1fa8c">&#34;${LOCALSTACK_DOCKER_NAME-localstack_main}&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: localstack/localstack
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:
-</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">&amp;#34;4566-4599:4566-4599&amp;#34;</span>
-</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">&amp;#34;${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}&amp;#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;4566-4599:4566-4599&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">environment</span>:
 </span></span><span style="display:flex;"><span>      - SERVICES=${SERVICES- }
 </span></span><span style="display:flex;"><span>      - DEBUG=${DEBUG- }
@@ -175,36 +175,36 @@
 </span></span><span style="display:flex;"><span>      - DOCKER_HOST=unix:///var/run/docker.sock
 </span></span><span style="display:flex;"><span>      - HOST_TMP_FOLDER=${TMPDIR}
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">volumes</span>:
-</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">&amp;#34;${TMPDIR:-/tmp/localstack}:/tmp/localstack&amp;#34;</span>
-</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">&amp;#34;/var/run/docker.sock:/var/run/docker.sock&amp;#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;${TMPDIR:-/tmp/localstack}:/tmp/localstack&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;/var/run/docker.sock:/var/run/docker.sock&#34;</span>
 </span></span></code></pre></div><p>And, our initializing script to setup the queue subscribing to the topic was:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_SECRET_ACCESS_KEY</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_ACCESS_KEY_ID</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_SECRET_ACCESS_KEY</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;FAKE&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_ACCESS_KEY_ID</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;FAKE&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_DEFAULT_REGION</span><span style="color:#ff79c6">=</span>us-east-1
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_NAME</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;my-queue&amp;#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">TOPIC_NAME</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;my-topic&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_NAME</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;my-queue&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">TOPIC_NAME</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;my-topic&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_URL</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name &amp;<span style="color:#6272a4">#34;$QUEUE_NAME&amp;#34; --output text)</span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;queue url: $QUEUE_URL&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_URL</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$QUEUE_NAME</span><span style="color:#f1fa8c">&#34;</span> --output text<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#f1fa8c">&#34;queue url: </span><span style="color:#8be9fd;font-style:italic">$QUEUE_URL</span><span style="color:#f1fa8c">&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">TOPIC_ARN</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sns create-topic --output text --name &amp;<span style="color:#6272a4">#34;$TOPIC_NAME&amp;#34;)</span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;topic arn: $TOPIC_ARN&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">TOPIC_ARN</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sns create-topic --output text --name <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$TOPIC_NAME</span><span style="color:#f1fa8c">&#34;</span><span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#f1fa8c">&#34;topic arn: </span><span style="color:#8be9fd;font-style:italic">$TOPIC_ARN</span><span style="color:#f1fa8c">&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_ARN</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sqs get-queue-attributes --queue-url &amp;<span style="color:#6272a4">#34;$QUEUE_URL&amp;#34; | jq -r &amp;#34;.Attributes.QueueArn&amp;#34;)</span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;queue arn: $QUEUE_ARN&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_ARN</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sqs get-queue-attributes --queue-url <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$QUEUE_URL</span><span style="color:#f1fa8c">&#34;</span> | jq -r <span style="color:#f1fa8c">&#34;.Attributes.QueueArn&#34;</span><span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#f1fa8c">&#34;queue arn: </span><span style="color:#8be9fd;font-style:italic">$QUEUE_ARN</span><span style="color:#f1fa8c">&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">SUBSCRIPTION_ARN</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sns subscribe --topic-arn &amp;<span style="color:#6272a4">#34;$TOPIC_ARN&amp;#34; --protocol sqs --notification-endpoint &amp;#34;$QUEUE_ARN&amp;#34; --output text)</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">SUBSCRIPTION_ARN</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sns subscribe --topic-arn <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$TOPIC_ARN</span><span style="color:#f1fa8c">&#34;</span> --protocol sqs --notification-endpoint <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$QUEUE_ARN</span><span style="color:#f1fa8c">&#34;</span> --output text<span style="color:#ff79c6">)</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># modify to raw message delivery true</span>
 </span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sns set-subscription-attributes <span style="color:#f1fa8c">\
-</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>  --subscription-arn &amp;<span style="color:#6272a4">#34;$SUBSCRIPTION_ARN&amp;#34; --attribute-name RawMessageDelivery --attribute-value true</span>
-</span></span></code></pre></div><p>This configures an SQS queue named &quot;my-queue&quot; and an SNS topic named &quot;my-topic&quot;. It then sets up a subscription for the queue on the topic with &quot;raw message delivery&quot; as true.</p>
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>  --subscription-arn <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$SUBSCRIPTION_ARN</span><span style="color:#f1fa8c">&#34;</span> --attribute-name RawMessageDelivery --attribute-value <span style="color:#8be9fd;font-style:italic">true</span>
+</span></span></code></pre></div><p>This configures an SQS queue named &ldquo;my-queue&rdquo; and an SNS topic named &ldquo;my-topic&rdquo;. It then sets up a subscription for the queue on the topic with &ldquo;raw message delivery&rdquo; as true.</p>
 <p>With this in place, we can start writing code. I will again leverage work done in a previous article about <a href="https://nickolasfisher.com/blog/How-to-Setup-a-Reactive-SQS-Listener-Using-the-AWS-SDK-and-Spring-Boot">setting up a reactive SQS listener in spring boot</a>. To start with, we will add in a dependency for SNS [note that this leverages the bill of materials spec in the maven pom, which is why there is no version specified here]:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>&amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;groupId&amp;gt;software.amazon.awssdk&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;artifactId&amp;gt;sns&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>&amp;lt;/dependency&amp;gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;groupId&gt;</span>software.amazon.awssdk<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;artifactId&gt;</span>sns<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/dependency&gt;</span>
 </span></span></code></pre></div><p>This obviously imports the AWS library for SNS, which we can use to configure an sns client like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Configuration
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">AwsSnsConfig</span> {
@@ -212,17 +212,17 @@
 </span></span><span style="display:flex;"><span>    @Bean
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> SnsAsyncClient <span style="color:#50fa7b">amazonSNSAsyncClient</span>() {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> SnsAsyncClient.<span style="color:#50fa7b">builder</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">endpointOverride</span>(URI.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:4566&amp;#34;))</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">endpointOverride</span>(URI.<span style="color:#50fa7b">create</span>(<span style="color:#f1fa8c">&#34;http://localhost:4566&#34;</span>))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">region</span>(Region.<span style="color:#50fa7b">US_EAST_1</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">credentialsProvider</span>(StaticCredentialsProvider.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">new</span> AwsCredentials() {
 </span></span><span style="display:flex;"><span>                    @Override
 </span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">accessKeyId</span>() {
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;FAKE&#34;</span>;
 </span></span><span style="display:flex;"><span>                    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>                    @Override
 </span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">secretAccessKey</span>() {
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;FAKE&#34;</span>;
 </span></span><span style="display:flex;"><span>                    }
 </span></span><span style="display:flex;"><span>                }))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
@@ -234,8 +234,8 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> SnsAsyncClient snsAsyncClient;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// ARN&amp;#39;s are immutable. In reality, you&amp;#39;ll want to pass this in as config per environment</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String topicARN <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;arn:aws:sns:us<span style="color:#ff79c6">-</span>east<span style="color:#ff79c6">-</span>1:000000000000:my<span style="color:#ff79c6">-</span>topic<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// ARN&#39;s are immutable. In reality, you&#39;ll want to pass this in as config per environment</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String topicARN <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;arn:aws:sns:us-east-1:000000000000:my-topic&#34;</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">SnsSenderBean</span>(SnsAsyncClient snsAsyncClient) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">snsAsyncClient</span> <span style="color:#ff79c6">=</span> snsAsyncClient;
@@ -243,12 +243,12 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @PostConstruct
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">sendHelloToSNS</span>() {
-</span></span><span style="display:flex;"><span>        Mono.<span style="color:#50fa7b">fromFuture</span>(() <span style="color:#ff79c6">-&amp;</span>gt; snsAsyncClient.<span style="color:#50fa7b">publish</span>(PublishRequest.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">topicArn</span>(topicARN).<span style="color:#50fa7b">message</span>(<span style="color:#ff79c6">&amp;</span>#34;message<span style="color:#ff79c6">-</span>from<span style="color:#ff79c6">-</span>sns<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">build</span>()))
+</span></span><span style="display:flex;"><span>        Mono.<span style="color:#50fa7b">fromFuture</span>(() <span style="color:#ff79c6">-&gt;</span> snsAsyncClient.<span style="color:#50fa7b">publish</span>(PublishRequest.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">topicArn</span>(topicARN).<span style="color:#50fa7b">message</span>(<span style="color:#f1fa8c">&#34;message-from-sns&#34;</span>).<span style="color:#50fa7b">build</span>()))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">repeat</span>(3)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">subscribe</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>This sends four identical messages to SNS with a body of &quot;message-from-sns&quot;. These four messages will end up in the SQS queue, forwarded by SNS.</p>
+</span></span></code></pre></div><p>This sends four identical messages to SNS with a body of &ldquo;message-from-sns&rdquo;. These four messages will end up in the SQS queue, forwarded by SNS.</p>
 <p>The SQS listener already configured will pick up these messages, write some logs, then delete them off the queue. My logs look like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>c.n.reactivesqs.SQSListenerBean : message body: message-from-sns
 </span></span><span style="display:flex;"><span>c.n.reactivesqs.SQSListenerBean : message body: message-from-sns

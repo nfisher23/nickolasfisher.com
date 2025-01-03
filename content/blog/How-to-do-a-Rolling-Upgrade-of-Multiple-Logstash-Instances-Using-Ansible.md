@@ -7,7 +7,7 @@ tags: [distributed systems, vagrant, ansible, the elastic stack, DevOps]
 
 You can see the source code for this post [on GitHub](https://github.com/nfisher23/some-ansible-examples).
 
-In a previous post on [How to Provision Multiple Logstash Hosts Using Ansible](https://nickolasfisher.com/blog/How-to-Provision-Multiple-Logstash-Hosts-Using-Ansible), we saw that provisioning logstash is pretty straightforward. However, what do we do with it after it&#39;s been out there transforming messages this entire time? Given that elastic comes out with a new version of Logstash every fifteen or twenty minutes, a wise person would look to automate the upgrade process as soon as possible.
+In a previous post on [How to Provision Multiple Logstash Hosts Using Ansible](https://nickolasfisher.com/blog/How-to-Provision-Multiple-Logstash-Hosts-Using-Ansible), we saw that provisioning logstash is pretty straightforward. However, what do we do with it after it's been out there transforming messages this entire time? Given that elastic comes out with a new version of Logstash every fifteen or twenty minutes, a wise person would look to automate the upgrade process as soon as possible.
 
 This post will examine an in place upgrade of logstash.
 
@@ -19,7 +19,7 @@ We can create out ansible role using Molecule, and use vagrant as our local virt
 $ molecule init role -r upgrade-logstash -d vagrant
 ```
 
-First, we&#39;ll need to adjust our **molecule/default/molecule.yml** file by creating some virtual machine to drop our logstash instances on:
+First, we'll need to adjust our **molecule/default/molecule.yml** file by creating some virtual machine to drop our logstash instances on:
 
 ```yaml
 platforms:
@@ -27,7 +27,7 @@ platforms:
     box: ubuntu/xenial64
     memory: 4096
     provider_raw_config_args:
-    - &#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;
+    - "customize ['modifyvm', :id, '--uartmode1', 'disconnected']"
     interfaces:
     - auto_config: true
       network_name: private_network
@@ -37,7 +37,7 @@ platforms:
     box: ubuntu/xenial64
     memory: 4096
     provider_raw_config_args:
-    - &#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;
+    - "customize ['modifyvm', :id, '--uartmode1', 'disconnected']"
     interfaces:
     - auto_config: true
       network_name: private_network
@@ -61,7 +61,7 @@ $ molecule create &amp;&amp; molecule converge
 
 To get your VMs up and logstash on them.
 
-We will create a logstash upgrade yml file and only use it when we have a parameter upgrade\_ls set to true. I&#39;m dropping this file in **tasks/upgrade\_ls.yml:**
+We will create a logstash upgrade yml file and only use it when we have a parameter upgrade\_ls set to true. I'm dropping this file in **tasks/upgrade\_ls.yml:**
 
 ```yaml
 ---
@@ -75,9 +75,9 @@ We will create a logstash upgrade yml file and only use it when we have a parame
   block:
   - name: get logstash deb version
     get_url:
-      dest: &#34;/etc/{{ ls_version_to_upgrade_to }}&#34;
-      url: &#34;https://artifacts.elastic.co/downloads/logstash/{{ ls_version_to_upgrade_to }}&#34;
-      checksum: &#34;sha512:https://artifacts.elastic.co/downloads/logstash/{{ ls_version_to_upgrade_to }}.sha512&#34;
+      dest: "/etc/{{ ls_version_to_upgrade_to }}"
+      url: "https://artifacts.elastic.co/downloads/logstash/{{ ls_version_to_upgrade_to }}"
+      checksum: "sha512:https://artifacts.elastic.co/downloads/logstash/{{ ls_version_to_upgrade_to }}.sha512"
     become: yes
 
   - name: shut down instance
@@ -87,10 +87,10 @@ We will create a logstash upgrade yml file and only use it when we have a parame
 
   - name: install new version
     apt:
-      deb: &#34;/etc/{{ ls_version_to_upgrade_to }}&#34;
+      deb: "/etc/{{ ls_version_to_upgrade_to }}"
 
   - name: test configuration files
-    shell: /usr/share/logstash/bin/logstash -t &#34;--path.settings&#34; &#34;/etc/logstash&#34;
+    shell: /usr/share/logstash/bin/logstash -t "--path.settings" "/etc/logstash"
 
   - name: restart pipeline
     service:
@@ -135,7 +135,7 @@ provisioner:
 
 As you can see, we will be upgrade logstash to version 6.5.3 in this example.
 
-Finally, we will want to upgrade one at a time, which means that we&#39;ll use the serial flag in our **molecule/default/playbook.yml**:
+Finally, we will want to upgrade one at a time, which means that we'll use the serial flag in our **molecule/default/playbook.yml**:
 
 ```yaml
 ---

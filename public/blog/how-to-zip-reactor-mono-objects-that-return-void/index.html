@@ -153,22 +153,24 @@
   
 
   <section><p>Leveraging <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html#zip-java.lang.Iterable-java.util.function.Function-">Mono.zip</a> appropriately will [with the right configuration] lead to a high amount of performance and concurrency. There is one caveat to its usage though:</p>
-<p>&gt; An error or <strong>empty</strong> completion of any source will cause other sources
-&gt; to be cancelled and the resulting Mono to immediately error or complete, respectively.</p>
+<blockquote>
+<p>An error or <strong>empty</strong> completion of any source will cause other sources
+to be cancelled and the resulting Mono to immediately error or complete, respectively.</p>
+</blockquote>
 <p>This ultimately means we need to make sure that every <strong>Mono</strong> that we plug into a zip needs to emit a value [ <strong>onNext</strong>]. Returning an empty <strong>Mono</strong> will cause us pain and suffering, as this failing unit test should demonstrate:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">handleVoidsInMonos</span>() {
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt; monoThatDoesSomething <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt; Mono.<span style="color:#50fa7b">empty</span>());
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Void<span style="color:#ff79c6">&gt;</span> monoThatDoesSomething <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&gt;</span> Mono.<span style="color:#50fa7b">empty</span>());
 </span></span><span style="display:flex;"><span>        Object objectReturned <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Object();
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Object<span style="color:#ff79c6">&amp;</span>gt; monoThatReturnsSomething <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Object<span style="color:#ff79c6">&gt;</span> monoThatReturnsSomething <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">just</span>(objectReturned);
 </span></span><span style="display:flex;"><span>        });
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        List<span style="color:#ff79c6">&amp;</span>lt;Mono<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">?&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; monoCollection <span style="color:#ff79c6">=</span> Arrays.<span style="color:#50fa7b">asList</span>(monoThatReturnsSomething, monoThatDoesSomething);
+</span></span><span style="display:flex;"><span>        List<span style="color:#ff79c6">&lt;</span>Mono<span style="color:#ff79c6">&lt;?&gt;&gt;</span> monoCollection <span style="color:#ff79c6">=</span> Arrays.<span style="color:#50fa7b">asList</span>(monoThatReturnsSomething, monoThatDoesSomething);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(Mono.<span style="color:#50fa7b">zip</span>(monoCollection, objects <span style="color:#ff79c6">-&amp;</span>gt; objects<span style="color:#ff79c6">[</span>0<span style="color:#ff79c6">]</span>))
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(Mono.<span style="color:#50fa7b">zip</span>(monoCollection, objects <span style="color:#ff79c6">-&gt;</span> objects<span style="color:#ff79c6">[</span>0<span style="color:#ff79c6">]</span>))
 </span></span><span style="display:flex;"><span>                <span style="color:#6272a4">// fails</span>
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(obj <span style="color:#ff79c6">-&amp;</span>gt; obj <span style="color:#ff79c6">==</span> objectReturned)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(obj <span style="color:#ff79c6">-&gt;</span> obj <span style="color:#ff79c6">==</span> objectReturned)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>Here, we fail on <strong>expectNextMatches</strong>, because the <strong>monoThatDoesSomething</strong> completes without emitting an item.</p>
@@ -179,23 +181,23 @@ the <strong>Mono</strong>[s] that are designed to return <strong>Void</strong> o
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">handleVoidsInMonos_works</span>() {
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt; monoThatDoesSomething <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt; Mono.<span style="color:#50fa7b">empty</span>());
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Void<span style="color:#ff79c6">&gt;</span> monoThatDoesSomething <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&gt;</span> Mono.<span style="color:#50fa7b">empty</span>());
 </span></span><span style="display:flex;"><span>        Object objectReturned <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Object();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Object<span style="color:#ff79c6">&amp;</span>gt; monoThatReturnsSomething <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt; Mono.<span style="color:#50fa7b">just</span>(objectReturned));
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Object<span style="color:#ff79c6">&gt;</span> monoThatReturnsSomething <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&gt;</span> Mono.<span style="color:#50fa7b">just</span>(objectReturned));
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        List<span style="color:#ff79c6">&amp;</span>lt;Mono<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">?&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; monoCollection <span style="color:#ff79c6">=</span> Arrays.<span style="color:#50fa7b">asList</span>(
+</span></span><span style="display:flex;"><span>        List<span style="color:#ff79c6">&lt;</span>Mono<span style="color:#ff79c6">&lt;?&gt;&gt;</span> monoCollection <span style="color:#ff79c6">=</span> Arrays.<span style="color:#50fa7b">asList</span>(
 </span></span><span style="display:flex;"><span>                monoThatReturnsSomething,
 </span></span><span style="display:flex;"><span>                monoThatDoesSomething.<span style="color:#50fa7b">then</span>(Mono.<span style="color:#50fa7b">just</span>(<span style="color:#ff79c6">new</span> Object()))
 </span></span><span style="display:flex;"><span>            );
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Object<span style="color:#ff79c6">&amp;</span>gt; zipped <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">zip</span>(monoCollection, objects <span style="color:#ff79c6">-&amp;</span>gt; objects<span style="color:#ff79c6">[</span>0<span style="color:#ff79c6">]</span>);
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Object<span style="color:#ff79c6">&gt;</span> zipped <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">zip</span>(monoCollection, objects <span style="color:#ff79c6">-&gt;</span> objects<span style="color:#ff79c6">[</span>0<span style="color:#ff79c6">]</span>);
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(zipped)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(obj <span style="color:#ff79c6">-&amp;</span>gt; obj <span style="color:#ff79c6">==</span> objectReturned)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(obj <span style="color:#ff79c6">-&gt;</span> obj <span style="color:#ff79c6">==</span> objectReturned)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>This test passes because we're saying &quot;once <strong>monoThatDoesSomething</strong> completes, immediately return a <strong>Mono</strong> that has just an empty object in it. We then submit that <strong>Mono</strong> to the zip rather than the original that didn't emit an item.</p>
-<p>If you stare hard at the quote in the method definition, then you'll understand that this is a safe way to ensure all of the <strong>Mono</strong>[s] submitted to the zip complete correctly, and any other method to do this will also need to keep that quote in mind.</p>
+</span></span></code></pre></div><p>This test passes because we&rsquo;re saying &ldquo;once <strong>monoThatDoesSomething</strong> completes, immediately return a <strong>Mono</strong> that has just an empty object in it. We then submit that <strong>Mono</strong> to the zip rather than the original that didn&rsquo;t emit an item.</p>
+<p>If you stare hard at the quote in the method definition, then you&rsquo;ll understand that this is a safe way to ensure all of the <strong>Mono</strong>[s] submitted to the zip complete correctly, and any other method to do this will also need to keep that quote in mind.</p>
 </section>
 
   

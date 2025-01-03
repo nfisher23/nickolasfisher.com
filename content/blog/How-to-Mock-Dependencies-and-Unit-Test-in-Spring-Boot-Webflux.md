@@ -7,13 +7,13 @@ tags: [java, spring, reactive, webflux]
 
 The source code for this post can be found [on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing).
 
-The most straightforward way to write unit tests in spring boot webflux is to leverage [project reactor&#39;s StepVerifier](https://projectreactor.io/docs/test/release/api/reactor/test/StepVerifier.html). StepVerifier allows you to pull each item in a **Flux** or the only potential item in a **Mono** and make assertions about each item as it&#39;s pulled through the chain, or make assertions about certain errors that should be thrown in the process. I&#39;m going to quickly walk you through an example integrating mockito with it and webflux.
+The most straightforward way to write unit tests in spring boot webflux is to leverage [project reactor's StepVerifier](https://projectreactor.io/docs/test/release/api/reactor/test/StepVerifier.html). StepVerifier allows you to pull each item in a **Flux** or the only potential item in a **Mono** and make assertions about each item as it's pulled through the chain, or make assertions about certain errors that should be thrown in the process. I'm going to quickly walk you through an example integrating mockito with it and webflux.
 
 ## Bootstrap the Project
 
-We&#39;re going to make a single endpoint whose job is to filter the results from a downstream call to prevent sensitive information from travelling arbitrarily to the client.
+We're going to make a single endpoint whose job is to filter the results from a downstream call to prevent sensitive information from travelling arbitrarily to the client.
 
-Go to the [spring initializr](https://start.spring.io/) and select the reactive web option. After you have unzipped it, let&#39;s set up our data models, service, web client config, and controller:
+Go to the [spring initializr](https://start.spring.io/) and select the reactive web option. After you have unzipped it, let's set up our data models, service, web client config, and controller:
 
 ```java
 public class DownstreamResponseDTO {
@@ -80,7 +80,7 @@ public class PersonDTO {
 
 ```
 
-As we can see, the downstream service will respond with the users SSN and deepest fear. Let&#39;s say for the sake of this example that our clients don&#39;t need that information. Here&#39;s our controller:
+As we can see, the downstream service will respond with the users SSN and deepest fear. Let's say for the sake of this example that our clients don't need that information. Here's our controller:
 
 ```java
 @RestController
@@ -92,9 +92,9 @@ public class MyController {
         this.service = service;
     }
 
-    @GetMapping(&#34;/persons&#34;)
-    public Flux&lt;PersonDTO&gt; getPersons() {
-        return service.getAllPeople().map(downstreamResponseDTO -&gt; {
+    @GetMapping("/persons")
+    public Flux<PersonDTO> getPersons() {
+        return service.getAllPeople().map(downstreamResponseDTO -> {
             PersonDTO personDTO = new PersonDTO();
 
             personDTO.setFirstName(downstreamResponseDTO.getFirstName());
@@ -119,9 +119,9 @@ public class MyService {
         this.webClient = webClient;
     }
 
-    public Flux&lt;DownstreamResponseDTO&gt; getAllPeople() {
+    public Flux<DownstreamResponseDTO> getAllPeople() {
         return this.webClient.get()
-                .uri(&#34;/legacy/persons&#34;)
+                .uri("/legacy/persons")
                 .retrieve()
                 .bodyToFlux(DownstreamResponseDTO.class);
     }
@@ -138,7 +138,7 @@ public class MyConfig {
     @Bean
     public WebClient webClient() {
         return WebClient.builder()
-                .baseUrl(&#34;http://localhost:9000&#34;)
+                .baseUrl("http://localhost:9000")
                 .defaultHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
@@ -163,24 +163,24 @@ public class MyControllerTest {
     @Test
     public void verifyTransformsCorrectly() {
         DownstreamResponseDTO downstreamResponseDTO_1 = new DownstreamResponseDTO();
-        downstreamResponseDTO_1.setFirstName(&#34;jack&#34;);
-        downstreamResponseDTO_1.setLastName(&#34;attack&#34;);
-        downstreamResponseDTO_1.setDeepesetFear(&#34;spiders&#34;);
-        downstreamResponseDTO_1.setSsn(&#34;123-45-6789&#34;);
+        downstreamResponseDTO_1.setFirstName("jack");
+        downstreamResponseDTO_1.setLastName("attack");
+        downstreamResponseDTO_1.setDeepesetFear("spiders");
+        downstreamResponseDTO_1.setSsn("123-45-6789");
 
         DownstreamResponseDTO downstreamResponseDTO_2 = new DownstreamResponseDTO();
-        downstreamResponseDTO_2.setFirstName(&#34;karen&#34;);
-        downstreamResponseDTO_2.setLastName(&#34;cool&#34;);
-        downstreamResponseDTO_2.setDeepesetFear(&#34;snakes&#34;);
-        downstreamResponseDTO_2.setSsn(&#34;000-00-0000&#34;);
+        downstreamResponseDTO_2.setFirstName("karen");
+        downstreamResponseDTO_2.setLastName("cool");
+        downstreamResponseDTO_2.setDeepesetFear("snakes");
+        downstreamResponseDTO_2.setSsn("000-00-0000");
 
         Mockito.when(myServiceMock.getAllPeople())
                 .thenReturn(Flux.just(downstreamResponseDTO_1, downstreamResponseDTO_2));
 
         StepVerifier.create(myController.getPersons())
-                .expectNextMatches(personDTO -&gt; personDTO.getLastName().equals(downstreamResponseDTO_1.getLastName())
+                .expectNextMatches(personDTO -> personDTO.getLastName().equals(downstreamResponseDTO_1.getLastName())
                         &amp;&amp; personDTO.getFirstName().equals(downstreamResponseDTO_1.getFirstName()))
-                .expectNextMatches(personDTO -&gt; personDTO.getLastName().equals(downstreamResponseDTO_2.getLastName())
+                .expectNextMatches(personDTO -> personDTO.getLastName().equals(downstreamResponseDTO_2.getLastName())
                         &amp;&amp; personDTO.getFirstName().equals(downstreamResponseDTO_2.getFirstName()))
                 .verifyComplete();
     }
@@ -188,8 +188,8 @@ public class MyControllerTest {
 
 ```
 
-The key parts we are looking at are towards the end of **verifyTransformsCorrectly**, where we first say that &#34;any call to **myServiceMock.getAllPeople()** will respond with
-a **Flux** of **DownstreamResponseDTO** s.&#34; By putting it into the step verifier, it will handle subscribing for us and ensuring that each item gets pulled through appropriately.
+The key parts we are looking at are towards the end of **verifyTransformsCorrectly**, where we first say that "any call to **myServiceMock.getAllPeople()** will respond with
+a **Flux** of **DownstreamResponseDTO** s." By putting it into the step verifier, it will handle subscribing for us and ensuring that each item gets pulled through appropriately.
 We finally assert that the first and last name of the mocked out objects are indeed mapped to the correct fields on the **PersonDTO**.
 
 That basic structure should handle 80% of your unit testing needs in webflux. If you want to run these tests you can simply:

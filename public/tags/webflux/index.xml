@@ -14,21 +14,21 @@
       <link>http://localhost:1313/blog/using-redis-as-a-distributed-lock-with-lettuce/</link>
       <pubDate>Sat, 01 May 2021 14:44:31 +0000</pubDate>
       <guid>http://localhost:1313/blog/using-redis-as-a-distributed-lock-with-lettuce/</guid>
-      <description>&lt;p&gt;The source code for this article &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Using Redis as a best effort locking mechanism can be very useful in practice, to prevent two logical threads from clobbering each other. While redis locking is certainly not perfect, and &lt;a href=&#34;https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html&#34;&gt;you shouldn&#39;t use redis locking if the underlying operation can&#39;t be occasionally done twice&lt;/a&gt;, it can still be useful for that &amp;quot;best effort, do this once&amp;quot; use case.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this article &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Using Redis as a best effort locking mechanism can be very useful in practice, to prevent two logical threads from clobbering each other. While redis locking is certainly not perfect, and &lt;a href=&#34;https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html&#34;&gt;you shouldn&amp;rsquo;t use redis locking if the underlying operation can&amp;rsquo;t be occasionally done twice&lt;/a&gt;, it can still be useful for that &amp;ldquo;best effort, do this once&amp;rdquo; use case.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Subscribing to Channels in Clustered Redis With Lettuce</title>
       <link>http://localhost:1313/blog/subscribing-to-channels-in-clustered-redis-with-lettuce/</link>
       <pubDate>Sun, 25 Apr 2021 18:43:42 +0000</pubDate>
       <guid>http://localhost:1313/blog/subscribing-to-channels-in-clustered-redis-with-lettuce/</guid>
-      <description>&lt;p&gt;We already know &lt;a href=&#34;https://nickolasfisher.com/blog/Subscribing-to-Redis-Channels-with-Java-Spring-Boot-and-Lettuce&#34;&gt;how to subscribe to redis using lettuce&lt;/a&gt; when it&#39;s not running in clustered mode. If it&#39;s running in clustered mode, it&#39;s not terribly different, but I did discover one thing that is interesting, which is the subject of this article.&lt;/p&gt;</description>
+      <description>&lt;p&gt;We already know &lt;a href=&#34;https://nickolasfisher.com/blog/Subscribing-to-Redis-Channels-with-Java-Spring-Boot-and-Lettuce&#34;&gt;how to subscribe to redis using lettuce&lt;/a&gt; when it&amp;rsquo;s not running in clustered mode. If it&amp;rsquo;s running in clustered mode, it&amp;rsquo;s not terribly different, but I did discover one thing that is interesting, which is the subject of this article.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Pre Loading Lua Scripts into Clustered Redis with Lettuce</title>
       <link>http://localhost:1313/blog/pre-loading-lua-scripts-into-clustered-redis-with-lettuce/</link>
       <pubDate>Sun, 25 Apr 2021 17:37:07 +0000</pubDate>
       <guid>http://localhost:1313/blog/pre-loading-lua-scripts-into-clustered-redis-with-lettuce/</guid>
-      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In a previous article, we showed how to &lt;a href=&#34;https://nickolasfisher.com/blog/Pre-Loading-a-Lua-Script-into-Redis-With-Lettuce&#34;&gt;efficiently execute a lua script in redis using lettuce&lt;/a&gt;. To really scale our caching solution horizontally [and elegantly deal with many scaling headaches], we will also want to make sure we can execute our lua scripts against clustered redis, which as we&#39;ll see here is pretty straightforward.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In a previous article, we showed how to &lt;a href=&#34;https://nickolasfisher.com/blog/Pre-Loading-a-Lua-Script-into-Redis-With-Lettuce&#34;&gt;efficiently execute a lua script in redis using lettuce&lt;/a&gt;. To really scale our caching solution horizontally [and elegantly deal with many scaling headaches], we will also want to make sure we can execute our lua scripts against clustered redis, which as we&amp;rsquo;ll see here is pretty straightforward.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Optimistic Locking in Redis with Reactive Lettuce</title>
@@ -42,14 +42,14 @@
       <link>http://localhost:1313/blog/redis-transactions-reactive-lettuce-buyer-beware/</link>
       <pubDate>Sat, 24 Apr 2021 20:48:04 +0000</pubDate>
       <guid>http://localhost:1313/blog/redis-transactions-reactive-lettuce-buyer-beware/</guid>
-      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Redis Transactions do not operate exactly the way you would expect if you&#39;re coming from a relational database management system like MySQL or postrgres. It&#39;s mostly useful for optimistic locking, but honestly there are better ways to accomplish many of the things you&#39;re probably trying to, like &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Run-a-Lua-Script-against-Redis-using-Lettuce&#34;&gt;running a lua script with arguments&lt;/a&gt; [which is guaranteed to be atomic]. The &lt;a href=&#34;https://redis.io/topics/transactions&#34;&gt;documentation on transactions in redis&lt;/a&gt; describes some of the caveats, the biggest one probably being that it does not support rollbacks, only commits or discards.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Redis Transactions do not operate exactly the way you would expect if you&amp;rsquo;re coming from a relational database management system like MySQL or postrgres. It&amp;rsquo;s mostly useful for optimistic locking, but honestly there are better ways to accomplish many of the things you&amp;rsquo;re probably trying to, like &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Run-a-Lua-Script-against-Redis-using-Lettuce&#34;&gt;running a lua script with arguments&lt;/a&gt; [which is guaranteed to be atomic]. The &lt;a href=&#34;https://redis.io/topics/transactions&#34;&gt;documentation on transactions in redis&lt;/a&gt; describes some of the caveats, the biggest one probably being that it does not support rollbacks, only commits or discards.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Subscribing to Redis Channels with Java, Spring Boot, and Lettuce</title>
       <link>http://localhost:1313/blog/subscribing-to-redis-channels-with-java-spring-boot-and-lettuce/</link>
       <pubDate>Sat, 24 Apr 2021 20:05:52 +0000</pubDate>
       <guid>http://localhost:1313/blog/subscribing-to-redis-channels-with-java-spring-boot-and-lettuce/</guid>
-      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Pub/Sub in redis allows a publisher to send things to subscribers without knowing who is actually subscribed. In a previous post, we covered &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Publish-and-Subscribe-to-Redis-Using-Lettuce&#34;&gt;a simple unit test for publishing and subscribing to lettuce&lt;/a&gt;, but if you want to have a subscription initialized on application startup, and respond to events, we&#39;ll have to do a bit more, which I&#39;ll demonstrate here.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Pub/Sub in redis allows a publisher to send things to subscribers without knowing who is actually subscribed. In a previous post, we covered &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Publish-and-Subscribe-to-Redis-Using-Lettuce&#34;&gt;a simple unit test for publishing and subscribing to lettuce&lt;/a&gt;, but if you want to have a subscription initialized on application startup, and respond to events, we&amp;rsquo;ll have to do a bit more, which I&amp;rsquo;ll demonstrate here.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Pre Loading a Lua Script into Redis With Lettuce</title>
@@ -63,7 +63,7 @@
       <link>http://localhost:1313/blog/how-to-run-a-lua-script-against-redis-using-lettuce/</link>
       <pubDate>Sat, 24 Apr 2021 16:55:51 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-run-a-lua-script-against-redis-using-lettuce/</guid>
-      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Running a lua script against redis is done using &lt;a href=&#34;https://redis.io/commands/eval&#34;&gt;EVAL&lt;/a&gt;. The primary benefit of using a lua script is that the entire script is guaranteed to be run at once, and nothing else will interfere with it [it&#39;s atomic]. This allows for operating on multiple keys, or check-then-set type operations on the same key.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Running a lua script against redis is done using &lt;a href=&#34;https://redis.io/commands/eval&#34;&gt;EVAL&lt;/a&gt;. The primary benefit of using a lua script is that the entire script is guaranteed to be run at once, and nothing else will interfere with it [it&amp;rsquo;s atomic]. This allows for operating on multiple keys, or check-then-set type operations on the same key.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to Publish and Subscribe to Redis Using Lettuce</title>
@@ -77,21 +77,21 @@
       <link>http://localhost:1313/blog/lettuce-msetnx-and-clustered-redis/</link>
       <pubDate>Sat, 17 Apr 2021 09:35:41 +0000</pubDate>
       <guid>http://localhost:1313/blog/lettuce-msetnx-and-clustered-redis/</guid>
-      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://redis.io/commands/msetnx&#34;&gt;MSETNX&lt;/a&gt; when you&#39;re working with a single redis primary node is simple enough to understand: it sets all of the key/value pairs, or none at all. If one of the keys already exists in the cluster, then all of them are rejected.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://redis.io/commands/msetnx&#34;&gt;MSETNX&lt;/a&gt; when you&amp;rsquo;re working with a single redis primary node is simple enough to understand: it sets all of the key/value pairs, or none at all. If one of the keys already exists in the cluster, then all of them are rejected.&lt;/p&gt;</description>
     </item>
     <item>
       <title>A Guide to Operating on Sorted Sets in Redis with Lettuce</title>
       <link>http://localhost:1313/blog/a-guide-to-operating-on-sorted-sets-in-redis-with-lettuce/</link>
       <pubDate>Sat, 17 Apr 2021 08:15:31 +0000</pubDate>
       <guid>http://localhost:1313/blog/a-guide-to-operating-on-sorted-sets-in-redis-with-lettuce/</guid>
-      <description>&lt;p&gt;Sorted Sets in redis are one of my personal favorite tools when operating at scale. As of this writing, &lt;a href=&#34;https://redis.io/commands/#sorted_set&#34;&gt;there are over 30 unique operations you can perform against sorted sets in redis&lt;/a&gt;. This article will focus on some of the more common ones you&#39;re going to need to know, and it will use a reactive lettuce client to demonstrate them.&lt;/p&gt;</description>
+      <description>&lt;p&gt;Sorted Sets in redis are one of my personal favorite tools when operating at scale. As of this writing, &lt;a href=&#34;https://redis.io/commands/#sorted_set&#34;&gt;there are over 30 unique operations you can perform against sorted sets in redis&lt;/a&gt;. This article will focus on some of the more common ones you&amp;rsquo;re going to need to know, and it will use a reactive lettuce client to demonstrate them.&lt;/p&gt;</description>
     </item>
     <item>
       <title>A Guide to Operating on Multiple Sets in Redis with Lettuce</title>
       <link>http://localhost:1313/blog/a-guide-to-operating-on-multiple-sets-in-redis-with-lettuce/</link>
       <pubDate>Sat, 17 Apr 2021 08:12:31 +0000</pubDate>
       <guid>http://localhost:1313/blog/a-guide-to-operating-on-multiple-sets-in-redis-with-lettuce/</guid>
-      <description>&lt;p&gt;In the last article, we showed how to do some of the most common single set operations against redis, this article will focus on operating on multiple sets using a lettuce client against redis. Specifically, we&#39;ll focus on subtracting, intersecting, and adding sets. The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;</description>
+      <description>&lt;p&gt;In the last article, we showed how to do some of the most common single set operations against redis, this article will focus on operating on multiple sets using a lettuce client against redis. Specifically, we&amp;rsquo;ll focus on subtracting, intersecting, and adding sets. The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>A Guide to Simple Set Operations in Redis with Lettuce</title>
@@ -105,7 +105,7 @@
       <link>http://localhost:1313/blog/working-with-redis-hashes-using-lettuce-and-webflux/</link>
       <pubDate>Sun, 11 Apr 2021 22:26:29 +0000</pubDate>
       <guid>http://localhost:1313/blog/working-with-redis-hashes-using-lettuce-and-webflux/</guid>
-      <description>&lt;p&gt;There are about &lt;a href=&#34;https://redis.io/commands/#hash&#34;&gt;15 or so commands you can execute against redis for hash types&lt;/a&gt; as of this writing. This article will demonstrate some of the more common operations you&#39;re likely to need when using lettuce as your client.&lt;/p&gt;</description>
+      <description>&lt;p&gt;There are about &lt;a href=&#34;https://redis.io/commands/#hash&#34;&gt;15 or so commands you can execute against redis for hash types&lt;/a&gt; as of this writing. This article will demonstrate some of the more common operations you&amp;rsquo;re likely to need when using lettuce as your client.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Working with Lists in Redis using Lettuce and Webflux</title>
@@ -147,28 +147,28 @@
       <link>http://localhost:1313/blog/how-to-configure-lettuce-to-use-redis-read-replicas-in-spring-boot-webflux/</link>
       <pubDate>Sun, 28 Mar 2021 19:22:27 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-configure-lettuce-to-use-redis-read-replicas-in-spring-boot-webflux/</guid>
-      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Lettuce supports reading from redis replicas, but with the caveat that it doesn&#39;t [out of the box] provide you with the fine-grained control over &lt;em&gt;when&lt;/em&gt; to read from the replicas that you&#39;re likely to want.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Lettuce supports reading from redis replicas, but with the caveat that it doesn&amp;rsquo;t [out of the box] provide you with the fine-grained control over &lt;em&gt;when&lt;/em&gt; to read from the replicas that you&amp;rsquo;re likely to want.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to Configure Lettuce to connect to a local Redis Instance with Webflux</title>
       <link>http://localhost:1313/blog/how-to-configure-lettuce-to-connect-to-a-local-redis-instance-with-webflux/</link>
       <pubDate>Sun, 28 Mar 2021 17:49:16 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-configure-lettuce-to-connect-to-a-local-redis-instance-with-webflux/</guid>
-      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In a previous post, we detailed &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux&#34;&gt;how to write integration tests for lettuce clients in spring boot webflux&lt;/a&gt; using a redis test container. That&#39;s fine and well when you&#39;re just writing code for a quick feedback loop, but is useless when it comes to running the application in real life. This post will start up redis locally and then explain how to best connect to it using lettuce in webflux.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In a previous post, we detailed &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux&#34;&gt;how to write integration tests for lettuce clients in spring boot webflux&lt;/a&gt; using a redis test container. That&amp;rsquo;s fine and well when you&amp;rsquo;re just writing code for a quick feedback loop, but is useless when it comes to running the application in real life. This post will start up redis locally and then explain how to best connect to it using lettuce in webflux.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to use a Redis Test Container with Lettuce/Spring Boot Webflux</title>
       <link>http://localhost:1313/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux/</link>
       <pubDate>Sat, 27 Mar 2021 23:52:07 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux/</guid>
-      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Another way to write integration tests for code that verifies your interactions with redis actually make sense is to use a &lt;a href=&#34;https://www.testcontainers.org/&#34;&gt;test container&lt;/a&gt;. This framework assumes you have docker up and running, but if you do it will pull a specified container image [typically you&#39;ll just use docker hub, though it&#39;s important to note that they rate limit you, so don&#39;t go overboard], then you can interact with that container in your integration tests.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Another way to write integration tests for code that verifies your interactions with redis actually make sense is to use a &lt;a href=&#34;https://www.testcontainers.org/&#34;&gt;test container&lt;/a&gt;. This framework assumes you have docker up and running, but if you do it will pull a specified container image [typically you&amp;rsquo;ll just use docker hub, though it&amp;rsquo;s important to note that they rate limit you, so don&amp;rsquo;t go overboard], then you can interact with that container in your integration tests.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to use Embedded Redis to Test a Lettuce Client in Spring Boot Webflux</title>
       <link>http://localhost:1313/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux/</link>
       <pubDate>Sat, 27 Mar 2021 21:22:32 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux/</guid>
-      <description>&lt;p&gt;The source code for this article &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://github.com/lettuce-io/lettuce-core&#34;&gt;Lettuce&lt;/a&gt; is a redis client with reactive support. There is a super handy &lt;a href=&#34;https://github.com/kstyrc/embedded-redis&#34;&gt;embedded redis for java project&lt;/a&gt; out there, and this kind of integration testing inside your service is worth its weight in gold, in my humble opinion. This post will detail how to merge both of these worlds together, and set up redis integration tests when you&#39;re using a lettuce client.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this article &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://github.com/lettuce-io/lettuce-core&#34;&gt;Lettuce&lt;/a&gt; is a redis client with reactive support. There is a super handy &lt;a href=&#34;https://github.com/kstyrc/embedded-redis&#34;&gt;embedded redis for java project&lt;/a&gt; out there, and this kind of integration testing inside your service is worth its weight in gold, in my humble opinion. This post will detail how to merge both of these worlds together, and set up redis integration tests when you&amp;rsquo;re using a lettuce client.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Making Sense of Mono Error Handling in Spring Boot Webflux/Project Reactor</title>
@@ -189,14 +189,14 @@
       <link>http://localhost:1313/blog/how-to-unit-test-that-a-reactor-mono-was-actually-subscribed-to/</link>
       <pubDate>Sat, 13 Mar 2021 22:35:48 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-unit-test-that-a-reactor-mono-was-actually-subscribed-to/</guid>
-      <description>&lt;p&gt;There&#39;s a very insidious bug that can happen when you&#39;re writing reactive code, and it basically comes down to whether an underlying &lt;strong&gt;Mono&lt;/strong&gt; in a chain of operations was actually &lt;strong&gt;subscribed to&lt;/strong&gt;, rather than merely observing a method invocation. I&#39;ll demonstrate with an example.&lt;/p&gt;</description>
+      <description>&lt;p&gt;There&amp;rsquo;s a very insidious bug that can happen when you&amp;rsquo;re writing reactive code, and it basically comes down to whether an underlying &lt;strong&gt;Mono&lt;/strong&gt; in a chain of operations was actually &lt;strong&gt;subscribed to&lt;/strong&gt;, rather than merely observing a method invocation. I&amp;rsquo;ll demonstrate with an example.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to use Caffeine Caches Effectively in Spring Boot Webflux</title>
       <link>http://localhost:1313/blog/how-to-use-caffeine-caches-effectively-in-spring-boot-webflux/</link>
       <pubDate>Sat, 13 Mar 2021 21:36:45 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-use-caffeine-caches-effectively-in-spring-boot-webflux/</guid>
-      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;When someone talks about a caffeine cache, they are talking about &lt;a href=&#34;https://github.com/ben-manes/caffeine&#34;&gt;Ben Manes caching library&lt;/a&gt;, which is a high performance, in memory cache written for java. If you&#39;re using reactive streams, you can&#39;t reliably use a LoadingCache because it&#39;s blocking by default. Thankfully, tapping into a couple of basic features of reactive streams and caffeine can get us there.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;When someone talks about a caffeine cache, they are talking about &lt;a href=&#34;https://github.com/ben-manes/caffeine&#34;&gt;Ben Manes caching library&lt;/a&gt;, which is a high performance, in memory cache written for java. If you&amp;rsquo;re using reactive streams, you can&amp;rsquo;t reliably use a LoadingCache because it&amp;rsquo;s blocking by default. Thankfully, tapping into a couple of basic features of reactive streams and caffeine can get us there.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Publishing to SNS in Java with the AWS SDK 2.0</title>
@@ -210,7 +210,7 @@
       <link>http://localhost:1313/blog/dynamodb-and-duplicate-keys-in-global-secondary-indexes/</link>
       <pubDate>Sun, 01 Nov 2020 23:27:39 +0000</pubDate>
       <guid>http://localhost:1313/blog/dynamodb-and-duplicate-keys-in-global-secondary-indexes/</guid>
-      <description>&lt;p&gt;If there&#39;s something in the documentation about what the behavior of a DynamoDB Global Secondary Index is when there are duplicate keys in the index, it isn&#39;t easy to find. I tested this empirically with an embedded DynamoDB mock for java and will quickly share my findings here with you.&lt;/p&gt;</description>
+      <description>&lt;p&gt;If there&amp;rsquo;s something in the documentation about what the behavior of a DynamoDB Global Secondary Index is when there are duplicate keys in the index, it isn&amp;rsquo;t easy to find. I tested this empirically with an embedded DynamoDB mock for java and will quickly share my findings here with you.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Query a DynamoDB Global Secondary Index in Java</title>
@@ -224,14 +224,14 @@
       <link>http://localhost:1313/blog/query-a-dynamodb-local-secondary-index-with-java/</link>
       <pubDate>Sat, 31 Oct 2020 22:49:54 +0000</pubDate>
       <guid>http://localhost:1313/blog/query-a-dynamodb-local-secondary-index-with-java/</guid>
-      <description>&lt;p&gt;DynamoDB&#39;s Local Secondary Indexes allow for more query flexibility than a traditional partition and range key combination. They are also the only index in DynamoDB where a strongly consistent read can be requested [global secondary indexes, the other index that dynamo supports, can at best be eventually consistent]. I will walk through an example for how to use local secondary indexes in dynamo using the AWS SDK 2.0 for Java, which has full reactive support, in this post.&lt;/p&gt;</description>
+      <description>&lt;p&gt;DynamoDB&amp;rsquo;s Local Secondary Indexes allow for more query flexibility than a traditional partition and range key combination. They are also the only index in DynamoDB where a strongly consistent read can be requested [global secondary indexes, the other index that dynamo supports, can at best be eventually consistent]. I will walk through an example for how to use local secondary indexes in dynamo using the AWS SDK 2.0 for Java, which has full reactive support, in this post.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Set Time to Live [TTL] on DynamoDB Items using Java</title>
       <link>http://localhost:1313/blog/set-time-to-live-ttl-on-dynamodb-items-using-java/</link>
       <pubDate>Sun, 18 Oct 2020 13:43:39 +0000</pubDate>
       <guid>http://localhost:1313/blog/set-time-to-live-ttl-on-dynamodb-items-using-java/</guid>
-      <description>&lt;p&gt;In this post, we&#39;ll demonstrate how &lt;a href=&#34;https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html&#34;&gt;expiring items in DynamoDB&lt;/a&gt; works in java, using the AWS SDK 2.0+, which has full reactive support.&lt;/p&gt;</description>
+      <description>&lt;p&gt;In this post, we&amp;rsquo;ll demonstrate how &lt;a href=&#34;https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html&#34;&gt;expiring items in DynamoDB&lt;/a&gt; works in java, using the AWS SDK 2.0+, which has full reactive support.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Querying DynamoDB in Java with the AWS SDK 2.0</title>
@@ -252,14 +252,14 @@
       <link>http://localhost:1313/blog/inmemory-caching-in-sprint-boot-webfluxproject-reactor/</link>
       <pubDate>Sat, 03 Oct 2020 22:41:59 +0000</pubDate>
       <guid>http://localhost:1313/blog/inmemory-caching-in-sprint-boot-webfluxproject-reactor/</guid>
-      <description>&lt;p&gt;Sample code for this article &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In memory caching can significantly improve performance in a microservices environment, usually because of the tail latency involved in calling downstream services. Caching can also &lt;em&gt;help&lt;/em&gt; with resilience, though the extent to which that matters will depend on how you&#39;re actually leveraging that caching. There are two flavors of caching that you&#39;re like to want to use, the first is using the Mono as a hot source [which is demonstrated here], and the second would be when you want to &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-use-Caffeine-Caches-Effectively-in-Spring-Boot-Webflux&#34;&gt;selectively cache individual key/value pairs&lt;/a&gt;.&lt;/p&gt;</description>
+      <description>&lt;p&gt;Sample code for this article &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In memory caching can significantly improve performance in a microservices environment, usually because of the tail latency involved in calling downstream services. Caching can also &lt;em&gt;help&lt;/em&gt; with resilience, though the extent to which that matters will depend on how you&amp;rsquo;re actually leveraging that caching. There are two flavors of caching that you&amp;rsquo;re like to want to use, the first is using the Mono as a hot source [which is demonstrated here], and the second would be when you want to &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-use-Caffeine-Caches-Effectively-in-Spring-Boot-Webflux&#34;&gt;selectively cache individual key/value pairs&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to Automatically Retry on a Webclient Timeout in Spring Boot Webflux</title>
       <link>http://localhost:1313/blog/how-to-automatically-retry-on-a-webclient-timeout-in-spring-boot-webflux/</link>
       <pubDate>Sat, 03 Oct 2020 16:09:51 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-automatically-retry-on-a-webclient-timeout-in-spring-boot-webflux/</guid>
-      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Intermittent network flapping, or any one downstream host of several clones responding slowly, is a not uncommon thing that happens in a microservices architecture, especially if you&#39;re using java applications, where the JIT compiler can often make initial requests slower than they ought to be.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Intermittent network flapping, or any one downstream host of several clones responding slowly, is a not uncommon thing that happens in a microservices architecture, especially if you&amp;rsquo;re using java applications, where the JIT compiler can often make initial requests slower than they ought to be.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to Have a Fallback on Errors Calling Downstream Services in Spring Boot Webflux</title>
@@ -280,7 +280,7 @@
       <link>http://localhost:1313/blog/how-to-make-sequential-api-calls-and-merge-the-results-in-spring-boot-webflux/</link>
       <pubDate>Sat, 19 Sep 2020 16:01:14 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-make-sequential-api-calls-and-merge-the-results-in-spring-boot-webflux/</guid>
-      <description>&lt;p&gt;The source code for this article &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In reactive programming, it&#39;s a game of callbacks. In the vast majority of cases, you will want to defer all of your I/O operations to the library you are using [typically, netty, under the hood], and stay focused on setting up the flow so that the right functions are invoked in the right order. Sometimes you will want to make calls in parallel, sometimes you need data from a previous call or operation available in order to invoke that right function.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this article &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In reactive programming, it&amp;rsquo;s a game of callbacks. In the vast majority of cases, you will want to defer all of your I/O operations to the library you are using [typically, netty, under the hood], and stay focused on setting up the flow so that the right functions are invoked in the right order. Sometimes you will want to make calls in parallel, sometimes you need data from a previous call or operation available in order to invoke that right function.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to Setup a Reactive SQS Listener Using the AWS SDK and Spring Boot</title>
@@ -301,7 +301,7 @@
       <link>http://localhost:1313/blog/a-guide-to-automatic-retries-in-reactor/</link>
       <pubDate>Sun, 16 Aug 2020 16:22:09 +0000</pubDate>
       <guid>http://localhost:1313/blog/a-guide-to-automatic-retries-in-reactor/</guid>
-      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;is available on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;One of the nice things about a reactive programming model is there is a significantly lower risk of doomsday when things start getting latent all at once. You don&#39;t have threads upstream blocking and waiting for a response, therefore they won&#39;t all seize up and stop serving requests [or they won&#39;t short circuit if you&#39;re using a resiliency library like hystrix].&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;is available on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;One of the nice things about a reactive programming model is there is a significantly lower risk of doomsday when things start getting latent all at once. You don&amp;rsquo;t have threads upstream blocking and waiting for a response, therefore they won&amp;rsquo;t all seize up and stop serving requests [or they won&amp;rsquo;t short circuit if you&amp;rsquo;re using a resiliency library like hystrix].&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to use Mock Server to End to End Test Any WebClient Calls in Spring Boot Webflux</title>
@@ -315,35 +315,35 @@
       <link>http://localhost:1313/blog/how-to-mock-dependencies-and-unit-test-in-spring-boot-webflux/</link>
       <pubDate>Sat, 08 Aug 2020 22:14:53 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-mock-dependencies-and-unit-test-in-spring-boot-webflux/</guid>
-      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;The most straightforward way to write unit tests in spring boot webflux is to leverage &lt;a href=&#34;https://projectreactor.io/docs/test/release/api/reactor/test/StepVerifier.html&#34;&gt;project reactor&#39;s StepVerifier&lt;/a&gt;. StepVerifier allows you to pull each item in a &lt;strong&gt;Flux&lt;/strong&gt; or the only potential item in a &lt;strong&gt;Mono&lt;/strong&gt; and make assertions about each item as it&#39;s pulled through the chain, or make assertions about certain errors that should be thrown in the process. I&#39;m going to quickly walk you through an example integrating mockito with it and webflux.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;The most straightforward way to write unit tests in spring boot webflux is to leverage &lt;a href=&#34;https://projectreactor.io/docs/test/release/api/reactor/test/StepVerifier.html&#34;&gt;project reactor&amp;rsquo;s StepVerifier&lt;/a&gt;. StepVerifier allows you to pull each item in a &lt;strong&gt;Flux&lt;/strong&gt; or the only potential item in a &lt;strong&gt;Mono&lt;/strong&gt; and make assertions about each item as it&amp;rsquo;s pulled through the chain, or make assertions about certain errors that should be thrown in the process. I&amp;rsquo;m going to quickly walk you through an example integrating mockito with it and webflux.&lt;/p&gt;</description>
     </item>
     <item>
       <title>OpenAPI and Spring Boot Webflux: A Working Introduction</title>
       <link>http://localhost:1313/blog/openapi-and-spring-boot-webflux-a-working-introduction/</link>
       <pubDate>Sat, 01 Aug 2020 23:59:33 +0000</pubDate>
       <guid>http://localhost:1313/blog/openapi-and-spring-boot-webflux-a-working-introduction/</guid>
-      <description>&lt;p&gt;The &lt;a href=&#34;http://spec.openapis.org/oas/v3.0.3&#34;&gt;OpenAPI Specification&lt;/a&gt; is an &amp;quot;industry standard&amp;quot; way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code&amp;ndash;better yet, displayed while the app is running.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The &lt;a href=&#34;http://spec.openapis.org/oas/v3.0.3&#34;&gt;OpenAPI Specification&lt;/a&gt; is an &amp;ldquo;industry standard&amp;rdquo; way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code&amp;ndash;better yet, displayed while the app is running.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to Forward Request Headers to Downstream Services in Spring Boot Webflux</title>
       <link>http://localhost:1313/blog/how-to-forward-request-headers-to-downstream-services-in-spring-boot-webflux/</link>
       <pubDate>Sun, 19 Jul 2020 19:39:10 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-forward-request-headers-to-downstream-services-in-spring-boot-webflux/</guid>
-      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/context-api&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;When you make the switch to a reactive codebase, &lt;a href=&#34;https://docs.oracle.com/javase/7/docs/api/java/lang/ThreadLocal.html&#34;&gt;ThreadLocal&lt;/a&gt; becomes effectively off limits to you, because you aren&#39;t guaranteed that the thread that starts the request processing remains the same, even if it&#39;s the same HTTP request. This has caused pain in many places: the original implementation of spring security, for example, relied very heavily on ThreadLocal variables to store state that happened in the start of the request, and then reuse the information stored in those variables later on to make access control decisions. &lt;a href=&#34;https://netflixtechblog.com/zuul-2-the-netflix-journey-to-asynchronous-non-blocking-systems-45947377fb5c&#34;&gt;Neflix spoke of their pain migrating to a reactive stack&lt;/a&gt;, when they had relied so heavily on ThreadLocal variables in most of their shared libraries.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/context-api&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;When you make the switch to a reactive codebase, &lt;a href=&#34;https://docs.oracle.com/javase/7/docs/api/java/lang/ThreadLocal.html&#34;&gt;ThreadLocal&lt;/a&gt; becomes effectively off limits to you, because you aren&amp;rsquo;t guaranteed that the thread that starts the request processing remains the same, even if it&amp;rsquo;s the same HTTP request. This has caused pain in many places: the original implementation of spring security, for example, relied very heavily on ThreadLocal variables to store state that happened in the start of the request, and then reuse the information stored in those variables later on to make access control decisions. &lt;a href=&#34;https://netflixtechblog.com/zuul-2-the-netflix-journey-to-asynchronous-non-blocking-systems-45947377fb5c&#34;&gt;Neflix spoke of their pain migrating to a reactive stack&lt;/a&gt;, when they had relied so heavily on ThreadLocal variables in most of their shared libraries.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to Return a Response Entity in Spring Boot Webflux</title>
       <link>http://localhost:1313/blog/how-to-return-a-response-entity-in-spring-boot-webflux/</link>
       <pubDate>Sun, 19 Jul 2020 16:07:33 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-return-a-response-entity-in-spring-boot-webflux/</guid>
-      <description>&lt;p&gt;In my last post on &lt;a href=&#34;https://nickolasfisher.com/blog/DynamoDB-and-Spring-Boot-Webflux-A-Working-Introduction&#34;&gt;getting started with spring boot webflux and AWS DynamoDB&lt;/a&gt;, I mentioned that it wasn&#39;t immediately obvious to find a way to customize the response code in a spring boot &lt;strong&gt;RestController&lt;/strong&gt;, so I opted to use handlers instead.&lt;/p&gt;</description>
+      <description>&lt;p&gt;In my last post on &lt;a href=&#34;https://nickolasfisher.com/blog/DynamoDB-and-Spring-Boot-Webflux-A-Working-Introduction&#34;&gt;getting started with spring boot webflux and AWS DynamoDB&lt;/a&gt;, I mentioned that it wasn&amp;rsquo;t immediately obvious to find a way to customize the response code in a spring boot &lt;strong&gt;RestController&lt;/strong&gt;, so I opted to use handlers instead.&lt;/p&gt;</description>
     </item>
     <item>
       <title>DynamoDB and Spring Boot Webflux - A Working Introduction</title>
       <link>http://localhost:1313/blog/dynamodb-and-spring-boot-webflux-a-working-introduction/</link>
       <pubDate>Sat, 18 Jul 2020 23:07:05 +0000</pubDate>
       <guid>http://localhost:1313/blog/dynamodb-and-spring-boot-webflux-a-working-introduction/</guid>
-      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/webflux-and-dynamo&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;The &lt;a href=&#34;https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/welcome.html&#34;&gt;latest AWS SDK for java&lt;/a&gt; uses a reactive client to send requests to various AWS services, including DynamoDB. Reactive programming is ultimately more robust at the edges&amp;ndash;once you start experiencing latency anywhere in your stack, if your tech is not reactive, you&#39;re going to have a significantly worse time than if it were.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/webflux-and-dynamo&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;The &lt;a href=&#34;https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/welcome.html&#34;&gt;latest AWS SDK for java&lt;/a&gt; uses a reactive client to send requests to various AWS services, including DynamoDB. Reactive programming is ultimately more robust at the edges&amp;ndash;once you start experiencing latency anywhere in your stack, if your tech is not reactive, you&amp;rsquo;re going to have a significantly worse time than if it were.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

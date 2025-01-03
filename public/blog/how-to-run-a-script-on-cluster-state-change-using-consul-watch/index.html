@@ -155,20 +155,20 @@ Consul Watches offer a way to hook into changes to the Consul cluster state at r
 
   <section><p>You can see the sample code for this post <a href="https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server">on Github</a>.</p>
 <p><a href="https://www.consul.io/docs/agent/watches.html">Consul Watches</a> offer a way to hook into changes to the Consul cluster state at runtime.The specific type of changes we will be looking at hooking into in this post are <a href="https://www.consul.io/docs/agent/watches.html#type-checks">checks</a>. Whenever a node or service comes online and registers to Consul, whenever an existing node or service leaves Consul, or whenever an existing node or service becomes unresponsive, Consul will emit a check event. This check event can invoke a process to monitor the health of our services, alerting human being that action might soon be necessary.</p>
-<p>There are two ways to provide custom logic on an emitted check event: either run a script or have Consul call an HTTP endpoint. Running a script will require Consul to be able to to reach the script and have permissions to execute it, whereas calling an HTTP endpoint just requires that something is listening on the appropriate IP and port. However, the downside of an HTTP endpoint is that the service listening on it can't be down. This is a classic &quot;who watches the watchmen?&quot; problem. If we have monitoring logic that we rely on for all of our services, what is going to monitor the service that monitors?</p>
-<p>That reason is why I prefer the script approach, and I'll show you how to accomplish this using Ansible.</p>
+<p>There are two ways to provide custom logic on an emitted check event: either run a script or have Consul call an HTTP endpoint. Running a script will require Consul to be able to to reach the script and have permissions to execute it, whereas calling an HTTP endpoint just requires that something is listening on the appropriate IP and port. However, the downside of an HTTP endpoint is that the service listening on it can&rsquo;t be down. This is a classic &ldquo;who watches the watchmen?&rdquo; problem. If we have monitoring logic that we rely on for all of our services, what is going to monitor the service that monitors?</p>
+<p>That reason is why I prefer the script approach, and I&rsquo;ll show you how to accomplish this using Ansible.</p>
 <h3 id="deploy-a-local-cluster">Deploy a Local Cluster</h3>
 <p>In a previous post, I showed you <a href="https://nickolasfisher.com/blog/How-to-Provision-a-Consul-ClientServer-Cluster-using-Ansible">how to provision a Consul client-server cluster using Ansible</a>. Starting from that point on, we can make some sensible modifications to POC this functionality.</p>
-<p>First, we'll need a basic script to invoke. Create a <strong>files/watch_script.py</strong> script and fill it with:</p>
+<p>First, we&rsquo;ll need a basic script to invoke. Create a <strong>files/watch_script.py</strong> script and fill it with:</p>
 <pre tabindex="0"><code>#!/usr/bin/python3
 
-with open(&amp;#39;somefile.txt&amp;#39;, &amp;#39;a&amp;#39;) as file:
-    file.write(&amp;#39;some new line\n&amp;#39;)
-</code></pre><p>Like all python scripts, this reads pretty much like English, and we can see that we are writing &quot;some new line&quot; to a file in the same directory as the script, and we're calling the file &quot;somefile.txt&quot;.</p>
-<p>Next, we'll need to drop the script on the server where Consul is provisioned. Insert the following line in the <strong>tasks/main.yml</strong> file:</p>
+with open(&#39;somefile.txt&#39;, &#39;a&#39;) as file:
+    file.write(&#39;some new line\n&#39;)
+</code></pre><p>Like all python scripts, this reads pretty much like English, and we can see that we are writing &ldquo;some new line&rdquo; to a file in the same directory as the script, and we&rsquo;re calling the file &ldquo;somefile.txt&rdquo;.</p>
+<p>Next, we&rsquo;ll need to drop the script on the server where Consul is provisioned. Insert the following line in the <strong>tasks/main.yml</strong> file:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: send consul watch script
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">copy</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: <span style="color:#ff79c6">&amp;#34;{{</span> consul_config_dir }}/watch_script.py&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: <span style="color:#f1fa8c">&#34;{{ consul_config_dir }}/watch_script.py&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">src</span>: watch_script.py
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">mode</span>: <span style="color:#bd93f9">0777</span> <span style="color:#6272a4"># restrict this mode more in production</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">owner</span>: root
@@ -176,34 +176,34 @@ with open(&amp;#39;somefile.txt&amp;#39;, &amp;#39;a&amp;#39;) as file:
 </span></span></code></pre></div><p>This is just a POC, but you will want to lock down the script to be owned by Consul in a production environment, and you will also want to put it in a different directory than the configuration directory.</p>
 <p>Finally, adjust your <strong>templates/consul.config.j2</strong> file to look like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    &amp;#34;node_name&amp;#34;: &amp;#34;{{ node_name }}&amp;#<span style="color:#bd93f9">34</span>;,
-</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;addresses&amp;#<span style="color:#bd93f9">34</span>;: {
-</span></span><span style="display:flex;"><span>        &amp;#34;http&amp;#34;: &amp;#34;{{ ansible_facts[&amp;#39;all_ipv4_addresses&amp;#39;] | last }} <span style="color:#bd93f9">127.0</span>.<span style="color:#bd93f9">0.1</span>&amp;#<span style="color:#bd93f9">34</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;node_name&#34;</span>: <span style="color:#f1fa8c">&#34;{{ node_name }}&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;addresses&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;http&#34;</span>: <span style="color:#f1fa8c">&#34;{{ ansible_facts[&#39;all_ipv4_addresses&#39;] | last }} 127.0.0.1&#34;</span>
 </span></span><span style="display:flex;"><span>    },
-</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;server&amp;#<span style="color:#bd93f9">34</span>;: {{ is_server }},
-</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;advertise_addr&amp;#<span style="color:#bd93f9">34</span>;: &amp;#<span style="color:#bd93f9">34</span>;{{ ansible_facts[&amp;#39;all_ipv4_addresses&amp;#39;] | last }}&amp;#<span style="color:#bd93f9">34</span>;,
-</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;client_addr&amp;#<span style="color:#bd93f9">34</span>;: &amp;#<span style="color:#bd93f9">34</span>;<span style="color:#bd93f9">127.0</span>.<span style="color:#bd93f9">0.1</span> {{ ansible_facts[&amp;#39;all_ipv4_addresses&amp;#39;] | last }}&amp;#<span style="color:#bd93f9">34</span>;,
-</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;connect&amp;#<span style="color:#bd93f9">34</span>;: {
-</span></span><span style="display:flex;"><span>        &amp;#34;enabled&amp;#34;: true
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;server&#34;</span>: {{ is_server }},
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;advertise_addr&#34;</span>: <span style="color:#f1fa8c">&#34;{{ ansible_facts[&#39;all_ipv4_addresses&#39;] | last }}&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;client_addr&#34;</span>: <span style="color:#f1fa8c">&#34;127.0.0.1 {{ ansible_facts[&#39;all_ipv4_addresses&#39;] | last }}&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;connect&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;enabled&#34;</span>: <span style="color:#ff79c6">true</span>
 </span></span><span style="display:flex;"><span>    },
-</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;data_dir&amp;#<span style="color:#bd93f9">34</span>;: &amp;#<span style="color:#bd93f9">34</span>;{{ consul_data_dir }}&amp;#<span style="color:#bd93f9">34</span>;,
-</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;watches&amp;#<span style="color:#bd93f9">34</span>;: [
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;data_dir&#34;</span>: <span style="color:#f1fa8c">&#34;{{ consul_data_dir }}&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;watches&#34;</span>: [
 </span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            &amp;#34;type&amp;#34;: &amp;#34;checks&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;handler&amp;#34;: &amp;#34;{{ consul_config_dir }}/watch_script.py&amp;#<span style="color:#bd93f9">34</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;type&#34;</span>: <span style="color:#f1fa8c">&#34;checks&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;handler&#34;</span>: <span style="color:#f1fa8c">&#34;{{ consul_config_dir }}/watch_script.py&#34;</span>
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    ],
-</span></span><span style="display:flex;"><span>{% if is_server == &amp;#39;false&amp;#39; %}
-</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;start_join&amp;#<span style="color:#bd93f9">34</span>;: [ &amp;#<span style="color:#bd93f9">34</span>;{{ hostvars[&amp;#39;consulServer&amp;#39;][&amp;#39;ansible_all_ipv4_addresses&amp;#39;] | last }}&amp;#<span style="color:#bd93f9">34</span>;]
+</span></span><span style="display:flex;"><span>{% if is_server == &#39;false&#39; %}
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;start_join&#34;</span>: [ <span style="color:#f1fa8c">&#34;{{ hostvars[&#39;consulServer&#39;][&#39;ansible_all_ipv4_addresses&#39;] | last }}&#34;</span>]
 </span></span><span style="display:flex;"><span>{% else %}
-</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;bootstrap&amp;#<span style="color:#bd93f9">34</span>;: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;bootstrap&#34;</span>: <span style="color:#ff79c6">true</span>
 </span></span><span style="display:flex;"><span>{% endif %}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>The critical part of this is the &quot;watches&quot; section, which will be rendered by Jinja2 as:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;watches&amp;#<span style="color:#bd93f9">34</span>;: [
+</span></span></code></pre></div><p>The critical part of this is the &ldquo;watches&rdquo; section, which will be rendered by Jinja2 as:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;watches&#34;</span>: [
 </span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            &amp;#34;type&amp;#34;: &amp;#34;checks&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;handler&amp;#34;: &amp;#34;/etc/consul/watch_script.py&amp;#34;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;type&#34;</span>: <span style="color:#f1fa8c">&#34;checks&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;handler&#34;</span>: <span style="color:#f1fa8c">&#34;/etc/consul/watch_script.py&#34;</span>
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    ],
 </span></span></code></pre></div><p>Which tells Consul that, whenever there is a state changes related to nodes or services, to invoke the script at the handler path.</p>

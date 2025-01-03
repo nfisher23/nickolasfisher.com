@@ -10,18 +10,18 @@ There are use cases for wanting to immediately subscribe to a **Flux** or a **Mo
 To continuously subscribe to a **Flux**, the easiest way to do so is to use **repeat**:
 
 ```java
-        Flux.generate(synchronousSink -&gt; synchronousSink.next(new Noop()))
+        Flux.generate(synchronousSink -> synchronousSink.next(new Noop()))
             .repeat()
-            .subscribe(noop -&gt; {
+            .subscribe(noop -> {
                 int millis = ZonedDateTime.now().getNano() / 1_000_000;
                 if (millis % 500 == 0) {
-                    System.out.println(&#34;noop&#34;);
+                    System.out.println("noop");
                 }
             });
 
 ```
 
-Note that I&#39;m using this simple class to facilitate that example and a few below:
+Note that I'm using this simple class to facilitate that example and a few below:
 
 ```java
 
@@ -39,10 +39,10 @@ Note that I&#39;m using this simple class to facilitate that example and a few b
 
 ```
 
-This simple example will print &#34;noop&#34; to the console every time we hit a half or whole second. It&#39;s important to note that if your **Flux** throws an exception at this point, then the subscription will be terminated. If you want to just keep blindly retrying every time you hit an unexpected exception, that&#39;s a one liner to fix:
+This simple example will print "noop" to the console every time we hit a half or whole second. It's important to note that if your **Flux** throws an exception at this point, then the subscription will be terminated. If you want to just keep blindly retrying every time you hit an unexpected exception, that's a one liner to fix:
 
 ```java
-        Flux.generate(synchronousSink -&gt; {
+        Flux.generate(synchronousSink -> {
                 if (ZonedDateTime.now().getNano() / 1_000_000 % 500 == 0) {
                     synchronousSink.error(new RuntimeException());
                 }
@@ -50,27 +50,27 @@ This simple example will print &#34;noop&#34; to the console every time we hit a
             })
             .repeat()
             .retry()
-            .subscribe(noop -&gt; {
+            .subscribe(noop -> {
                         int millis = ZonedDateTime.now().getNano() / 1_000_000;
                         if (millis % 500 == 0) {
-                            System.out.println(&#34;noop&#34;);
+                            System.out.println("noop");
                         }
                     }
             );
 
 ```
 
-This example generates an error every half or whole minute. A few &#34;noop&#34;s will actually make it through in some cases just due to timing between the first sink being called and the actual subscription getting executed \[usually nanoseconds later\].
+This example generates an error every half or whole minute. A few "noop"s will actually make it through in some cases just due to timing between the first sink being called and the actual subscription getting executed \[usually nanoseconds later\].
 
 We can also retry a **Mono** with the same syntax:
 
 ```java
-        Mono.fromFuture(CompletableFuture.supplyAsync(() -&gt; new Noop()))
+        Mono.fromFuture(CompletableFuture.supplyAsync(() -> new Noop()))
             .repeat()
-            .subscribe(noop -&gt; {
+            .subscribe(noop -> {
                 int millis = ZonedDateTime.now().getNano() / 1_000_000;
                 if (millis % 500 == 0) {
-                    System.out.println(&#34;noop&#34;);
+                    System.out.println("noop");
                 }
             });
 
@@ -80,12 +80,12 @@ An important related note: if you keep resubscribing to a mono from a **Completa
 
 ```java
         AtomicInteger count = new AtomicInteger();
-        Mono.fromFuture(CompletableFuture.supplyAsync(() -&gt; new Noop() {{ setSomething(count.incrementAndGet()); }}))
+        Mono.fromFuture(CompletableFuture.supplyAsync(() -> new Noop() {{ setSomething(count.incrementAndGet()); }}))
             .repeat()
-            .subscribe(noop -&gt; {
+            .subscribe(noop -> {
                 int millis = ZonedDateTime.now().getNano() / 1_000_000;
                 if (millis % 500 == 0) {
-                    System.out.println(&#34;noop &#34; &#43; noop.getSomething());
+                    System.out.println("noop " + noop.getSomething());
                 }
             });
 
@@ -109,12 +109,12 @@ To get the **CompletableFuture** to execute every time, we need to wrap it in a 
 
 ```java
         AtomicInteger count = new AtomicInteger();
-        Mono.fromFuture(() -&gt; CompletableFuture.supplyAsync(() -&gt; new Noop() {{ setSomething(count.incrementAndGet()); }}))
+        Mono.fromFuture(() -> CompletableFuture.supplyAsync(() -> new Noop() {{ setSomething(count.incrementAndGet()); }}))
             .repeat()
-            .subscribe(noop -&gt; {
+            .subscribe(noop -> {
                 int millis = ZonedDateTime.now().getNano() / 1_000_000;
                 if (millis % 500 == 0) {
-                    System.out.println(&#34;noop &#34; &#43; noop.getSomething());
+                    System.out.println("noop " + noop.getSomething());
                 }
             });
 

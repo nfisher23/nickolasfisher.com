@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The source code for this post can be found on Github.
-When someone talks about a caffeine cache, they are talking about Ben Manes caching library, which is a high performance, in memory cache written for java. If you&#39;re using reactive streams, you can&#39;t reliably use a LoadingCache because it&#39;s blocking by default. Thankfully, tapping into a couple of basic features of reactive streams and caffeine can get us there."
+When someone talks about a caffeine cache, they are talking about Ben Manes caching library, which is a high performance, in memory cache written for java. If you&rsquo;re using reactive streams, you can&rsquo;t reliably use a LoadingCache because it&rsquo;s blocking by default. Thankfully, tapping into a couple of basic features of reactive streams and caffeine can get us there."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-use-caffeine-caches-effectively-in-spring-boot-webflux/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,29 +154,29 @@ When someone talks about a caffeine cache, they are talking about Ben Manes cach
   
 
   <section><p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience">can be found on Github</a>.</p>
-<p>When someone talks about a caffeine cache, they are talking about <a href="https://github.com/ben-manes/caffeine">Ben Manes caching library</a>, which is a high performance, in memory cache written for java. If you're using reactive streams, you can't reliably use a LoadingCache because it's blocking by default. Thankfully, tapping into a couple of basic features of reactive streams and caffeine can get us there.</p>
-<p>I'm going to build off of some sample code in a previous blog post about a more primitive form of <a href="https://nickolasfisher.com/blog/InMemory-Caching-in-Sprint-Boot-WebfluxProject-Reactor">caching in webflux</a>, if you recall we had a <strong>RetryService</strong> that made a downstream network call like so:</p>
+<p>When someone talks about a caffeine cache, they are talking about <a href="https://github.com/ben-manes/caffeine">Ben Manes caching library</a>, which is a high performance, in memory cache written for java. If you&rsquo;re using reactive streams, you can&rsquo;t reliably use a LoadingCache because it&rsquo;s blocking by default. Thankfully, tapping into a couple of basic features of reactive streams and caffeine can get us there.</p>
+<p>I&rsquo;m going to build off of some sample code in a previous blog post about a more primitive form of <a href="https://nickolasfisher.com/blog/InMemory-Caching-in-Sprint-Boot-WebfluxProject-Reactor">caching in webflux</a>, if you recall we had a <strong>RetryService</strong> that made a downstream network call like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Service
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">RetryService</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> WebClient serviceAWebClient;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">RetryService</span>(@Qualifier(<span style="color:#ff79c6">&amp;</span>#34;service<span style="color:#ff79c6">-</span>a<span style="color:#ff79c6">-</span>web<span style="color:#ff79c6">-</span>client<span style="color:#ff79c6">&amp;</span>#34;) WebClient serviceAWebClient) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">RetryService</span>(@Qualifier(<span style="color:#f1fa8c">&#34;service-a-web-client&#34;</span>) WebClient serviceAWebClient) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">serviceAWebClient</span> <span style="color:#ff79c6">=</span> serviceAWebClient;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;WelcomeMessage<span style="color:#ff79c6">&amp;</span>gt; getWelcomeMessageAndHandleTimeout(String locale) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>WelcomeMessage<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">getWelcomeMessageAndHandleTimeout</span>(String locale) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">serviceAWebClient</span>.<span style="color:#50fa7b">get</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(uriBuilder <span style="color:#ff79c6">-&amp;</span>gt; uriBuilder.<span style="color:#50fa7b">path</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>locale<span style="color:#ff79c6">/</span>{locale}<span style="color:#ff79c6">/</span>message<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">build</span>(locale))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(uriBuilder <span style="color:#ff79c6">-&gt;</span> uriBuilder.<span style="color:#50fa7b">path</span>(<span style="color:#f1fa8c">&#34;/locale/{locale}/message&#34;</span>).<span style="color:#50fa7b">build</span>(locale))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">retrieve</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">bodyToMono</span>(WelcomeMessage.<span style="color:#50fa7b">class</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">retryWhen</span>(
 </span></span><span style="display:flex;"><span>                    Retry.<span style="color:#50fa7b">backoff</span>(2, Duration.<span style="color:#50fa7b">ofMillis</span>(25))
-</span></span><span style="display:flex;"><span>                            .<span style="color:#50fa7b">filter</span>(throwable <span style="color:#ff79c6">-&amp;</span>gt; throwable <span style="color:#ff79c6">instanceof</span> TimeoutException)
+</span></span><span style="display:flex;"><span>                            .<span style="color:#50fa7b">filter</span>(throwable <span style="color:#ff79c6">-&gt;</span> throwable <span style="color:#ff79c6">instanceof</span> TimeoutException)
 </span></span><span style="display:flex;"><span>                );
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>What the service does isn't particularly important for this article, however&ndash;let's just say we have business logic that allows us to cache this for brief periods of time upstream. This logic very rarely changes, and the dataset is small. Therefore, it is an excellent candidate for in memory caching to improve performance.</p>
-<p>The first thing we'll do is make a <strong>CachingService</strong> that wraps our <strong>RetryService</strong>, and a skeleton method that we'll fill in in a moment:</p>
+</span></span></code></pre></div><p>What the service does isn&rsquo;t particularly important for this article, however&ndash;let&rsquo;s just say we have business logic that allows us to cache this for brief periods of time upstream. This logic very rarely changes, and the dataset is small. Therefore, it is an excellent candidate for in memory caching to improve performance.</p>
+<p>The first thing we&rsquo;ll do is make a <strong>CachingService</strong> that wraps our <strong>RetryService</strong>, and a skeleton method that we&rsquo;ll fill in in a moment:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Service
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">CachingService</span> {
 </span></span><span style="display:flex;"><span>
@@ -186,7 +186,7 @@ When someone talks about a caffeine cache, they are talking about Ben Manes cach
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">retryService</span> <span style="color:#ff79c6">=</span> retryService;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;WelcomeMessage<span style="color:#ff79c6">&amp;</span>gt; getCachedWelcomeMono(String locale) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>WelcomeMessage<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">getCachedWelcomeMono</span>(String locale) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">empty</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
@@ -208,59 +208,59 @@ When someone talks about a caffeine cache, they are talking about Ben Manes cach
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">message</span> <span style="color:#ff79c6">=</span> message;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Now we'll write a unit test targeting the behavior we want to see: what we want is that successive calls with the same locale gets us the same response, and we don't continue to invoke the underlying service that actually produces that value in that case. We can also sanity check that different locale inputs get different outputs:</p>
+</span></span></code></pre></div><p>Now we&rsquo;ll write a unit test targeting the behavior we want to see: what we want is that successive calls with the same locale gets us the same response, and we don&rsquo;t continue to invoke the underlying service that actually produces that value in that case. We can also sanity check that different locale inputs get different outputs:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">getCachedWelcomeMono_cachesSuccess</span>() {
 </span></span><span style="display:flex;"><span>        RetryService mockRetryService <span style="color:#ff79c6">=</span> Mockito.<span style="color:#50fa7b">mock</span>(RetryService.<span style="color:#50fa7b">class</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        AtomicInteger timesInvoked <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> AtomicInteger(0);
 </span></span><span style="display:flex;"><span>        Mockito.<span style="color:#50fa7b">when</span>(mockRetryService.<span style="color:#50fa7b">getWelcomeMessageAndHandleTimeout</span>(anyString()))
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">thenAnswer</span>(<span style="color:#ff79c6">new</span> Answer<span style="color:#ff79c6">&amp;</span>lt;Mono<span style="color:#ff79c6">&amp;</span>lt;WelcomeMessage<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt;() {
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">thenAnswer</span>(<span style="color:#ff79c6">new</span> Answer<span style="color:#ff79c6">&lt;</span>Mono<span style="color:#ff79c6">&lt;</span>WelcomeMessage<span style="color:#ff79c6">&gt;&gt;</span>() {
 </span></span><span style="display:flex;"><span>                    @Override
-</span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;WelcomeMessage<span style="color:#ff79c6">&amp;</span>gt; answer(InvocationOnMock invocation) <span style="color:#8be9fd;font-style:italic">throws</span> Throwable {
+</span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>WelcomeMessage<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">answer</span>(InvocationOnMock invocation) <span style="color:#8be9fd;font-style:italic">throws</span> Throwable {
 </span></span><span style="display:flex;"><span>                        String locale_arg <span style="color:#ff79c6">=</span> invocation.<span style="color:#50fa7b">getArgument</span>(0);
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>                            timesInvoked.<span style="color:#50fa7b">incrementAndGet</span>();
-</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">just</span>(<span style="color:#ff79c6">new</span> WelcomeMessage(<span style="color:#ff79c6">&amp;</span>#34;locale <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; locale_arg));
+</span></span><span style="display:flex;"><span>                            <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">just</span>(<span style="color:#ff79c6">new</span> WelcomeMessage(<span style="color:#f1fa8c">&#34;locale &#34;</span> <span style="color:#ff79c6">+</span> locale_arg));
 </span></span><span style="display:flex;"><span>                        });
 </span></span><span style="display:flex;"><span>                    }
 </span></span><span style="display:flex;"><span>                });
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        CachingService cachingService <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> CachingService(mockRetryService);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; 3; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
-</span></span><span style="display:flex;"><span>            StepVerifier.<span style="color:#50fa7b">create</span>(cachingService.<span style="color:#50fa7b">getCachedWelcomeMono</span>(<span style="color:#ff79c6">&amp;</span>#34;en<span style="color:#ff79c6">&amp;</span>#34;))
-</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">expectNextMatches</span>(welcomeMessage <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">&amp;</span>#34;locale en<span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#50fa7b">equals</span>(welcomeMessage.<span style="color:#50fa7b">getMessage</span>()))
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> 3; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>            StepVerifier.<span style="color:#50fa7b">create</span>(cachingService.<span style="color:#50fa7b">getCachedWelcomeMono</span>(<span style="color:#f1fa8c">&#34;en&#34;</span>))
+</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">expectNextMatches</span>(welcomeMessage <span style="color:#ff79c6">-&gt;</span> <span style="color:#f1fa8c">&#34;locale en&#34;</span>.<span style="color:#50fa7b">equals</span>(welcomeMessage.<span style="color:#50fa7b">getMessage</span>()))
 </span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; 5; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
-</span></span><span style="display:flex;"><span>            StepVerifier.<span style="color:#50fa7b">create</span>(cachingService.<span style="color:#50fa7b">getCachedWelcomeMono</span>(<span style="color:#ff79c6">&amp;</span>#34;ru<span style="color:#ff79c6">&amp;</span>#34;))
-</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">expectNextMatches</span>(welcomeMessage <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">&amp;</span>#34;locale ru<span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#50fa7b">equals</span>(welcomeMessage.<span style="color:#50fa7b">getMessage</span>()))
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> 5; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>            StepVerifier.<span style="color:#50fa7b">create</span>(cachingService.<span style="color:#50fa7b">getCachedWelcomeMono</span>(<span style="color:#f1fa8c">&#34;ru&#34;</span>))
+</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">expectNextMatches</span>(welcomeMessage <span style="color:#ff79c6">-&gt;</span> <span style="color:#f1fa8c">&#34;locale ru&#34;</span>.<span style="color:#50fa7b">equals</span>(welcomeMessage.<span style="color:#50fa7b">getMessage</span>()))
 </span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        assertEquals(2, timesInvoked.<span style="color:#50fa7b">get</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>Here, we setup a mock response that uses the argument to generate the response, leveraging Mockito, and then we make 3 requests to this caching service in succession for the english locale. We follow up with five requests for the russian locale. If you run this test now, it will fail, because we assert that the underlying mono from the mock service was invoked only twice&ndash;which will be true when we add caching but is currently false. We can get this test to pass with the following code:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> Cache<span style="color:#ff79c6">&amp;</span>lt;String, WelcomeMessage<span style="color:#ff79c6">&amp;</span>gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> Cache<span style="color:#ff79c6">&lt;</span>String, WelcomeMessage<span style="color:#ff79c6">&gt;</span>
 </span></span><span style="display:flex;"><span>            WELCOME_MESSAGE_CACHE <span style="color:#ff79c6">=</span> Caffeine.<span style="color:#50fa7b">newBuilder</span>()
 </span></span><span style="display:flex;"><span>                                        .<span style="color:#50fa7b">expireAfterWrite</span>(Duration.<span style="color:#50fa7b">ofMinutes</span>(5))
 </span></span><span style="display:flex;"><span>                                        .<span style="color:#50fa7b">maximumSize</span>(1_000)
 </span></span><span style="display:flex;"><span>                                        .<span style="color:#50fa7b">build</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;WelcomeMessage<span style="color:#ff79c6">&amp;</span>gt; getCachedWelcomeMono(String locale) {
-</span></span><span style="display:flex;"><span>        Optional<span style="color:#ff79c6">&amp;</span>lt;WelcomeMessage<span style="color:#ff79c6">&amp;</span>gt; message <span style="color:#ff79c6">=</span> Optional.<span style="color:#50fa7b">ofNullable</span>(WELCOME_MESSAGE_CACHE.<span style="color:#50fa7b">getIfPresent</span>(locale));
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>WelcomeMessage<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">getCachedWelcomeMono</span>(String locale) {
+</span></span><span style="display:flex;"><span>        Optional<span style="color:#ff79c6">&lt;</span>WelcomeMessage<span style="color:#ff79c6">&gt;</span> message <span style="color:#ff79c6">=</span> Optional.<span style="color:#50fa7b">ofNullable</span>(WELCOME_MESSAGE_CACHE.<span style="color:#50fa7b">getIfPresent</span>(locale));
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> message
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">map</span>(Mono::just)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">orElseGet</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">orElseGet</span>(() <span style="color:#ff79c6">-&gt;</span>
 </span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">retryService</span>.<span style="color:#50fa7b">getWelcomeMessageAndHandleTimeout</span>(locale)
-</span></span><span style="display:flex;"><span>                            .<span style="color:#50fa7b">doOnNext</span>(welcomeMessage <span style="color:#ff79c6">-&amp;</span>gt; WELCOME_MESSAGE_CACHE.<span style="color:#50fa7b">put</span>(locale, welcomeMessage))
+</span></span><span style="display:flex;"><span>                            .<span style="color:#50fa7b">doOnNext</span>(welcomeMessage <span style="color:#ff79c6">-&gt;</span> WELCOME_MESSAGE_CACHE.<span style="color:#50fa7b">put</span>(locale, welcomeMessage))
 </span></span><span style="display:flex;"><span>                );
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>Here, we check if the message is in the cache [returning it if it is]. If it does not exist, we request it from the underlying service and, once the underlying service responds successfully, we manually populate the cache ourselves with a <strong>doOnNext</strong>.</p>
-<p>It's important, though not particularly consequential, to note that this means that in very high throughput services, this will result in multiple calls to the downstream service because this is a check-then-act process that does not lock. But that should be perfectly fine for the vast majority of cases.</p>
+<p>It&rsquo;s important, though not particularly consequential, to note that this means that in very high throughput services, this will result in multiple calls to the downstream service because this is a check-then-act process that does not lock. But that should be perfectly fine for the vast majority of cases.</p>
 <p>Remember to check out the <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience">source code for this post on Github</a>. Happy caching.</p>
 </section>
 

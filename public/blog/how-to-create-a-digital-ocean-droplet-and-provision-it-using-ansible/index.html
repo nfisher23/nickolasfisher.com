@@ -154,14 +154,14 @@
 
   <section><p>Ansible allows you to provision servers in an idempotent fashion. It lets you see the state of your VM configuration as it resides in code, which is light years better than the sysadmin ways of yesterday.</p>
 <p>The digital ocean ansible module also lets you use ansible to declare the actual virtual machines that you want to exist. Done correctly, this can also be idempotent, and elevates Ansible to being closer to an orchestration framework.</p>
-<p><strong>Note</strong>: There are, as of this writing, two digital ocean modules in ansible that can get the job done. The <a href="https://docs.ansible.com/ansible/latest/modules/digital_ocean_module.html">deprecated digital_ocean module</a> and the <a href="https://docs.ansible.com/ansible/latest/modules/digital_ocean_droplet_module.html#digital-ocean-droplet-module">digital_ocean_droplet ansible module</a>. The supported module is only available from Ansible 2.8 onwards, so if upgrading is not an option at this time, then you'll have to use the deprecated version. I'll include some of the differences below.</p>
+<p><strong>Note</strong>: There are, as of this writing, two digital ocean modules in ansible that can get the job done. The <a href="https://docs.ansible.com/ansible/latest/modules/digital_ocean_module.html">deprecated digital_ocean module</a> and the <a href="https://docs.ansible.com/ansible/latest/modules/digital_ocean_droplet_module.html#digital-ocean-droplet-module">digital_ocean_droplet ansible module</a>. The supported module is only available from Ansible 2.8 onwards, so if upgrading is not an option at this time, then you&rsquo;ll have to use the deprecated version. I&rsquo;ll include some of the differences below.</p>
 <p>To get started, make sure you <a href="https://www.digitalocean.com/docs/api/create-personal-access-token/">create your own digital ocean api token</a>.</p>
 <h3 id="creating-a-droplet-in-code">Creating a Droplet in Code</h3>
 <p>To create a droplet, take your digital ocean api token and set an environment variable for this shell session:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">DO_API_TOKEN</span><span style="color:#ff79c6">=</span>abcdefghijklmnop123456
 </span></span></code></pre></div><p>Now navigate to the directory that you want this playbook to reside in and create an empty file:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ touch create_droplet_sample.yml
-</span></span></code></pre></div><p>If you running ansible 2.8 or greater, we can create a droplet, add a tag, then add the host to a &quot;do&quot; host group like so:</p>
+</span></span></code></pre></div><p>If you running ansible 2.8 or greater, we can create a droplet, add a tag, then add the host to a &ldquo;do&rdquo; host group like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
 </span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">hosts</span>: localhost
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">connection</span>: local
@@ -172,29 +172,29 @@
 </span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># then run this playbook to create droplet</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">tasks</span>:
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">digital_ocean_droplet</span>:
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">unique_name</span>: <span style="color:#ff79c6">yes</span> <span style="color:#6272a4"># &amp;#34;yes&amp;#34; makes it idempotent</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">unique_name</span>: <span style="color:#ff79c6">yes</span> <span style="color:#6272a4"># &#34;yes&#34; makes it idempotent</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">region</span>: ams3 <span style="color:#6272a4"># slug of the region you would like your server to be created in.</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">image</span>: ubuntu-18-10-x64 <span style="color:#6272a4"># slug of the image you would like the droplet created with.</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">wait</span>: <span style="color:#ff79c6">yes</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: <span style="color:#ff79c6">&amp;#34;new-tmp-droplet&amp;#34;</span> <span style="color:#6272a4"># name of the droplet</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: <span style="color:#f1fa8c">&#34;new-tmp-droplet&#34;</span> <span style="color:#6272a4"># name of the droplet</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">size_id</span>: s-1vcpu-1gb <span style="color:#6272a4"># slug of the size you would like the droplet created with.</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">state</span>: present
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">ssh_keys</span>: [ <span style="color:#ff79c6">&amp;#39;0123456789&amp;#39;</span> ] <span style="color:#6272a4"># &amp;lt;----- put your numeric SSH key in here</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">ssh_keys</span>: [ <span style="color:#f1fa8c">&#39;0123456789&#39;</span> ] <span style="color:#6272a4"># &lt;----- put your numeric SSH key in here</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">register</span>: created_droplet
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">digital_ocean_tag</span>:
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: some-sample-tag
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">resource_id</span>: <span style="color:#ff79c6">&amp;#34;{{</span> created_droplet.data.droplet.id }}&amp;#34;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">resource_id</span>: <span style="color:#f1fa8c">&#34;{{ created_droplet.data.droplet.id }}&#34;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">state</span>: present
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">register</span>: tag_response
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: add hosts
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">add_host</span>:
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: <span style="color:#ff79c6">&amp;#34;{{</span> created_droplet.data.ip_address }}&amp;#34;
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">groups</span>: <span style="color:#ff79c6">&amp;#34;do&amp;#34;</span>
-</span></span></code></pre></div><p>This uses the digital_ocean_droplet module to create a droplet only if it doesn't exist. We then register the response from the operation to a <strong>created_droplet</strong> variable, and use that variable to add a custom tag to the droplet. We finally add the ip address of the created droplet to our dynamic inventory, which we will use shortly.</p>
-<p><strong>Note</strong>: if you want to use this sample code, you'll have to have your DO_API_TOKEN environment variable defined, and you'll also have to use your own numeric SSH key in the <strong>ssh_keys</strong> argument in the above module.</p>
-<p>If you running an ansible version &lt; 2.8, you're playbook would look something like this instead:</p>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: <span style="color:#f1fa8c">&#34;{{ created_droplet.data.ip_address }}&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">groups</span>: <span style="color:#f1fa8c">&#34;do&#34;</span>
+</span></span></code></pre></div><p>This uses the digital_ocean_droplet module to create a droplet only if it doesn&rsquo;t exist. We then register the response from the operation to a <strong>created_droplet</strong> variable, and use that variable to add a custom tag to the droplet. We finally add the ip address of the created droplet to our dynamic inventory, which we will use shortly.</p>
+<p><strong>Note</strong>: if you want to use this sample code, you&rsquo;ll have to have your DO_API_TOKEN environment variable defined, and you&rsquo;ll also have to use your own numeric SSH key in the <strong>ssh_keys</strong> argument in the above module.</p>
+<p>If you running an ansible version &lt; 2.8, you&rsquo;re playbook would look something like this instead:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
 </span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">hosts</span>: localhost
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">connection</span>: local
@@ -212,25 +212,25 @@
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">image_id</span>: ubuntu-18-10-x64
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">wait_timeout</span>: <span style="color:#bd93f9">100</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">wait</span>: <span style="color:#ff79c6">yes</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: <span style="color:#ff79c6">&amp;#34;new-tmp-droplet&amp;#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: <span style="color:#f1fa8c">&#34;new-tmp-droplet&#34;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">size_id</span>: s-1vcpu-1gb
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">state</span>: present
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">command</span>: droplet
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">ssh_key_ids</span>: [ <span style="color:#ff79c6">&amp;#39;0123456789&amp;#39;</span> ] <span style="color:#6272a4"># &amp;lt;---- remember to put your SSH key here</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">ssh_key_ids</span>: [ <span style="color:#f1fa8c">&#39;0123456789&#39;</span> ] <span style="color:#6272a4"># &lt;---- remember to put your SSH key here</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">register</span>: created_droplet
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">digital_ocean_tag</span>:
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: some-sample-tag
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">resource_id</span>: <span style="color:#ff79c6">&amp;#34;{{</span> created_droplet.droplet.id }}&amp;#34;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">resource_id</span>: <span style="color:#f1fa8c">&#34;{{ created_droplet.droplet.id }}&#34;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">state: present # not required. choices</span>: present;absent. Whether the tag should be present or absent on the resource.
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">register</span>: tag_response
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: add hosts
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">add_host</span>:
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: <span style="color:#ff79c6">&amp;#34;{{</span> created_droplet.droplet.ip_address }}&amp;#34;
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">groups</span>: <span style="color:#ff79c6">&amp;#34;do&amp;#34;</span>
-</span></span></code></pre></div><p>There are a few differences in children of the digital_ocean module, and you'll have to make sure you understand the registered response, because the structure changes quite a bit.</p>
-<p>To prove that it works properly, we'll deploy a simple static nginx server that returns a custom index page. The next part of the playbook is the same regardless of your ansible version:</p>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: <span style="color:#f1fa8c">&#34;{{ created_droplet.droplet.ip_address }}&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">groups</span>: <span style="color:#f1fa8c">&#34;do&#34;</span>
+</span></span></code></pre></div><p>There are a few differences in children of the digital_ocean module, and you&rsquo;ll have to make sure you understand the registered response, because the structure changes quite a bit.</p>
+<p>To prove that it works properly, we&rsquo;ll deploy a simple static nginx server that returns a custom index page. The next part of the playbook is the same regardless of your ansible version:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>....
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">hosts</span>: do
@@ -243,7 +243,7 @@
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">tasks</span>:
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: wait for port 22 to become available
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">wait_for</span>:
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">host</span>: <span style="color:#ff79c6">&amp;#34;{{</span> inventory_hostname }}&amp;#34;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">host</span>: <span style="color:#f1fa8c">&#34;{{ inventory_hostname }}&#34;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">port</span>: <span style="color:#bd93f9">22</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">delegate_to</span>: localhost
 </span></span><span style="display:flex;"><span>
@@ -258,11 +258,11 @@
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">copy</span>:
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">src</span>: ./index.html
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">dest</span>: /var/www/html/index.html
-</span></span></code></pre></div><p>In the same directory, we'll place our custom index.html file with the following contents:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&amp;lt;h1&amp;gt;You made it&amp;lt;/h1&amp;gt;
-</span></span><span style="display:flex;"><span>&amp;lt;p&amp;gt;This should show up instead of nginx home page&amp;lt;/p&amp;gt;
+</span></span></code></pre></div><p>In the same directory, we&rsquo;ll place our custom index.html file with the following contents:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">h1</span>&gt;You made it&lt;/<span style="color:#ff79c6">h1</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">p</span>&gt;This should show up instead of nginx home page&lt;/<span style="color:#ff79c6">p</span>&gt;
 </span></span></code></pre></div><p>If you navigate to the IP address of the created droplet, you should see that page displayed.</p>
-<p>Note that you will have to type &quot;yes&quot;, by default, when prompted to connect to the newly created droplet. If you don't want to type &quot;yes&quot; in the middle of your ansible playbook, include an <strong>ansible.cfg</strong> file in the same directory as your playbook that has this:</p>
+<p>Note that you will have to type &ldquo;yes&rdquo;, by default, when prompted to connect to the newly created droplet. If you don&rsquo;t want to type &ldquo;yes&rdquo; in the middle of your ansible playbook, include an <strong>ansible.cfg</strong> file in the same directory as your playbook that has this:</p>
 <pre tabindex="0"><code>[defaults]
 host_key_checking = False
 </code></pre></section>

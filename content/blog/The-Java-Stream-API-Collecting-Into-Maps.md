@@ -37,7 +37,7 @@ public class SimplePair {
 
     @Override
     public String toString() {
-        return &#34;name-&#34; &#43; name &#43; &#34;,id-&#34; &#43; id;
+        return "name-" + name + ",id-" + id;
     }
 }
 ```
@@ -45,13 +45,13 @@ public class SimplePair {
 If we use the following method to set up five SimplePair objects in a collection:
 
 ```java
-public static List&lt;SimplePair&gt; generateSimplePairs(int numToGenerate) {
-    List&lt;SimplePair&gt; pairs = new ArrayList&lt;&gt;();
-    for (int i = 1; i &lt;= numToGenerate; i&#43;&#43;) {
+public static List<SimplePair> generateSimplePairs(int numToGenerate) {
+    List<SimplePair> pairs = new ArrayList<>();
+    for (int i = 1; i <= numToGenerate; i++) {
         SimplePair pair = new SimplePair();
 
         pair.setId(i);
-        pair.setName(&#34;pair&#34; &#43; i);
+        pair.setName("pair" + i);
 
         pairs.add(pair);
     }
@@ -66,26 +66,26 @@ We can thus use Streams to map the ids to the names:
 ```java
 @Test
 public void collect_mapIdToName() {
-    Map&lt;Integer, String&gt; mapIdToName = simplePairs.stream().collect(Collectors.toMap(SimplePair::getId, SimplePair::getName));
+    Map<Integer, String> mapIdToName = simplePairs.stream().collect(Collectors.toMap(SimplePair::getId, SimplePair::getName));
 
-    assertEquals(mapIdToName.get(3), &#34;pair3&#34;);
-    assertEquals(mapIdToName.get(5), &#34;pair5&#34;);
+    assertEquals(mapIdToName.get(3), "pair3");
+    assertEquals(mapIdToName.get(5), "pair5");
 }
 
 ```
 
-In the more common case where you want to map the id&#39;s to the object itself, use `Function.identity()`:
+In the more common case where you want to map the id's to the object itself, use `Function.identity()`:
 
 ```java
 @Test
 public void collect_mapIdToPair() {
-    Map&lt;Integer, SimplePair&gt; mapIdToObject = simplePairs.stream().collect(Collectors.toMap(SimplePair::getId, Function.identity()));
+    Map<Integer, SimplePair> mapIdToObject = simplePairs.stream().collect(Collectors.toMap(SimplePair::getId, Function.identity()));
 
     SimplePair pair1 = mapIdToObject.get(1);
     SimplePair pair4 = mapIdToObject.get(4);
 
-    assertEquals(pair1.toString(), &#34;name-pair1,id-1&#34;);
-    assertEquals(pair4.toString(), &#34;name-pair4,id-4&#34;);
+    assertEquals(pair1.toString(), "name-pair1,id-1");
+    assertEquals(pair4.toString(), "name-pair4,id-4");
 }
 
 ```
@@ -97,12 +97,12 @@ by adding a lambda that resolves the disparity. If we have more pairs with the s
 private void addDuplicatePairs() {
     simplePairs.add(new SimplePair() {{
         setId(3);
-        setName(&#34;another-pair3&#34;);
+        setName("another-pair3");
     }});
 
     simplePairs.add(new SimplePair() {{
         setId(3);
-        setName(&#34;yet-another-pair3&#34;);
+        setName("yet-another-pair3");
     }});
 }
 
@@ -115,26 +115,26 @@ We can resolve to the existing value or the new value, or by any other determina
 public void collect_resolveConflictsOnMap() {
     addDuplicatePairs();
 
-    Map&lt;Integer, SimplePair&gt; mapWithExistingValue = simplePairs.stream().collect(Collectors.toMap(
+    Map<Integer, SimplePair> mapWithExistingValue = simplePairs.stream().collect(Collectors.toMap(
             SimplePair::getId,
             Function.identity(),
-            (existingValue, newValue) -&gt; existingValue // established is always better
+            (existingValue, newValue) -> existingValue // established is always better
     ));
 
-    assertEquals(&#34;pair3&#34;, mapWithExistingValue.get(3).getName());
+    assertEquals("pair3", mapWithExistingValue.get(3).getName());
 
-    Map&lt;Integer, SimplePair&gt; mapWithNewestValue = simplePairs.stream().collect(Collectors.toMap(
+    Map<Integer, SimplePair> mapWithNewestValue = simplePairs.stream().collect(Collectors.toMap(
             SimplePair::getId,
             Function.identity(),
-            (existingValue, newValue) -&gt; newValue // newer is always better
+            (existingValue, newValue) -> newValue // newer is always better
     ));
 
-    assertEquals(&#34;yet-another-pair3&#34;, mapWithNewestValue.get(3).getName());
+    assertEquals("yet-another-pair3", mapWithNewestValue.get(3).getName());
 }
 
 ```
 
-To collect it into a list gets more complicated if you stay with the `.toMap(..)` method, so we&#39;ll bail on that for simplicity right now. When we want a Map&lt;&gt; from a collection, the most common reason would be to collect each one into a bucket based on some criteria, usually by a single property field.
+To collect it into a list gets more complicated if you stay with the `.toMap(..)` method, so we'll bail on that for simplicity right now. When we want a Map<> from a collection, the most common reason would be to collect each one into a bucket based on some criteria, usually by a single property field.
 
 The easiest and most straightforward way to do that is to use the built in `groupingBy(..)` collector:
 
@@ -143,18 +143,18 @@ The easiest and most straightforward way to do that is to use the built in `grou
 public void groupingBy_sortToMap() {
     addDuplicatePairs();
 
-    Map&lt;Integer, List&lt;SimplePair&gt;&gt; mapIdsToPairs =
+    Map<Integer, List<SimplePair>> mapIdsToPairs =
             simplePairs.stream().collect(Collectors.groupingBy(SimplePair::getId));
 
     assertEquals(3, mapIdsToPairs.get(3).size());
     assertEquals(3, mapIdsToPairs.get(3).get(0).getId());
     assertEquals(3, mapIdsToPairs.get(3).get(1).getId());
-    assertEquals(&#34;another-pair3&#34;, mapIdsToPairs.get(3).get(1).getName());
+    assertEquals("another-pair3", mapIdsToPairs.get(3).get(1).getName());
 }
 
 ```
 
-Finally, `partitioningBy(..)` allows you to map boolean values to a collection, where the &#34;true&#34; key maps to all the objects for which the lambda expression evaluates to &#34;true&#34;.
+Finally, `partitioningBy(..)` allows you to map boolean values to a collection, where the "true" key maps to all the objects for which the lambda expression evaluates to "true".
 Here, we add our duplicate pairs again, then place all the pairs that have an id of 3 into the true bucket, and all the others into the false bucket:
 
 ```java
@@ -162,9 +162,9 @@ Here, we add our duplicate pairs again, then place all the pairs that have an id
 public void parititioningBy_sortByTrueAndFalse() {
     addDuplicatePairs();
 
-    Map&lt;Boolean, List&lt;SimplePair&gt;&gt; partitionedByIdOf3 =
+    Map<Boolean, List<SimplePair>> partitionedByIdOf3 =
             simplePairs.stream().collect(
-                    Collectors.partitioningBy(pair -&gt; pair.getId() == 3)
+                    Collectors.partitioningBy(pair -> pair.getId() == 3)
             );
 
     assertEquals(3, partitionedByIdOf3.get(true).size());

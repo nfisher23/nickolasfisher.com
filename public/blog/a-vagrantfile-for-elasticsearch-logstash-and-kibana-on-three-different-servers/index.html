@@ -155,42 +155,44 @@
   <section><p><a href="https://www.elastic.co/">Elasticsearch, Logstash, and Kibana</a>, commonly referred to as ELK or the Elastic Stack, is a set of tools that can, well do a lot of things. It is most famous for its logging and analytics capabilities.</p>
 <p>In a nutshell:</p>
 <ol>
-<li>Elasticsearch is a distributed NoSQL database with automatic indexing, and is designed primarily for &quot;scalability&quot;&ndash;in other words, redundancy via sharding and clustering across multiple servers, and a document-based philosophy (and, you know, search).</li>
+<li>Elasticsearch is a distributed NoSQL database with automatic indexing, and is designed primarily for &ldquo;scalability&rdquo;&ndash;in other words, redundancy via sharding and clustering across multiple servers, and a document-based philosophy (and, you know, search).</li>
 <li>Kibana is a dashboard designed primarily to be a GUI on top of the Elasticsearch database, with cool features like visualization.</li>
-<li>Logstash can send formatted logs to Elasticsearch and filter out logs that aren't relevant, typically by receiving them from Filebeats.</li>
+<li>Logstash can send formatted logs to Elasticsearch and filter out logs that aren&rsquo;t relevant, typically by receiving them from Filebeats.</li>
 </ol>
-<p>This is not an exhaustive list of all the things you can do with these tools, and this isn't even taking into account <a href="https://www.elastic.co/products/beats">beats</a>, but is usually where people start when they are introduced to the Elastic Stack.</p>
-<p>So, now we want to play around with all of it, and we've decided to use <a href="https://www.vagrantup.com/">Vagrant</a> to provision some local virtual machines. While this is a good starting point/sandbox, keep in mind that there is no security with the following setup, and in any production environment not having security baked in would be a very bad thing to do.</p>
-<p>First, we'll set up the VagrantFile. Navigate to the directory you want to set this up in and type:</p>
+<p>This is not an exhaustive list of all the things you can do with these tools, and this isn&rsquo;t even taking into account <a href="https://www.elastic.co/products/beats">beats</a>, but is usually where people start when they are introduced to the Elastic Stack.</p>
+<p>So, now we want to play around with all of it, and we&rsquo;ve decided to use <a href="https://www.vagrantup.com/">Vagrant</a> to provision some local virtual machines. While this is a good starting point/sandbox, keep in mind that there is no security with the following setup, and in any production environment not having security baked in would be a very bad thing to do.</p>
+<p>First, we&rsquo;ll set up the VagrantFile. Navigate to the directory you want to set this up in and type:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ vagrant init -m
 </span></span></code></pre></div><p>Then set up a VagrantFile like:</p>
-<pre tabindex="0"><code>Vagrant.configure(&amp;#34;2&amp;#34;) do |config|
-  config.vm.box = &amp;#34;ubuntu/bionic64&amp;#34;
+<pre tabindex="0"><code>Vagrant.configure(&#34;2&#34;) do |config|
+  config.vm.box = &#34;ubuntu/bionic64&#34;
 
   config.vm.provider :virtualbox do |vb|
     vb.memory = 3072
     vb.cpus = 1
   end
 
-  config.vm.define &amp;#34;elasticsearch&amp;#34; do |elasticsearch|
-    elasticsearch.vm.network &amp;#34;private_network&amp;#34;, ip: &amp;#34;192.168.56.111&amp;#34;
-    elasticsearch.vm.provision :shell, path: &amp;#34;elasticsearch-provision.sh&amp;#34;
+  config.vm.define &#34;elasticsearch&#34; do |elasticsearch|
+    elasticsearch.vm.network &#34;private_network&#34;, ip: &#34;192.168.56.111&#34;
+    elasticsearch.vm.provision :shell, path: &#34;elasticsearch-provision.sh&#34;
   end
 
-  config.vm.define &amp;#34;kibana&amp;#34; do |kibana|
-    kibana.vm.network &amp;#34;private_network&amp;#34;, ip: &amp;#34;192.168.56.112&amp;#34;
-    kibana.vm.provision :shell, path: &amp;#34;kibana-provision.sh&amp;#34;
+  config.vm.define &#34;kibana&#34; do |kibana|
+    kibana.vm.network &#34;private_network&#34;, ip: &#34;192.168.56.112&#34;
+    kibana.vm.provision :shell, path: &#34;kibana-provision.sh&#34;
   end
 
-  config.vm.define &amp;#34;logstash&amp;#34; do |logstash|
-    logstash.vm.network &amp;#34;private_network&amp;#34;, ip: &amp;#34;192.168.56.113&amp;#34;
-    logstash.vm.provision :shell, path: &amp;#34;logstash-provision.sh&amp;#34;
+  config.vm.define &#34;logstash&#34; do |logstash|
+    logstash.vm.network &#34;private_network&#34;, ip: &#34;192.168.56.113&#34;
+    logstash.vm.provision :shell, path: &#34;logstash-provision.sh&#34;
   end
 end
-</code></pre><p>You'll need three shell scripts in the same directory called &quot;elasticsearch-provision.sh&quot;, &quot;kibana-provision.sh&quot;, and &quot;logstash-provision.sh&quot;.</p>
-<p>Let's start with the Elasticsearch shell script. From <a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.4/index.html">the official Elasticsearch install guide for version 6.4</a>:</p>
-<p>&gt; Elasticsearch requires at least Java 8. Specifically as of this writing,
-&gt; it is recommended that you use the Oracle JDK version 1.8.0_131.</p>
+</code></pre><p>You&rsquo;ll need three shell scripts in the same directory called &ldquo;elasticsearch-provision.sh&rdquo;, &ldquo;kibana-provision.sh&rdquo;, and &ldquo;logstash-provision.sh&rdquo;.</p>
+<p>Let&rsquo;s start with the Elasticsearch shell script. From <a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.4/index.html">the official Elasticsearch install guide for version 6.4</a>:</p>
+<blockquote>
+<p>Elasticsearch requires at least Java 8. Specifically as of this writing,
+it is recommended that you use the Oracle JDK version 1.8.0_131.</p>
+</blockquote>
 <p>So we need to:</p>
 <ol>
 <li>
@@ -225,14 +227,14 @@ end
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># configure elasticsearch to be available on port 9200</span>
 </span></span><span style="display:flex;"><span>sudo chmod <span style="color:#bd93f9">777</span> /etc/elasticsearch
 </span></span><span style="display:flex;"><span>sudo touch /etc/elasticsearch/elasticsearch.yml
-</span></span><span style="display:flex;"><span>sudo cat &amp;lt;&amp;lt; EOF &amp;gt; /etc/elasticsearch/elasticsearch.yml
-</span></span><span style="display:flex;"><span>path.data: /var/lib/elasticsearch
-</span></span><span style="display:flex;"><span>path.logs: /var/log/elasticsearch
-</span></span><span style="display:flex;"><span>network.host: 192.168.56.111
-</span></span><span style="display:flex;"><span>http.port: 9200-9300
-</span></span><span style="display:flex;"><span>EOF
+</span></span><span style="display:flex;"><span>sudo cat <span style="color:#f1fa8c">&lt;&lt; EOF &gt; /etc/elasticsearch/elasticsearch.yml
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">path.data: /var/lib/elasticsearch
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">path.logs: /var/log/elasticsearch
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">network.host: 192.168.56.111
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">http.port: 9200-9300
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">EOF</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;restarting service...&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#f1fa8c">&#34;restarting service...&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>service elasticsearch restart
 </span></span><span style="display:flex;"><span>
@@ -243,7 +245,7 @@ end
 </span></span></code></pre></div><p>Then, after a few minutes of provisioning and letting the service get fully ramped up, you can</p>
 <pre tabindex="0"><code>$ curl 192.168.56.111:9200
 </code></pre><p>And you should see the Elasticsearch tagline response.</p>
-<p>The setup for Kibana is a bit easier since we don't need to install Java (this is kibana-provision.sh):</p>
+<p>The setup for Kibana is a bit easier since we don&rsquo;t need to install Java (this is kibana-provision.sh):</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4">#/bin/bash</span>
 </span></span><span style="display:flex;"><span>wget https://artifacts.elastic.co/downloads/kibana/kibana-6.4.2-amd64.deb
 </span></span><span style="display:flex;"><span>shasum -a <span style="color:#bd93f9">512</span> kibana-6.4.2-amd64.deb
@@ -252,18 +254,18 @@ end
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># configure kibana to be available on port 5601 and connect to elasticsearch instance</span>
 </span></span><span style="display:flex;"><span>chmod <span style="color:#bd93f9">777</span> /etc/kibana
 </span></span><span style="display:flex;"><span>touch /etc/kibana/kibana.yml
-</span></span><span style="display:flex;"><span>cat &amp;lt;&amp;lt; EOF &amp;gt; /etc/kibana/kibana.yml
-</span></span><span style="display:flex;"><span>server.port: <span style="color:#bd93f9">5601</span>
-</span></span><span style="display:flex;"><span>server.host: 192.168.56.112
-</span></span><span style="display:flex;"><span>elasticsearch.url: http://192.168.56.111:9200
-</span></span><span style="display:flex;"><span>EOF
+</span></span><span style="display:flex;"><span>cat <span style="color:#f1fa8c">&lt;&lt; EOF &gt; /etc/kibana/kibana.yml
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">server.port: 5601
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">server.host: 192.168.56.112
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">elasticsearch.url: http://192.168.56.111:9200
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">EOF</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>service kibana restart
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># available on startup</span>
 </span></span><span style="display:flex;"><span>update-rc.d kibana defaults <span style="color:#bd93f9">95</span> <span style="color:#bd93f9">10</span>
-</span></span></code></pre></div><p>Once this is up (run $ vagrant up kibana), you should be able to navigate to 192.168.56.112:5601 in your browser and see Kibana's dashboard come up.</p>
-<p>Finally, here's the Logstash script (logstash-provision.sh):</p>
+</span></span></code></pre></div><p>Once this is up (run $ vagrant up kibana), you should be able to navigate to 192.168.56.112:5601 in your browser and see Kibana&rsquo;s dashboard come up.</p>
+<p>Finally, here&rsquo;s the Logstash script (logstash-provision.sh):</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#ff79c6">#!/bin/bash
 </span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># install java 8</span>
@@ -276,25 +278,25 @@ end
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># install logstash</span>
 </span></span><span style="display:flex;"><span>wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 </span></span><span style="display:flex;"><span>apt-get install apt-transport-https
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;deb https://artifacts.elastic.co/packages/6.x/apt stable main&amp;#34; | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#f1fa8c">&#34;deb https://artifacts.elastic.co/packages/6.x/apt stable main&#34;</span> | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
 </span></span><span style="display:flex;"><span>apt-get update &amp;amp;&amp;amp; apt-get install logstash
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># configure logstash to be available on port 5044 and send to elasticsearch</span>
 </span></span><span style="display:flex;"><span>sudo chmod <span style="color:#bd93f9">777</span> /etc/logstash
 </span></span><span style="display:flex;"><span>sudo touch /etc/logstash/conf.d/ex-pipeline.conf
-</span></span><span style="display:flex;"><span>sudo cat &amp;lt;&amp;lt; EOF &amp;gt; /etc/logstash/conf.d/ex-pipeline.conf
-</span></span><span style="display:flex;"><span>input <span style="color:#ff79c6">{</span>
-</span></span><span style="display:flex;"><span>  beats <span style="color:#ff79c6">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">host</span> <span style="color:#ff79c6">=</span>&amp;gt; &amp;<span style="color:#6272a4">#34;192.168.56.113&amp;#34;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">port</span> <span style="color:#ff79c6">=</span>&amp;gt; &amp;<span style="color:#6272a4">#34;5044&amp;#34;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
-</span></span><span style="display:flex;"><span>output <span style="color:#ff79c6">{</span>
-</span></span><span style="display:flex;"><span>  elasticsearch <span style="color:#ff79c6">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">hosts</span> <span style="color:#ff79c6">=</span>&amp;gt; <span style="color:#ff79c6">[</span> &amp;<span style="color:#6272a4">#34;192.168.56.111:9200&amp;#34; ]</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
-</span></span><span style="display:flex;"><span>EOF
+</span></span><span style="display:flex;"><span>sudo cat <span style="color:#f1fa8c">&lt;&lt; EOF &gt; /etc/logstash/conf.d/ex-pipeline.conf
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">input {
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">  beats {
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    host =&gt; &#34;192.168.56.113&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    port =&gt; &#34;5044&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">  }
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">}
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">output {
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">  elasticsearch {
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    hosts =&gt; [ &#34;192.168.56.111:9200&#34; ]
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">  }
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">}
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">EOF</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>service logstash restart
 </span></span></code></pre></div><p>You now have your playground, go conquer the world with it.</p>

@@ -7,15 +7,15 @@ tags: [java, spring, webdev]
 
 A single page application (SPA) architecture usually involves an end user getting a smattering of javascript files when he/she makes a request to a URL endpoint. After the javascript files load and start executing code, they usually make AJAX calls to interact with the back end from that point onwards. This pairs nicely with a microservice architecture based on REST over HTTP, since the front end SPA can effectively act as a client to any microservice that it needs information from.
 
-[Cross Origin Resource Sharing](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is a mechanism that browsers enforce to try and prevent an AJAX call being made to a server that is not properly configured to receive it. This is a strict mechanism: if the browser isn&#39;t using the exact URI resource and port number to request the resource, then the browser enforces this policy.
+[Cross Origin Resource Sharing](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is a mechanism that browsers enforce to try and prevent an AJAX call being made to a server that is not properly configured to receive it. This is a strict mechanism: if the browser isn't using the exact URI resource and port number to request the resource, then the browser enforces this policy.
 
-Let&#39;s say you have a website, spa.nickolasfisher.com, and users of your site get their smattering of javascript files and small html file when they request your home page. Then you want to make a backend request to api.nickolasfisher.com, since that&#39;s the gateway for the microservices you need to interact with. Well, if it&#39;s a GET request, then the browser will let you send the request directly, but will require a response header like:
+Let's say you have a website, spa.nickolasfisher.com, and users of your site get their smattering of javascript files and small html file when they request your home page. Then you want to make a backend request to api.nickolasfisher.com, since that's the gateway for the microservices you need to interact with. Well, if it's a GET request, then the browser will let you send the request directly, but will require a response header like:
 
 ```
 Access-Control-Allow-Origin: https://spa.nickolasfisher.com
 ```
 
-If it doesn&#39;t see that (it also supports wildcards, so it doesn&#39;t have to be that exactly), then the response will not make it into the sandbox. Further, if you try to make any request to the backend that is not a GET request (e.g. POST, PUT, etc.), the browser will send a &#34;preflight&#34; request to the backend via the OPTIONS method that wants a collection of headers like:
+If it doesn't see that (it also supports wildcards, so it doesn't have to be that exactly), then the response will not make it into the sandbox. Further, if you try to make any request to the backend that is not a GET request (e.g. POST, PUT, etc.), the browser will send a "preflight" request to the backend via the OPTIONS method that wants a collection of headers like:
 
 - Access-Control-Allow-Origin
 - Access-Control-Allow-Methods
@@ -28,7 +28,7 @@ Thankfully, Spring Boot provides a very easy mechanism to set a cross origin pol
 
 ```java
 @Configuration
-@Profile(&#34;dev&#34;)
+@Profile("dev")
 public class AppConfig {
 
   @Bean
@@ -36,7 +36,7 @@ public class AppConfig {
     return new WebMvcConfigurer() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping(&#34;/**&#34;).allowedOrigins(&#34;http://localhost:4200&#34;);
+        registry.addMapping("/**").allowedOrigins("http://localhost:4200");
       }
     };
   }

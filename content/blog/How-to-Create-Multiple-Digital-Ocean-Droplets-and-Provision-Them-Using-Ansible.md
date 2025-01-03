@@ -9,7 +9,7 @@ In a previous post, we saw [how to create a digital ocean droplet and provision 
 
 ### Creating Multiple Droplets
 
-If you&#39;re using Ansible &lt; 2.8, to create multiple droplets you will first have to set your digital ocean api token as an environment variable:
+If you're using Ansible < 2.8, to create multiple droplets you will first have to set your digital ocean api token as an environment variable:
 
 ```bash
 $ export DO_API_TOKEN=1234YourTokenHere4321
@@ -32,11 +32,11 @@ We can then structure our droplet creation playbook like so:
         image_id: ubuntu-18-10-x64
         wait_timeout: 100
         wait: yes
-        name: &#34;{{ item }}&#34;
+        name: "{{ item }}"
         size_id: s-1vcpu-1gb
         state: present
         command: droplet
-        ssh_key_ids: [ &#39;&#39; ] # &lt;---- put your numeric ssh key in here
+        ssh_key_ids: [ '' ] # <---- put your numeric ssh key in here
       register: created_droplets
       with_items:
         - tmp-droplet-1
@@ -44,13 +44,13 @@ We can then structure our droplet creation playbook like so:
 
     - name: add to dynamic inventory
       add_host:
-        name: &#34;{{ item.droplet.ip_address }}&#34;
+        name: "{{ item.droplet.ip_address }}"
         group: do
-      with_items: &#34;{{ created_droplets.results }}&#34;
+      with_items: "{{ created_droplets.results }}"
 
 ```
 
-If you&#39;re using ansible 2.8 or greater, that playbook beginning can instead look like:
+If you're using ansible 2.8 or greater, that playbook beginning can instead look like:
 
 ```yaml
 ---
@@ -65,10 +65,10 @@ If you&#39;re using ansible 2.8 or greater, that playbook beginning can instead 
         region: ams3
         image: ubuntu-18-10-x64
         wait_timeout: 100
-        name: &#34;{{ item }}&#34;
+        name: "{{ item }}"
         size_id: s-1vcpu-1gb
         state: present
-        ssh_keys: [ &#39;&#39; ] # &lt;---- put your numeric ssh key in here
+        ssh_keys: [ '' ] # <---- put your numeric ssh key in here
       register: created_droplets
       with_items:
         - tmp-droplet-1
@@ -76,13 +76,13 @@ If you&#39;re using ansible 2.8 or greater, that playbook beginning can instead 
 
     - name: add to dynamic inventory
       add_host:
-        name: &#34;{{ item.data.ip_address }}&#34;
+        name: "{{ item.data.ip_address }}"
         group: do
-      with_items: &#34;{{ created_droplets.results }}&#34;
+      with_items: "{{ created_droplets.results }}"
 
 ```
 
-Before you run this, you&#39;ll want to make sure to include an **ansible.cfg** file that looks like this:
+Before you run this, you'll want to make sure to include an **ansible.cfg** file that looks like this:
 
 ```
 [defaults]
@@ -95,9 +95,9 @@ To prove this out, as we did in the last post, we can provision each server with
 Create an **index.html.j2** Jinja2 template in the same directory as your playbook and fill it with:
 
 ```html
-&lt;h1&gt; On a digital ocean droplet now &lt;/h1&gt;
+<h1> On a digital ocean droplet now </h1>
 
-&lt;p&gt; The ip address where we&#39;re at is: {{ ansible_default_ipv4.address }} &lt;/p&gt;
+<p> The ip address where we're at is: {{ ansible_default_ipv4.address }} </p>
 ```
 
 And round out the playbook with:
@@ -113,7 +113,7 @@ And round out the playbook with:
   tasks:
     - name: wait for port 22 to become available
       wait_for:
-        host: &#34;{{ inventory_hostname }}&#34;
+        host: "{{ inventory_hostname }}"
         port: 22
       delegate_to: localhost
 
@@ -131,4 +131,4 @@ And round out the playbook with:
 
 ```
 
-You should now be able to navigate to your IP addresses and see the home page with the IP address displayed. Go get &#39;em, tiger.
+You should now be able to navigate to your IP addresses and see the home page with the IP address displayed. Go get 'em, tiger.

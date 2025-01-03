@@ -227,7 +227,7 @@
 
   <div class="description">
     
-      <p><a href="https://docs.aws.amazon.com/sns/latest/dg/welcome.html">Amazon SNS</a> is AWS's solution to pub/sub. In a large, distributed system, decoupling <em>events</em> from services that <em>need to act on those events</em> allows for teams that own different services to better work in parallel, and also prevents the need for coordinating code deploys to deliver new features. If a services is already publishing a generic event, other services can hook into that event and act on them without needing anything but a bit of infrastructure.</p>
+      <p><a href="https://docs.aws.amazon.com/sns/latest/dg/welcome.html">Amazon SNS</a> is AWS&rsquo;s solution to pub/sub. In a large, distributed system, decoupling <em>events</em> from services that <em>need to act on those events</em> allows for teams that own different services to better work in parallel, and also prevents the need for coordinating code deploys to deliver new features. If a services is already publishing a generic event, other services can hook into that event and act on them without needing anything but a bit of infrastructure.</p>
     
   </div>
 
@@ -289,7 +289,7 @@
 
   <div class="description">
     
-      <p>DynamoDB Streams is AWS's home grown <a href="https://en.wikipedia.org/wiki/Change_data_capture">Change Data Capture [CDC]</a> mechanism, which allows the consumer of the stream to see records probably in approximately the order they were created [it's basically impossible, at scale, to guarantee that all records across all partitions will somehow stream the data in exactly the same order that it was written]. This is a pretty fantastic feature because it allows us to reliably do <em>&mdash;something&mdash;</em> after we add new data, update existing data, or delete existing data. As long as all the stream records are read and processed, we can ensure at least once processing on data changes and then go sleep soundly at night knowing that there is one less edge case in our application. Combine that with the natural scale that DynamoDB provides via its leaderless architecture and you can build this thing once and probably never have to worry about it handling more load ever again.</p>
+      <p>DynamoDB Streams is AWS&rsquo;s home grown <a href="https://en.wikipedia.org/wiki/Change_data_capture">Change Data Capture [CDC]</a> mechanism, which allows the consumer of the stream to see records probably in approximately the order they were created [it&rsquo;s basically impossible, at scale, to guarantee that all records across all partitions will somehow stream the data in exactly the same order that it was written]. This is a pretty fantastic feature because it allows us to reliably do <em>&mdash;something&mdash;</em> after we add new data, update existing data, or delete existing data. As long as all the stream records are read and processed, we can ensure at least once processing on data changes and then go sleep soundly at night knowing that there is one less edge case in our application. Combine that with the natural scale that DynamoDB provides via its leaderless architecture and you can build this thing once and probably never have to worry about it handling more load ever again.</p>
     
   </div>
 

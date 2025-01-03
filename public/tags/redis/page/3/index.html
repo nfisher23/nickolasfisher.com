@@ -196,7 +196,7 @@
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>Redis does not allow you to set the expiration on individual members in a set, it only allows you to set an expiration on the entire set itself. If you want to have a sort of expiry on individual elements in a set, this article shares a workaround to that problem that works well in practice. Because I have already written a lot of <a href="https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux">boilerplate code for testing any redis operation using lettuce</a>, I'm going to be showing you this technique using a reactive lettuce client, however the basic concept should transfer easily to any other client.</p>
+<p>Redis does not allow you to set the expiration on individual members in a set, it only allows you to set an expiration on the entire set itself. If you want to have a sort of expiry on individual elements in a set, this article shares a workaround to that problem that works well in practice. Because I have already written a lot of <a href="https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux">boilerplate code for testing any redis operation using lettuce</a>, I&rsquo;m going to be showing you this technique using a reactive lettuce client, however the basic concept should transfer easily to any other client.</p>
     
   </div>
 
@@ -228,7 +228,7 @@
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p><a href="https://redis.io/commands/msetnx">MSETNX</a> when you're working with a single redis primary node is simple enough to understand: it sets all of the key/value pairs, or none at all. If one of the keys already exists in the cluster, then all of them are rejected.</p>
+<p><a href="https://redis.io/commands/msetnx">MSETNX</a> when you&rsquo;re working with a single redis primary node is simple enough to understand: it sets all of the key/value pairs, or none at all. If one of the keys already exists in the cluster, then all of them are rejected.</p>
     
   </div>
 
@@ -259,7 +259,7 @@
 
   <div class="description">
     
-      <p>Sorted Sets in redis are one of my personal favorite tools when operating at scale. As of this writing, <a href="https://redis.io/commands/#sorted_set">there are over 30 unique operations you can perform against sorted sets in redis</a>. This article will focus on some of the more common ones you're going to need to know, and it will use a reactive lettuce client to demonstrate them.</p>
+      <p>Sorted Sets in redis are one of my personal favorite tools when operating at scale. As of this writing, <a href="https://redis.io/commands/#sorted_set">there are over 30 unique operations you can perform against sorted sets in redis</a>. This article will focus on some of the more common ones you&rsquo;re going to need to know, and it will use a reactive lettuce client to demonstrate them.</p>
     
   </div>
 
@@ -290,7 +290,7 @@
 
   <div class="description">
     
-      <p>In the last article, we showed how to do some of the most common single set operations against redis, this article will focus on operating on multiple sets using a lettuce client against redis. Specifically, we'll focus on subtracting, intersecting, and adding sets. The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
+      <p>In the last article, we showed how to do some of the most common single set operations against redis, this article will focus on operating on multiple sets using a lettuce client against redis. Specifically, we&rsquo;ll focus on subtracting, intersecting, and adding sets. The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
     
   </div>
 

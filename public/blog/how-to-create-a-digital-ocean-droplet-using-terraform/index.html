@@ -171,74 +171,74 @@ Terraform lets you define your infrastructure, e.g. a virtual machine, in code. 
 </li>
 </ol>
 <h2 id="getting-it-done">Getting it Done</h2>
-<p>To begin with, you will need a digital ocean api key. You can get one by going to the digital ocean control panel, clicking &quot;API&quot; under &quot;Account&quot; in the lower left hand corner, then &quot;Generate New Token.&quot; I would recommend you use a sophisticated secrets management tool like <a href="https://spideroak.com/encryptr/">Encryptr</a> to keep the api token safe, since you're only going to get to see the token immediately after you create it.</p>
+<p>To begin with, you will need a digital ocean api key. You can get one by going to the digital ocean control panel, clicking &ldquo;API&rdquo; under &ldquo;Account&rdquo; in the lower left hand corner, then &ldquo;Generate New Token.&rdquo; I would recommend you use a sophisticated secrets management tool like <a href="https://spideroak.com/encryptr/">Encryptr</a> to keep the api token safe, since you&rsquo;re only going to get to see the token immediately after you create it.</p>
 <p>Once you have the key, you need to set an environment variable in your shell like so:</p>
-<pre tabindex="0"><code>export DIGITALOCEAN_ACCESS_TOKEN=&amp;lt;your-token-here&amp;gt;
-</code></pre><p>If you've already set up your digital ocean cli before then you could try <a href="https://mikefarah.gitbook.io/yq/">a yaml bash tool called yq</a> to set it for you:</p>
+<pre tabindex="0"><code>export DIGITALOCEAN_ACCESS_TOKEN=&lt;your-token-here&gt;
+</code></pre><p>If you&rsquo;ve already set up your digital ocean cli before then you could try <a href="https://mikefarah.gitbook.io/yq/">a yaml bash tool called yq</a> to set it for you:</p>
 <pre tabindex="0"><code>export DIGITALOCEAN_ACCESS_TOKEN=$(cat ~/.config/doctl/config.yaml |  yq r - access-token)
 </code></pre><h3 id="reuse-existing-ssh-key">Reuse Existing SSH Key</h3>
-<p>If you already have a ssh key that you uploaded to digital ocean in some other way, you can import it as terraform data, so that your terraform configuration can look like this (in this case, I'm using an old thinkpad retrofitted with linux, so I have an ssh key I've named &quot;thinkpad&quot;):</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-hcl" data-lang="hcl"><span style="display:flex;"><span><span style="color:#ff79c6">provider</span> &amp;<span style="color:#6272a4">#34;digitalocean&amp;#34; {
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  // <span style="color:#ff79c6">token</span> <span style="color:#ff79c6">automatically</span> <span style="color:#ff79c6">picked</span> <span style="color:#ff79c6">up</span> <span style="color:#ff79c6">using</span> <span style="color:#ff79c6">env</span> <span style="color:#ff79c6">variable</span> <span style="color:#ff79c6">DIGITALOCEAN_ACCESS_TOKEN</span>
+<p>If you already have a ssh key that you uploaded to digital ocean in some other way, you can import it as terraform data, so that your terraform configuration can look like this (in this case, I&rsquo;m using an old thinkpad retrofitted with linux, so I have an ssh key I&rsquo;ve named &ldquo;thinkpad&rdquo;):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-hcl" data-lang="hcl"><span style="display:flex;"><span><span style="color:#ff79c6">provider</span> <span style="color:#f1fa8c">&#34;digitalocean&#34;</span> {
+</span></span><span style="display:flex;"><span>  // <span style="color:#ff79c6">token</span> <span style="color:#ff79c6">automatically</span> <span style="color:#ff79c6">picked</span> <span style="color:#ff79c6">up</span> <span style="color:#ff79c6">using</span> <span style="color:#ff79c6">env</span> <span style="color:#ff79c6">variable</span> <span style="color:#ff79c6">DIGITALOCEAN_ACCESS_TOKEN</span>
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">variable</span> &amp;<span style="color:#6272a4">#34;region&amp;#34; {
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  default <span style="color:#ff79c6">=</span> &amp;<span style="color:#6272a4">#34;sfo2&amp;#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">variable</span> <span style="color:#f1fa8c">&#34;region&#34;</span> {
+</span></span><span style="display:flex;"><span>  default <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;sfo2&#34;</span>
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">data</span> <span style="color:#ff79c6">digitalocean_ssh_key</span> &amp;<span style="color:#6272a4">#34;my_ssh_key&amp;#34; {
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  name <span style="color:#ff79c6">=</span> &amp;<span style="color:#6272a4">#34;thinkpad&amp;#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">data</span> <span style="color:#ff79c6">digitalocean_ssh_key</span> <span style="color:#f1fa8c">&#34;my_ssh_key&#34;</span> {
+</span></span><span style="display:flex;"><span>  name <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;thinkpad&#34;</span>
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">resource</span> &amp;<span style="color:#6272a4">#34;digitalocean_droplet&amp;#34; &amp;#34;atest&amp;#34; {
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  image      <span style="color:#ff79c6">=</span> &amp;<span style="color:#6272a4">#34;ubuntu-18-04-x64&amp;#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  name       <span style="color:#ff79c6">=</span> &amp;<span style="color:#6272a4">#34;test&amp;#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  region     <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">var</span>.<span style="color:#ff79c6">region</span>
-</span></span><span style="display:flex;"><span>  size       <span style="color:#ff79c6">=</span> &amp;<span style="color:#6272a4">#34;s-1vcpu-2gb&amp;#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  ssh_keys   <span style="color:#ff79c6">=</span> [<span style="color:#ff79c6">data</span>.<span style="color:#ff79c6">digitalocean_ssh_key</span>.<span style="color:#ff79c6">my_ssh_key</span>.<span style="color:#ff79c6">id</span>]
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">resource</span> <span style="color:#f1fa8c">&#34;digitalocean_droplet&#34; &#34;atest&#34;</span> {
+</span></span><span style="display:flex;"><span>  image      <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;ubuntu-18-04-x64&#34;</span>
+</span></span><span style="display:flex;"><span>  name       <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;test&#34;</span>
+</span></span><span style="display:flex;"><span>  region     <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">var</span>.<span style="color:#ff79c6">region</span>
+</span></span><span style="display:flex;"><span>  size       <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;s-1vcpu-2gb&#34;</span>
+</span></span><span style="display:flex;"><span>  ssh_keys   <span style="color:#ff79c6">=</span> [<span style="color:#ff79c6">data</span>.<span style="color:#ff79c6">digitalocean_ssh_key</span>.<span style="color:#ff79c6">my_ssh_key</span>.<span style="color:#ff79c6">id</span>]
 </span></span><span style="display:flex;"><span>  monitoring <span style="color:#ff79c6">=</span> <span style="color:#8be9fd">true</span>
 </span></span><span style="display:flex;"><span>  private_networking <span style="color:#ff79c6">=</span> <span style="color:#8be9fd">true</span>
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">output</span> &amp;<span style="color:#6272a4">#34;droplet_ip_address&amp;#34; {
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  value <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">digitalocean_droplet</span>.<span style="color:#ff79c6">atest</span>.<span style="color:#ff79c6">ipv4_address</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">output</span> <span style="color:#f1fa8c">&#34;droplet_ip_address&#34;</span> {
+</span></span><span style="display:flex;"><span>  value <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">digitalocean_droplet</span>.<span style="color:#ff79c6">atest</span>.<span style="color:#ff79c6">ipv4_address</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h2 id="create-ssh-key">Create SSH Key</h2>
 <p>If you want to upload your ssh key to digital ocean in this terraform configuration as well, then you can set this up as:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>provider &amp;#34;digitalocean&amp;#34; {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>provider &#34;digitalocean&#34; {
 </span></span><span style="display:flex;"><span>  // token automatically picked up using env variable DIGITALOCEAN_ACCESS_TOKEN
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>variable &amp;#34;region&amp;#34; {
-</span></span><span style="display:flex;"><span>  default = &amp;#34;sfo2&amp;#34;
+</span></span><span style="display:flex;"><span>variable &#34;region&#34; {
+</span></span><span style="display:flex;"><span>  default = &#34;sfo2&#34;
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>resource &amp;#34;digitalocean_ssh_key&amp;#34; &amp;#34;my_ssh_key&amp;#34; {
-</span></span><span style="display:flex;"><span>  name = &amp;#34;new_ssh_key&amp;#34;
-</span></span><span style="display:flex;"><span>  public_key = file(&amp;#34;~/.ssh/id_rsa.pub&amp;#34;)
+</span></span><span style="display:flex;"><span>resource &#34;digitalocean_ssh_key&#34; &#34;my_ssh_key&#34; {
+</span></span><span style="display:flex;"><span>  name = &#34;new_ssh_key&#34;
+</span></span><span style="display:flex;"><span>  public_key = file(&#34;~/.ssh/id_rsa.pub&#34;)
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>resource &amp;#34;digitalocean_droplet&amp;#34; &amp;#34;atest&amp;#34; {
-</span></span><span style="display:flex;"><span>  image      = &amp;#34;ubuntu-18-04-x64&amp;#34;
-</span></span><span style="display:flex;"><span>  name       = &amp;#34;test&amp;#34;
+</span></span><span style="display:flex;"><span>resource &#34;digitalocean_droplet&#34; &#34;atest&#34; {
+</span></span><span style="display:flex;"><span>  image      = &#34;ubuntu-18-04-x64&#34;
+</span></span><span style="display:flex;"><span>  name       = &#34;test&#34;
 </span></span><span style="display:flex;"><span>  region     = var.region
-</span></span><span style="display:flex;"><span>  size       = &amp;#34;s-1vcpu-2gb&amp;#34;
+</span></span><span style="display:flex;"><span>  size       = &#34;s-1vcpu-2gb&#34;
 </span></span><span style="display:flex;"><span>  ssh_keys   = [digitalocean_ssh_key.my_ssh_key.id]
 </span></span><span style="display:flex;"><span>  monitoring = true
 </span></span><span style="display:flex;"><span>  private_networking = true
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>output &amp;#34;droplet_ip_address&amp;#34; {
+</span></span><span style="display:flex;"><span>output &#34;droplet_ip_address&#34; {
 </span></span><span style="display:flex;"><span>  value = digitalocean_droplet.atest.ipv4_address
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>With your chosen terraform configuration in place, navigate to the directory where this is set up and run:</p>
 <pre tabindex="0"><code>$ terraform init
 $ terraform apply
-</code></pre><p>Then type &quot;yes&quot; on prompt, and you should see two resources being created.</p>
+</code></pre><p>Then type &ldquo;yes&rdquo; on prompt, and you should see two resources being created.</p>
 <h3 id="installing-nginx">Installing Nginx</h3>
 <p>Once it is up and running, you should be able to install nginx on this server with the following set of commands:</p>
 <pre tabindex="0"><code>$ export IP_ADDR=$(terraform output droplet_ip_address)
-$ ssh root@$IP_ADDR &amp;#34;sudo apt-get update &amp;amp;&amp;amp; sudo apt-get install -y nginx&amp;#34;
+$ ssh root@$IP_ADDR &#34;sudo apt-get update &amp;amp;&amp;amp; sudo apt-get install -y nginx&#34;
 </code></pre><p>To view the IP address in your shell:</p>
 <pre tabindex="0"><code>$ echo $IP_ADDR
 </code></pre><p>You should now be able to navigate on your browser to that IP address and see the canned nginx homepage.</p>

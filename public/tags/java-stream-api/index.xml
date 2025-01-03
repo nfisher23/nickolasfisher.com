@@ -28,14 +28,14 @@
       <link>http://localhost:1313/blog/the-java-stream-api-parallel-streams/</link>
       <pubDate>Sun, 21 Oct 2018 20:03:56 +0000</pubDate>
       <guid>http://localhost:1313/blog/the-java-stream-api-parallel-streams/</guid>
-      <description>&lt;p&gt;The sample code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Parallel Streams are simple to generate in Java. Instead of calling .stream(), you simply call parallelStream(). Here, we&#39;ll take our familiar list of names:&lt;/p&gt;</description>
+      <description>&lt;p&gt;The sample code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Parallel Streams are simple to generate in Java. Instead of calling .stream(), you simply call parallelStream(). Here, we&amp;rsquo;ll take our familiar list of names:&lt;/p&gt;</description>
     </item>
     <item>
       <title>The Java Stream API: Primitive Streams</title>
       <link>http://localhost:1313/blog/the-java-stream-api-primitive-streams/</link>
       <pubDate>Sun, 21 Oct 2018 19:49:49 +0000</pubDate>
       <guid>http://localhost:1313/blog/the-java-stream-api-primitive-streams/</guid>
-      <description>&lt;p&gt;The sample code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;While Streams in Java would typically be used on POJO or POJO-like data structures, Java also lets us deal directly with primitive type streams.&#xA;Thanks to Java&#39;s type erasure, something like Stream&amp;lt;int&amp;gt; would not work, as the type argument must be an Object.&lt;/p&gt;</description>
+      <description>&lt;p&gt;The sample code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;While Streams in Java would typically be used on POJO or POJO-like data structures, Java also lets us deal directly with primitive type streams.&#xA;Thanks to Java&amp;rsquo;s type erasure, something like Stream&lt;!-- raw HTML omitted --&gt; would not work, as the type argument must be an Object.&lt;/p&gt;</description>
     </item>
     <item>
       <title>The Java Stream API: Reduction Operations</title>
@@ -63,7 +63,7 @@
       <link>http://localhost:1313/blog/the-java-stream-api-an-introduction-to-collecting-results/</link>
       <pubDate>Sun, 21 Oct 2018 15:46:38 +0000</pubDate>
       <guid>http://localhost:1313/blog/the-java-stream-api-an-introduction-to-collecting-results/</guid>
-      <description>&lt;p&gt;You can view the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Calling &lt;code&gt;collect(..)&lt;/code&gt; on a stream terminates a stream into a collection. We&#39;ve already seen that calling collect(Collectors.toList()) moves your stream into&#xA;a List&amp;lt;T&amp;gt;, but you can also collect into a set. If we take our familiar collection of names in a String collection:&lt;/p&gt;</description>
+      <description>&lt;p&gt;You can view the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Calling &lt;code&gt;collect(..)&lt;/code&gt; on a stream terminates a stream into a collection. We&amp;rsquo;ve already seen that calling collect(Collectors.toList()) moves your stream into&#xA;a List&lt;!-- raw HTML omitted --&gt;, but you can also collect into a set. If we take our familiar collection of names in a String collection:&lt;/p&gt;</description>
     </item>
     <item>
       <title>The Java Stream API: Creating Optional Types</title>
@@ -77,7 +77,7 @@
       <link>http://localhost:1313/blog/the-java-stream-api-how-to-work-with-optional-types/</link>
       <pubDate>Sat, 20 Oct 2018 21:59:38 +0000</pubDate>
       <guid>http://localhost:1313/blog/the-java-stream-api-how-to-work-with-optional-types/</guid>
-      <description>&lt;p&gt;You can find the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;If Java programmers had a generic Facebook page, they would collectively have an &amp;quot;it&#39;s complicated&amp;quot; relationship with the null value.&lt;/p&gt;</description>
+      <description>&lt;p&gt;You can find the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;If Java programmers had a generic Facebook page, they would collectively have an &amp;ldquo;it&amp;rsquo;s complicated&amp;rdquo; relationship with the null value.&lt;/p&gt;</description>
     </item>
     <item>
       <title>The Java Stream API: Concatenating, Sorting, and Flat-Mapping</title>
@@ -91,7 +91,7 @@
       <link>http://localhost:1313/blog/the-java-stream-api-generating-fibonacci-numbers/</link>
       <pubDate>Sat, 20 Oct 2018 21:13:49 +0000</pubDate>
       <guid>http://localhost:1313/blog/the-java-stream-api-generating-fibonacci-numbers/</guid>
-      <description>&lt;p&gt;You can find the sample code for this post &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;From the knowledge gained via &lt;a href=&#34;https://nickolasfisher.com/blog/The-Java-Stream-API-Creating-Custom-Lazy-Infinite-Streams&#34;&gt;creating custom Java Stream objects&lt;/a&gt;, we can start&#xA;to have a little bit of fun with this. The fibonacci number sequence starts with [0, 1], and adds each of the previous two elements to create the next element in the sequence.&#xA;This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&amp;hellip;], and goes on &amp;quot;forever.&amp;quot; We can thus create a template that computes all Fibonacci numbers by implementing a Supplier&amp;lt;T&amp;gt;. like so:&lt;/p&gt;</description>
+      <description>&lt;p&gt;You can find the sample code for this post &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;From the knowledge gained via &lt;a href=&#34;https://nickolasfisher.com/blog/The-Java-Stream-API-Creating-Custom-Lazy-Infinite-Streams&#34;&gt;creating custom Java Stream objects&lt;/a&gt;, we can start&#xA;to have a little bit of fun with this. The fibonacci number sequence starts with [0, 1], and adds each of the previous two elements to create the next element in the sequence.&#xA;This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&amp;hellip;], and goes on &amp;ldquo;forever.&amp;rdquo; We can thus create a template that computes all Fibonacci numbers by implementing a Supplier&lt;!-- raw HTML omitted --&gt;. like so:&lt;/p&gt;</description>
     </item>
     <item>
       <title>The Java Stream API: Creating Custom, Lazy, Infinite Streams</title>

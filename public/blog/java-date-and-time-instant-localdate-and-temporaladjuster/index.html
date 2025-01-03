@@ -177,7 +177,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">differenceBetweenTwoInstants</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        Duration timeElapsed <span style="color:#ff79c6">=</span> Duration.<span style="color:#50fa7b">between</span>(start1, end1);
 </span></span><span style="display:flex;"><span>        <span style="color:#8be9fd">long</span> milliseconds <span style="color:#ff79c6">=</span> timeElapsed.<span style="color:#50fa7b">toMillis</span>();
-</span></span><span style="display:flex;"><span>        assertTrue(milliseconds <span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">=</span> 14 <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; milliseconds <span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">=</span> 16);
+</span></span><span style="display:flex;"><span>        assertTrue(milliseconds <span style="color:#ff79c6">&gt;=</span> 14 <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; milliseconds <span style="color:#ff79c6">&lt;=</span> 16);
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>We can compare two Durations using an intuitive, fluent API. Here we validate that the difference between the second set of start and end instants (start2 and end2) is five times or more farther apart on the timeline than the difference between first set of instants (start1 and end1):</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
@@ -195,7 +195,7 @@
 </span></span><span style="display:flex;"><span>        LocalDate today <span style="color:#ff79c6">=</span> LocalDate.<span style="color:#50fa7b">now</span>();
 </span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(today.<span style="color:#50fa7b">toString</span>());
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>We can also construct any LocalDate using LocalDate.of(..), shown below. There are two quirks I believe important to point out about LocalDate. The first is that it's aware of leap years:</p>
+</span></span></code></pre></div><p>We can also construct any LocalDate using LocalDate.of(..), shown below. There are two quirks I believe important to point out about LocalDate. The first is that it&rsquo;s aware of leap years:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">localDate_knowsLeapYears</span>() {
 </span></span><span style="display:flex;"><span>        LocalDate localDateInLeapYear <span style="color:#ff79c6">=</span> LocalDate.<span style="color:#50fa7b">of</span>(2020,1,1);
@@ -207,7 +207,7 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        assertNotEquals(leapYearPlusDays.<span style="color:#50fa7b">getDayOfMonth</span>(), nonLeapYearPlusDays.<span style="color:#50fa7b">getDayOfMonth</span>());
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>The second is the behavior of plusMonths(..), which will effectively truncate the end of a month if they have a different number of days between them. If two months have a different number of days and you're near the end of the month, it will reduce the day of the month if necessary to ensure you're only moving forward one calendar month.</p>
+</span></span></code></pre></div><p>The second is the behavior of plusMonths(..), which will effectively truncate the end of a month if they have a different number of days between them. If two months have a different number of days and you&rsquo;re near the end of the month, it will reduce the day of the month if necessary to ensure you&rsquo;re only moving forward one calendar month.</p>
 <p>For example, January has 31 days and February has 28 days. If we use plusMonths(1) from January 31st, we will get (in a non Leap Year) February 28th. No exceptions are thrown:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">localDate_plusMonths_returnsLastValidDate</span>() {
@@ -221,7 +221,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">localDate_dayOfWeek</span>() {
 </span></span><span style="display:flex;"><span>        DayOfWeek monday <span style="color:#ff79c6">=</span> LocalDate.<span style="color:#50fa7b">of</span>(1900,1,1).<span style="color:#50fa7b">getDayOfWeek</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#ff79c6">&amp;</span>#34;MONDAY<span style="color:#ff79c6">&amp;</span>#34;, monday.<span style="color:#50fa7b">toString</span>());
+</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#f1fa8c">&#34;MONDAY&#34;</span>, monday.<span style="color:#50fa7b">toString</span>());
 </span></span><span style="display:flex;"><span>        assertEquals(1, monday.<span style="color:#50fa7b">getValue</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>Finally, you can adjust any LocalDate in ways beyond just adding and subtracting days using <a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/TemporalAdjusters.html">TemporalAdjusters</a>. For example, we can get the first Tuesday after today like:</p>
@@ -230,7 +230,7 @@
 </span></span><span style="display:flex;"><span>        LocalDate firstTuesday <span style="color:#ff79c6">=</span> LocalDate.<span style="color:#50fa7b">of</span>(2018, 6,1)
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">with</span>(TemporalAdjusters.<span style="color:#50fa7b">nextOrSame</span>(DayOfWeek.<span style="color:#50fa7b">TUESDAY</span>));
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#ff79c6">&amp;</span>#34;TUESDAY<span style="color:#ff79c6">&amp;</span>#34;, firstTuesday.<span style="color:#50fa7b">getDayOfWeek</span>().<span style="color:#50fa7b">toString</span>());
+</span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#f1fa8c">&#34;TUESDAY&#34;</span>, firstTuesday.<span style="color:#50fa7b">getDayOfWeek</span>().<span style="color:#50fa7b">toString</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>And we can get the second Monday in the month like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test

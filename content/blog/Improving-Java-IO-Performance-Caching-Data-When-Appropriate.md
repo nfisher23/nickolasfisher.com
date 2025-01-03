@@ -11,14 +11,14 @@ The biggest bottleneck with I/O resources on the filesystem is the operating sys
 
 Caching is the process of storing the result of some operation for later use. For a web application that makes a database query, then parses a template and returns a result, it may be advantageous to cache the result and just pop out that result on the server. In that case, we would be limiting the need to call a relatively expensive operation (first invoking the web application and all its layers, including a database query and a template parsing), by only calling it when it was time to cache (store) the result.
 
-In the case of the filesystem, since our computational bottleneck is the operating system, we may sometimes have need to go over a file&#39;s contents multiple times. If the file is a reasonable size and won&#39;t exceed available memory, it would be advantageous to call the OS once, then use the result of that call whenever a resource needs it.
+In the case of the filesystem, since our computational bottleneck is the operating system, we may sometimes have need to go over a file's contents multiple times. If the file is a reasonable size and won't exceed available memory, it would be advantageous to call the OS once, then use the result of that call whenever a resource needs it.
 
-To prove this principle is faster, let&#39;s set up a JMH test with Junit:
+To prove this principle is faster, let's set up a JMH test with Junit:
 
 ```java
     public static void runBenchmark(Class clazz) throws Exception {
         Options options = new OptionsBuilder()
-                .include(clazz.getName() &#43; &#34;.*&#34;)
+                .include(clazz.getName() + ".*")
                 .mode(Mode.AverageTime)
                 .warmupTime(TimeValue.seconds(1))
                 .warmupIterations(2)
@@ -48,20 +48,20 @@ In this first benchmark case, we will iterate ten times over loading a file, and
 ```java
     @Benchmark
     public void loadWholeFileThenScan() throws Exception {
-        for (int i = 0; i &lt; 10; i&#43;&#43;) {
-            List&lt;String&gt; linesInFile = readLinesOfFileFromDisk(Utils.smallCsvFilePath);
+        for (int i = 0; i < 10; i++) {
+            List<String> linesInFile = readLinesOfFileFromDisk(Utils.smallCsvFilePath);
             assertLinesCorrect(linesInFile);
         }
     }
 
-    private void assertLinesCorrect(List&lt;String&gt; lines) {
+    private void assertLinesCorrect(List<String> lines) {
         for (String line : lines) {
-            assertTrue(line.startsWith(&#34;0,1,2,3,4,5&#34;));
+            assertTrue(line.startsWith("0,1,2,3,4,5"));
         }
     }
 
-    private List&lt;String&gt; readLinesOfFileFromDisk(String filePath) throws Exception {
-        List&lt;String&gt; listofLines = new ArrayList&lt;&gt;();
+    private List<String> readLinesOfFileFromDisk(String filePath) throws Exception {
+        List<String> listofLines = new ArrayList<>();
 
         try (FileReader fileReader = new FileReader(filePath);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
@@ -78,15 +78,15 @@ And the comparison case will store the result in memory (caching) and give us th
 ```java
     @Benchmark
     public void loadCachedFilesThenScan() throws Exception {
-        for (int i = 0; i &lt; 10; i&#43;&#43;) {
-            List&lt;String&gt; linesInFile = getLinesOfFileCached(Utils.smallCsvFilePath);
+        for (int i = 0; i < 10; i++) {
+            List<String> linesInFile = getLinesOfFileCached(Utils.smallCsvFilePath);
             assertLinesCorrect(linesInFile);
         }
     }
 
-    private static List&lt;String&gt; cachedLines;
+    private static List<String> cachedLines;
 
-    private List&lt;String&gt; getLinesOfFileCached(String filePath) throws Exception {
+    private List<String> getLinesOfFileCached(String filePath) throws Exception {
         if (cachedLines == null) {
             cachedLines = readLinesOfFileFromDisk(filePath);
         }

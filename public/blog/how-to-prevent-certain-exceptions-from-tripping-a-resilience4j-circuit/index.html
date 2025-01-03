@@ -155,12 +155,12 @@ The Resilience4j circuit breaker by default considers any exception thrown insid
 
   <section><p>The source code for this article <a href="https://github.com/nfisher23/java-failure-and-resilience">can be found on Github</a>.</p>
 <p>The Resilience4j circuit breaker by default considers any exception thrown inside of the <strong>Supplier</strong> as a failure. If over 50% of the calls are failures and the rolling window max size is met, then it will prevent any future calls from going through.</p>
-<p>It's not uncommon to throw exceptions as a part of normal business logic&ndash;they might be thrown because of an <em>exceptional circumstance</em>, but that doesn't mean that there is an error or something wrong with the downstream resource you're trying to interact with. For example, Spring's <strong>RestTemplate</strong> will throw an exception on a 4xx response code, and this will by default trip the circuit and prevent future calls from going through:</p>
+<p>It&rsquo;s not uncommon to throw exceptions as a part of normal business logic&ndash;they might be thrown because of an <em>exceptional circumstance</em>, but that doesn&rsquo;t mean that there is an error or something wrong with the downstream resource you&rsquo;re trying to interact with. For example, Spring&rsquo;s <strong>RestTemplate</strong> will throw an exception on a 4xx response code, and this will by default trip the circuit and prevent future calls from going through:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">clientErrorException_stillTripsTheCircuit</span>() {
 </span></span><span style="display:flex;"><span>        HttpRequest expectedFirstRequest <span style="color:#ff79c6">=</span> HttpRequest.<span style="color:#50fa7b">request</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#f1fa8c">&#34;/some/endpoint/10&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">when</span>(expectedFirstRequest)
@@ -174,15 +174,15 @@ The Resilience4j circuit breaker by default considers any exception thrown insid
 </span></span><span style="display:flex;"><span>        CircuitBreakerRegistry circuitBreakerRegistry <span style="color:#ff79c6">=</span>
 </span></span><span style="display:flex;"><span>                CircuitBreakerRegistry.<span style="color:#50fa7b">of</span>(circuitBreakerConfig);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        CircuitBreaker callingEndpointCircuitBreaker <span style="color:#ff79c6">=</span> circuitBreakerRegistry.<span style="color:#50fa7b">circuitBreaker</span>(<span style="color:#ff79c6">&amp;</span>#34;call<span style="color:#ff79c6">-</span>endpoint<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        CircuitBreaker callingEndpointCircuitBreaker <span style="color:#ff79c6">=</span> circuitBreakerRegistry.<span style="color:#50fa7b">circuitBreaker</span>(<span style="color:#f1fa8c">&#34;call-endpoint&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// force the circuit to trip</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 1; i <span style="color:#ff79c6">&amp;</span>lt; 11; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 1; i <span style="color:#ff79c6">&lt;</span> 11; i<span style="color:#ff79c6">++</span>) {
 </span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">try</span> {
-</span></span><span style="display:flex;"><span>                callingEndpointCircuitBreaker.<span style="color:#50fa7b">decorateSupplier</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
-</span></span><span style="display:flex;"><span>                        restTemplate.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;, JsonNode.<span style="color:#50fa7b">class</span>)
+</span></span><span style="display:flex;"><span>                callingEndpointCircuitBreaker.<span style="color:#50fa7b">decorateSupplier</span>(() <span style="color:#ff79c6">-&gt;</span>
+</span></span><span style="display:flex;"><span>                        restTemplate.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#f1fa8c">&#34;/some/endpoint/10&#34;</span>, JsonNode.<span style="color:#50fa7b">class</span>)
 </span></span><span style="display:flex;"><span>                ).<span style="color:#50fa7b">get</span>();
-</span></span><span style="display:flex;"><span>                fail(<span style="color:#ff79c6">&amp;</span>#34;we should never get here<span style="color:#ff79c6">!&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                fail(<span style="color:#f1fa8c">&#34;we should never get here!&#34;</span>);
 </span></span><span style="display:flex;"><span>            } <span style="color:#ff79c6">catch</span> (HttpClientErrorException e) {
 </span></span><span style="display:flex;"><span>                <span style="color:#6272a4">// expected</span>
 </span></span><span style="display:flex;"><span>            }
@@ -190,21 +190,21 @@ The Resilience4j circuit breaker by default considers any exception thrown insid
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// circuit is now tripped, but should it be?</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">try</span> {
-</span></span><span style="display:flex;"><span>            callingEndpointCircuitBreaker.<span style="color:#50fa7b">decorateSupplier</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
-</span></span><span style="display:flex;"><span>                    restTemplate.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;, JsonNode.<span style="color:#50fa7b">class</span>)
+</span></span><span style="display:flex;"><span>            callingEndpointCircuitBreaker.<span style="color:#50fa7b">decorateSupplier</span>(() <span style="color:#ff79c6">-&gt;</span>
+</span></span><span style="display:flex;"><span>                    restTemplate.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#f1fa8c">&#34;/some/endpoint/10&#34;</span>, JsonNode.<span style="color:#50fa7b">class</span>)
 </span></span><span style="display:flex;"><span>            ).<span style="color:#50fa7b">get</span>();
-</span></span><span style="display:flex;"><span>            fail(<span style="color:#ff79c6">&amp;</span>#34;we should never get here<span style="color:#ff79c6">!&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>            fail(<span style="color:#f1fa8c">&#34;we should never get here!&#34;</span>);
 </span></span><span style="display:flex;"><span>        } <span style="color:#ff79c6">catch</span> (CallNotPermittedException callNotPermittedException)  {
-</span></span><span style="display:flex;"><span>            assertEquals(<span style="color:#ff79c6">&amp;</span>#34;call<span style="color:#ff79c6">-</span>endpoint<span style="color:#ff79c6">&amp;</span>#34;, callNotPermittedException.<span style="color:#50fa7b">getCausingCircuitBreakerName</span>());
+</span></span><span style="display:flex;"><span>            assertEquals(<span style="color:#f1fa8c">&#34;call-endpoint&#34;</span>, callNotPermittedException.<span style="color:#50fa7b">getCausingCircuitBreakerName</span>());
 </span></span><span style="display:flex;"><span>            assertSame(CircuitBreaker.<span style="color:#50fa7b">State</span>.<span style="color:#50fa7b">OPEN</span>, callingEndpointCircuitBreaker.<span style="color:#50fa7b">getState</span>());
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>[Note: this code above will make more sense if you've read a <a href="https://nickolasfisher.com/blog/Configuring-Testing-and-Using-Circuit-Breakers-on-Rest-API-calls-with-Resilience4j">previous article on Resilience4j's circuit breaker</a> and downloaded the sample code from Github]</p>
+</span></span></code></pre></div><p>[Note: this code above will make more sense if you&rsquo;ve read a <a href="https://nickolasfisher.com/blog/Configuring-Testing-and-Using-Circuit-Breakers-on-Rest-API-calls-with-Resilience4j">previous article on Resilience4j&rsquo;s circuit breaker</a> and downloaded the sample code from Github]</p>
 <p>If you want to not count specific types of exceptions as being errors, then the <a href="https://javadoc.io/doc/io.github.resilience4j/resilience4j-circuitbreaker/1.2.0/io/github/resilience4j/circuitbreaker/CircuitBreakerConfig.html">CircuitBreakerConfig</a> provides you with a few different options. You can either <a href="https://javadoc.io/static/io.github.resilience4j/resilience4j-circuitbreaker/1.2.0/io/github/resilience4j/circuitbreaker/CircuitBreakerConfig.Builder.html#ignoreException-java.util.function.Predicate-">ignore the exceptions you want to no longer count</a>, or you can <a href="https://javadoc.io/static/io.github.resilience4j/resilience4j-circuitbreaker/1.2.0/io/github/resilience4j/circuitbreaker/CircuitBreakerConfig.Builder.html#recordException-java.util.function.Predicate-">be explicit about the kinds of exceptions you think are valid with recordException</a>.</p>
-<p>In general I prefer to say &quot;if it's an exception, then something is most likely wrong&quot; unless it meets a specific number of things that I know are fine. So, in this example, a 404 response doesn't actually mean anything is wrong with the downstream service, and we can ignore it in the configuration like so:</p>
+<p>In general I prefer to say &ldquo;if it&rsquo;s an exception, then something is most likely wrong&rdquo; unless it meets a specific number of things that I know are fine. So, in this example, a 404 response doesn&rsquo;t actually mean anything is wrong with the downstream service, and we can ignore it in the configuration like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        CircuitBreakerConfig circuitBreakerConfig <span style="color:#ff79c6">=</span> CircuitBreakerConfig
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">custom</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">ignoreException</span>(throwable <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">ignoreException</span>(throwable <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">return</span> throwable <span style="color:#ff79c6">instanceof</span> HttpClientErrorException;
 </span></span><span style="display:flex;"><span>                })
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">slidingWindowSize</span>(10)
@@ -215,7 +215,7 @@ The Resilience4j circuit breaker by default considers any exception thrown insid
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">excludingClientErrorExceptions_fromTheCount</span>() {
 </span></span><span style="display:flex;"><span>        HttpRequest expectedFirstRequest <span style="color:#ff79c6">=</span> HttpRequest.<span style="color:#50fa7b">request</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#f1fa8c">&#34;/some/endpoint/10&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">when</span>(expectedFirstRequest)
@@ -223,7 +223,7 @@ The Resilience4j circuit breaker by default considers any exception thrown insid
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        CircuitBreakerConfig circuitBreakerConfig <span style="color:#ff79c6">=</span> CircuitBreakerConfig
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">custom</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">ignoreException</span>(throwable <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">ignoreException</span>(throwable <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">return</span> throwable <span style="color:#ff79c6">instanceof</span> HttpClientErrorException;
 </span></span><span style="display:flex;"><span>                })
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">slidingWindowSize</span>(10)
@@ -232,26 +232,26 @@ The Resilience4j circuit breaker by default considers any exception thrown insid
 </span></span><span style="display:flex;"><span>        CircuitBreakerRegistry circuitBreakerRegistry <span style="color:#ff79c6">=</span>
 </span></span><span style="display:flex;"><span>                CircuitBreakerRegistry.<span style="color:#50fa7b">of</span>(circuitBreakerConfig);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        CircuitBreaker callingEndpointCircuitBreaker <span style="color:#ff79c6">=</span> circuitBreakerRegistry.<span style="color:#50fa7b">circuitBreaker</span>(<span style="color:#ff79c6">&amp;</span>#34;call<span style="color:#ff79c6">-</span>endpoint<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        CircuitBreaker callingEndpointCircuitBreaker <span style="color:#ff79c6">=</span> circuitBreakerRegistry.<span style="color:#50fa7b">circuitBreaker</span>(<span style="color:#f1fa8c">&#34;call-endpoint&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// before we ignored the exception above, this would trip the circuit</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 1; i <span style="color:#ff79c6">&amp;</span>lt; 11; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 1; i <span style="color:#ff79c6">&lt;</span> 11; i<span style="color:#ff79c6">++</span>) {
 </span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">try</span> {
-</span></span><span style="display:flex;"><span>                callingEndpointCircuitBreaker.<span style="color:#50fa7b">decorateSupplier</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
-</span></span><span style="display:flex;"><span>                        restTemplate.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;, JsonNode.<span style="color:#50fa7b">class</span>)
+</span></span><span style="display:flex;"><span>                callingEndpointCircuitBreaker.<span style="color:#50fa7b">decorateSupplier</span>(() <span style="color:#ff79c6">-&gt;</span>
+</span></span><span style="display:flex;"><span>                        restTemplate.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#f1fa8c">&#34;/some/endpoint/10&#34;</span>, JsonNode.<span style="color:#50fa7b">class</span>)
 </span></span><span style="display:flex;"><span>                ).<span style="color:#50fa7b">get</span>();
-</span></span><span style="display:flex;"><span>                fail(<span style="color:#ff79c6">&amp;</span>#34;we should never get here<span style="color:#ff79c6">!&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                fail(<span style="color:#f1fa8c">&#34;we should never get here!&#34;</span>);
 </span></span><span style="display:flex;"><span>            } <span style="color:#ff79c6">catch</span> (HttpClientErrorException e) {
 </span></span><span style="display:flex;"><span>                <span style="color:#6272a4">// expected</span>
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// the circuit doesn&amp;#39;t trip</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// the circuit doesn&#39;t trip</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">try</span> {
-</span></span><span style="display:flex;"><span>            callingEndpointCircuitBreaker.<span style="color:#50fa7b">decorateSupplier</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
-</span></span><span style="display:flex;"><span>                    restTemplate.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;, JsonNode.<span style="color:#50fa7b">class</span>)
+</span></span><span style="display:flex;"><span>            callingEndpointCircuitBreaker.<span style="color:#50fa7b">decorateSupplier</span>(() <span style="color:#ff79c6">-&gt;</span>
+</span></span><span style="display:flex;"><span>                    restTemplate.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#f1fa8c">&#34;/some/endpoint/10&#34;</span>, JsonNode.<span style="color:#50fa7b">class</span>)
 </span></span><span style="display:flex;"><span>            ).<span style="color:#50fa7b">get</span>();
-</span></span><span style="display:flex;"><span>            fail(<span style="color:#ff79c6">&amp;</span>#34;we should never get here<span style="color:#ff79c6">!&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>            fail(<span style="color:#f1fa8c">&#34;we should never get here!&#34;</span>);
 </span></span><span style="display:flex;"><span>        } <span style="color:#ff79c6">catch</span> (HttpClientErrorException httpClientErrorException)  {
 </span></span><span style="display:flex;"><span>            assertEquals(HttpStatus.<span style="color:#50fa7b">NOT_FOUND</span>, httpClientErrorException.<span style="color:#50fa7b">getStatusCode</span>());
 </span></span><span style="display:flex;"><span>            assertSame(CircuitBreaker.<span style="color:#50fa7b">State</span>.<span style="color:#50fa7b">CLOSED</span>, callingEndpointCircuitBreaker.<span style="color:#50fa7b">getState</span>());

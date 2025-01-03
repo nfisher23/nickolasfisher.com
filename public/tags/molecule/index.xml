@@ -28,7 +28,7 @@
       <link>http://localhost:1313/blog/how-to-upgrade-kibana-using-ansible/</link>
       <pubDate>Sat, 23 Mar 2019 21:14:22 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-upgrade-kibana-using-ansible/</guid>
-      <description>&lt;p&gt;You can view the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In a previous post on &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Provision-a-Linux-VM-With-Kibana-Using-Ansible&#34;&gt;Provisioning a Server with Kibana&lt;/a&gt;, we saw that it&#39;s very straightforward to get kibana on a box.&lt;/p&gt;</description>
+      <description>&lt;p&gt;You can view the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In a previous post on &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Provision-a-Linux-VM-With-Kibana-Using-Ansible&#34;&gt;Provisioning a Server with Kibana&lt;/a&gt;, we saw that it&amp;rsquo;s very straightforward to get kibana on a box.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to Provision a Linux VM With Kibana Using Ansible</title>

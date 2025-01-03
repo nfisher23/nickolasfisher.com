@@ -10,68 +10,68 @@ In a previous post, we saw [how to provision a simple consul client/server clust
 First, pull up the [spring boot initializer](https://start.spring.io/). Select web and spring cloud, then download and unpack the project. Your pom.xml should look something like this:
 
 ```xml
-&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;
-&lt;project xmlns=&#34;http://maven.apache.org/POM/4.0.0&#34; xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;
-         xsi:schemaLocation=&#34;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&#34;&gt;
-    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
-    &lt;parent&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
-        &lt;version&gt;2.1.5.RELEASE&lt;/version&gt;
-        &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
-    &lt;/parent&gt;
-    &lt;groupId&gt;com.nickolasfisher&lt;/groupId&gt;
-    &lt;artifactId&gt;consulregister&lt;/artifactId&gt;
-    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
-    &lt;name&gt;consulregister&lt;/name&gt;
-    &lt;description&gt;Sample app that registers to Consul&lt;/description&gt;
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.5.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.nickolasfisher</groupId>
+    <artifactId>consulregister</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>consulregister</name>
+    <description>Sample app that registers to Consul</description>
 
-    &lt;properties&gt;
-        &lt;java.version&gt;11&lt;/java.version&gt;
-        &lt;spring-cloud.version&gt;Greenwich.SR1&lt;/spring-cloud.version&gt;
-    &lt;/properties&gt;
+    <properties>
+        <java.version>11</java.version>
+        <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
+    </properties>
 
-    &lt;dependencies&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-cloud-starter-consul-discovery&lt;/artifactId&gt;
-        &lt;/dependency&gt;
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+        </dependency>
 
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
-            &lt;version&gt;2.1.5.RELEASE&lt;/version&gt;
-        &lt;/dependency&gt;
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.1.5.RELEASE</version>
+        </dependency>
 
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
-            &lt;scope&gt;test&lt;/scope&gt;
-        &lt;/dependency&gt;
-    &lt;/dependencies&gt;
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-    &lt;dependencyManagement&gt;
-        &lt;dependencies&gt;
-            &lt;dependency&gt;
-                &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
-                &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;
-                &lt;version&gt;${spring-cloud.version}&lt;/version&gt;
-                &lt;type&gt;pom&lt;/type&gt;
-                &lt;scope&gt;import&lt;/scope&gt;
-            &lt;/dependency&gt;
-        &lt;/dependencies&gt;
-    &lt;/dependencyManagement&gt;
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-    &lt;build&gt;
-        &lt;plugins&gt;
-            &lt;plugin&gt;
-                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
-            &lt;/plugin&gt;
-        &lt;/plugins&gt;
-    &lt;/build&gt;
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
-&lt;/project&gt;
+</project>
 
 ```
 
@@ -100,7 +100,7 @@ $ mvn spring-boot:run
 After a bit, you should see your application register to consul with a log entry containing something similar to:
 
 ```
-...Registering service with consul: NewService{id=&#39;consulregister&#39;, name=&#39;consulregister&#39;, tags=[secure=false], address=&#39;192.168.0.20&#39;, meta=null, port=8080, enableTagOverride=null, check=Check{script=&#39;null&#39;, interval=&#39;10s&#39;, ttl=&#39;null&#39;, http=&#39;http://192.168.0.20:8080/actuator/health&#39;, method=&#39;null&#39;, header={}, tcp=&#39;null&#39;, timeout=&#39;null&#39;, deregisterCriticalServiceAfter=&#39;null&#39;, tlsSkipVerify=null, status=&#39;null&#39;}, checks=null}
+...Registering service with consul: NewService{id='consulregister', name='consulregister', tags=[secure=false], address='192.168.0.20', meta=null, port=8080, enableTagOverride=null, check=Check{script='null', interval='10s', ttl='null', http='http://192.168.0.20:8080/actuator/health', method='null', header={}, tcp='null', timeout='null', deregisterCriticalServiceAfter='null', tlsSkipVerify=null, status='null'}, checks=null}
 
 ```
 
@@ -112,23 +112,23 @@ $ curl http://192.168.68.212:8500/v1/agent/services | json_pp
                                  Dload  Upload   Total   Spent    Left  Speed
 100   202  100   202    0     0   197k      0 --:--:-- --:--:-- --:--:--  197k
 {
-   &#34;consulregister&#34; : {
-      &#34;Port&#34; : 8080,
-      &#34;Tags&#34; : [
-         &#34;secure=false&#34;
+   "consulregister" : {
+      "Port" : 8080,
+      "Tags" : [
+         "secure=false"
       ],
-      &#34;Address&#34; : &#34;192.168.0.20&#34;,
-      &#34;ID&#34; : &#34;consulregister&#34;,
-      &#34;Meta&#34; : {},
-      &#34;Service&#34; : &#34;consulregister&#34;,
-      &#34;Weights&#34; : {
-         &#34;Warning&#34; : 1,
-         &#34;Passing&#34; : 1
+      "Address" : "192.168.0.20",
+      "ID" : "consulregister",
+      "Meta" : {},
+      "Service" : "consulregister",
+      "Weights" : {
+         "Warning" : 1,
+         "Passing" : 1
       },
-      &#34;EnableTagOverride&#34; : false
+      "EnableTagOverride" : false
    }
 }
 
 ```
 
-And you&#39;re good to go.
+And you're good to go.

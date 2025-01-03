@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The sample code associated with this blog post can be found on GitHub.
-Another potential source of I/O bottlenecks, across any medium, could be the process you choose to format the data in in the first place. For example, XML used to be a standard way to send information across the wire or store in a backend system, but the size overhead of XML as compared to JSON is about double (not to mention it&#39;s somehow harder to read when formatted compared to JSON)."
+Another potential source of I/O bottlenecks, across any medium, could be the process you choose to format the data in in the first place. For example, XML used to be a standard way to send information across the wire or store in a backend system, but the size overhead of XML as compared to JSON is about double (not to mention it&rsquo;s somehow harder to read when formatted compared to JSON)."
 />
 <link rel="canonical" href="http://localhost:1313/blog/improving-java-io-performance-formatting-costs/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,11 +154,11 @@ Another potential source of I/O bottlenecks, across any medium, could be the pro
   
 
   <section><p>The sample code associated with this blog post can be found <a href="https://github.com/nfisher23/io-tuning">on GitHub</a>.</p>
-<p>Another potential source of I/O bottlenecks, across any medium, could be the process you choose to format the data in in the first place. For example, XML used to be a standard way to send information across the wire or store in a backend system, but the size overhead of XML as compared to JSON is about double (not to mention it's somehow harder to read when formatted compared to JSON).</p>
+<p>Another potential source of I/O bottlenecks, across any medium, could be the process you choose to format the data in in the first place. For example, XML used to be a standard way to send information across the wire or store in a backend system, but the size overhead of XML as compared to JSON is about double (not to mention it&rsquo;s somehow harder to read when formatted compared to JSON).</p>
 <p>We can compare the performance of a couple of different options related to formatting by comparing the MessageFormatter class with simple addition. With a test setup like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">runBenchmark</span>(Class clazz) <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>        Options options <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> OptionsBuilder()
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">include</span>(clazz.<span style="color:#50fa7b">getName</span>() <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#ff79c6">*&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">include</span>(clazz.<span style="color:#50fa7b">getName</span>() <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;.*&#34;</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">mode</span>(Mode.<span style="color:#50fa7b">AverageTime</span>)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">warmupTime</span>(TimeValue.<span style="color:#50fa7b">seconds</span>(1))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">warmupIterations</span>(2)
@@ -186,11 +186,11 @@ Another potential source of I/O bottlenecks, across any medium, could be the pro
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Benchmark
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">formatUsingMessageFormatter_preCompiled</span>() {
-</span></span><span style="display:flex;"><span>        MessageFormat formatter <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> MessageFormat(<span style="color:#ff79c6">&amp;</span>#34;The square of {0} is {1}\n<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        MessageFormat formatter <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> MessageFormat(<span style="color:#f1fa8c">&#34;The square of {0} is {1}\n&#34;</span>);
 </span></span><span style="display:flex;"><span>        Integer<span style="color:#ff79c6">[]</span> values <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Integer<span style="color:#ff79c6">[</span>2<span style="color:#ff79c6">]</span>;
 </span></span><span style="display:flex;"><span>        values<span style="color:#ff79c6">[</span>0<span style="color:#ff79c6">]</span> <span style="color:#ff79c6">=</span> NUM;
 </span></span><span style="display:flex;"><span>        values<span style="color:#ff79c6">[</span>1<span style="color:#ff79c6">]</span> <span style="color:#ff79c6">=</span> NUM <span style="color:#ff79c6">*</span> NUM;
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; COUNT; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> COUNT; i<span style="color:#ff79c6">++</span>) {
 </span></span><span style="display:flex;"><span>            String s <span style="color:#ff79c6">=</span> formatter.<span style="color:#50fa7b">format</span>(values);
 </span></span><span style="display:flex;"><span>            System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">print</span>(s);
 </span></span><span style="display:flex;"><span>        }
@@ -198,11 +198,11 @@ Another potential source of I/O bottlenecks, across any medium, could be the pro
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Benchmark
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">formatWithoutPrecompiling</span>() {
-</span></span><span style="display:flex;"><span>        String format <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;The square of {0} is {1}\n<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>        String format <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;The square of {0} is {1}\n&#34;</span>;
 </span></span><span style="display:flex;"><span>        Integer<span style="color:#ff79c6">[]</span> values <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Integer<span style="color:#ff79c6">[</span>2<span style="color:#ff79c6">]</span>;
 </span></span><span style="display:flex;"><span>        values<span style="color:#ff79c6">[</span>0<span style="color:#ff79c6">]</span> <span style="color:#ff79c6">=</span> NUM;
 </span></span><span style="display:flex;"><span>        values<span style="color:#ff79c6">[</span>1<span style="color:#ff79c6">]</span> <span style="color:#ff79c6">=</span> NUM <span style="color:#ff79c6">*</span> NUM;
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; COUNT; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> COUNT; i<span style="color:#ff79c6">++</span>) {
 </span></span><span style="display:flex;"><span>            String s <span style="color:#ff79c6">=</span> MessageFormat.<span style="color:#50fa7b">format</span>(format, values);
 </span></span><span style="display:flex;"><span>            System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">print</span>(s);
 </span></span><span style="display:flex;"><span>        }
@@ -214,15 +214,15 @@ Another potential source of I/O bottlenecks, across any medium, could be the pro
 </span></span></code></pre></div><p>Now, we can achieve the same result using garden variety addition, and compare that to a completely precompiled state:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Benchmark
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">printingWithNoFormattingCosts</span>() {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; COUNT; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
-</span></span><span style="display:flex;"><span>            System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">print</span>(<span style="color:#ff79c6">&amp;</span>#34;The square of 7 is 49\n<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> COUNT; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">print</span>(<span style="color:#f1fa8c">&#34;The square of 7 is 49\n&#34;</span>);
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Benchmark
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">formatUsingAddition</span>() {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; COUNT; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
-</span></span><span style="display:flex;"><span>            String s <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;The square of <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; NUM <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34; is <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; NUM <span style="color:#ff79c6">*</span> NUM <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34;\n<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&lt;</span> COUNT; i<span style="color:#ff79c6">++</span>) {
+</span></span><span style="display:flex;"><span>            String s <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;The square of &#34;</span> <span style="color:#ff79c6">+</span> NUM <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34; is &#34;</span> <span style="color:#ff79c6">+</span> NUM <span style="color:#ff79c6">*</span> NUM <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;\n&#34;</span>;
 </span></span><span style="display:flex;"><span>            System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">print</span>(s);
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }

@@ -1,5 +1,5 @@
 ---
-title: "How to Use Spring&#39;s Dependency Injection in Setup And Teardown Code For Integration Tests With Maven"
+title: "How to Use Spring's Dependency Injection in Setup And Teardown Code For Integration Tests With Maven"
 date: 2018-11-24T15:51:32
 draft: false
 tags: [java, spring, DevOps, maven]
@@ -22,10 +22,10 @@ public class AppConfig {
     public DataSource dataSource() {
         HikariDataSource ds = new HikariDataSource();
 
-        ds.setJdbcUrl(environment.getProperty(&#34;spring.datasource.url&#34;));
-        ds.setUsername(environment.getProperty(&#34;spring.datasource.username&#34;));
-        ds.setPassword(environment.getProperty(&#34;spring.datasource.password&#34;));
-        ds.setDriverClassName(environment.getProperty(&#34;spring.datasource.driver-class-name&#34;));
+        ds.setJdbcUrl(environment.getProperty("spring.datasource.url"));
+        ds.setUsername(environment.getProperty("spring.datasource.username"));
+        ds.setPassword(environment.getProperty("spring.datasource.password"));
+        ds.setDriverClassName(environment.getProperty("spring.datasource.driver-class-name"));
 
         return ds;
     }
@@ -37,7 +37,7 @@ public class AppConfig {
 }
 ```
 
-And we&#39;ll configure our datasource via the application.yml properties file in our resources folder:
+And we'll configure our datasource via the application.yml properties file in our resources folder:
 
 ```yaml
 spring:
@@ -49,12 +49,12 @@ spring:
 
 ```
 
-Our integration test will run a query against a TMP\_TABLE table, and validate that we have two entries which are (1, &#34;first&#34;) and (2, &#34;second&#34;):
+Our integration test will run a query against a TMP\_TABLE table, and validate that we have two entries which are (1, "first") and (2, "second"):
 
 ```java
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AppConfig.class})
-@ComponentScan(value = &#34;com.nickolasfisher.postgresintegration&#34;)
+@ComponentScan(value = "com.nickolasfisher.postgresintegration")
 public class PostgresAppIT {
 
     @Autowired
@@ -62,14 +62,14 @@ public class PostgresAppIT {
 
     @Test
     public void validateQueryOnRealDB() {
-        List&lt;KeyValuePair&gt; pairs = jdbcTemplate.query(&#34;SELECT mykey, myvalue FROM TMP_TABLE ORDER BY mykey asc&#34;, (rs, rowNum) -&gt;
+        List<KeyValuePair> pairs = jdbcTemplate.query("SELECT mykey, myvalue FROM TMP_TABLE ORDER BY mykey asc", (rs, rowNum) ->
                 new KeyValuePair(rs.getInt(1), rs.getString(2)));
 
-        assertEquals(&#34;first&#34;, pairs.get(0).getValue());
+        assertEquals("first", pairs.get(0).getValue());
         assertEquals(1, pairs.get(0).getKey().intValue());
 
         assertEquals(2, pairs.get(1).getKey().intValue());
-        assertEquals(&#34;second&#34;, pairs.get(1).getValue());
+        assertEquals("second", pairs.get(1).getValue());
     }
 
     private class KeyValuePair {
@@ -94,10 +94,10 @@ public class PostgresAppIT {
 
 ```
 
-If we then want to set up and teardown our data for this test, we need to create the table if it doesn&#39;t exist, insert the appropriate data, then destroy the data or the table in our teardown environment. Thankfully, we can access the application context by getting the return value on SpringApplication.run(..) and getting any beans we want out of that:
+If we then want to set up and teardown our data for this test, we need to create the table if it doesn't exist, insert the appropriate data, then destroy the data or the table in our teardown environment. Thankfully, we can access the application context by getting the return value on SpringApplication.run(..) and getting any beans we want out of that:
 
 ```java
-@ComponentScan(&#34;com.nickolasfisher.postgresintegration&#34;)
+@ComponentScan("com.nickolasfisher.postgresintegration")
 public class PreIntegrationSetup {
 
     public static void main(String args[]) {
@@ -106,7 +106,7 @@ public class PreIntegrationSetup {
             createTmpTable(ctx);
             insertTmpData(ctx);
         } catch (Exception e) {
-            System.out.println(&#34;you blew up in your setup code: &#34; &#43; e.toString());
+            System.out.println("you blew up in your setup code: " + e.toString());
         }
         ctx.registerShutdownHook();
         ctx.close();
@@ -115,14 +115,14 @@ public class PreIntegrationSetup {
     private static void createTmpTable(ApplicationContext ctx) {
         JdbcTemplate jdbcTemplate = ctx.getBean(JdbcTemplate.class);
 
-        jdbcTemplate.update(&#34;CREATE TABLE TMP_TABLE (mykey INTEGER, myvalue text)&#34;);
+        jdbcTemplate.update("CREATE TABLE TMP_TABLE (mykey INTEGER, myvalue text)");
     }
 
     private static void insertTmpData(ApplicationContext ctx) {
         JdbcTemplate jdbcTemplate = ctx.getBean(JdbcTemplate.class);
 
-        jdbcTemplate.update(&#34;INSERT INTO TMP_TABLE (mykey, myvalue) VALUES (1, &#39;first&#39;)&#34;);
-        jdbcTemplate.update(&#34;INSERT INTO TMP_TABLE (mykey, myvalue) VALUES (2, &#39;second&#39;)&#34;);
+        jdbcTemplate.update("INSERT INTO TMP_TABLE (mykey, myvalue) VALUES (1, 'first')");
+        jdbcTemplate.update("INSERT INTO TMP_TABLE (mykey, myvalue) VALUES (2, 'second')");
     }
 }
 ```
@@ -130,7 +130,7 @@ public class PreIntegrationSetup {
 And we can teardown our data, in this case I will choose to destroy the table completely from the test database, like:
 
 ```java
-@ComponentScan(&#34;com.nickolasfisher.postgresintegration&#34;)
+@ComponentScan("com.nickolasfisher.postgresintegration")
 public class PostIntegrationTeardown {
 
     public static void main(String args[]) {
@@ -139,7 +139,7 @@ public class PostIntegrationTeardown {
         try {
             destroyTmpTable(ctx);
         } catch (Exception e) {
-            System.out.println(&#34;you blew up in your teardown code: &#34; &#43; e.toString());
+            System.out.println("you blew up in your teardown code: " + e.toString());
         }
 
         ctx.registerShutdownHook();
@@ -149,7 +149,7 @@ public class PostIntegrationTeardown {
     private static void destroyTmpTable(ApplicationContext ctx) {
         JdbcTemplate jdbcTemplate = ctx.getBean(JdbcTemplate.class);
 
-        jdbcTemplate.update(&#34;DROP TABLE TMP_TABLE&#34;);
+        jdbcTemplate.update("DROP TABLE TMP_TABLE");
     }
 }
 

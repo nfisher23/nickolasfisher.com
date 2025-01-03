@@ -35,7 +35,7 @@
       <link>http://localhost:1313/blog/how-to-provision-a-standalone-consul-server-with-ansible/</link>
       <pubDate>Sat, 27 Apr 2019 19:49:14 +0000</pubDate>
       <guid>http://localhost:1313/blog/how-to-provision-a-standalone-consul-server-with-ansible/</guid>
-      <description>&lt;p&gt;You can find the source code for this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.consul.io/&#34;&gt;Consul&lt;/a&gt; is a distributed service discovery engine. It&#39;s primary purpose is to track and manage services that interact with it&amp;ndash;usually via an HTTP API. It monitors the health of services in near real time, providing a more robust way of routing services to healthy and responsive nodes.&lt;/p&gt;</description>
+      <description>&lt;p&gt;You can find the source code for this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.consul.io/&#34;&gt;Consul&lt;/a&gt; is a distributed service discovery engine. It&amp;rsquo;s primary purpose is to track and manage services that interact with it&amp;ndash;usually via an HTTP API. It monitors the health of services in near real time, providing a more robust way of routing services to healthy and responsive nodes.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

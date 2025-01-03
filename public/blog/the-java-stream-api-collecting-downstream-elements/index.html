@@ -157,7 +157,7 @@ this means that, after you group the keys of the map, you can further make chang
   <section><p>You can view the sample code associated with this post <a href="https://github.com/nfisher23/java_stream_api_samples">on GitHub</a>.</p>
 <p>One interesting feature of collecting streams using the <code>Collectors.groupingBy(..)</code> method is the ability to manipulate <em>downstream</em> elements. Basically,
 this means that, after you group the keys of the map, you can further make changes to the collection that the map is pointing to. By default, it collects to a list.</p>
-<p>We'll start with a SimplePair object:</p>
+<p>We&rsquo;ll start with a SimplePair object:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">SimplePair</span> {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> String name;
@@ -181,17 +181,17 @@ this means that, after you group the keys of the map, you can further make chang
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    @Override
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">toString</span>() {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>#34;name<span style="color:#ff79c6">-&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; name <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34;,id<span style="color:#ff79c6">-&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; id;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;name-&#34;</span> <span style="color:#ff79c6">+</span> name <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;,id-&#34;</span> <span style="color:#ff79c6">+</span> id;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Then, if we generate a collection of SimplePairs:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> List<span style="color:#ff79c6">&amp;</span>lt;SimplePair<span style="color:#ff79c6">&amp;</span>gt; generateSimplePairs(<span style="color:#8be9fd">int</span> numToGenerate) {
-</span></span><span style="display:flex;"><span>    List<span style="color:#ff79c6">&amp;</span>lt;SimplePair<span style="color:#ff79c6">&amp;</span>gt; pairs <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ArrayList<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">&amp;</span>gt;();
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 1; i <span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">=</span> numToGenerate; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> List<span style="color:#ff79c6">&lt;</span>SimplePair<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">generateSimplePairs</span>(<span style="color:#8be9fd">int</span> numToGenerate) {
+</span></span><span style="display:flex;"><span>    List<span style="color:#ff79c6">&lt;</span>SimplePair<span style="color:#ff79c6">&gt;</span> pairs <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ArrayList<span style="color:#ff79c6">&lt;&gt;</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 1; i <span style="color:#ff79c6">&lt;=</span> numToGenerate; i<span style="color:#ff79c6">++</span>) {
 </span></span><span style="display:flex;"><span>        SimplePair pair <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> SimplePair();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        pair.<span style="color:#50fa7b">setId</span>(i);
-</span></span><span style="display:flex;"><span>        pair.<span style="color:#50fa7b">setName</span>(<span style="color:#ff79c6">&amp;</span>#34;pair<span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; i);
+</span></span><span style="display:flex;"><span>        pair.<span style="color:#50fa7b">setName</span>(<span style="color:#f1fa8c">&#34;pair&#34;</span> <span style="color:#ff79c6">+</span> i);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        pairs.<span style="color:#50fa7b">add</span>(pair);
 </span></span><span style="display:flex;"><span>    }
@@ -201,21 +201,21 @@ this means that, after you group the keys of the map, you can further make chang
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">addDuplicatePairs</span>() {
 </span></span><span style="display:flex;"><span>    simplePairs.<span style="color:#50fa7b">add</span>(<span style="color:#ff79c6">new</span> SimplePair() {{
 </span></span><span style="display:flex;"><span>        setId(3);
-</span></span><span style="display:flex;"><span>        setName(<span style="color:#ff79c6">&amp;</span>#34;another<span style="color:#ff79c6">-</span>pair3<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        setName(<span style="color:#f1fa8c">&#34;another-pair3&#34;</span>);
 </span></span><span style="display:flex;"><span>    }});
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    simplePairs.<span style="color:#50fa7b">add</span>(<span style="color:#ff79c6">new</span> SimplePair() {{
 </span></span><span style="display:flex;"><span>        setId(3);
-</span></span><span style="display:flex;"><span>        setName(<span style="color:#ff79c6">&amp;</span>#34;yet<span style="color:#ff79c6">-</span>another<span style="color:#ff79c6">-</span>pair3<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        setName(<span style="color:#f1fa8c">&#34;yet-another-pair3&#34;</span>);
 </span></span><span style="display:flex;"><span>    }});
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Now our collection looks like &quot;[(id: 1, name: pair1), (id: 2, name: pair2), (id: 3, name: pair3), (id: 3, name: another-pair3), (id: 3, name: yet-another-pair3) &hellip; ]&quot;</p>
-<p>Now that we have data to work with, we can get to manipulating the downstream elements, we can map based on the id to a List&lt;SimplePair&gt;, which is the default of groupingBy(..), like:</p>
+</span></span></code></pre></div><p>Now our collection looks like &ldquo;[(id: 1, name: pair1), (id: 2, name: pair2), (id: 3, name: pair3), (id: 3, name: another-pair3), (id: 3, name: yet-another-pair3) &hellip; ]&rdquo;</p>
+<p>Now that we have data to work with, we can get to manipulating the downstream elements, we can map based on the id to a List<!-- raw HTML omitted -->, which is the default of groupingBy(..), like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">groupingBy_toList</span>() {
 </span></span><span style="display:flex;"><span>    addDuplicatePairs();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&amp;</span>lt;Integer, List<span style="color:#ff79c6">&amp;</span>lt;SimplePair<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; defaultsToList <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(
+</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&lt;</span>Integer, List<span style="color:#ff79c6">&lt;</span>SimplePair<span style="color:#ff79c6">&gt;&gt;</span> defaultsToList <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(
 </span></span><span style="display:flex;"><span>            Collectors.<span style="color:#50fa7b">groupingBy</span>(SimplePair::getId)
 </span></span><span style="display:flex;"><span>    );
 </span></span><span style="display:flex;"><span>
@@ -226,7 +226,7 @@ this means that, after you group the keys of the map, you can further make chang
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">groupingBy_toSet</span>() {
 </span></span><span style="display:flex;"><span>    addDuplicatePairs();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&amp;</span>lt;Integer, Set<span style="color:#ff79c6">&amp;</span>lt;SimplePair<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; idToSetOfPairs <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(
+</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&lt;</span>Integer, Set<span style="color:#ff79c6">&lt;</span>SimplePair<span style="color:#ff79c6">&gt;&gt;</span> idToSetOfPairs <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(
 </span></span><span style="display:flex;"><span>            Collectors.<span style="color:#50fa7b">groupingBy</span>(SimplePair::getId, Collectors.<span style="color:#50fa7b">toSet</span>())
 </span></span><span style="display:flex;"><span>    );
 </span></span><span style="display:flex;"><span>
@@ -237,7 +237,7 @@ this means that, after you group the keys of the map, you can further make chang
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">groupingBy_count</span>() {
 </span></span><span style="display:flex;"><span>    addDuplicatePairs();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&amp;</span>lt;Integer, Long<span style="color:#ff79c6">&amp;</span>gt; countIdOccurrence <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(
+</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&lt;</span>Integer, Long<span style="color:#ff79c6">&gt;</span> countIdOccurrence <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(
 </span></span><span style="display:flex;"><span>            Collectors.<span style="color:#50fa7b">groupingBy</span>(SimplePair::getId, Collectors.<span style="color:#50fa7b">counting</span>())
 </span></span><span style="display:flex;"><span>    );
 </span></span><span style="display:flex;"><span>
@@ -245,77 +245,77 @@ this means that, after you group the keys of the map, you can further make chang
 </span></span><span style="display:flex;"><span>    assertEquals(1, countIdOccurrence.<span style="color:#50fa7b">get</span>(1).<span style="color:#50fa7b">intValue</span>());
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>You can sum all of the values of a specific property downstream by calling <code>Collectors.summingInt(Class::property)</code>.
-Here, we sum up all the id's for the downstream elements:</p>
+Here, we sum up all the id&rsquo;s for the downstream elements:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">groupingBy_sumDownstreamElements</span>() {
 </span></span><span style="display:flex;"><span>    addDuplicatePairs();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&amp;</span>lt;Integer, Integer<span style="color:#ff79c6">&amp;</span>gt; addUpIds <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(
+</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&lt;</span>Integer, Integer<span style="color:#ff79c6">&gt;</span> addUpIds <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(
 </span></span><span style="display:flex;"><span>            Collectors.<span style="color:#50fa7b">groupingBy</span>(SimplePair::getId, Collectors.<span style="color:#50fa7b">summingInt</span>(SimplePair::getId))
 </span></span><span style="display:flex;"><span>    );
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    assertEquals(9, addUpIds.<span style="color:#50fa7b">get</span>(3).<span style="color:#50fa7b">intValue</span>());
 </span></span><span style="display:flex;"><span>    assertEquals(4, addUpIds.<span style="color:#50fa7b">get</span>(4).<span style="color:#50fa7b">intValue</span>());
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>You can get the maximum length downstream by passing in a Comparator&lt;T&gt; to <code>Collectors.maxBy(..)</code> and
+</span></span></code></pre></div><p>You can get the maximum length downstream by passing in a Comparator<!-- raw HTML omitted --> to <code>Collectors.maxBy(..)</code> and
 specifying the <code>length()</code> to be compared:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">groupingBy_getMaxDownstreamElement</span>() {
 </span></span><span style="display:flex;"><span>    addDuplicatePairs();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&amp;</span>lt;Integer, Optional<span style="color:#ff79c6">&amp;</span>lt;SimplePair<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; sortByMaxDownstream <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(
+</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&lt;</span>Integer, Optional<span style="color:#ff79c6">&lt;</span>SimplePair<span style="color:#ff79c6">&gt;&gt;</span> sortByMaxDownstream <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(
 </span></span><span style="display:flex;"><span>            Collectors.<span style="color:#50fa7b">groupingBy</span>(SimplePair::getId, Collectors.<span style="color:#50fa7b">maxBy</span>(
-</span></span><span style="display:flex;"><span>                    Comparator.<span style="color:#50fa7b">comparing</span>(sp <span style="color:#ff79c6">-&amp;</span>gt; sp.<span style="color:#50fa7b">getName</span>().<span style="color:#50fa7b">length</span>())
+</span></span><span style="display:flex;"><span>                    Comparator.<span style="color:#50fa7b">comparing</span>(sp <span style="color:#ff79c6">-&gt;</span> sp.<span style="color:#50fa7b">getName</span>().<span style="color:#50fa7b">length</span>())
 </span></span><span style="display:flex;"><span>            ))
 </span></span><span style="display:flex;"><span>    );
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    String maxNameOfThree <span style="color:#ff79c6">=</span> sortByMaxDownstream.<span style="color:#50fa7b">get</span>(3).<span style="color:#50fa7b">orElseThrow</span>(RuntimeException::<span style="color:#ff79c6">new</span>).<span style="color:#50fa7b">getName</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    assertEquals(<span style="color:#ff79c6">&amp;</span>#34;yet<span style="color:#ff79c6">-</span>another<span style="color:#ff79c6">-</span>pair3<span style="color:#ff79c6">&amp;</span>#34;, maxNameOfThree);
+</span></span><span style="display:flex;"><span>    assertEquals(<span style="color:#f1fa8c">&#34;yet-another-pair3&#34;</span>, maxNameOfThree);
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>You can get the minimum value using the same approach but with the <code>Collectors.minBy(..)</code> method:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">groupingBy_getMinDownstreamElement</span>() {
 </span></span><span style="display:flex;"><span>    addDuplicatePairs();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&amp;</span>lt;Integer, Optional<span style="color:#ff79c6">&amp;</span>lt;SimplePair<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; sortByMinDownstream <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(
+</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&lt;</span>Integer, Optional<span style="color:#ff79c6">&lt;</span>SimplePair<span style="color:#ff79c6">&gt;&gt;</span> sortByMinDownstream <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(
 </span></span><span style="display:flex;"><span>            Collectors.<span style="color:#50fa7b">groupingBy</span>(SimplePair::getId, Collectors.<span style="color:#50fa7b">minBy</span>(
-</span></span><span style="display:flex;"><span>                    Comparator.<span style="color:#50fa7b">comparing</span>(simplePair <span style="color:#ff79c6">-&amp;</span>gt; simplePair.<span style="color:#50fa7b">getName</span>().<span style="color:#50fa7b">length</span>())
+</span></span><span style="display:flex;"><span>                    Comparator.<span style="color:#50fa7b">comparing</span>(simplePair <span style="color:#ff79c6">-&gt;</span> simplePair.<span style="color:#50fa7b">getName</span>().<span style="color:#50fa7b">length</span>())
 </span></span><span style="display:flex;"><span>            ))
 </span></span><span style="display:flex;"><span>    );
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    String minNameOfThree <span style="color:#ff79c6">=</span> sortByMinDownstream.<span style="color:#50fa7b">get</span>(3).<span style="color:#50fa7b">orElseThrow</span>(RuntimeException::<span style="color:#ff79c6">new</span>).<span style="color:#50fa7b">getName</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    assertEquals(<span style="color:#ff79c6">&amp;</span>#34;pair3<span style="color:#ff79c6">&amp;</span>#34;, minNameOfThree);
+</span></span><span style="display:flex;"><span>    assertEquals(<span style="color:#f1fa8c">&#34;pair3&#34;</span>, minNameOfThree);
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Finally, you can nest downstream elements as much as you would like. Here, we map the ids to a collection of Integers, which are the length() value
-of the name field in SimplePair. This can be a little difficult to wrap your head around at first&ndash;basically, we are collecting a Map&lt;&amp;gt; of ids to objects, then
+of the name field in SimplePair. This can be a little difficult to wrap your head around at first&ndash;basically, we are collecting a Map&lt;&gt; of ids to objects, then
 we are collecting to the List into a Map&lt;&gt;, where the map is a map of the lengths of the name property (say that five times fast):</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">groupingBy_mapsToMaps</span>() {
 </span></span><span style="display:flex;"><span>    addDuplicatePairs();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&amp;</span>lt;Integer, Map<span style="color:#ff79c6">&amp;</span>lt;Integer, List<span style="color:#ff79c6">&amp;</span>lt;SimplePair<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; mapToSetOfLengths <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(Collectors.<span style="color:#50fa7b">groupingBy</span>(
+</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&lt;</span>Integer, Map<span style="color:#ff79c6">&lt;</span>Integer, List<span style="color:#ff79c6">&lt;</span>SimplePair<span style="color:#ff79c6">&gt;&gt;&gt;</span> mapToSetOfLengths <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(Collectors.<span style="color:#50fa7b">groupingBy</span>(
 </span></span><span style="display:flex;"><span>            SimplePair::getId,
-</span></span><span style="display:flex;"><span>            Collectors.<span style="color:#50fa7b">groupingBy</span>(sp <span style="color:#ff79c6">-&amp;</span>gt; sp.<span style="color:#50fa7b">getName</span>().<span style="color:#50fa7b">length</span>(), Collectors.<span style="color:#50fa7b">toList</span>())
+</span></span><span style="display:flex;"><span>            Collectors.<span style="color:#50fa7b">groupingBy</span>(sp <span style="color:#ff79c6">-&gt;</span> sp.<span style="color:#50fa7b">getName</span>().<span style="color:#50fa7b">length</span>(), Collectors.<span style="color:#50fa7b">toList</span>())
 </span></span><span style="display:flex;"><span>    ));
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&amp;</span>lt;Integer, List<span style="color:#ff79c6">&amp;</span>lt;SimplePair<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; lengthsToSimplePairsWithId1 <span style="color:#ff79c6">=</span> mapToSetOfLengths.<span style="color:#50fa7b">get</span>(1);
-</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&amp;</span>lt;Integer, List<span style="color:#ff79c6">&amp;</span>lt;SimplePair<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; lengthsToSimplePairsWithId3 <span style="color:#ff79c6">=</span> mapToSetOfLengths.<span style="color:#50fa7b">get</span>(3);
+</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&lt;</span>Integer, List<span style="color:#ff79c6">&lt;</span>SimplePair<span style="color:#ff79c6">&gt;&gt;</span> lengthsToSimplePairsWithId1 <span style="color:#ff79c6">=</span> mapToSetOfLengths.<span style="color:#50fa7b">get</span>(1);
+</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&lt;</span>Integer, List<span style="color:#ff79c6">&lt;</span>SimplePair<span style="color:#ff79c6">&gt;&gt;</span> lengthsToSimplePairsWithId3 <span style="color:#ff79c6">=</span> mapToSetOfLengths.<span style="color:#50fa7b">get</span>(3);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    assertEquals(1, lengthsToSimplePairsWithId1.<span style="color:#50fa7b">size</span>());
 </span></span><span style="display:flex;"><span>    assertEquals(3, lengthsToSimplePairsWithId3.<span style="color:#50fa7b">size</span>());
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>This process can get pretty confusing, and it's not likely to be helpful in the vast majority of situations. Getting too cute with downstream elements could leave anyone else who looks at the code (including you) with a lot of questions&ndash;which takes up valuable time. But, it is one obscure tool to throw in the garage.</p>
+</span></span></code></pre></div><p>This process can get pretty confusing, and it&rsquo;s not likely to be helpful in the vast majority of situations. Getting too cute with downstream elements could leave anyone else who looks at the code (including you) with a lot of questions&ndash;which takes up valuable time. But, it is one obscure tool to throw in the garage.</p>
 <p>For a slightly less obscure example, but still fairly out there, we turn to <code>Collectors.mapping(..)</code>, which collects the mapping downstream
-into a collection of your choosing. Here, we'll collect a list of length() properties in the downstream SimplePair element:</p>
+into a collection of your choosing. Here, we&rsquo;ll collect a list of length() properties in the downstream SimplePair element:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">groupingBy_mappingToMoreDownstreamElements</span>() {
 </span></span><span style="display:flex;"><span>    addDuplicatePairs();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&amp;</span>lt;Integer, List<span style="color:#ff79c6">&amp;</span>lt;Integer<span style="color:#ff79c6">&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt; mapIdsToSetOfLengths <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(Collectors.<span style="color:#50fa7b">groupingBy</span>(
+</span></span><span style="display:flex;"><span>    Map<span style="color:#ff79c6">&lt;</span>Integer, List<span style="color:#ff79c6">&lt;</span>Integer<span style="color:#ff79c6">&gt;&gt;</span> mapIdsToSetOfLengths <span style="color:#ff79c6">=</span> simplePairs.<span style="color:#50fa7b">stream</span>().<span style="color:#50fa7b">collect</span>(Collectors.<span style="color:#50fa7b">groupingBy</span>(
 </span></span><span style="display:flex;"><span>            SimplePair::getId,
-</span></span><span style="display:flex;"><span>            Collectors.<span style="color:#50fa7b">mapping</span>(sp <span style="color:#ff79c6">-&amp;</span>gt; sp.<span style="color:#50fa7b">getName</span>().<span style="color:#50fa7b">length</span>(), Collectors.<span style="color:#50fa7b">toList</span>())
+</span></span><span style="display:flex;"><span>            Collectors.<span style="color:#50fa7b">mapping</span>(sp <span style="color:#ff79c6">-&gt;</span> sp.<span style="color:#50fa7b">getName</span>().<span style="color:#50fa7b">length</span>(), Collectors.<span style="color:#50fa7b">toList</span>())
 </span></span><span style="display:flex;"><span>    ));
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    assertEquals(5, mapIdsToSetOfLengths.<span style="color:#50fa7b">get</span>(3).<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">intValue</span>());

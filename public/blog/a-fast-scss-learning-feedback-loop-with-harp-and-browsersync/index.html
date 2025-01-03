@@ -8,7 +8,7 @@
 <title>A Fast SCSS Learning Feedback Loop With Harp and BrowserSync</title>
 <meta
   name="description"
-  content="If, like me, your development career has been firmly on servers, wiring and protecting data across multiple machine and focusing on architecture, the shift to building websites that &quot;look right&quot; can sometimes be a tough transition. Like all things engineering, ensuring that you have a short feedback loop, where you can interact with the tool that you&#39;re using in a very hands on way, will be your fastest and surest way to mastery."
+  content="If, like me, your development career has been firmly on servers, wiring and protecting data across multiple machine and focusing on architecture, the shift to building websites that &ldquo;look right&rdquo; can sometimes be a tough transition. Like all things engineering, ensuring that you have a short feedback loop, where you can interact with the tool that you&rsquo;re using in a very hands on way, will be your fastest and surest way to mastery."
 />
 <link rel="canonical" href="http://localhost:1313/blog/a-fast-scss-learning-feedback-loop-with-harp-and-browsersync/" />
 <link rel="robots" href="/robots.txt" />
@@ -152,8 +152,8 @@
 
   
 
-  <section><p>If, like me, your development career has been firmly on servers, wiring and protecting data across multiple machine and focusing on architecture, the shift to building websites that &quot;look right&quot; can sometimes be a tough transition. Like all things engineering, ensuring that you have a short feedback loop, where you can interact with the tool that you're using in a very hands on way, will be your fastest and surest way to mastery.</p>
-<p>There are two very different parts to any web application: the style of the page and the business logic of the page. Both of these parts will more or less need to know about the <em>structure</em> of the page [though limiting that from a CSS perspective is quite important as well], but the style and the business logic can exist in harmony and separate out their concerns. Coming from the back end, business logic is no problem&ndash;unit test, code, unit test, code, refactor, more unit tests and code. Structure isn't even a problem, because HTML is very simple. When we start throwing in CSS is where traditional system level developers get thrown out of their comfort zone.</p>
+  <section><p>If, like me, your development career has been firmly on servers, wiring and protecting data across multiple machine and focusing on architecture, the shift to building websites that &ldquo;look right&rdquo; can sometimes be a tough transition. Like all things engineering, ensuring that you have a short feedback loop, where you can interact with the tool that you&rsquo;re using in a very hands on way, will be your fastest and surest way to mastery.</p>
+<p>There are two very different parts to any web application: the style of the page and the business logic of the page. Both of these parts will more or less need to know about the <em>structure</em> of the page [though limiting that from a CSS perspective is quite important as well], but the style and the business logic can exist in harmony and separate out their concerns. Coming from the back end, business logic is no problem&ndash;unit test, code, unit test, code, refactor, more unit tests and code. Structure isn&rsquo;t even a problem, because HTML is very simple. When we start throwing in CSS is where traditional system level developers get thrown out of their comfort zone.</p>
 <p>In learning <a href="https://sass-lang.com/documentation/syntax">SCSS</a>, which is a great tool to prevent duplication in plain-text CSS files, I found a simple sandbox setup that will help any developer get up and running as quickly as possible, using <a href="http://harpjs.com/">harp</a> and <a href="https://www.browsersync.io/">browsersync</a>.</p>
 <h3 id="the-environment">The Environment</h3>
 <p>First, ensure that you have harp and browser sync installed globally:</p>
@@ -167,20 +167,20 @@ css/
 -- _variables.scss
 -- main.scss
 </code></pre><p>To start with, you can set up your <strong>index.html</strong> file to look like:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&amp;lt;html&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;head&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;link href=&amp;#34;css/main.css&amp;#34; type=&amp;#34;text/css&amp;#34; rel=&amp;#34;stylesheet&amp;#34;&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/head&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;body&amp;gt;
-</span></span><span style="display:flex;"><span>       &amp;lt;p&amp;gt; Some stuff &amp;lt;/p&amp;gt;
-</span></span><span style="display:flex;"><span>       &amp;lt;p&amp;gt;Some other stuff&amp;lt;/p&amp;gt;
-</span></span><span style="display:flex;"><span>       &amp;lt;p&amp;gt;Some other stuff&amp;lt;/p&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/body&amp;gt;
-</span></span><span style="display:flex;"><span>&amp;lt;/html&amp;gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#ff79c6">html</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#ff79c6">head</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#ff79c6">link</span> <span style="color:#50fa7b">href</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;css/main.css&#34;</span> <span style="color:#50fa7b">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;text/css&#34;</span> <span style="color:#50fa7b">rel</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;stylesheet&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#ff79c6">head</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#ff79c6">body</span>&gt;
+</span></span><span style="display:flex;"><span>       &lt;<span style="color:#ff79c6">p</span>&gt; Some stuff &lt;/<span style="color:#ff79c6">p</span>&gt;
+</span></span><span style="display:flex;"><span>       &lt;<span style="color:#ff79c6">p</span>&gt;Some other stuff&lt;/<span style="color:#ff79c6">p</span>&gt;
+</span></span><span style="display:flex;"><span>       &lt;<span style="color:#ff79c6">p</span>&gt;Some other stuff&lt;/<span style="color:#ff79c6">p</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#ff79c6">body</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#ff79c6">html</span>&gt;
 </span></span></code></pre></div><p>Your <strong>_variables.scss</strong> file can look like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#ff79c6">$</span><span style="color:#ff79c6">something</span><span style="color:#ff79c6">:</span> <span style="color:#ff79c6">red</span><span style="color:#ff79c6">;</span>
 </span></span></code></pre></div><p>Your <strong>main.scss</strong> file could look like:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span>@<span style="color:#ff79c6">import</span> <span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">variables</span><span style="color:#ff79c6">&amp;</span>#34<span style="color:#ff79c6">;;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span>@<span style="color:#ff79c6">import</span> <span style="color:#f1fa8c">&#34;variables&#34;</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">body</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">font</span>: <span style="color:#bd93f9">12</span><span style="color:#8be9fd">px</span> Helvetica, Arial, <span style="color:#ff79c6">sans-serif</span>;
@@ -189,8 +189,8 @@ css/
 </span></span></code></pre></div><p>Finally, your <strong>run.sh</strong> file could look like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#ff79c6">#!/bin/bash
 </span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>harp server &amp;amp;
-</span></span><span style="display:flex;"><span>browser-sync start --proxy &amp;<span style="color:#6272a4">#39;localhost:9000&amp;#39; --files &amp;#39;**, *.html, *.scss&amp;#39;</span>
-</span></span></code></pre></div><p>If you're on a *nix operating system, be sure to set the permissions to run this file:</p>
+</span></span><span style="display:flex;"><span>browser-sync start --proxy <span style="color:#f1fa8c">&#39;localhost:9000&#39;</span> --files <span style="color:#f1fa8c">&#39;**, *.html, *.scss&#39;</span>
+</span></span></code></pre></div><p>If you&rsquo;re on a *nix operating system, be sure to set the permissions to run this file:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo chmod <span style="color:#bd93f9">755</span> ./run.sh
 </span></span></code></pre></div><p>You should then be able to run:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ./run.sh
@@ -207,7 +207,7 @@ css/
 </span></span><span style="display:flex;"><span>------------
 </span></span><span style="display:flex;"><span>Harp v0.30.0 – Chloi Inc. 2012–2015
 </span></span><span style="display:flex;"><span>Your server is listening at http://localhost:9000/
-</span></span><span style="display:flex;"><span>Press Ctl&amp;<span style="color:#6272a4">#43;C to stop the server</span>
+</span></span><span style="display:flex;"><span>Press Ctl+C to stop the server
 </span></span></code></pre></div><p>By opening up <a href="http://localhost:3000,">http://localhost:3000,</a> any changes you make to your source files will be automatically reloaded in your browser window, enabling you to immediately see the style changes.</p>
 <p>Go forth and conquer.</p>
 </section>

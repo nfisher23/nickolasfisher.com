@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The sample code associated with this post can be found on Github.
-A ZIP file format is a compressed, lossless archive of files of files and/or directories. While the content being compressed will matter as to the algorithm&#39;s effectiveness, it is a common way to transfer files among peers, particularly on many windows machines."
+A ZIP file format is a compressed, lossless archive of files of files and/or directories. While the content being compressed will matter as to the algorithm&rsquo;s effectiveness, it is a common way to transfer files among peers, particularly on many windows machines."
 />
 <link rel="canonical" href="http://localhost:1313/blog/java-io-zip-archive-manipulation/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,16 +154,16 @@ A ZIP file format is a compressed, lossless archive of files of files and/or dir
   
 
   <section><p>The sample code associated with this post can be found <a href="https://github.com/nfisher23/iodemos">on Github</a>.</p>
-<p>A <a href="https://en.wikipedia.org/wiki/Zip_(file_format)">ZIP file format</a> is a compressed, lossless archive of files of files and/or directories. While the content being compressed will matter as to the algorithm's effectiveness, it is a common way to transfer files among peers, particularly on many windows machines.</p>
+<p>A <a href="https://en.wikipedia.org/wiki/Zip_(file_format)">ZIP file format</a> is a compressed, lossless archive of files of files and/or directories. While the content being compressed will matter as to the algorithm&rsquo;s effectiveness, it is a common way to transfer files among peers, particularly on many windows machines.</p>
 <p>Java provides an extension to the <code>FileOutputStream</code> called ZipOutputStream, which allows you to write data to a zip directory in the format described above.
-Here, we will write any text passed in to a single file (called &quot;some-single-file.txt&quot;) in a zip directory at <code>fullPath</code>. The zip directory will be overwritten if it already exists:</p>
+Here, we will write any text passed in to a single file (called &ldquo;some-single-file.txt&rdquo;) in a zip directory at <code>fullPath</code>. The zip directory will be overwritten if it already exists:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">writeAndZipText</span>(String fullPath, String textToWrite) <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span> (FileOutputStream fileOutputStream <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> FileOutputStream(fullPath)) {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">try</span> (ZipOutputStream zipOutputStream <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ZipOutputStream(fileOutputStream)) {
-</span></span><span style="display:flex;"><span>            ZipEntry zipEntry <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ZipEntry(<span style="color:#ff79c6">&amp;</span>#34;some<span style="color:#ff79c6">-</span>single<span style="color:#ff79c6">-</span>file.<span style="color:#50fa7b">txt</span><span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>            ZipEntry zipEntry <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ZipEntry(<span style="color:#f1fa8c">&#34;some-single-file.txt&#34;</span>);
 </span></span><span style="display:flex;"><span>            zipOutputStream.<span style="color:#50fa7b">putNextEntry</span>(zipEntry);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> charIndex <span style="color:#ff79c6">=</span> 0; charIndex <span style="color:#ff79c6">&amp;</span>lt; textToWrite.<span style="color:#50fa7b">length</span>(); charIndex<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> charIndex <span style="color:#ff79c6">=</span> 0; charIndex <span style="color:#ff79c6">&lt;</span> textToWrite.<span style="color:#50fa7b">length</span>(); charIndex<span style="color:#ff79c6">++</span>) {
 </span></span><span style="display:flex;"><span>                zipOutputStream.<span style="color:#50fa7b">write</span>(textToWrite.<span style="color:#50fa7b">charAt</span>(charIndex));
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>
@@ -175,7 +175,7 @@ Here, we will write any text passed in to a single file (called &quot;some-singl
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">private</span> String <span style="color:#50fa7b">readAllTextFromZip</span>(String fullPath) <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
 </span></span><span style="display:flex;"><span>    StringBuilder builder <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> StringBuilder();
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span> (ZipFile zipFile <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ZipFile(fullPath)) {
-</span></span><span style="display:flex;"><span>        Enumeration<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">?</span> <span style="color:#8be9fd;font-style:italic">extends</span> ZipEntry<span style="color:#ff79c6">&amp;</span>gt; what <span style="color:#ff79c6">=</span> zipFile.<span style="color:#50fa7b">entries</span>();
+</span></span><span style="display:flex;"><span>        Enumeration<span style="color:#ff79c6">&lt;?</span> <span style="color:#8be9fd;font-style:italic">extends</span> ZipEntry<span style="color:#ff79c6">&gt;</span> what <span style="color:#ff79c6">=</span> zipFile.<span style="color:#50fa7b">entries</span>();
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">while</span> (what.<span style="color:#50fa7b">hasMoreElements</span>()) {
 </span></span><span style="display:flex;"><span>            ZipEntry zipEntry <span style="color:#ff79c6">=</span> what.<span style="color:#50fa7b">nextElement</span>();
 </span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">try</span> (InputStream inputStream <span style="color:#ff79c6">=</span> zipFile.<span style="color:#50fa7b">getInputStream</span>(zipEntry)) {
@@ -190,8 +190,8 @@ Here, we will write any text passed in to a single file (called &quot;some-singl
 </span></span></code></pre></div><p>We can validate that this works as expected with a simple test:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Test
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">writeZip</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
-</span></span><span style="display:flex;"><span>    String pathToFile <span style="color:#ff79c6">=</span> Utils.<span style="color:#50fa7b">pathToResources</span> <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34;zip<span style="color:#ff79c6">-</span>output<span style="color:#ff79c6">-</span>ex.<span style="color:#50fa7b">zip</span><span style="color:#ff79c6">&amp;</span>#34;;
-</span></span><span style="display:flex;"><span>    String textToWrite <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;something to zip up<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>    String pathToFile <span style="color:#ff79c6">=</span> Utils.<span style="color:#50fa7b">pathToResources</span> <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;zip-output-ex.zip&#34;</span>;
+</span></span><span style="display:flex;"><span>    String textToWrite <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;something to zip up&#34;</span>;
 </span></span><span style="display:flex;"><span>    writeAndZipText(pathToFile, textToWrite);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    String allTextWritten <span style="color:#ff79c6">=</span> readAllTextFromZip(pathToFile);

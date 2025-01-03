@@ -13,7 +13,7 @@ This article will walk you through some of the more common commands and how to u
 
 ### Setting up the Test Suite
 
-We&#39;re going to build off of previous work where we [set up a redis test container to test lettuce](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux), and assuming you have cloned that project and are following along with the right dependencies, I will make a new test class that for now just creates the test container, configured a redis client against that container, and flushes \[removes in redis lingo\] all the data from redis after each test method runs:
+We're going to build off of previous work where we [set up a redis test container to test lettuce](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux), and assuming you have cloned that project and are following along with the right dependencies, I will make a new test class that for now just creates the test container, configured a redis client against that container, and flushes \[removes in redis lingo\] all the data from redis after each test method runs:
 
 ```java
 @Testcontainers
@@ -21,14 +21,14 @@ public class StringTypesTest {
 
     @Container
     public static GenericContainer genericContainer = new GenericContainer(
-            DockerImageName.parse(&#34;redis:5.0.3-alpine&#34;)
+            DockerImageName.parse("redis:5.0.3-alpine")
     ).withExposedPorts(6379);
 
     private RedisClient redisClient;
 
     @BeforeEach
     public void setupRedisClient() {
-        redisClient = RedisClient.create(&#34;redis://&#34; &#43; genericContainer.getHost() &#43; &#34;:&#34; &#43; genericContainer.getMappedPort(6379));
+        redisClient = RedisClient.create("redis://" + genericContainer.getHost() + ":" + genericContainer.getMappedPort(6379));
     }
 
     @AfterEach
@@ -48,55 +48,55 @@ This is straightforward:
 ```java
     @Test
     public void setAndGet() {
-        RedisReactiveCommands&lt;String, String&gt; redisReactiveCommands = redisClient.connect().reactive();
+        RedisReactiveCommands<String, String> redisReactiveCommands = redisClient.connect().reactive();
 
         // vanilla get and set
-        StepVerifier.create(redisReactiveCommands.set(&#34;some-key-1&#34;, &#34;some-value-1&#34;))
-                .expectNextMatches(response -&gt; &#34;OK&#34;.equals(response)).verifyComplete();
+        StepVerifier.create(redisReactiveCommands.set("some-key-1", "some-value-1"))
+                .expectNextMatches(response -> "OK".equals(response)).verifyComplete();
 
-        StepVerifier.create(redisReactiveCommands.get(&#34;some-key-1&#34;))
-                .expectNextMatches(response -&gt; &#34;some-value-1&#34;.equals(response))
+        StepVerifier.create(redisReactiveCommands.get("some-key-1"))
+                .expectNextMatches(response -> "some-value-1".equals(response))
                 .verifyComplete();
 
-        // adding an additional argument like nx will cause it to return nothing if it doesn&#39;t get set
-        StepVerifier.create(redisReactiveCommands.set(&#34;some-key-1&#34;, &#34;some-value-2&#34;, new SetArgs().nx()))
+        // adding an additional argument like nx will cause it to return nothing if it doesn't get set
+        StepVerifier.create(redisReactiveCommands.set("some-key-1", "some-value-2", new SetArgs().nx()))
                 .verifyComplete();
 
         // prove the value is the same
-        StepVerifier.create(redisReactiveCommands.get(&#34;some-key-1&#34;))
-                .expectNextMatches(response -&gt; &#34;some-value-1&#34;.equals(response))
+        StepVerifier.create(redisReactiveCommands.get("some-key-1"))
+                .expectNextMatches(response -> "some-value-1".equals(response))
                 .verifyComplete();
     }
 
 ```
 
-We set **some-key-1** to have **some-value-1**, and verify it&#39;s there. We then use the NX argument, which only sets the value if it doesn&#39;t exist. We then verify that, because the key was just set, it is not overwritten, by getting it again and asserting the value
+We set **some-key-1** to have **some-value-1**, and verify it's there. We then use the NX argument, which only sets the value if it doesn't exist. We then verify that, because the key was just set, it is not overwritten, by getting it again and asserting the value
 
 ### Set NX and Set EX
 
-If we don&#39;t like that interface of adding an additional argument for set nx, set ex, etc., then lettuce does provide a slightly more intuitive interface:
+If we don't like that interface of adding an additional argument for set nx, set ex, etc., then lettuce does provide a slightly more intuitive interface:
 
 ```java
     @Test
     public void setNx() throws Exception {
-        RedisReactiveCommands&lt;String, String&gt; redisReactiveCommands = redisClient.connect().reactive();
+        RedisReactiveCommands<String, String> redisReactiveCommands = redisClient.connect().reactive();
 
-        StepVerifier.create(redisReactiveCommands.setnx(&#34;key-1&#34;, &#34;value-1&#34;))
-                .expectNextMatches(success -&gt; success)
+        StepVerifier.create(redisReactiveCommands.setnx("key-1", "value-1"))
+                .expectNextMatches(success -> success)
                 .verifyComplete();
 
-        StepVerifier.create(redisReactiveCommands.setnx(&#34;key-1&#34;, &#34;value-2&#34;))
-                .expectNextMatches(success -&gt; !success)
+        StepVerifier.create(redisReactiveCommands.setnx("key-1", "value-2"))
+                .expectNextMatches(success -> !success)
                 .verifyComplete();
 
-        StepVerifier.create(redisReactiveCommands.setex(&#34;key-1&#34;, 1, &#34;value-1&#34;))
-                .expectNextMatches(response -&gt; &#34;OK&#34;.equals(response))
+        StepVerifier.create(redisReactiveCommands.setex("key-1", 1, "value-1"))
+                .expectNextMatches(response -> "OK".equals(response))
                 .verifyComplete();
 
         // key-1 expires in 1 second
         Thread.sleep(1500);
 
-        StepVerifier.create(redisReactiveCommands.get(&#34;key-1&#34;))
+        StepVerifier.create(redisReactiveCommands.get("key-1"))
                 // no value
                 .verifyComplete();
     }
@@ -112,20 +112,20 @@ We show that trying to set a value that already exists with the nx option fails,
 ```java
     @Test
     public void append() {
-        RedisReactiveCommands&lt;String, String&gt; redisReactiveCommands = redisClient.connect().reactive();
+        RedisReactiveCommands<String, String> redisReactiveCommands = redisClient.connect().reactive();
 
-        StepVerifier.create(redisReactiveCommands.set(&#34;key-10&#34;, &#34;value-10&#34;))
-                .expectNextMatches(response -&gt; &#34;OK&#34;.equals(response))
+        StepVerifier.create(redisReactiveCommands.set("key-10", "value-10"))
+                .expectNextMatches(response -> "OK".equals(response))
                 .verifyComplete();
 
-        StepVerifier.create(redisReactiveCommands.append(&#34;key-10&#34;, &#34;-more-stuff&#34;))
+        StepVerifier.create(redisReactiveCommands.append("key-10", "-more-stuff"))
                 // length of new value is returned
-                .expectNextMatches(response -&gt; 19L == response)
+                .expectNextMatches(response -> 19L == response)
                 .verifyComplete();
 
-        StepVerifier.create(redisReactiveCommands.get(&#34;key-10&#34;))
-                .expectNextMatches(response -&gt;
-                        &#34;value-10-more-stuff&#34;.equals(response))
+        StepVerifier.create(redisReactiveCommands.get("key-10"))
+                .expectNextMatches(response ->
+                        "value-10-more-stuff".equals(response))
                 .verifyComplete();
     }
 
@@ -140,20 +140,20 @@ We set a key to work with, then append **-more-stuff** to the value, then assert
 ```java
     @Test
     public void incrBy() {
-        RedisReactiveCommands&lt;String, String&gt; redisReactiveCommands = redisClient.connect().reactive();
+        RedisReactiveCommands<String, String> redisReactiveCommands = redisClient.connect().reactive();
 
-        StepVerifier.create(redisReactiveCommands.set(&#34;key-counter&#34;, &#34;7&#34;))
-                .expectNextMatches(response -&gt; &#34;OK&#34;.equals(response))
+        StepVerifier.create(redisReactiveCommands.set("key-counter", "7"))
+                .expectNextMatches(response -> "OK".equals(response))
                 .verifyComplete();
 
-        StepVerifier.create(redisReactiveCommands.incrby(&#34;key-counter&#34;, 8L))
-                .expectNextMatches(val -&gt; 15 == val)
+        StepVerifier.create(redisReactiveCommands.incrby("key-counter", 8L))
+                .expectNextMatches(val -> 15 == val)
                 .verifyComplete();
     }
 
 ```
 
-Here, we assert exactly that, 7 &#43; 8 is indeed 15 and it is returned to us by redis.
+Here, we assert exactly that, 7 + 8 is indeed 15 and it is returned to us by redis.
 
 ### MGET and MSET
 
@@ -162,24 +162,24 @@ Here, we assert exactly that, 7 &#43; 8 is indeed 15 and it is returned to us by
 ```java
     @Test
     public void mget() {
-        RedisReactiveCommands&lt;String, String&gt; redisReactiveCommands = redisClient.connect().reactive();
+        RedisReactiveCommands<String, String> redisReactiveCommands = redisClient.connect().reactive();
 
         StepVerifier.create(redisReactiveCommands.mset(Map.of(
-                &#34;key-1&#34;, &#34;val-1&#34;,
-                &#34;key-2&#34;, &#34;val-2&#34;,
-                &#34;key-3&#34;, &#34;val-3&#34;
+                "key-1", "val-1",
+                "key-2", "val-2",
+                "key-3", "val-3"
         )))
-                .expectNextMatches(response -&gt; &#34;OK&#34;.equals(response))
+                .expectNextMatches(response -> "OK".equals(response))
                 .verifyComplete();
 
-        Flux&lt;KeyValue&lt;String, String&gt;&gt; mgetValuesFlux = redisReactiveCommands.mget(&#34;key-1&#34;, &#34;key-2&#34;, &#34;key-3&#34;);
+        Flux<KeyValue<String, String>> mgetValuesFlux = redisReactiveCommands.mget("key-1", "key-2", "key-3");
         StepVerifier.create(mgetValuesFlux.collectList())
-                .expectNextMatches(collectedValues -&gt;
+                .expectNextMatches(collectedValues ->
                         collectedValues.size() == 3
                             &amp;&amp; collectedValues.stream()
-                                .anyMatch(stringStringKeyValue -&gt;
-                                        stringStringKeyValue.getKey().equals(&#34;key-1&#34;)
-                                                &amp;&amp; stringStringKeyValue.getValue().equals(&#34;val-1&#34;)
+                                .anyMatch(stringStringKeyValue ->
+                                        stringStringKeyValue.getKey().equals("key-1")
+                                                &amp;&amp; stringStringKeyValue.getValue().equals("val-1")
                                 )
                 )
                 .verifyComplete();

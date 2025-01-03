@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="The source code for this post can be found on Github.
-The latest AWS SDK for java uses a reactive client to send requests to various AWS services, including DynamoDB. Reactive programming is ultimately more robust at the edges&ndash;once you start experiencing latency anywhere in your stack, if your tech is not reactive, you&#39;re going to have a significantly worse time than if it were."
+The latest AWS SDK for java uses a reactive client to send requests to various AWS services, including DynamoDB. Reactive programming is ultimately more robust at the edges&ndash;once you start experiencing latency anywhere in your stack, if your tech is not reactive, you&rsquo;re going to have a significantly worse time than if it were."
 />
 <link rel="canonical" href="http://localhost:1313/blog/dynamodb-and-spring-boot-webflux-a-working-introduction/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,83 +154,83 @@ The latest AWS SDK for java uses a reactive client to send requests to various A
   
 
   <section><p>The source code for this post <a href="https://github.com/nfisher23/webflux-and-dynamo">can be found on Github</a>.</p>
-<p>The <a href="https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/welcome.html">latest AWS SDK for java</a> uses a reactive client to send requests to various AWS services, including DynamoDB. Reactive programming is ultimately more robust at the edges&ndash;once you start experiencing latency anywhere in your stack, if your tech is not reactive, you're going to have a significantly worse time than if it were.</p>
+<p>The <a href="https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/welcome.html">latest AWS SDK for java</a> uses a reactive client to send requests to various AWS services, including DynamoDB. Reactive programming is ultimately more robust at the edges&ndash;once you start experiencing latency anywhere in your stack, if your tech is not reactive, you&rsquo;re going to have a significantly worse time than if it were.</p>
 <p>This post was an experiment to get dynamo and spring boot webflux to play nice with each other.</p>
 <h2 id="bootstrap-the-project">Bootstrap the Project</h2>
 <p>If you go to <a href="https://start.spring.io/">the sprint boot initializr</a> and create a new project with the reactive web option, you can then setup your maven dependencies to look something like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>&amp;lt;?xml version=&amp;#34;1.0&amp;#34; encoding=&amp;#34;UTF-8&amp;#34;?&amp;gt;
-</span></span><span style="display:flex;"><span>&amp;lt;project xmlns=&amp;#34;http://maven.apache.org/POM/4.0.0&amp;#34; xmlns:xsi=&amp;#34;http://www.w3.org/2001/XMLSchema-instance&amp;#34;
-</span></span><span style="display:flex;"><span>         xsi:schemaLocation=&amp;#34;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&amp;#34;&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;modelVersion&amp;gt;4.0.0&amp;lt;/modelVersion&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;parent&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;artifactId&amp;gt;spring-boot-starter-parent&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;version&amp;gt;2.3.1.RELEASE&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;relativePath/&amp;gt; &amp;lt;!-- lookup parent from repository --&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/parent&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;groupId&amp;gt;com.nickolasfisher&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;artifactId&amp;gt;reactivedynamo&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;version&amp;gt;1&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;name&amp;gt;reactivedynamo&amp;lt;/name&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;description&amp;gt;Reactive Dynamo Tinkering&amp;lt;/description&amp;gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#ff79c6">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;project</span> <span style="color:#50fa7b">xmlns=</span><span style="color:#f1fa8c">&#34;http://maven.apache.org/POM/4.0.0&#34;</span> <span style="color:#50fa7b">xmlns:xsi=</span><span style="color:#f1fa8c">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#50fa7b">xsi:schemaLocation=</span><span style="color:#f1fa8c">&#34;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span style="color:#ff79c6">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;modelVersion&gt;</span>4.0.0<span style="color:#ff79c6">&lt;/modelVersion&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;parent&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-boot-starter-parent<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;version&gt;</span>2.3.1.RELEASE<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;relativePath/&gt;</span> <span style="color:#6272a4">&lt;!-- lookup parent from repository --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/parent&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;groupId&gt;</span>com.nickolasfisher<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;artifactId&gt;</span>reactivedynamo<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;version&gt;</span>1<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;name&gt;</span>reactivedynamo<span style="color:#ff79c6">&lt;/name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;description&gt;</span>Reactive Dynamo Tinkering<span style="color:#ff79c6">&lt;/description&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    &amp;lt;properties&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;java.version&amp;gt;11&amp;lt;/java.version&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/properties&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;dependencyManagement&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;dependencies&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;groupId&amp;gt;software.amazon.awssdk&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;artifactId&amp;gt;bom&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;version&amp;gt;2.13.7&amp;lt;/version&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;type&amp;gt;pom&amp;lt;/type&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;scope&amp;gt;import&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependencies&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/dependencyManagement&amp;gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;properties&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;java.version&gt;</span>11<span style="color:#ff79c6">&lt;/java.version&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/properties&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;dependencyManagement&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;groupId&gt;</span>software.amazon.awssdk<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;artifactId&gt;</span>bom<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;version&gt;</span>2.13.7<span style="color:#ff79c6">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;type&gt;</span>pom<span style="color:#ff79c6">&lt;/type&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;scope&gt;</span>import<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/dependencyManagement&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    &amp;lt;dependencies&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;spring-boot-starter-actuator&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;spring-boot-starter-webflux&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-boot-starter-actuator<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-boot-starter-webflux<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;software.amazon.awssdk&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;dynamodb&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;spring-boot-starter-test&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;exclusions&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;exclusion&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;groupId&amp;gt;org.junit.vintage&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>                    &amp;lt;artifactId&amp;gt;junit-vintage-engine&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;/exclusion&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;/exclusions&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;io.projectreactor&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;reactor-test&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/dependencies&amp;gt;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>software.amazon.awssdk<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>dynamodb<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-boot-starter-test<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;scope&gt;</span>test<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;exclusions&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;exclusion&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;groupId&gt;</span>org.junit.vintage<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&lt;artifactId&gt;</span>junit-vintage-engine<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;/exclusion&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;/exclusions&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;groupId&gt;</span>io.projectreactor<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;artifactId&gt;</span>reactor-test<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;scope&gt;</span>test<span style="color:#ff79c6">&lt;/scope&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/dependencies&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    &amp;lt;build&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;plugins&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;plugin&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-</span></span><span style="display:flex;"><span>                &amp;lt;artifactId&amp;gt;spring-boot-maven-plugin&amp;lt;/artifactId&amp;gt;
-</span></span><span style="display:flex;"><span>            &amp;lt;/plugin&amp;gt;
-</span></span><span style="display:flex;"><span>        &amp;lt;/plugins&amp;gt;
-</span></span><span style="display:flex;"><span>    &amp;lt;/build&amp;gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;build&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;plugins&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;plugin&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&lt;/plugin&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&lt;/plugins&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;/build&gt;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>&amp;lt;/project&amp;gt;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/project&gt;</span>
 </span></span></code></pre></div><p>The two important dependencies here are v2 of the AWS SDK and spring webflux.</p>
 <p>You will want to set up your local DynamoDB environment, you can refer to <a href="https://nickolasfisher.com/blog/DynamoDB-Basics-A-Hands-On-Tutorial">a previous post I created on that subject to help you out there</a>, and we can then configure our AWS SDK to point to that for the purposes of this tutorial:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Configuration
@@ -240,31 +240,31 @@ The latest AWS SDK for java uses a reactive client to send requests to various A
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> DynamoDbAsyncClient <span style="color:#50fa7b">dynamoDbAsyncClient</span>() {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> DynamoDbAsyncClient.<span style="color:#50fa7b">builder</span>()
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">credentialsProvider</span>(StaticCredentialsProvider.<span style="color:#50fa7b">create</span>(
-</span></span><span style="display:flex;"><span>                        AwsBasicCredentials.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;)))
+</span></span><span style="display:flex;"><span>                        AwsBasicCredentials.<span style="color:#50fa7b">create</span>(<span style="color:#f1fa8c">&#34;FAKE&#34;</span>, <span style="color:#f1fa8c">&#34;FAKE&#34;</span>)))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">region</span>(Region.<span style="color:#50fa7b">US_WEST_2</span>)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">endpointOverride</span>(URI.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:8000&amp;#34;))</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">endpointOverride</span>(URI.<span style="color:#50fa7b">create</span>(<span style="color:#f1fa8c">&#34;http://localhost:8000&#34;</span>))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p><strong>Important Note:</strong> the AWS credentials and region in this config need to match the credentials that were set when you created your DynamoDB table to work with locally. The local DynamoDB container actually cares about them and will say that a table is not found if the credentials do not match.</p>
-<p>Continuing with the last post, we're going to reuse the <strong>Phones</strong> table, which has a partition key that was <strong>Company</strong> and a range key of <strong>Model</strong>. So we have to provide at least that information in a put request to Dynamo to get the data persisted.</p>
+<p>Continuing with the last post, we&rsquo;re going to reuse the <strong>Phones</strong> table, which has a partition key that was <strong>Company</strong> and a range key of <strong>Model</strong>. So we have to provide at least that information in a put request to Dynamo to get the data persisted.</p>
 <p>Our data model in spring boot is pretty straightforward. This generic template, including types:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    &amp;#34;Company&amp;#34;: {
-</span></span><span style="display:flex;"><span>        &amp;#34;S&amp;#34;: &amp;#34;%s&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;Company&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;S&#34;</span>: <span style="color:#f1fa8c">&#34;%s&#34;</span>
 </span></span><span style="display:flex;"><span>    },
-</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;Model&amp;#<span style="color:#bd93f9">34</span>;: {
-</span></span><span style="display:flex;"><span>        &amp;#34;S&amp;#34;: &amp;#34;%s&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;Model&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;S&#34;</span>: <span style="color:#f1fa8c">&#34;%s&#34;</span>
 </span></span><span style="display:flex;"><span>    },
-</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;Colors&amp;#<span style="color:#bd93f9">34</span>;: {
-</span></span><span style="display:flex;"><span>        &amp;#34;SS&amp;#34;: [
-</span></span><span style="display:flex;"><span>            &amp;#34;Green&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;Blue&amp;#34;,
-</span></span><span style="display:flex;"><span>            &amp;#34;Orange&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;Colors&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;SS&#34;</span>: [
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#34;Green&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#34;Blue&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#34;Orange&#34;</span>
 </span></span><span style="display:flex;"><span>        ]
 </span></span><span style="display:flex;"><span>    },
-</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;Size&amp;#<span style="color:#bd93f9">34</span>;: {
-</span></span><span style="display:flex;"><span>        &amp;#34;N&amp;#34;: &amp;#34;%s&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;Size&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&#34;N&#34;</span>: <span style="color:#f1fa8c">&#34;%s&#34;</span>
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Can be pretty easily digested into a POJO:</p>
@@ -273,21 +273,21 @@ The latest AWS SDK for java uses a reactive client to send requests to various A
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Phone</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> String company;
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> String model;
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> List<span style="color:#ff79c6">&amp;</span>lt;String<span style="color:#ff79c6">&amp;</span>gt; colors;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> colors;
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> Integer size;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>... getters and setters ...
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>I elected to use handlers rather than using the more familiar Spring Boot annotations. The biggest issue I had was that I could not find a clean way to customize the response code [Edit: I figured it out like twenty minutes after I wrote this, <a href="https://nickolasfisher.com/blog/How-to-Return-a-Response-Entity-in-Spring-Boot-Webflux">here's the follow up blog post</a>]. Here is some code that creates (PUTs) a new item and also allows you to read an item by the company and model name:</p>
+</span></span></code></pre></div><p>I elected to use handlers rather than using the more familiar Spring Boot annotations. The biggest issue I had was that I could not find a clean way to customize the response code [Edit: I figured it out like twenty minutes after I wrote this, <a href="https://nickolasfisher.com/blog/How-to-Return-a-Response-Entity-in-Spring-Boot-Webflux">here&rsquo;s the follow up blog post</a>]. Here is some code that creates (PUTs) a new item and also allows you to read an item by the company and model name:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Component
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">PhoneHandler</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String PHONES_TABLENAME <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;Phones<span style="color:#ff79c6">&amp;</span>#34;;
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String COMPANY <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;Company<span style="color:#ff79c6">&amp;</span>#34;;
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String MODEL <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;Model<span style="color:#ff79c6">&amp;</span>#34;;
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String COLORS <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;Colors<span style="color:#ff79c6">&amp;</span>#34;;
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String SIZE <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;Size<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String PHONES_TABLENAME <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;Phones&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String COMPANY <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;Company&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String MODEL <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;Model&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String COLORS <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;Colors&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String SIZE <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;Size&#34;</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> DynamoDbAsyncClient dynamoDbAsyncClient;
 </span></span><span style="display:flex;"><span>
@@ -295,9 +295,9 @@ The latest AWS SDK for java uses a reactive client to send requests to various A
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">dynamoDbAsyncClient</span> <span style="color:#ff79c6">=</span> dynamoDbAsyncClient;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;ServerResponse<span style="color:#ff79c6">&amp;</span>gt; createPhoneHandler(ServerRequest serverRequest) {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> serverRequest.<span style="color:#50fa7b">bodyToMono</span>(Phone.<span style="color:#50fa7b">class</span>).<span style="color:#50fa7b">flatMap</span>(phone <span style="color:#ff79c6">-&amp;</span>gt; {
-</span></span><span style="display:flex;"><span>            Map<span style="color:#ff79c6">&amp;</span>lt;String, AttributeValue<span style="color:#ff79c6">&amp;</span>gt; item <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> HashMap<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">&amp;</span>gt;();
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>ServerResponse<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">createPhoneHandler</span>(ServerRequest serverRequest) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> serverRequest.<span style="color:#50fa7b">bodyToMono</span>(Phone.<span style="color:#50fa7b">class</span>).<span style="color:#50fa7b">flatMap</span>(phone <span style="color:#ff79c6">-&gt;</span> {
+</span></span><span style="display:flex;"><span>            Map<span style="color:#ff79c6">&lt;</span>String, AttributeValue<span style="color:#ff79c6">&gt;</span> item <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> HashMap<span style="color:#ff79c6">&lt;&gt;</span>();
 </span></span><span style="display:flex;"><span>            item.<span style="color:#50fa7b">put</span>(COMPANY, AttributeValue.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">s</span>(phone.<span style="color:#50fa7b">getCompany</span>()).<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>            item.<span style="color:#50fa7b">put</span>(MODEL, AttributeValue.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">s</span>(phone.<span style="color:#50fa7b">getModel</span>()).<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>            item.<span style="color:#50fa7b">put</span>(COLORS, AttributeValue.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">ss</span>(phone.<span style="color:#50fa7b">getColors</span>()).<span style="color:#50fa7b">build</span>());
@@ -308,15 +308,15 @@ The latest AWS SDK for java uses a reactive client to send requests to various A
 </span></span><span style="display:flex;"><span>            PutItemRequest putItemRequest <span style="color:#ff79c6">=</span> PutItemRequest.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">tableName</span>(PHONES_TABLENAME).<span style="color:#50fa7b">item</span>(item).<span style="color:#50fa7b">build</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">fromCompletionStage</span>(dynamoDbAsyncClient.<span style="color:#50fa7b">putItem</span>(putItemRequest))
-</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">flatMap</span>(putItemResponse <span style="color:#ff79c6">-&amp;</span>gt; ServerResponse.<span style="color:#50fa7b">ok</span>().<span style="color:#50fa7b">build</span>());
+</span></span><span style="display:flex;"><span>                    .<span style="color:#50fa7b">flatMap</span>(putItemResponse <span style="color:#ff79c6">-&gt;</span> ServerResponse.<span style="color:#50fa7b">ok</span>().<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>        });
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;ServerResponse<span style="color:#ff79c6">&amp;</span>gt; getSinglePhoneHandler(ServerRequest serverRequest) {
-</span></span><span style="display:flex;"><span>        String companyName <span style="color:#ff79c6">=</span> serverRequest.<span style="color:#50fa7b">pathVariable</span>(<span style="color:#ff79c6">&amp;</span>#34;company<span style="color:#ff79c6">-</span>name<span style="color:#ff79c6">&amp;</span>#34;);
-</span></span><span style="display:flex;"><span>        String modelName <span style="color:#ff79c6">=</span> serverRequest.<span style="color:#50fa7b">pathVariable</span>(<span style="color:#ff79c6">&amp;</span>#34;model<span style="color:#ff79c6">-</span>name<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;</span>ServerResponse<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">getSinglePhoneHandler</span>(ServerRequest serverRequest) {
+</span></span><span style="display:flex;"><span>        String companyName <span style="color:#ff79c6">=</span> serverRequest.<span style="color:#50fa7b">pathVariable</span>(<span style="color:#f1fa8c">&#34;company-name&#34;</span>);
+</span></span><span style="display:flex;"><span>        String modelName <span style="color:#ff79c6">=</span> serverRequest.<span style="color:#50fa7b">pathVariable</span>(<span style="color:#f1fa8c">&#34;model-name&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Map<span style="color:#ff79c6">&amp;</span>lt;String, AttributeValue<span style="color:#ff79c6">&amp;</span>gt; getSinglePhoneItemRequest <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> HashMap<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">&amp;</span>gt;();
+</span></span><span style="display:flex;"><span>        Map<span style="color:#ff79c6">&lt;</span>String, AttributeValue<span style="color:#ff79c6">&gt;</span> getSinglePhoneItemRequest <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> HashMap<span style="color:#ff79c6">&lt;&gt;</span>();
 </span></span><span style="display:flex;"><span>        getSinglePhoneItemRequest.<span style="color:#50fa7b">put</span>(COMPANY, AttributeValue.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">s</span>(companyName).<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>        getSinglePhoneItemRequest.<span style="color:#50fa7b">put</span>(MODEL, AttributeValue.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">s</span>(modelName).<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>        GetItemRequest getItemRequest <span style="color:#ff79c6">=</span> GetItemRequest.<span style="color:#50fa7b">builder</span>()
@@ -324,9 +324,9 @@ The latest AWS SDK for java uses a reactive client to send requests to various A
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">key</span>(getSinglePhoneItemRequest)
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        CompletableFuture<span style="color:#ff79c6">&amp;</span>lt;GetItemResponse<span style="color:#ff79c6">&amp;</span>gt; item <span style="color:#ff79c6">=</span> dynamoDbAsyncClient.<span style="color:#50fa7b">getItem</span>(getItemRequest);
+</span></span><span style="display:flex;"><span>        CompletableFuture<span style="color:#ff79c6">&lt;</span>GetItemResponse<span style="color:#ff79c6">&gt;</span> item <span style="color:#ff79c6">=</span> dynamoDbAsyncClient.<span style="color:#50fa7b">getItem</span>(getItemRequest);
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">fromCompletionStage</span>(item)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">flatMap</span>(getItemResponse <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">flatMap</span>(getItemResponse <span style="color:#ff79c6">-&gt;</span> {
 </span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>getItemResponse.<span style="color:#50fa7b">hasItem</span>()) {
 </span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> ServerResponse.<span style="color:#50fa7b">notFound</span>().<span style="color:#50fa7b">build</span>();
 </span></span><span style="display:flex;"><span>                    }
@@ -344,35 +344,35 @@ The latest AWS SDK for java uses a reactive client to send requests to various A
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Handlers are pretty straightforward, they just take a request interface and respond with a response interface wrapped in a Mono. To actually make use of these we will have to register some more code to map a route to the function [I put this back in <strong>Config.java</strong>]:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Bean
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> RouterFunction<span style="color:#ff79c6">&amp;</span>lt;ServerResponse<span style="color:#ff79c6">&amp;</span>gt; getPhoneRoutes(PhoneHandler phoneHandler) {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> route(RequestPredicates.<span style="color:#50fa7b">PUT</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>phone<span style="color:#ff79c6">&amp;</span>#34;), phoneHandler::createPhoneHandler)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">andRoute</span>(RequestPredicates.<span style="color:#50fa7b">GET</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>company<span style="color:#ff79c6">/</span>{company<span style="color:#ff79c6">-</span>name}<span style="color:#ff79c6">/</span>model<span style="color:#ff79c6">/</span>{model<span style="color:#ff79c6">-</span>name}<span style="color:#ff79c6">/</span>phone<span style="color:#ff79c6">&amp;</span>#34;), phoneHandler::getSinglePhoneHandler);
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> RouterFunction<span style="color:#ff79c6">&lt;</span>ServerResponse<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">getPhoneRoutes</span>(PhoneHandler phoneHandler) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> route(RequestPredicates.<span style="color:#50fa7b">PUT</span>(<span style="color:#f1fa8c">&#34;/phone&#34;</span>), phoneHandler::createPhoneHandler)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">andRoute</span>(RequestPredicates.<span style="color:#50fa7b">GET</span>(<span style="color:#f1fa8c">&#34;/company/{company-name}/model/{model-name}/phone&#34;</span>), phoneHandler::getSinglePhoneHandler);
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>Finally, if you start up the application, then run a bit of bash to test it you should be able to see it in action:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#ff79c6">#!/bin/bash
-</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span><span style="color:#8be9fd;font-style:italic">PHONE_TEMPLATE</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>cat &amp;lt;&amp;lt;&amp;<span style="color:#6272a4">#39;EOF&amp;#39;</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>
-</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;company&amp;#34;: &amp;#34;Nokia&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;model&amp;#34;: &amp;#34;1998 dumb phone&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;colors&amp;#34;: [</span>
-</span></span><span style="display:flex;"><span>        &amp;<span style="color:#6272a4">#34;Red&amp;#34;,</span>
-</span></span><span style="display:flex;"><span>        &amp;<span style="color:#6272a4">#34;Silver&amp;#34;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">]</span>,
-</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;size&amp;#34;: 19</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
-</span></span><span style="display:flex;"><span>EOF
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span><span style="color:#8be9fd;font-style:italic">PHONE_TEMPLATE</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>cat <span style="color:#f1fa8c">&lt;&lt;&#39;EOF&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">{
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    &#34;company&#34;: &#34;Nokia&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    &#34;model&#34;: &#34;1998 dumb phone&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    &#34;colors&#34;: [
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        &#34;Red&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        &#34;Silver&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    ],
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    &#34;size&#34;: 19
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">}
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">EOF</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">)</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">NOKIA</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span><span style="color:#8be9fd;font-style:italic">printf</span> &amp;<span style="color:#6272a4">#34;$PHONE_TEMPLATE&amp;#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">NOKIA</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span><span style="color:#8be9fd;font-style:italic">printf</span> <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$PHONE_TEMPLATE</span><span style="color:#f1fa8c">&#34;</span><span style="color:#ff79c6">)</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># create a new object using the template defined above</span>
-</span></span><span style="display:flex;"><span>curl -v -XPUT localhost:8080/phone -H &amp;<span style="color:#6272a4">#34;Content-Type: application/json&amp;#34; --data &amp;#34;$NOKIA&amp;#34;</span>
+</span></span><span style="display:flex;"><span>curl -v -XPUT localhost:8080/phone -H <span style="color:#f1fa8c">&#34;Content-Type: application/json&#34;</span> --data <span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$NOKIA</span><span style="color:#f1fa8c">&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># view the object</span>
-</span></span><span style="display:flex;"><span>curl -v -XGET &amp;<span style="color:#6272a4">#34;http://localhost:8080/company/Nokia/model/1998%20dumb%20phone/phone&amp;#34;</span>
+</span></span><span style="display:flex;"><span>curl -v -XGET <span style="color:#f1fa8c">&#34;http://localhost:8080/company/Nokia/model/1998%20dumb%20phone/phone&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#6272a4"># you should see a 404 here, the object does not exist:</span>
-</span></span><span style="display:flex;"><span>curl -v -XGET &amp;<span style="color:#6272a4">#34;http://localhost:8080/company/Nokia/model/not-real/phone&amp;#34;</span>
+</span></span><span style="display:flex;"><span>curl -v -XGET <span style="color:#f1fa8c">&#34;http://localhost:8080/company/Nokia/model/not-real/phone&#34;</span>
 </span></span></code></pre></div><p>And with that, you should be in a good place to start.</p>
 </section>
 

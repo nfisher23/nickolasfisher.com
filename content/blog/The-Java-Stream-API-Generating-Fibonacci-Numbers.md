@@ -9,12 +9,12 @@ You can find the sample code for this post [on GitHub](https://github.com/nfishe
 
 From the knowledge gained via [creating custom Java Stream objects](https://nickolasfisher.com/blog/The-Java-Stream-API-Creating-Custom-Lazy-Infinite-Streams), we can start
 to have a little bit of fun with this. The fibonacci number sequence starts with \[0, 1\], and adds each of the previous two elements to create the next element in the sequence.
-This looks like \[0, 1, 1, 2, 3, 5, 8, 13, 21...\], and goes on &#34;forever.&#34; We can thus create a template that computes all Fibonacci numbers by implementing a Supplier&lt;T&gt;. like so:
+This looks like \[0, 1, 1, 2, 3, 5, 8, 13, 21...\], and goes on "forever." We can thus create a template that computes all Fibonacci numbers by implementing a Supplier<T>. like so:
 
 ```java
 import java.util.function.Supplier;
 
-public class SupplyFibonacci implements Supplier&lt;Integer&gt; {
+public class SupplyFibonacci implements Supplier<Integer> {
 
     private int[] lastTwoFibs = {0, 1};
 
@@ -33,7 +33,7 @@ public class SupplyFibonacci implements Supplier&lt;Integer&gt; {
             return 1;
         }
 
-        int nextFib = lastTwoFibs[0] &#43; lastTwoFibs[1];
+        int nextFib = lastTwoFibs[0] + lastTwoFibs[1];
         lastTwoFibs[0] = lastTwoFibs[1];
         lastTwoFibs[1] = nextFib;
         return nextFib;
@@ -47,7 +47,7 @@ Which we can validate like so:
 ```java
     @Test
     public void validate_fibonacci() {
-        List&lt;Integer&gt; tenFibs = Stream.generate(new SupplyFibonacci()).limit(10).collect(Collectors.toList());
+        List<Integer> tenFibs = Stream.generate(new SupplyFibonacci()).limit(10).collect(Collectors.toList());
 
         assertEquals(0,tenFibs.get(0).intValue());
         assertEquals(1,tenFibs.get(1).intValue());

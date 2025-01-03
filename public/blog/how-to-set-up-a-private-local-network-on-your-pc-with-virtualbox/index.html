@@ -9,8 +9,8 @@
 <meta
   name="description"
   content="While you can always spin up a Digital Ocean or Linode Virtual Private Server to toy around with,
-that both costs money (pennies, at most a dollar or two, admittedly) and isn&#39;t an extremely fast feedback loop for server provisioning. What we really want, as developers, is a way to test out an idea, see its feasibility, and preferably
-tinker with that idea until it&#39;s solid."
+that both costs money (pennies, at most a dollar or two, admittedly) and isn&rsquo;t an extremely fast feedback loop for server provisioning. What we really want, as developers, is a way to test out an idea, see its feasibility, and preferably
+tinker with that idea until it&rsquo;s solid."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-set-up-a-private-local-network-on-your-pc-with-virtualbox/" />
 <link rel="robots" href="/robots.txt" />
@@ -155,22 +155,22 @@ tinker with that idea until it&#39;s solid."
   
 
   <section><p>While you can always spin up a <a href="https://www.digitalocean.com/">Digital Ocean</a> or <a href="https://www.linode.com/">Linode</a> Virtual Private Server to toy around with,
-that both costs money (pennies, at most a dollar or two, admittedly) and isn't an extremely fast feedback loop for server provisioning. What we really want, as developers, is a way to test out an idea, see its feasibility, and preferably
-tinker with that idea until it's solid.</p>
+that both costs money (pennies, at most a dollar or two, admittedly) and isn&rsquo;t an extremely fast feedback loop for server provisioning. What we really want, as developers, is a way to test out an idea, see its feasibility, and preferably
+tinker with that idea until it&rsquo;s solid.</p>
 <p>The goal can be summed up with an example: say we have a chunk of distributed microservices across various machines, and to debug, to date, we have had to go onto each machine and manually inspect the logs for that particular microservice. If there are multiple microservices, we might have to look in three or four different places for log information to track down the problem. So, we say to ourselves, we want to aggregate our logs into one place to save time, monitor security abnormalities, and track down any problems before they become big problems. After researching a bit, we realize that <a href="https://www.elastic.co/products">The Elastic Stack</a> is the best option for us moving forward.</p>
 <p>The Elastic Stack has three principle components: Elasticsearch, Logstash, and Kibana (ELK). There are other things that interact with these core applications as well, and the big point to all of it is that it is distributed. Elasticsearch is a distributed data store and the microservices whose logs we want to aggregate are obviously already distributed.
 How are we going to prove that this can actually work without having multiple machines interacting with each other? Rephrased in a software developers automatic vocabulary,
 how can we <em>quickly</em> and <em>cheaply</em> prove that this will actually work? We need a place
 to toy around with these applications, and shorten our feedback loop as tightly as possible.</p>
-<p>One way, as mentioned above, was to spin up some DO or Linode VPS's and do our tinkering on there. Another option is to use <a href="https://www.virtualbox.org/">VirtualBox</a> to create local,
+<p>One way, as mentioned above, was to spin up some DO or Linode VPS&rsquo;s and do our tinkering on there. Another option is to use <a href="https://www.virtualbox.org/">VirtualBox</a> to create local,
 virtual machines, and configure them to accept connections just like a virtual private server in the cloud would. That is the subject of this tutorial (the next step, and the subject of the next post, is to <a href="https://nickolasfisher.com/blog/How-to-Simulate-Distributed-Systems-in-the-Cloud-with-Vagrant">use Vagrant</a>. <strong>Vagrant is awesome</strong>.)</p>
 <h3 id="prerequisites">Prerequisites</h3>
-<p>Download virtual box, and <a href="https://www.ubuntu.com/download/server">download the latest ubuntu server</a>. The version we'll use for this tutorial is 18.04 LTS. Then, you can follow this <a href="https://ilearnstack.com/2013/04/13/setting-ubuntu-vm-in-virtualbox/">tutorial on setting up Ubuntu Server on Virtual Box</a>.</p>
-<h3 id="how-to-talk-to-a-34guest34-virtual-machine-from-your-34host34-machine">How to talk to a &quot;guest&quot; virtual machine from your &quot;host&quot; machine</h3>
-<p>In virtual box world, your &quot;host&quot; machine is your regular operating system, which boots up when you start your computer. Any &quot;guest&quot; machine, then, is
+<p>Download virtual box, and <a href="https://www.ubuntu.com/download/server">download the latest ubuntu server</a>. The version we&rsquo;ll use for this tutorial is 18.04 LTS. Then, you can follow this <a href="https://ilearnstack.com/2013/04/13/setting-ubuntu-vm-in-virtualbox/">tutorial on setting up Ubuntu Server on Virtual Box</a>.</p>
+<h3 id="how-to-talk-to-a-guest-virtual-machine-from-your-host-machine">How to talk to a &ldquo;guest&rdquo; virtual machine from your &ldquo;host&rdquo; machine</h3>
+<p>In virtual box world, your &ldquo;host&rdquo; machine is your regular operating system, which boots up when you start your computer. Any &ldquo;guest&rdquo; machine, then, is
 whatever virtual box instance you have set up. Since what we want is to be able to connect to a server using ssh, as we would in a real VM, we have to
 tinker a bit with our virtual box instance.</p>
-<p>Make sure your ubuntu VM guest machine is powered off, then go to <strong>Global Tools</strong>. Click on &quot;VirtualBox Host-Only Ethernet Adapter,
+<p>Make sure your ubuntu VM guest machine is powered off, then go to <strong>Global Tools</strong>. Click on &ldquo;VirtualBox Host-Only Ethernet Adapter,
 and have the following settings configured:</p>
 <ul>
 <li>Server Address: 192.168.56.100</li>
@@ -188,7 +188,7 @@ and have the following settings configured:</p>
 <p>You should see a localhost loopback instance, and two named ethernet interfaces. The named interfaces will be the NAT configuration (which lets your virtual machine
 talk to the internet) and the host-only ethernet adapter. By default, the host-only ethernet adapter will not advertise itself anywhere.</p>
 <p>For me, the NAT interface was enp0s3, and the host-only interface was named enp0s8. We will have to change the host-only interface to be a static IP address, which, for Ubuntu 18.04, is done in the
-<code>/etc/netplan/99_config.yaml</code> file. If the file doesn't exist, create it.</p>
+<code>/etc/netplan/99_config.yaml</code> file. If the file doesn&rsquo;t exist, create it.</p>
 <p>Your configuration file should be changed to look like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">network</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">ethernets</span>:

@@ -159,73 +159,73 @@
 <li><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html#onErrorResume-java.lang.Class-java.util.function.Function-">onErrorResume</a></li>
 <li><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html#onErrorReturn-java.lang.Class-T-">onErrorReturn</a></li>
 </ul>
-<p>How many of these are actually valuable? In practice, the only one you're likely to care about using is <strong>onErrorResume</strong>. The rest aren't super valuable. I'm going to run through these in order of increasing usefulness.</p>
+<p>How many of these are actually valuable? In practice, the only one you&rsquo;re likely to care about using is <strong>onErrorResume</strong>. The rest aren&rsquo;t super valuable. I&rsquo;m going to run through these in order of increasing usefulness.</p>
 <h3 id="onerrorresume">onErrorResume</h3>
-<p>This one you will use probably 95% of the time. It's simple: if the mono upstream emits an error, you get to decide how to deal with it. Here's an example:</p>
+<p>This one you will use probably 95% of the time. It&rsquo;s simple: if the mono upstream emits an error, you get to decide how to deal with it. Here&rsquo;s an example:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onErrorMono_simple</span>() {
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Object<span style="color:#ff79c6">&amp;</span>gt; errorMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
-</span></span><span style="display:flex;"><span>            Mono.<span style="color:#50fa7b">error</span>(<span style="color:#ff79c6">new</span> IllegalArgumentException(<span style="color:#ff79c6">&amp;</span>#34;wat<span style="color:#ff79c6">&amp;</span>#34;))
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Object<span style="color:#ff79c6">&gt;</span> errorMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&gt;</span>
+</span></span><span style="display:flex;"><span>            Mono.<span style="color:#50fa7b">error</span>(<span style="color:#ff79c6">new</span> IllegalArgumentException(<span style="color:#f1fa8c">&#34;wat&#34;</span>))
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(errorMono
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">onErrorResume</span>(<span style="color:#ff79c6">new</span> Function<span style="color:#ff79c6">&amp;</span>lt;Throwable, Mono<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">?&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt;() {
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">onErrorResume</span>(<span style="color:#ff79c6">new</span> Function<span style="color:#ff79c6">&lt;</span>Throwable, Mono<span style="color:#ff79c6">&lt;?&gt;&gt;</span>() {
 </span></span><span style="display:flex;"><span>                @Override
-</span></span><span style="display:flex;"><span>                <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">?&amp;</span>gt; apply(Throwable throwable) {
-</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">just</span>(<span style="color:#ff79c6">&amp;</span>#34;fallback<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;?&gt;</span> apply(Throwable throwable) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">just</span>(<span style="color:#f1fa8c">&#34;fallback&#34;</span>);
 </span></span><span style="display:flex;"><span>                }
 </span></span><span style="display:flex;"><span>            }))
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">expectNextMatches</span>(obj <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">&amp;</span>#34;fallback<span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#50fa7b">equals</span>(obj))
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">expectNextMatches</span>(obj <span style="color:#ff79c6">-&gt;</span> <span style="color:#f1fa8c">&#34;fallback&#34;</span>.<span style="color:#50fa7b">equals</span>(obj))
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>Here, we just blindly provide a static fallback. If at any time the <strong>errorMono</strong> returns an error, we always fallback to a string with value &quot;fallback&quot;.</p>
-<p>In the case where you have a fallback option that isn't static&ndash;for example, you're trying to contact the primary database and it fails, so you fallback to a cache, you can do pretty much the same thing, and just fallback to a <strong>Mono</strong> that actually does something [typically in the form of a service]:</p>
+</span></span></code></pre></div><p>Here, we just blindly provide a static fallback. If at any time the <strong>errorMono</strong> returns an error, we always fallback to a string with value &ldquo;fallback&rdquo;.</p>
+<p>In the case where you have a fallback option that isn&rsquo;t static&ndash;for example, you&rsquo;re trying to contact the primary database and it fails, so you fallback to a cache, you can do pretty much the same thing, and just fallback to a <strong>Mono</strong> that actually does something [typically in the form of a service]:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onErrorMono_slightlyLessSimple</span>() {
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Object<span style="color:#ff79c6">&amp;</span>gt; errorMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
-</span></span><span style="display:flex;"><span>                Mono.<span style="color:#50fa7b">error</span>(<span style="color:#ff79c6">new</span> IllegalArgumentException(<span style="color:#ff79c6">&amp;</span>#34;wat<span style="color:#ff79c6">&amp;</span>#34;))
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Object<span style="color:#ff79c6">&gt;</span> errorMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&gt;</span>
+</span></span><span style="display:flex;"><span>                Mono.<span style="color:#50fa7b">error</span>(<span style="color:#ff79c6">new</span> IllegalArgumentException(<span style="color:#f1fa8c">&#34;wat&#34;</span>))
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Object<span style="color:#ff79c6">&amp;</span>gt; fallbackMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Object<span style="color:#ff79c6">&gt;</span> fallbackMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&gt;</span>
 </span></span><span style="display:flex;"><span>                <span style="color:#6272a4">// in real life, for example, fallback to something like a cache, which</span>
 </span></span><span style="display:flex;"><span>                <span style="color:#6272a4">// may or may not be another network call</span>
-</span></span><span style="display:flex;"><span>                Mono.<span style="color:#50fa7b">just</span>(<span style="color:#ff79c6">&amp;</span>#34;fallback<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                Mono.<span style="color:#50fa7b">just</span>(<span style="color:#f1fa8c">&#34;fallback&#34;</span>)
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(errorMono
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">onErrorResume</span>(<span style="color:#ff79c6">new</span> Function<span style="color:#ff79c6">&amp;</span>lt;Throwable, Mono<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">?&amp;</span>gt;<span style="color:#ff79c6">&amp;</span>gt;() {
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">onErrorResume</span>(<span style="color:#ff79c6">new</span> Function<span style="color:#ff79c6">&lt;</span>Throwable, Mono<span style="color:#ff79c6">&lt;?&gt;&gt;</span>() {
 </span></span><span style="display:flex;"><span>                    @Override
-</span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">?&amp;</span>gt; apply(Throwable throwable) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&lt;?&gt;</span> apply(Throwable throwable) {
 </span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> fallbackMono;
 </span></span><span style="display:flex;"><span>                    }
 </span></span><span style="display:flex;"><span>                }))
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(obj <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">&amp;</span>#34;fallback<span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#50fa7b">equals</span>(obj))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(obj <span style="color:#ff79c6">-&gt;</span> <span style="color:#f1fa8c">&#34;fallback&#34;</span>.<span style="color:#50fa7b">equals</span>(obj))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>If <strong>fallbackMono</strong> fails, in this case, then the entire chain will fail as the error termination signal will be propagated downstream. If that actually makes another call, you'll probably want to have a fallback for that fallback.</p>
-<p>There's another variant here that's worth mentioning. You can introduce a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Predicate.html">Predicate</a> to match against an exception, then you'll only conditionally execute the fallback behavior. This is very valuable when you're dealing with downstream service calls, for example, because you probably want to match on a <strong>5xx</strong> response code, but matching on a <strong>4xx</strong> response code would be irresponsible [client side error, after all]. So you can chain <strong>onErrorResume</strong> calls until you get the match you want, and tune your fallback appropriately:</p>
+</span></span></code></pre></div><p>If <strong>fallbackMono</strong> fails, in this case, then the entire chain will fail as the error termination signal will be propagated downstream. If that actually makes another call, you&rsquo;ll probably want to have a fallback for that fallback.</p>
+<p>There&rsquo;s another variant here that&rsquo;s worth mentioning. You can introduce a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Predicate.html">Predicate</a> to match against an exception, then you&rsquo;ll only conditionally execute the fallback behavior. This is very valuable when you&rsquo;re dealing with downstream service calls, for example, because you probably want to match on a <strong>5xx</strong> response code, but matching on a <strong>4xx</strong> response code would be irresponsible [client side error, after all]. So you can chain <strong>onErrorResume</strong> calls until you get the match you want, and tune your fallback appropriately:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onErrorMono_matching</span>() {
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Object<span style="color:#ff79c6">&amp;</span>gt; errorMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
-</span></span><span style="display:flex;"><span>                Mono.<span style="color:#50fa7b">error</span>(<span style="color:#ff79c6">new</span> IllegalArgumentException(<span style="color:#ff79c6">&amp;</span>#34;real illegal arg<span style="color:#ff79c6">&amp;</span>#34;))
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Object<span style="color:#ff79c6">&gt;</span> errorMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&gt;</span>
+</span></span><span style="display:flex;"><span>                Mono.<span style="color:#50fa7b">error</span>(<span style="color:#ff79c6">new</span> IllegalArgumentException(<span style="color:#f1fa8c">&#34;real illegal arg&#34;</span>))
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Object<span style="color:#ff79c6">&amp;</span>gt; fallbackMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Object<span style="color:#ff79c6">&gt;</span> fallbackMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&gt;</span>
 </span></span><span style="display:flex;"><span>                <span style="color:#6272a4">// in real life, for example, fallback to something like a cache, which</span>
 </span></span><span style="display:flex;"><span>                <span style="color:#6272a4">// may or may not be another network call</span>
-</span></span><span style="display:flex;"><span>                Mono.<span style="color:#50fa7b">just</span>(<span style="color:#ff79c6">&amp;</span>#34;fallback<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                Mono.<span style="color:#50fa7b">just</span>(<span style="color:#f1fa8c">&#34;fallback&#34;</span>)
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(errorMono
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">onErrorResume</span>(
-</span></span><span style="display:flex;"><span>                    exception <span style="color:#ff79c6">-&amp;</span>gt; exception.<span style="color:#50fa7b">getMessage</span>().<span style="color:#50fa7b">equals</span>(<span style="color:#ff79c6">&amp;</span>#34;wat<span style="color:#ff79c6">&amp;</span>#34;),
-</span></span><span style="display:flex;"><span>                    throwable <span style="color:#ff79c6">-&amp;</span>gt; fallbackMono
+</span></span><span style="display:flex;"><span>                    exception <span style="color:#ff79c6">-&gt;</span> exception.<span style="color:#50fa7b">getMessage</span>().<span style="color:#50fa7b">equals</span>(<span style="color:#f1fa8c">&#34;wat&#34;</span>),
+</span></span><span style="display:flex;"><span>                    throwable <span style="color:#ff79c6">-&gt;</span> fallbackMono
 </span></span><span style="display:flex;"><span>                ).<span style="color:#50fa7b">onErrorResume</span>(
-</span></span><span style="display:flex;"><span>                    exception <span style="color:#ff79c6">-&amp;</span>gt; exception.<span style="color:#50fa7b">getMessage</span>().<span style="color:#50fa7b">equals</span>(<span style="color:#ff79c6">&amp;</span>#34;real illegal arg<span style="color:#ff79c6">&amp;</span>#34;),
-</span></span><span style="display:flex;"><span>                    throwable <span style="color:#ff79c6">-&amp;</span>gt; Mono.<span style="color:#50fa7b">just</span>(<span style="color:#ff79c6">&amp;</span>#34;second fallback<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                    exception <span style="color:#ff79c6">-&gt;</span> exception.<span style="color:#50fa7b">getMessage</span>().<span style="color:#50fa7b">equals</span>(<span style="color:#f1fa8c">&#34;real illegal arg&#34;</span>),
+</span></span><span style="display:flex;"><span>                    throwable <span style="color:#ff79c6">-&gt;</span> Mono.<span style="color:#50fa7b">just</span>(<span style="color:#f1fa8c">&#34;second fallback&#34;</span>)
 </span></span><span style="display:flex;"><span>                )
 </span></span><span style="display:flex;"><span>            )
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">expectNextMatches</span>(obj <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">&amp;</span>#34;second fallback<span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#50fa7b">equals</span>(obj))
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">expectNextMatches</span>(obj <span style="color:#ff79c6">-&gt;</span> <span style="color:#f1fa8c">&#34;second fallback&#34;</span>.<span style="color:#50fa7b">equals</span>(obj))
 </span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>Here we have two different types of fallback behaviors depending on the message inside the exception itself. Only the second one matches, which is why this test passes.</p>
@@ -233,37 +233,37 @@
 <p>This one is basically a simplified version of <strong>onErrorResume</strong>. You can provide a static value to fall back to:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onErrorMono_returnStatic</span>() {
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Object<span style="color:#ff79c6">&amp;</span>gt; errorMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
-</span></span><span style="display:flex;"><span>                Mono.<span style="color:#50fa7b">error</span>(<span style="color:#ff79c6">new</span> IllegalArgumentException(<span style="color:#ff79c6">&amp;</span>#34;wat<span style="color:#ff79c6">&amp;</span>#34;))
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Object<span style="color:#ff79c6">&gt;</span> errorMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&gt;</span>
+</span></span><span style="display:flex;"><span>                Mono.<span style="color:#50fa7b">error</span>(<span style="color:#ff79c6">new</span> IllegalArgumentException(<span style="color:#f1fa8c">&#34;wat&#34;</span>))
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(errorMono.<span style="color:#50fa7b">onErrorReturn</span>(<span style="color:#ff79c6">&amp;</span>#34;fallback<span style="color:#ff79c6">&amp;</span>#34;))
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(obj <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">&amp;</span>#34;fallback<span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#50fa7b">equals</span>(obj))
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(errorMono.<span style="color:#50fa7b">onErrorReturn</span>(<span style="color:#f1fa8c">&#34;fallback&#34;</span>))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(obj <span style="color:#ff79c6">-&gt;</span> <span style="color:#f1fa8c">&#34;fallback&#34;</span>.<span style="color:#50fa7b">equals</span>(obj))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>There are similar variants that correspond to <strong>onErrorResume</strong> behavior, outlined above.</p>
-<p>In practice, what's the added value here? An ever so slight amount of reduced verbosity, as you don't have to wrap the returned value with a <strong>Mono.just</strong>. That's it.</p>
+<p>In practice, what&rsquo;s the added value here? An ever so slight amount of reduced verbosity, as you don&rsquo;t have to wrap the returned value with a <strong>Mono.just</strong>. That&rsquo;s it.</p>
 <h3 id="onerrormap">onErrorMap</h3>
 <p>This one is just used to map one error type to another:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onErrorMono_map</span>() {
-</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Object<span style="color:#ff79c6">&amp;</span>gt; errorMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
-</span></span><span style="display:flex;"><span>            Mono.<span style="color:#50fa7b">error</span>(<span style="color:#ff79c6">new</span> IllegalArgumentException(<span style="color:#ff79c6">&amp;</span>#34;wat<span style="color:#ff79c6">&amp;</span>#34;))
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&lt;</span>Object<span style="color:#ff79c6">&gt;</span> errorMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&gt;</span>
+</span></span><span style="display:flex;"><span>            Mono.<span style="color:#50fa7b">error</span>(<span style="color:#ff79c6">new</span> IllegalArgumentException(<span style="color:#f1fa8c">&#34;wat&#34;</span>))
 </span></span><span style="display:flex;"><span>        );
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(errorMono.<span style="color:#50fa7b">onErrorMap</span>(<span style="color:#ff79c6">new</span> Function<span style="color:#ff79c6">&amp;</span>lt;Throwable, Throwable<span style="color:#ff79c6">&amp;</span>gt;() {
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(errorMono.<span style="color:#50fa7b">onErrorMap</span>(<span style="color:#ff79c6">new</span> Function<span style="color:#ff79c6">&lt;</span>Throwable, Throwable<span style="color:#ff79c6">&gt;</span>() {
 </span></span><span style="display:flex;"><span>                    @Override
 </span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> Throwable <span style="color:#50fa7b">apply</span>(Throwable throwable) {
-</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">new</span> NullPointerException(<span style="color:#ff79c6">&amp;</span>#34;different exception<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">new</span> NullPointerException(<span style="color:#f1fa8c">&#34;different exception&#34;</span>);
 </span></span><span style="display:flex;"><span>                    }
 </span></span><span style="display:flex;"><span>                }))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectError</span>(NullPointerException.<span style="color:#50fa7b">class</span>).<span style="color:#50fa7b">verify</span>();
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>In practice you're not likely to use this much, unless you want to change some underlying service behavior to abstract/adapt exceptions that the underlying library is emitting [e.g. WebClient]</p>
+</span></span></code></pre></div><p>In practice you&rsquo;re not likely to use this much, unless you want to change some underlying service behavior to abstract/adapt exceptions that the underlying library is emitting [e.g. WebClient]</p>
 <h3 id="onerrorcontinue">onErrorContinue</h3>
 <p>To quote the documentation for this class of methods:</p>
-<p><strong>&quot;The mode doesn't really make sense on a Mono, since we're sure there will be no further value to continue with: onErrorResume(Function) is a more classical fit then.&quot;</strong></p>
-<p>It's only really useful if you're propagating the configuration to an upstream <strong>Flux</strong>. I wouldn't suggest spending a lot of time on this one and stick to <strong>onErrorResume</strong>.</p>
+<p><strong>&ldquo;The mode doesn&rsquo;t really make sense on a Mono, since we&rsquo;re sure there will be no further value to continue with: onErrorResume(Function) is a more classical fit then.&rdquo;</strong></p>
+<p>It&rsquo;s only really useful if you&rsquo;re propagating the configuration to an upstream <strong>Flux</strong>. I wouldn&rsquo;t suggest spending a lot of time on this one and stick to <strong>onErrorResume</strong>.</p>
 </section>
 
   

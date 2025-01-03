@@ -9,12 +9,12 @@ You can view the sample code associated with this blog post [on GitHub.](https:/
 
 While you can achieve massive improvements in I/O operations via [buffering](https://nickolasfisher.com/blog/Improving-Java-IO-Performance-Buffering-Techniques), another key part of tuning java code in general, which is applicable to I/O bound operations, is method call overhead. Methods that are unnecessarily called repeatedly can bog down operations.
 
-To prove my point, we&#39;ll set up benchmarking via JMH like so:
+To prove my point, we'll set up benchmarking via JMH like so:
 
 ```java
     public static void runBenchmark(Class clazz) throws Exception {
         Options options = new OptionsBuilder()
-                .include(clazz.getName() &#43; &#34;.*&#34;)
+                .include(clazz.getName() + ".*")
                 .mode(Mode.AverageTime)
                 .warmupTime(TimeValue.seconds(1))
                 .warmupIterations(2)
@@ -34,7 +34,7 @@ To prove my point, we&#39;ll set up benchmarking via JMH like so:
 
 ```
 
-We&#39;ll have a benchmark that uses DataInputStream.readLine(), which calls read() under the hood on each character. Even though we are buffering the data, we are still calling read() on each byte that has already been loaded into memory:
+We'll have a benchmark that uses DataInputStream.readLine(), which calls read() under the hood on each character. Even though we are buffering the data, we are still calling read() on each byte that has already been loaded into memory:
 
 ```java
     @Benchmark
@@ -44,7 +44,7 @@ We&#39;ll have a benchmark that uses DataInputStream.readLine(), which calls rea
              DataInputStream dataInputStream = new DataInputStream(bufferedInputStream)) {
             int count = 0;
             while (dataInputStream.readLine() != null) {
-                count&#43;&#43;;
+                count++;
             }
 
             assertEquals(Utils.numberOfNewLines_inSmallCsv, count);
@@ -63,15 +63,15 @@ MethodCallOverheadTests.readEachCharacterUnderTheHood  avgt    2  1.560         
 
 Conversely, BufferedReader is implemented to buffer the buffer, so that the underlying stream does not get hit with repeated method calls. From the [Oracle documentation on the BufferedReader class](https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html):
 
-&gt; In general, each read request made of a Reader causes a corresponding
-&gt; read request to be made of the underlying character or byte stream. It is
-&gt; therefore advisable to wrap a BufferedReader around any Reader whose read()
-&gt; operations may be costly, such as FileReaders and InputStreamReaders.
+> In general, each read request made of a Reader causes a corresponding
+> read request to be made of the underlying character or byte stream. It is
+> therefore advisable to wrap a BufferedReader around any Reader whose read()
+> operations may be costly, such as FileReaders and InputStreamReaders.
 
 And:
 
-&gt; Programs that use DataInputStreams for textual input can be localized by
-&gt; replacing each DataInputStream with an appropriate BufferedReader.
+> Programs that use DataInputStreams for textual input can be localized by
+> replacing each DataInputStream with an appropriate BufferedReader.
 
 So, a benchmark that achieves the same result would look like:
 
@@ -82,7 +82,7 @@ So, a benchmark that achieves the same result would look like:
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             int count = 0;
             while (bufferedReader.readLine() != null) {
-                count&#43;&#43;;
+                count++;
             }
 
             assertEquals(Utils.numberOfNewLines_inSmallCsv, count);

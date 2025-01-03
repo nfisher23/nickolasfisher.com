@@ -9,7 +9,7 @@
 <meta
   name="description"
   content="You can see the sample code for this tutorial on GitHub.
-Elasticsearch is a distributed, NoSQL, document database, built on top of Lucene. There are so many things I could say about Elasticsearch, but instead I&#39;ll focus on how to install a simple 3-node cluster with an Ansible role. The following example will not have any security baked into it, so it&#39;s really just a starting point to get you up and running."
+Elasticsearch is a distributed, NoSQL, document database, built on top of Lucene. There are so many things I could say about Elasticsearch, but instead I&rsquo;ll focus on how to install a simple 3-node cluster with an Ansible role. The following example will not have any security baked into it, so it&rsquo;s really just a starting point to get you up and running."
 />
 <link rel="canonical" href="http://localhost:1313/blog/how-to-provision-a-multi-node-elasticsearch-cluster-using-ansible/" />
 <link rel="robots" href="/robots.txt" />
@@ -154,10 +154,10 @@ Elasticsearch is a distributed, NoSQL, document database, built on top of Lucene
   
 
   <section><p>You can see the sample code for this tutorial <a href="https://github.com/nfisher23/some-ansible-examples">on GitHub.</a></p>
-<p><a href="https://www.elastic.co/products/elasticsearch">Elasticsearch</a> is a distributed, NoSQL, document database, built on top of Lucene. There are so many things I could say about Elasticsearch, but instead I'll focus on how to install a simple 3-node cluster with an Ansible role. The following example will not have any security baked into it, so it's really just a starting point to get you up and running.</p>
-<p>To properly work along with the following example, you'll need ansible and probably vagrant (with virtualbox).</p>
+<p><a href="https://www.elastic.co/products/elasticsearch">Elasticsearch</a> is a distributed, NoSQL, document database, built on top of Lucene. There are so many things I could say about Elasticsearch, but instead I&rsquo;ll focus on how to install a simple 3-node cluster with an Ansible role. The following example will not have any security baked into it, so it&rsquo;s really just a starting point to get you up and running.</p>
+<p>To properly work along with the following example, you&rsquo;ll need ansible and probably vagrant (with virtualbox).</p>
 <h3 id="initializing-an-ansible-role">Initializing an Ansible Role</h3>
-<p>I'm electing to use <a href="https://nickolasfisher.com/blog/How-to-do-Test-Driven-Development-on-Your-Ansible-Roles-Using-Molecule">Molecule</a> to initialize an ansible role for me, and vagrant as the VM provider:</p>
+<p>I&rsquo;m electing to use <a href="https://nickolasfisher.com/blog/How-to-do-Test-Driven-Development-on-Your-Ansible-Roles-Using-Molecule">Molecule</a> to initialize an ansible role for me, and vagrant as the VM provider:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule init role -d vagrant -r install-elasticsearch-cluster
 </span></span><span style="display:flex;"><span>$ <span style="color:#8be9fd;font-style:italic">cd</span> install-elasticsearch-cluster
 </span></span></code></pre></div><p>We can use some convenient yaml syntax to define some inventory for fleshing out our role in the <strong>molecule/default/molecule.yml</strong> file. First, adjust the platforms section to look like the following:</p>
@@ -166,7 +166,7 @@ Elasticsearch is a distributed, NoSQL, document database, built on top of Lucene
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">box</span>: ubuntu/xenial64
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">memory</span>: <span style="color:#bd93f9">4096</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">provider_raw_config_args</span>:
-</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">&amp;#34;customize</span> [<span style="color:#ff79c6">&amp;#39;modifyvm&amp;#39;,</span> :id, &amp;#39;--uartmode1&amp;#39;, &amp;#39;disconnected&amp;#39;]&amp;#34;
+</span></span><span style="display:flex;"><span>    - <span style="color:#f1fa8c">&#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">interfaces</span>:
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">auto_config</span>: <span style="color:#ff79c6">true</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">network_name</span>: private_network
@@ -176,7 +176,7 @@ Elasticsearch is a distributed, NoSQL, document database, built on top of Lucene
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">box</span>: ubuntu/xenial64
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">memory</span>: <span style="color:#bd93f9">4096</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">provider_raw_config_args</span>:
-</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">&amp;#34;customize</span> [<span style="color:#ff79c6">&amp;#39;modifyvm&amp;#39;,</span> :id, &amp;#39;--uartmode1&amp;#39;, &amp;#39;disconnected&amp;#39;]&amp;#34;
+</span></span><span style="display:flex;"><span>    - <span style="color:#f1fa8c">&#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">interfaces</span>:
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">auto_config</span>: <span style="color:#ff79c6">true</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">network_name</span>: private_network
@@ -186,13 +186,13 @@ Elasticsearch is a distributed, NoSQL, document database, built on top of Lucene
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">box</span>: ubuntu/xenial64
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">memory</span>: <span style="color:#bd93f9">4096</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">provider_raw_config_args</span>:
-</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">&amp;#34;customize</span> [<span style="color:#ff79c6">&amp;#39;modifyvm&amp;#39;,</span> :id, &amp;#39;--uartmode1&amp;#39;, &amp;#39;disconnected&amp;#39;]&amp;#34;
+</span></span><span style="display:flex;"><span>    - <span style="color:#f1fa8c">&#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">interfaces</span>:
 </span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">auto_config</span>: <span style="color:#ff79c6">true</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">network_name</span>: private_network
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">ip</span>: <span style="color:#bd93f9">192.168.56.103</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">type</span>: static
-</span></span></code></pre></div><p>This will instruct molecule to create three virtual machines, each of the Ubuntu/xenial64 distribution, with 4GB of RAM, and IP addresses of 192.168.56.(101-103). By specifying the name option, we also have implicitly specified that our &quot;inventory&quot; for any local testing will contain the host names elasticsearchNode1, elasticsearchNode2, and elasticsearchNode3. This is important, as we can then define host variables for each of these in our playbooks in the provisioner section:</p>
+</span></span></code></pre></div><p>This will instruct molecule to create three virtual machines, each of the Ubuntu/xenial64 distribution, with 4GB of RAM, and IP addresses of 192.168.56.(101-103). By specifying the name option, we also have implicitly specified that our &ldquo;inventory&rdquo; for any local testing will contain the host names elasticsearchNode1, elasticsearchNode2, and elasticsearchNode3. This is important, as we can then define host variables for each of these in our playbooks in the provisioner section:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">provisioner</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">name</span>: ansible
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">inventory</span>:
@@ -211,23 +211,23 @@ Elasticsearch is a distributed, NoSQL, document database, built on top of Lucene
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#ff79c6">---</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span> name: ensure Java is installed
 </span></span><span style="display:flex;"><span>  apt:
-</span></span><span style="display:flex;"><span>    name: <span style="color:#ff79c6">&amp;</span>#34;openjdk<span style="color:#ff79c6">-</span>8<span style="color:#ff79c6">-</span>jdk<span style="color:#ff79c6">&amp;</span>#34;
+</span></span><span style="display:flex;"><span>    name: <span style="color:#f1fa8c">&#34;openjdk-8-jdk&#34;</span>
 </span></span><span style="display:flex;"><span>    state: present
 </span></span><span style="display:flex;"><span>    update_cache: yes
 </span></span><span style="display:flex;"><span>  become: yes
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span> name: download deb <span style="color:#ff79c6">package</span>
 </span></span><span style="display:flex;"><span>  get_url:
-</span></span><span style="display:flex;"><span>    dest: <span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>etc<span style="color:#ff79c6">/</span>{{ elasticsearch_deb_file }}<span style="color:#ff79c6">&amp;</span>#34;
-</span></span><span style="display:flex;"><span>    url: <span style="color:#ff79c6">&amp;</span>#34;https:<span style="color:#6272a4">//artifacts.elastic.co/downloads/elasticsearch/{{ elasticsearch_deb_file }}&amp;#34;</span>
-</span></span><span style="display:flex;"><span>    checksum: <span style="color:#ff79c6">&amp;</span>#34;sha512:https:<span style="color:#6272a4">//artifacts.elastic.co/downloads/elasticsearch/{{ elasticsearch_deb_file }}.sha512&amp;#34;</span>
+</span></span><span style="display:flex;"><span>    dest: <span style="color:#f1fa8c">&#34;/etc/{{ elasticsearch_deb_file }}&#34;</span>
+</span></span><span style="display:flex;"><span>    url: <span style="color:#f1fa8c">&#34;https://artifacts.elastic.co/downloads/elasticsearch/{{ elasticsearch_deb_file }}&#34;</span>
+</span></span><span style="display:flex;"><span>    checksum: <span style="color:#f1fa8c">&#34;sha512:https://artifacts.elastic.co/downloads/elasticsearch/{{ elasticsearch_deb_file }}.sha512&#34;</span>
 </span></span><span style="display:flex;"><span>  become: yes
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">-</span> name: install from deb <span style="color:#ff79c6">package</span>
 </span></span><span style="display:flex;"><span>  apt:
-</span></span><span style="display:flex;"><span>    deb: <span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>etc<span style="color:#ff79c6">/</span>{{ elasticsearch_deb_file }}<span style="color:#ff79c6">&amp;</span>#34;
+</span></span><span style="display:flex;"><span>    deb: <span style="color:#f1fa8c">&#34;/etc/{{ elasticsearch_deb_file }}&#34;</span>
 </span></span><span style="display:flex;"><span>  become: yes
-</span></span></code></pre></div><p>We need to add, at a minimum, some variables to work with. For brevity's sake I'll include some variables which will become important later. Edit your <strong>defaults/main.yml</strong> file to look like:</p>
+</span></span></code></pre></div><p>We need to add, at a minimum, some variables to work with. For brevity&rsquo;s sake I&rsquo;ll include some variables which will become important later. Edit your <strong>defaults/main.yml</strong> file to look like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">node_name</span>: example_node
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">is_master_node</span>: <span style="color:#ff79c6">true</span>
 </span></span><span style="display:flex;"><span>
@@ -235,11 +235,11 @@ Elasticsearch is a distributed, NoSQL, document database, built on top of Lucene
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">elasticsearch_deb_file</span>: elasticsearch-{{ elasticsearch_deb_version }}.deb
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">cluster_name</span>: my_cluster_name
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">elasticsearch_http_port_range</span>: <span style="color:#bd93f9">9200-9300</span>
-</span></span></code></pre></div><p>The deb file automatically includes a systemd service file. By default, it looks for elasticsearch configuration in the /etc/elasticsearch/elasticsearch.yml file. The real meat of installing elasticsearch effectively (as is the case with most tools like it) is in the configuration, and that's where we have to go.</p>
+</span></span></code></pre></div><p>The deb file automatically includes a systemd service file. By default, it looks for elasticsearch configuration in the /etc/elasticsearch/elasticsearch.yml file. The real meat of installing elasticsearch effectively (as is the case with most tools like it) is in the configuration, and that&rsquo;s where we have to go.</p>
 <p>We can use a Jinja2 template to make this playbook more reuseable, utilizing many of the variables that were previously defined. First, create a <strong>templates/elasticsearch.yml.j2</strong> file from your root directory, and populate it with the following:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">cluster.name</span>: {{ cluster_name }}
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">network</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">publish_host</span>: {{ ansible_facts[&amp;#39;all_ipv4_addresses&amp;#39;] | last }}
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">publish_host</span>: {{ ansible_facts[&#39;all_ipv4_addresses&#39;] | last }}
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">bind_host</span>: <span style="color:#bd93f9">0.0.0.0</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">http.port</span>: {{ elasticsearch_http_port_range }}
@@ -254,9 +254,9 @@ Elasticsearch is a distributed, NoSQL, document database, built on top of Lucene
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#ff79c6">discovery</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">zen</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ping.unicast.hosts</span>: [ <span style="color:#ff79c6">&amp;#39;{{</span> hostvars[&amp;#39;elasticsearchNode1&amp;#39;][&amp;#39;ansible_facts&amp;#39;][&amp;#39;all_ipv4_addresses&amp;#39;] | last }}:9300&amp;#39;, &amp;#39;{{ hostvars[&amp;#39;elasticsearchNode2&amp;#39;][&amp;#39;ansible_facts&amp;#39;][&amp;#39;all_ipv4_addresses&amp;#39;] | last }}:9300&amp;#39;, &amp;#39;{{ hostvars[&amp;#39;elasticsearchNode3&amp;#39;][&amp;#39;ansible_facts&amp;#39;][&amp;#39;all_ipv4_addresses&amp;#39;] | last }}:9300&amp;#39; ]
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ping.unicast.hosts</span>: [ <span style="color:#f1fa8c">&#39;{{ hostvars[&#39;</span>elasticsearchNode1&#39;][&#39;ansible_facts&#39;][&#39;all_ipv4_addresses&#39;] | last }}:9300&#39;, &#39;{{ hostvars[&#39;elasticsearchNode2&#39;][&#39;ansible_facts&#39;][&#39;all_ipv4_addresses&#39;] | last }}:9300&#39;, &#39;{{ hostvars[&#39;elasticsearchNode3&#39;][&#39;ansible_facts&#39;][&#39;all_ipv4_addresses&#39;] | last }}:9300&#39; ]
 </span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">minimum_master_nodes</span>: <span style="color:#bd93f9">2</span>
-</span></span></code></pre></div><p>The most critical parts (the parts that make the cluster work together) are the network.publish_host value, which <em>must be unique</em>, and the discovery.zen.ping.unicast.hosts value, which must contain the locations that any member of the cluster can find other members (looking at the transport.tcp.port value for which port to look at). If there are multiple IP addresses on the box you're putting elasticsearch on (e.g. 10.0.0.1 and 192.56.168.101), then the node will fail to start unless you explicitly tell elasticsearch which publish_host you want it to advertise itself on. It can bind to multiple public hosts, but only publish itself to one.</p>
+</span></span></code></pre></div><p>The most critical parts (the parts that make the cluster work together) are the network.publish_host value, which <em>must be unique</em>, and the discovery.zen.ping.unicast.hosts value, which must contain the locations that any member of the cluster can find other members (looking at the transport.tcp.port value for which port to look at). If there are multiple IP addresses on the box you&rsquo;re putting elasticsearch on (e.g. 10.0.0.1 and 192.56.168.101), then the node will fail to start unless you explicitly tell elasticsearch which publish_host you want it to advertise itself on. It can bind to multiple public hosts, but only publish itself to one.</p>
 <p>With the above configured, you should be able to run:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule create &amp;amp;&amp;amp; molecule converge
 </span></span></code></pre></div><p>And, eventually, the cluster should come up and sync with each other. If you hit <a href="http://192.168.56.101:9200">http://192.168.56.101:9200</a>, <a href="http://192.168.56.102:9200,">http://192.168.56.102:9200</a>, or <a href="http://192.168.56.103:9200">http://192.168.56.103:9200</a>, you should see the same cluster_uuid in each case, letting you know that they are working together.</p>

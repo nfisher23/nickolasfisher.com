@@ -157,8 +157,8 @@ Name, Email Address, Phone, and Message to send to someone who can help them out
   <section><p>Modern day website owners prefer not to leave their email address open and exploitable on the internet.
 Enter the Contact page, which will usually have some basic fields for the visitor of the site to fill out like
 Name, Email Address, Phone, and Message to send to someone who can help them out.</p>
-<p>Enough talk. Let's code up a working contact form with ASP .NET Core MVC!</p>
-<p>Let's start with the front-end. Open up Visual Studio, and create a new ASP .Net Core Web Application project. I'm calling mine BasicContactForm.
+<p>Enough talk. Let&rsquo;s code up a working contact form with ASP .NET Core MVC!</p>
+<p>Let&rsquo;s start with the front-end. Open up Visual Studio, and create a new ASP .Net Core Web Application project. I&rsquo;m calling mine BasicContactForm.
 When prompted, choose the <strong>Empty</strong> project template. Then ensure your startup class looks like this:</p>
 <pre tabindex="0"><code>using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -179,8 +179,8 @@ namespace BasicContactForm
         }
     }
 }
-</code></pre><p>We'll first need a model for the contact form to bind to, so add a <strong>Models Folder</strong> and add a class called <strong>ContactFormModel</strong>.
-It's a real simple container class like so:</p>
+</code></pre><p>We&rsquo;ll first need a model for the contact form to bind to, so add a <strong>Models Folder</strong> and add a class called <strong>ContactFormModel</strong>.
+It&rsquo;s a real simple container class like so:</p>
 <pre tabindex="0"><code>namespace BasicContactForm.Models
 {
     public class ContactFormModel
@@ -191,7 +191,7 @@ It's a real simple container class like so:</p>
     }
 }
 </code></pre><p>The default route we configured in <code>Startup</code> is Home/Index, so to work with that we have to create a <strong>Controllers Folder</strong> and
-place a class called <strong>HomeController</strong> inside it like so (we'll add the post method in a minute for the form):</p>
+place a class called <strong>HomeController</strong> inside it like so (we&rsquo;ll add the post method in a minute for the form):</p>
 <pre tabindex="0"><code>using Microsoft.AspNetCore.Mvc;
 
 namespace BasicContactForm.Controllers
@@ -209,23 +209,23 @@ namespace BasicContactForm.Controllers
 <pre tabindex="0"><code>@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model BasicContactForm.Models.ContactFormModel
 
-&amp;lt;h3&amp;gt;Basic Contact Form&amp;lt;/h3&amp;gt;
-&amp;lt;form asp-action=&amp;#34;Index&amp;#34; asp-controller=&amp;#34;Home&amp;#34; method=&amp;#34;post&amp;#34;&amp;gt;
-    &amp;lt;div&amp;gt;
-        &amp;lt;label asp-for=&amp;#34;Name&amp;#34;&amp;gt;Please enter your name:&amp;lt;/label&amp;gt;
-        &amp;lt;input type=&amp;#34;text&amp;#34; asp-for=&amp;#34;Name&amp;#34; /&amp;gt;
-    &amp;lt;/div&amp;gt;
-    &amp;lt;div&amp;gt;
-        &amp;lt;label asp-for=&amp;#34;Email&amp;#34;&amp;gt;Please enter your email:&amp;lt;/label&amp;gt;
-        &amp;lt;input type=&amp;#34;text&amp;#34; asp-for=&amp;#34;Email&amp;#34; /&amp;gt;
-    &amp;lt;/div&amp;gt;
-    &amp;lt;div&amp;gt;
-        &amp;lt;label asp-for=&amp;#34;Message&amp;#34;&amp;gt;Please enter your message:&amp;lt;/label&amp;gt;
-        &amp;lt;textarea asp-for=&amp;#34;Message&amp;#34;&amp;gt;&amp;lt;/textarea&amp;gt;
-    &amp;lt;/div&amp;gt;
-    &amp;lt;input type=&amp;#34;submit&amp;#34; value=&amp;#34;Send Message!&amp;#34; /&amp;gt;
-&amp;lt;/form&amp;gt;
-</code></pre><p>At this point you should be able to run the code and get a basic contact form. Try to submit the form and it will fail, though, because we don't have a method that consumes post requests. In a real project we'd obviously want to style the page, and we would also want to add the tag helpers for the whole project by using a <code>_ViewImports.cshtml</code>, but we'll stay focused on getting it functional for this example.</p>
+&lt;h3&gt;Basic Contact Form&lt;/h3&gt;
+&lt;form asp-action=&#34;Index&#34; asp-controller=&#34;Home&#34; method=&#34;post&#34;&gt;
+    &lt;div&gt;
+        &lt;label asp-for=&#34;Name&#34;&gt;Please enter your name:&lt;/label&gt;
+        &lt;input type=&#34;text&#34; asp-for=&#34;Name&#34; /&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;label asp-for=&#34;Email&#34;&gt;Please enter your email:&lt;/label&gt;
+        &lt;input type=&#34;text&#34; asp-for=&#34;Email&#34; /&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;label asp-for=&#34;Message&#34;&gt;Please enter your message:&lt;/label&gt;
+        &lt;textarea asp-for=&#34;Message&#34;&gt;&lt;/textarea&gt;
+    &lt;/div&gt;
+    &lt;input type=&#34;submit&#34; value=&#34;Send Message!&#34; /&gt;
+&lt;/form&gt;
+</code></pre><p>At this point you should be able to run the code and get a basic contact form. Try to submit the form and it will fail, though, because we don&rsquo;t have a method that consumes post requests. In a real project we&rsquo;d obviously want to style the page, and we would also want to add the tag helpers for the whole project by using a <code>_ViewImports.cshtml</code>, but we&rsquo;ll stay focused on getting it functional for this example.</p>
 <p>We will use <a href="https://github.com/jstedfast/MailKit">MailKit</a> to send an email from and to an address of our choosing on the backend. So add MailKit via Nuget. Then create
 some container classes to hold Email related information like so (add them in the <code>Models</code> folder):</p>
 <p>For the basic address information:</p>
@@ -244,13 +244,13 @@ namespace BasicContactForm.Models
 {
     public class EmailMessage
     {
-        public List&amp;lt;EmailAddress&amp;gt; ToAddresses { get; set; } = new List&amp;lt;EmailAddress&amp;gt;();
-        public List&amp;lt;EmailAddress&amp;gt; FromAddresses { get; set; } = new List&amp;lt;EmailAddress&amp;gt;();
+        public List&lt;EmailAddress&gt; ToAddresses { get; set; } = new List&lt;EmailAddress&gt;();
+        public List&lt;EmailAddress&gt; FromAddresses { get; set; } = new List&lt;EmailAddress&gt;();
         public string Subject { get; set; }
         public string Content { get; set; }
     }
 }
-</code></pre><p>Finally, we need some information about the configuration of the SmtpServer. The conventional port is 587, so I've included an optional constructor argument to change that:</p>
+</code></pre><p>Finally, we need some information about the configuration of the SmtpServer. The conventional port is 587, so I&rsquo;ve included an optional constructor argument to change that:</p>
 <pre tabindex="0"><code>namespace BasicContactForm.Models
 {
     public class EmailServerConfiguration
@@ -266,8 +266,8 @@ namespace BasicContactForm.Models
         public string SmtpPassword { get; set; }
     }
 }
-</code></pre><p>MailKit is a dependency. It appears to be a very functional dependency, but since it is &quot;out of our hands,&quot; it would be wise to set up our code to not rely on its functionality going forward.
-Interfaces to the rescue. We'll create an interface and take advantage of the auto-magical dependency injection feature that asp provides (later):</p>
+</code></pre><p>MailKit is a dependency. It appears to be a very functional dependency, but since it is &ldquo;out of our hands,&rdquo; it would be wise to set up our code to not rely on its functionality going forward.
+Interfaces to the rescue. We&rsquo;ll create an interface and take advantage of the auto-magical dependency injection feature that asp provides (later):</p>
 <pre tabindex="0"><code>namespace BasicContactForm.Models
 {
     public interface IEmailService
@@ -275,7 +275,7 @@ Interfaces to the rescue. We'll create an interface and take advantage of the au
         void Send(EmailMessage message);
     }
 }
-</code></pre><p>The MailKit implementation will take information about the server in the constructor, and we'll use the same auto-magic DI feature in a bit:</p>
+</code></pre><p>The MailKit implementation will take information about the server in the constructor, and we&rsquo;ll use the same auto-magic DI feature in a bit:</p>
 <pre tabindex="0"><code>using System.Linq;
 using MimeKit;
 
@@ -293,12 +293,12 @@ namespace BasicContactForm.Models
         public void Send(EmailMessage msg)
         {
             var message = new MimeMessage();
-            message.To.AddRange(msg.ToAddresses.Select(x =&amp;gt; new MailboxAddress(x.Name, x.Address)));
-            message.From.AddRange(msg.FromAddresses.Select(x =&amp;gt; new MailboxAddress(x.Name, x.Address)));
+            message.To.AddRange(msg.ToAddresses.Select(x =&gt; new MailboxAddress(x.Name, x.Address)));
+            message.From.AddRange(msg.FromAddresses.Select(x =&gt; new MailboxAddress(x.Name, x.Address)));
 
             message.Subject = msg.Subject;
 
-            message.Body = new TextPart(&amp;#34;plain&amp;#34;)
+            message.Body = new TextPart(&#34;plain&#34;)
             {
                 Text = msg.Content
             };
@@ -307,7 +307,7 @@ namespace BasicContactForm.Models
             {
                 client.Connect(_eConfig.SmtpServer, _eConfig.SmtpPort);
 
-                client.AuthenticationMechanisms.Remove(&amp;#34;XOAUTH2&amp;#34;);
+                client.AuthenticationMechanisms.Remove(&#34;XOAUTH2&#34;);
 
                 client.Authenticate(_eConfig.SmtpUsername, _eConfig.SmtpPassword);
 
@@ -317,7 +317,7 @@ namespace BasicContactForm.Models
         }
     }
 }
-</code></pre><p>To reduce a burden on future potential changes, as well as to improve testing capabilities, we'll apply the dependency injection in the startup class. It could now look like this:</p>
+</code></pre><p>To reduce a burden on future potential changes, as well as to improve testing capabilities, we&rsquo;ll apply the dependency injection in the startup class. It could now look like this:</p>
 <pre tabindex="0"><code>using BasicContactForm.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -331,20 +331,20 @@ namespace BasicContactForm
         {
             EmailServerConfiguration config = new EmailServerConfiguration
             {
-                SmtpPassword = &amp;#34;Password&amp;#34;,
-                SmtpServer = &amp;#34;smtp.someserver.com&amp;#34;,
-                SmtpUsername = &amp;#34;awesomeemail@nickolasfisher.com&amp;#34;
+                SmtpPassword = &#34;Password&#34;,
+                SmtpServer = &#34;smtp.someserver.com&#34;,
+                SmtpUsername = &#34;awesomeemail@nickolasfisher.com&#34;
             };
 
             EmailAddress FromEmailAddress = new EmailAddress
             {
-                Address = &amp;#34;myemailaddress@somesite.com&amp;#34;,
-                Name = &amp;#34;Nick Fisher&amp;#34;
+                Address = &#34;myemailaddress@somesite.com&#34;,
+                Name = &#34;Nick Fisher&#34;
             };
 
-            services.AddSingleton&amp;lt;EmailServerConfiguration&amp;gt;(config);
-            services.AddTransient&amp;lt;IEmailService, MailKitEmailService&amp;gt;();
-            services.AddSingleton&amp;lt;EmailAddress&amp;gt;(FromEmailAddress);
+            services.AddSingleton&lt;EmailServerConfiguration&gt;(config);
+            services.AddTransient&lt;IEmailService, MailKitEmailService&gt;();
+            services.AddSingleton&lt;EmailAddress&gt;(FromEmailAddress);
             services.AddMvc();
         }
 
@@ -355,7 +355,7 @@ namespace BasicContactForm
     }
 }
 </code></pre><p>We will update our HomeController to consume the necessary arguments in the constructor and to send the email to wherever we want.
-For this example, we'll send an email to ourselves.</p>
+For this example, we&rsquo;ll send an email to ourselves.</p>
 <pre tabindex="0"><code>using BasicContactForm.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -386,15 +386,15 @@ namespace BasicContactForm.Controllers
             {
                 EmailMessage msgToSend = new EmailMessage
                 {
-                    FromAddresses = new List&amp;lt;EmailAddress&amp;gt; { FromAndToEmailAddress },
-                    ToAddresses = new List&amp;lt;EmailAddress&amp;gt; { FromAndToEmailAddress },
-                    Content = $&amp;#34;Here is your message: Name: {model.Name}, &amp;#34; &amp;#43;
-                        $&amp;#34;Email: {model.Email}, Message: {model.Message}&amp;#34;,
-                    Subject = &amp;#34;Contact Form - BasicContactForm App&amp;#34;
+                    FromAddresses = new List&lt;EmailAddress&gt; { FromAndToEmailAddress },
+                    ToAddresses = new List&lt;EmailAddress&gt; { FromAndToEmailAddress },
+                    Content = $&#34;Here is your message: Name: {model.Name}, &#34; +
+                        $&#34;Email: {model.Email}, Message: {model.Message}&#34;,
+                    Subject = &#34;Contact Form - BasicContactForm App&#34;
                 };
 
                 EmailService.Send(msgToSend);
-                return RedirectToAction(&amp;#34;Index&amp;#34;);
+                return RedirectToAction(&#34;Index&#34;);
             }
             else
             {
@@ -403,11 +403,11 @@ namespace BasicContactForm.Controllers
         }
     }
 }
-</code></pre><p>Enter valid server credentials in the startup class and we're good to go! A few notes:</p>
+</code></pre><p>Enter valid server credentials in the startup class and we&rsquo;re good to go! A few notes:</p>
 <ol>
 <li>
-<p>If you're using gmail, you will have to <a href="https://support.google.com/accounts/answer/6010255?hl=en">let less secure apps use your account</a>.
-Alternatively, you can jump through some more hoops to make your app more secure. In production it's probably wise to choose the latter.</p>
+<p>If you&rsquo;re using gmail, you will have to <a href="https://support.google.com/accounts/answer/6010255?hl=en">let less secure apps use your account</a>.
+Alternatively, you can jump through some more hoops to make your app more secure. In production it&rsquo;s probably wise to choose the latter.</p>
 </li>
 <li>
 <p>If you are testing locally, antivirus software can often intercept the initial secure handshake that MailKit tries to make. In my case, I disabled Avast while testing
@@ -417,14 +417,14 @@ and the emails went through without a hitch.</p>
 <p>Consider handing off to another thread to actually send the email as it can take some time depending on the environment/resources available.</p>
 </li>
 <li>
-<p>In practice, you will want to redirect to a different page, usually a &quot;thanks for contacting us&quot; page, which will tell the user that their message was received.</p>
+<p>In practice, you will want to redirect to a different page, usually a &ldquo;thanks for contacting us&rdquo; page, which will tell the user that their message was received.</p>
 </li>
 <li>
-<p>I would recommend having an appsettings.Development.json file and an appsettings.Production.json file, each with emails you don't regularly use do regularly use, respectively.
+<p>I would recommend having an appsettings.Development.json file and an appsettings.Production.json file, each with emails you don&rsquo;t regularly use do regularly use, respectively.
 This will allow you to test locally, and when you publish to production it will load the new settings.</p>
 </li>
 </ol>
-<p>I hope you enjoyed this post. Please get ahold of me if you need clarification or if you think I've made an error.</p>
+<p>I hope you enjoyed this post. Please get ahold of me if you need clarification or if you think I&rsquo;ve made an error.</p>
 </section>
 
   

@@ -8,7 +8,7 @@ description: "Nick Fisher's tech blog"
 avatar: "img/profile-picture.jpg"
 
 # Favicon
-favicon: "icons/favicon.ico"
+favicon: "img/nficon.png"
 
 # Disqus is a comment system. see https://disqus.com
 disqusShortname: ""

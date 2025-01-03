@@ -1,5 +1,5 @@
 resource "digitalocean_domain" "nickolasfisherdotcom" {
-  name = "nickolasfisher.com"  # Replace with your domain
+  name = "nickolasfisher.com"  
 }
 
 resource "digitalocean_record" "root_a" {
@@ -15,29 +15,31 @@ resource "digitalocean_record" "www_a" {
   name   = "www"
   value  = "68.183.250.105"
 }
-
 resource "digitalocean_record" "mx_10" {
-  domain = digitalocean_domain.nickolasfisherdotcom.name
-  type   = "MX"
-  name   = "@"
-  value  = "mx.zoho.com"
+  domain   = digitalocean_domain.nickolasfisherdotcom.name
+  type     = "MX"
+  name     = "@"
+  value    = "mx.zoho.com."  # Note the dot at the end
   priority = 10
+  ttl      = 1800  # Optional: Set an explicit TTL
 }
 
 resource "digitalocean_record" "mx_20" {
-  domain = digitalocean_domain.nickolasfisherdotcom.name
-  type   = "MX"
-  name   = "@"
-  value  = "mx2.zoho.com"
+  domain   = digitalocean_domain.nickolasfisherdotcom.name
+  type     = "MX"
+  name     = "@"
+  value    = "mx2.zoho.com."  # Note the dot at the end
   priority = 20
+  ttl      = 1800  # Optional: Set an explicit TTL
 }
 
 resource "digitalocean_record" "mx_50" {
-  domain = digitalocean_domain.nickolasfisherdotcom.name
-  type   = "MX"
-  name   = "@"
-  value  = "mx3.zoho.com"
+  domain   = digitalocean_domain.nickolasfisherdotcom.name
+  type     = "MX"
+  name     = "@"
+  value    = "mx3.zoho.com."  # Note the dot at the end
   priority = 50
+  ttl      = 1800  # Optional: Set an explicit TTL
 }
 
 resource "digitalocean_record" "txt_zoho_verification" {

@@ -1,31 +1,25 @@
 main:
   - identifier: "home"
-    name: "Home"
+    name: "home"
     url: "/"
     weight: 1
 
   - identifier: "blog"
-    name: "Blog"
+    name: "blog"
     url: "/blog"
     weight: 2
 
   - identifier: "about"
     url: "/about"
-    name: "About me"
+    name: "about"
     weight: 3
-
-  - identifier: "categories"
-    name: "Categories"
-    url: "/categories"
-    weight: 4
 
   - identifier: "tags"
     name: "Tags"
     url: "/tags"
-    weight: 5
+    weight: 4
 
 # Social Media Configuration
-
 social:
   - identifier: "linkedin"
     name: "LinkedIn"

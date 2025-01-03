@@ -5,4 +5,4 @@ type: taxonomies
 layout: "home"
 ---
 
-Browse by Tags!
+Browse by topic!

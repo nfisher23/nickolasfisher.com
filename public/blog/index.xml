@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Blogs on Nick Fisher&#39;s tech blog</title>
+    <title>Recent Posts on Nick Fisher&#39;s tech blog</title>
     <link>http://localhost:1313/blog/</link>
-    <description>Recent content in Blogs on Nick Fisher&#39;s tech blog</description>
+    <description>Recent content in Recent Posts on Nick Fisher&#39;s tech blog</description>
     <generator>Hugo</generator>
     <language>en-US</language>
     <copyright>2018-{year}</copyright>

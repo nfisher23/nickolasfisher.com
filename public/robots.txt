@@ -1,12 +1,12 @@
 User-agent: *
 
-Disallow: /blog/
-
 Disallow: /
 
 Disallow: /blog/how-to-prevent-certain-exceptions-from-tripping-a-resilience4j-circuit/
 
 Disallow: /tags/java/
+
+Disallow: /blog/
 
 Disallow: /tags/resilience/
 
@@ -397,6 +397,8 @@ Disallow: /blog/how-to-configure-visual-studio-to-implement-the-yarn-package-man
 Disallow: /tags/.net-core-mvc/
 
 Disallow: /blog/how-to-make-a-basic-working-contact-form-with-asp-net-core-mvc-and-mailkit/
+
+Disallow: /about/
 
 Disallow: /categories/
 

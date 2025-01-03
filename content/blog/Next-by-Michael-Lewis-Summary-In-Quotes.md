@@ -1,6 +1,6 @@
 ---
 title: "Next, by Michael Lewis: Summary In Quotes"
-date: 2018-12-01T00:00:00
+date: 2018-12-16T05:57:32
 draft: false
 ---
 
@@ -39,5 +39,3 @@ Next, by Michael Lewis, is probably my least favorite book my him. Regardless, I
 &gt; A Lord was a Lord because his father was a Lord. If a Lord is a Lord no more but in name, it is because the past has been neutered.
 
 &gt; The middle aged technologist knows that somewhere out there, some kid in his bedroom is dreaming up something that will make him obsolete, and when the dream comes true, he&#39;ll be dead wood--one of those people that needs to be told to get out of the way.
-
-

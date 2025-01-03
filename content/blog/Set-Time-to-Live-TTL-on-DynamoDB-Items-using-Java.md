@@ -1,6 +1,6 @@
 ---
 title: "Set Time to Live [TTL] on DynamoDB Items using Java"
-date: 2020-10-01T00:00:00
+date: 2020-10-18T13:43:39
 draft: false
 ---
 
@@ -23,7 +23,7 @@ Further points and nuances can be found in the documentation for DynamoDB TTL, r
 
 For this example, we&#39;ll start by setting up our table in the same way that we have in previous posts:
 
-``` java
+```java
     @Test
     public void testTTL() throws Exception {
         String currentTableName = &#34;PhoneTTLTest&#34;;
@@ -36,7 +36,7 @@ This just leverages code we&#39;ve already written and I won&#39;t rehash that h
 
 After our test table is created, we will need to specify that TTL is enabled, as well as what attribute dynamo should be looking at to make the decision about when to expire an individual item. Note that in real environments \[e.g. production\] something like this should really be done with terraform, but this is just integration testing code so all is good:
 
-``` java
+```java
         String EXPIRE_TIME = &#34;ExpireTime&#34;;
         dynamoDbAsyncClient.updateTimeToLive(
             UpdateTimeToLiveRequest.builder()
@@ -66,7 +66,7 @@ This chunk of code just sets the TTL specification, enabling TTL on this table a
 
 Now let&#39;s put an item into this table, specify that it should expire soon, and see dynamo clear it out:
 
-``` java
+```java
         String partitionKey = &#34;Google&#34;;
         String rangeKey = &#34;Pixel 1&#34;;
 
@@ -124,5 +124,3 @@ Now let&#39;s put an item into this table, specify that it should expire soon, a
 Here, we set the expire time to be about 3 seconds from now on a created item, then immediately grab it from the table to verify that it exists. After a 13 second sleep \[necessary in this case basically because of the behavior of embedded/local dynamo\], we then verify that trying to get the same item out of the table returns an empty response.
 
 Remember to [check out the source code](https://github.com/nfisher23/webflux-and-dynamo) for this one on Github.
-
-

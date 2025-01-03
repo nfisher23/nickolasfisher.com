@@ -1,6 +1,6 @@
 ---
 title: "How to Map Multiple Headers to the Same Variable in Nginx"
-date: 2020-05-01T00:00:00
+date: 2020-05-24T20:26:02
 draft: false
 ---
 
@@ -12,7 +12,7 @@ In this post, I&#39;ll show how to choose a different file to serve based on a c
 
 I&#39;m going to use [docker compose](https://docs.docker.com/compose/) to walk us through this. If you make a **docker-compose.yml** file and set it up like so:
 
-``` yaml
+```yaml
 version: &#34;3.3&#34;
 services:
   nginx:
@@ -165,5 +165,26 @@ map $http_x_new_header $actual_variable {
 ```
 
 If you restart nginx now ( **docker-compose down &amp;&amp; docker-compose up -d**), you can see it in action:
+
+```
+# regular call
+$ curl localhost:9000/endpoint
+&lt;h1&gt;The primary html page&lt;/h1&gt;
+
+# using the new header like before
+$ curl -H &#34;X-New-Header: secondary&#34; localhost:9000/something
+&lt;h1&gt;The secondary, as in NOT primary, html page&lt;/h1&gt;
+
+# using the legacy header
+$ curl -H &#34;X-Legacy-Header: secondary&#34; localhost:9000/something
+&lt;h1&gt;The secondary, as in NOT primary, html page&lt;/h1&gt;
+
+# using both headers cause why not
+$ curl -H &#34;X-Legacy-Header: secondary&#34; -H &#34;X-New-Header: secondary&#34; localhost:9000/something~
+&lt;h1&gt;The secondary, as in NOT primary, html page&lt;/h1&gt;
+
+# notice what happens when the value is changed
+$ curl -H &#34;X-Legacy-Header: idk&#34; -H &#34;X-New-Header: huh&#34; localhost:9000/something~
+&lt;h1&gt;The primary html page&lt;/h1&gt;
 
 ```

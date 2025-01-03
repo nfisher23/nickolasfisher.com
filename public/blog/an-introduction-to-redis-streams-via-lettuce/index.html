@@ -148,8 +148,8 @@ Redis streams are an interesting data structure that act as a sort of go-between
 
     <div class="meta">
       
-      <time datetime="2021-05-01 00:00:00 &#43;0000 UTC" title='Sat, May 1, 2021, 12:00 AM UTC'>
-        01/05/2021 - Estimated reading time: 2 minutes
+      <time datetime="2021-05-01 15:22:58 &#43;0000 UTC" title='Sat, May 1, 2021, 3:22 PM UTC'>
+        01/05/2021 - Estimated reading time: 3 minutes
       </time>
 
        
@@ -197,7 +197,58 @@ Redis streams are an interesting data structure that act as a sort of go-between
 </span></span></code></pre></div><p>This is equivalent to what we did with our shell above.</p>
 <h3 id="subscribing-to-stream-elements">Subscribing to Stream Elements</h3>
 <p>We basically just used the stream as a list above, by adding an element to it. We can also treat the stream similar to pub/sub by subscribing to elements as they come in. On the CLI that might look like:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"></code></pre></div></section>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># writing terminal</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&amp;gt; XADD some-stream * third <span style="color:#bd93f9">3</span> fourth <span style="color:#bd93f9">4</span>
+</span></span><span style="display:flex;"><span>&amp;<span style="color:#6272a4">#34;1620488397538-0&amp;#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># &amp;#34;reading&amp;#34;/&amp;#34;subscribing&amp;#34; terminal</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&amp;gt; XREAD BLOCK <span style="color:#bd93f9">0</span> STREAMS some-stream $
+</span></span><span style="display:flex;"><span>1<span style="color:#ff79c6">)</span> 1<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;some-stream&amp;#34;</span>
+</span></span><span style="display:flex;"><span>   2<span style="color:#ff79c6">)</span> 1<span style="color:#ff79c6">)</span> 1<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;1620488397538-0&amp;#34;</span>
+</span></span><span style="display:flex;"><span>         2<span style="color:#ff79c6">)</span> 1<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;third&amp;#34;</span>
+</span></span><span style="display:flex;"><span>            2<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;3&amp;#34;</span>
+</span></span><span style="display:flex;"><span>            3<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;fourth&amp;#34;</span>
+</span></span><span style="display:flex;"><span>            4<span style="color:#ff79c6">)</span> &amp;<span style="color:#6272a4">#34;4&amp;#34;</span>
+</span></span></code></pre></div><p>Building off of our previous work, that equivalent code in lettuce/java might look something like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">streamsEx</span>() <span style="color:#8be9fd;font-style:italic">throws</span> InterruptedException {
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(redisReactiveCommands
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">xadd</span>(<span style="color:#ff79c6">&amp;</span>#34;some<span style="color:#ff79c6">-</span>stream<span style="color:#ff79c6">&amp;</span>#34;, Map.<span style="color:#50fa7b">of</span>(<span style="color:#ff79c6">&amp;</span>#34;first<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;1<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;second<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;2<span style="color:#ff79c6">&amp;</span>#34;)))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(resp <span style="color:#ff79c6">-&amp;</span>gt; resp.<span style="color:#50fa7b">endsWith</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">-</span>0<span style="color:#ff79c6">&amp;</span>#34;))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(redisReactiveCommands.<span style="color:#50fa7b">xlen</span>(<span style="color:#ff79c6">&amp;</span>#34;some<span style="color:#ff79c6">-</span>stream<span style="color:#ff79c6">&amp;</span>#34;))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNext</span>(1L)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(redisReactiveCommands.<span style="color:#50fa7b">xrange</span>(<span style="color:#ff79c6">&amp;</span>#34;some<span style="color:#ff79c6">-</span>stream<span style="color:#ff79c6">&amp;</span>#34;, Range.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">-&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#34;)))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(streamMessage <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                        streamMessage.<span style="color:#50fa7b">getBody</span>().<span style="color:#50fa7b">get</span>(<span style="color:#ff79c6">&amp;</span>#34;first<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">equals</span>(<span style="color:#ff79c6">&amp;</span>#34;1<span style="color:#ff79c6">&amp;</span>#34;) <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp;
+</span></span><span style="display:flex;"><span>                        streamMessage.<span style="color:#50fa7b">getBody</span>().<span style="color:#50fa7b">get</span>(<span style="color:#ff79c6">&amp;</span>#34;second<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">equals</span>(<span style="color:#ff79c6">&amp;</span>#34;2<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                ).<span style="color:#50fa7b">verifyComplete</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        AtomicInteger elementsSeen <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> AtomicInteger(0);
+</span></span><span style="display:flex;"><span>        redisClient.<span style="color:#50fa7b">connectPubSub</span>().<span style="color:#50fa7b">reactive</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">xread</span>(
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">new</span> XReadArgs().<span style="color:#50fa7b">block</span>(2000),
+</span></span><span style="display:flex;"><span>                        XReadArgs.<span style="color:#50fa7b">StreamOffset</span>.<span style="color:#50fa7b">from</span>(<span style="color:#ff79c6">&amp;</span>#34;some<span style="color:#ff79c6">-</span>stream<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;0<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                )
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">subscribe</span>(stringStringStreamMessage <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                    elementsSeen.<span style="color:#50fa7b">incrementAndGet</span>();
+</span></span><span style="display:flex;"><span>                });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(redisReactiveCommands
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">xadd</span>(<span style="color:#ff79c6">&amp;</span>#34;some<span style="color:#ff79c6">-</span>stream<span style="color:#ff79c6">&amp;</span>#34;, Map.<span style="color:#50fa7b">of</span>(<span style="color:#ff79c6">&amp;</span>#34;third<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;3<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;fourth<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">&amp;</span>#34;4<span style="color:#ff79c6">&amp;</span>#34;)))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextCount</span>(1)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Thread.<span style="color:#50fa7b">sleep</span>(500);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        assertEquals(2, elementsSeen.<span style="color:#50fa7b">get</span>());
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>We tell <strong>xread</strong> to block as new elements come in, and then verify we receive two elements [one from before we started subscribing, one from while we were still subscribed].</p>
+<p>From here I encourage you to read <a href="https://redis.io/topics/streams-intro">an introduction to streams via redis.io</a>, and translate what you're reading into unit tests as I have done here.</p>
+</section>
 
   
     

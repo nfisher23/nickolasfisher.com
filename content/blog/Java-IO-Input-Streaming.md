@@ -1,6 +1,6 @@
 ---
 title: "Java IO: Input Streaming"
-date: 2018-11-01T00:00:00
+date: 2018-11-03T12:00:01
 draft: false
 ---
 
@@ -12,7 +12,7 @@ away with modern libraries and tools (via servlets, for example), understanding 
 To begin with, opening a stream takes up operating system resources, so you have to be careful to close those resources after you open them. Before Java 8 was introduced, you would have
 had to have closed the resource using a try/finally block, like:
 
-``` java
+```java
 InputStream inputStream =
     new FileInputStream(simpleExampleFilePath);
 try {
@@ -25,7 +25,7 @@ try {
 
 Thankfully, this awkward looking block was improved in Java 8 to [try-with-resources](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html). To get an automatic close of resources, even in the case of an exception, you can change the above to:
 
-``` java
+```java
 try (InputStream inputStream =
         new FileInputStream(simpleExampleFilePath)) {
     int readValue = inputStream.read();
@@ -41,7 +41,7 @@ Now, let&#39;s say we have a file that has a single line, in UTF-8 format:
 
 We can access that file in a primitive way using an InputStream:
 
-``` java
+```java
 @Test
 public void fileInputStream_ex() throws Exception {
     try (InputStream fileInputStream = new FileInputStream(simpleExampleFilePath)) {
@@ -58,7 +58,7 @@ Where `simpleExampleFilePath` is a string containing the _relative_ path to the 
 
 You can also work with double values, if desired, by enriching the InputStream into a DataInputStream:
 
-``` java
+```java
 @Test
 public void dataInputStream_ex() throws Exception {
     try (InputStream fileInputStream = new FileInputStream(simpleExampleFilePath);
@@ -76,7 +76,7 @@ As you can see from the comment, the DataInputStream is usually only really usef
 
 The problem with both of those examples is the default for InputStream, which requests data from the operating system one byte at a time. This is much more costly than asking for a &#34;chunk&#34; of bytes at a time, reading them into memory once, then processing them after they are loaded into memory. This process is called _buffering_, and it is accomplished in Java using the BufferedInputStream:
 
-``` java
+```java
 @Test
 public void bufferingData_ex() throws Exception {
     try (InputStream fileInputStream = new FileInputStream(simpleExampleFilePath)) {
@@ -100,7 +100,7 @@ public void bufferingData_ex() throws Exception {
 
 Finally, sometimes we want to &#34;peek&#34; the next byte into memory, which we can&#39;t do with a normal InputStream. We can move forward and backward with a I/O stream using the `PushbackInputStream`:
 
-``` java
+```java
 @Test
 public void pushbackInputStream_ex() throws Exception {
     try (InputStream fileInputStream = new FileInputStream(simpleExampleFilePath)) {
@@ -115,5 +115,3 @@ public void pushbackInputStream_ex() throws Exception {
 }
 
 ```
-
-

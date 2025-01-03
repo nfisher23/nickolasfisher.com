@@ -148,8 +148,8 @@ Managing a live database, and in particular dealing with database migrations wit
 
     <div class="meta">
       
-      <time datetime="2019-02-01 00:00:00 &#43;0000 UTC" title='Fri, Feb 1, 2019, 12:00 AM UTC'>
-        01/02/2019 - Estimated reading time: 1 minutes
+      <time datetime="2019-02-09 15:44:26 &#43;0000 UTC" title='Sat, Feb 9, 2019, 3:44 PM UTC'>
+        09/02/2019 - Estimated reading time: 3 minutes
       </time>
 
        
@@ -164,7 +164,64 @@ Managing a live database, and in particular dealing with database migrations wit
 <p>From where I sit, there are two good options for dealing with database migrations: at an application level (e.g. a startup script when you connect with a service) or using a tool like Ansible. Either one of them allow you to write automation for the migrations, which is (in my opinion) non-negotiable for maintaining any non-trivial software project. While I lean towards the application owning the migrations, Ansible or another idempotent management tool is a somewhat close second, and may be better for your use case.</p>
 <p>There are a few different ways to run a SQL script against Postgres using Ansible. The first is to take a sql file and dump it on the server you're managing, then run the sql script using a psql command. First we'll install Postgres for a Debian distribution with apt:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
-</span></span></code></pre></div></section>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># tasks file for run-sql-postgres</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: install postgres
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">apt</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">update_cache</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: [<span style="color:#ff79c6">&amp;#39;postgresql&amp;#39;,</span> <span style="color:#ff79c6">&amp;#39;postgresql-contrib&amp;#39;]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">state</span>: present
+</span></span></code></pre></div><p>Next I'll create a testing database to run the scripts against with the built in postgresql_db ansible module:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: ensure psycopg2
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">apt</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: python-psycopg2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: ensure testing database created
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">postgresql_db</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: testdb <span style="color:#6272a4"># required. name of the database to add or remove</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become_user</span>: postgres
+</span></span></code></pre></div><p>In our ansible role directory, we'll create a <strong>files/migrate.sql</strong> file with the following contents:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#ff79c6">CREATE</span> <span style="color:#ff79c6">TABLE</span> <span style="color:#ff79c6">IF</span> <span style="color:#ff79c6">NOT</span> <span style="color:#ff79c6">EXISTS</span> products (
+</span></span><span style="display:flex;"><span>    product_id <span style="color:#8be9fd;font-style:italic">serial</span> <span style="color:#ff79c6">PRIMARY</span> <span style="color:#ff79c6">KEY</span>,
+</span></span><span style="display:flex;"><span>    name <span style="color:#8be9fd;font-style:italic">varchar</span>(<span style="color:#bd93f9">100</span>),
+</span></span><span style="display:flex;"><span>    price <span style="color:#8be9fd;font-style:italic">numeric</span>
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><p>With the file in place, we can return to our <strong>tasks/main.yml</strong> file and add a first example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#6272a4"># first method</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: dump a database file
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">copy</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: /etc/migrate.sql
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">src</span>: migrate.sql
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">register</span>: sql_file_path
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: run custom sql script
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">command</span>: <span style="color:#ff79c6">&amp;#34;psql</span> testdb -f {{ sql_file_path.dest }}&amp;#34;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become_user</span>: postgres
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">register</span>: sql_response_file
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: debug response
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">debug</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">var</span>: sql_response_file
+</span></span></code></pre></div><p>This sends the file to <strong>/etc/migrate.sql</strong>, then uses the command module to run psql with the <strong>-f</strong> option for files. You can run it yourself and see the type of response that you're getting. With this method, it will <strong>always</strong> report the &quot;run custom sql script&quot; task as <strong>changed</strong>. You can optionally choose to modify that behavior with the changed_when option.</p>
+<p>The second method will read the file into a variable, then use the variable to run psql with the <strong>-c</strong> option for command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#6272a4"># second method</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: load sql into variable
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">set_fact</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">migrate_sql</span>: <span style="color:#ff79c6">&amp;#34;{{</span> lookup(&amp;#39;file&amp;#39;, &amp;#39;migrate.sql&amp;#39;) }}&amp;#34;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: debug variable
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">debug</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">var</span>: migrate_sql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: run custom script from variable
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">command</span>: psql testdb -c &amp;#34;{{ migrate_sql }}&amp;#34;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become_user</span>: postgres
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">register</span>: sql_response_variable
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">debug</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">var</span>: sql_response_variable
+</span></span></code></pre></div><p>In both cases, the variables will report a virtually identical output.</p>
+</section>
 
   
     

@@ -1,6 +1,6 @@
 ---
 title: "The Java Stream API--Introduction: Filter, Map, and Count"
-date: 2018-10-01T00:00:00
+date: 2018-10-20T12:00:18
 draft: false
 ---
 
@@ -14,7 +14,7 @@ We&#39;ll get started by manipulating a simple collection of names. You can crea
 This creates a _new_ stream of data from the collection, which does not affect or change the original collection from which the stream is derived.
 If we have a collection of names as Strings like so:
 
-``` java
+```java
 public static List&lt;String&gt; getListOfNames() {
     List&lt;String&gt; names = new ArrayList&lt;&gt;();
 
@@ -33,7 +33,7 @@ public static List&lt;String&gt; getListOfNames() {
 
 Then we can see that the original list is not affected by any operations:
 
-``` java
+```java
 @Test
 public void originalListUnchanged() {
     List&lt;String&gt; emptyList = names.stream().filter(name -&gt; false).collect(Collectors.toList());
@@ -52,7 +52,7 @@ which uses this predicate will return as empty, since our filtering method alway
 We can get all the names beginning with &#34;J&#34; with `.filter(name -&gt; name.startsWith(&#34;J&#34;))`, and we can collect it into a List that we can work with by calling `collect(Collectors.ToList())`.
 The `collect(..)` method is a _terminal operation_, which means that we are done with the stream once we call it, and we can&#39;t do anything else with that stream from that point on:
 
-``` java
+```java
 @Test
 public void filterByFirstLetter() {
     Stream&lt;String&gt; streamFilteredByFirstLetter = names.stream()
@@ -68,7 +68,7 @@ public void filterByFirstLetter() {
 
 We can get all names starting with &#34;Jo&#34; in the same way:
 
-``` java
+```java
 @Test
 public void filterByFirstTwoLetters() {
     Stream&lt;String&gt; streamFilteredByFirstTwoLetters = names.stream()
@@ -83,7 +83,7 @@ public void filterByFirstTwoLetters() {
 
 Another simple terminal operation is `count()`, which, as you can probably guess, counts the number of elements in the stream:
 
-``` java
+```java
 @Test
 public void countFilteredValues() {
     long countFilteredByFirstLetter = names.stream().filter(name -&gt; name.startsWith(&#34;J&#34;)).count();
@@ -95,7 +95,7 @@ public void countFilteredValues() {
 
 For large collections, we can even do it in parallel:
 
-``` java
+```java
 @Test
 public void parallelCount() {
     long parallelCount = names.parallelStream().filter(name -&gt; name.startsWith(&#34;J&#34;)).count();
@@ -110,7 +110,7 @@ When it comes to parallel streams, a good rule of thumb is to make sure that wha
 Finally, a often used method on streams is the `map(..)` method. `map(..)` allows you to take an object and manipulate it for downstream usage. Here, we will add the string &#34; Smith&#34; to every name, so our collection
 will look like &#34;John Smith&#34;, &#34;Jacob Smith&#34;, &#34;Jerry Smith&#34;, etc:
 
-``` java
+```java
 @Test
 public void addLastName() {
     List&lt;String&gt; theSmiths = names.stream().map(name -&gt; name &#43; &#34; Smith&#34;).collect(Collectors.toList());
@@ -128,7 +128,7 @@ public void addLastName() {
 
 Or we could take the first letter from each name like so:
 
-``` java
+```java
 @Test
 public void getFirstLetter() {
     List&lt;String&gt; firstLetters = names.stream().map(name -&gt; name.substring(0, 1)).collect(Collectors.toList());
@@ -140,5 +140,3 @@ public void getFirstLetter() {
 }
 
 ```
-
-

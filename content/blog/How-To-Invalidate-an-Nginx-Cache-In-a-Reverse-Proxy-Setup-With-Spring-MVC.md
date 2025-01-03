@@ -1,6 +1,6 @@
 ---
 title: "How To Invalidate an Nginx Cache In a Reverse Proxy Setup With Spring MVC"
-date: 2019-04-01T00:00:00
+date: 2019-04-13T16:52:53
 draft: false
 ---
 
@@ -12,14 +12,14 @@ In this post, I&#39;ll demonstrate a simple way to invalidate the cache under pr
 
 The first thing we will do is create a simple one-line bash script that &#34;invalidates&#34; the cache. For Nginx, that can simply mean removing the cache contents. In our Nginx ansible role, I&#39;m adding a Jinja2 template in **templates/invalidate\_cache.sh.j2**:
 
-``` bash
+```bash
 #!/bin/bash
 rm -rf {{ nginx_cache_path }}/*
 ```
 
 This uses our ansible variable to recursively remove all of the contents of the nginx cache. We will also add this script to our path so any application can easily use it. Add this to our **nginx** role:
 
-``` yaml
+```yaml
 - name: add invalidate cache script to path
   template:
     src: invalidate_cache.sh.j2
@@ -31,13 +31,13 @@ This uses our ansible variable to recursively remove all of the contents of the 
 
 This also uses a variable, which we will have to add to **vars/main.yml** in our nginx role:
 
-``` yaml
+```yaml
 nginx_cache_invalidate_script_name: invalidate_nginx_cache
 ```
 
 Now this is available for our sample application to use. In the code itself, I have elected to leverage [Spring&#39;s Aspect Oriented Programming](https://docs.spring.io/spring/docs/2.5.x/reference/aop.html) to abstract over the cache invalidation process. We will first have to add the AOP dependency to our **pom.xml**:
 
-``` xml
+```xml
 &lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-aop&lt;/artifactId&gt;
@@ -48,7 +48,7 @@ Now this is available for our sample application to use. In the code itself, I h
 
 Then, we will create an interface to decorate any method that we want to invalidate the cache **(InvalidateNginxCache.java)**:
 
-``` java
+```java
 package com.nickolasfisher.simplemvc;
 
 public @interface InvalidateNginxCache { }
@@ -57,7 +57,7 @@ public @interface InvalidateNginxCache { }
 
 To actually invalidate the cache, we will define our pointcut and use ProcessBuilder to execute our invalidate\_nginx\_cache script, which is assumed to be on the system path:
 
-``` java
+```java
 package com.nickolasfisher.simplemvc;
 
 import org.aspectj.lang.annotation.After;
@@ -77,7 +77,7 @@ public class AutoCacheInvalidator {
         try {
             pb.start();
         } catch (Exception ignored) {
-            // feel free to handle this differently
+            // feel free to handle this differently
             throw new RuntimeException(&#34;Houston, this didn&#39;t&#34;);
         }
     }
@@ -87,7 +87,7 @@ public class AutoCacheInvalidator {
 
 We can then use this anywhere a method gets executed--after the method completes, this code will run and invalidate the cache. I&#39;ve elected to demonstrate this in our **SimpleController.java** class:
 
-``` java
+```java
 package com.nickolasfisher.simplemvc;
 
 ... imports ...
@@ -120,13 +120,13 @@ public class SimpleController {
 
 Getting the source code and running:
 
-``` bash
+```bash
 $ molecule create &amp;&amp; molecule converge
 ```
 
 Will then allow you to hit the [http://192.168.56.202/slow](http://192.168.56.202/slow) endpoint. It will cache after the first request like before. If you then hit the api endpoint:
 
-``` bash
+```bash
 $ curl -XPOST http://192.168.56.202/api/hotValue -H &#34;Content-Type: application/json&#34; --data &#39;{&#34;hotValue&#34;:&#34;some new value&#34;}&#39;
 
 ```
@@ -134,5 +134,3 @@ $ curl -XPOST http://192.168.56.202/api/hotValue -H &#34;Content-Type: applicati
 Then, regardless of how long the cache would have remained active, you will see the new value updated.
 
 **Note**: This did not work on Ubuntu 16. I had to upgrade the VM to Ubuntu 18. I did not investigate why, but it had something to do with the way nginx was trying to create new directories once they were invalidated.
-
-

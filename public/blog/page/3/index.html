@@ -158,86 +158,24 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/breaking-down-lettuce-mset-commands-in-clustered-redis/">Breaking down Lettuce MSET Commands in Clustered Redis</a>
+    <a href="http://localhost:1313/blog/redis-transactions-reactive-lettuce-buyer-beware/">Redis Transactions, Reactive Lettuce: Buyer Beware</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
-    </time>
-  </span>
-
-  <div class="description">
-    
-      <p>To follow along with this post, it would be best if you have already <a href="https://nickolasfisher.com/blog/Bootstrap-a-Local-Sharded-Redis-Cluster-in-Five-Minutes">set up your local redis cluster</a> and know how to <a href="https://nickolasfisher.com/blog/Configuring-Lettuce-to-work-with-Clustered-Redis">connect to a redis cluster and interact with it via Lettuce</a>. And the source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-    
-  </div>
-
-  <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/breaking-down-lettuce-mset-commands-in-clustered-redis/">
-      Read more
-      <span class="w-4 h-4 stroke-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-</svg>
-
-      </span>
-    </a>
-  </div>
-</article>
-
-  
-    <article class="flex flex-col gap-1">
-  <h1>
-    <a href="http://localhost:1313/blog/configuring-lettucewebflux-to-work-with-clustered-redis/">Configuring Lettuce/Webflux to work with Clustered Redis</a>
-  </h1>
-  
-  <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
-    </time>
-  </span>
-
-  <div class="description">
-    
-      <p>Lettuce has some pretty nice out of the box support for working with clustered redis. This combination&ndash;a reactive client and application along with clustered redis&ndash;is about as scalable, performant, and resilient as things can get in distributed systems [though there are other tradeoffs which are not the subject of this post].</p>
-    
-  </div>
-
-  <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/configuring-lettucewebflux-to-work-with-clustered-redis/">
-      Read more
-      <span class="w-4 h-4 stroke-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-</svg>
-
-      </span>
-    </a>
-  </div>
-</article>
-
-  
-    <article class="flex flex-col gap-1">
-  <h1>
-    <a href="http://localhost:1313/blog/expiring-individual-elements-in-a-redis-set/">Expiring Individual Elements in a Redis Set</a>
-  </h1>
-  
-  <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-24 20:48:04 &#43;0000 UTC" title='Sat, Apr 24, 2021, 8:48 PM UTC'>
+      24/04/2021
     </time>
   </span>
 
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>Redis does not allow you to set the expiration on individual members in a set, it only allows you to set an expiration on the entire set itself. If you want to have a sort of expiry on individual elements in a set, this article shares a workaround to that problem that works well in practice. Because I have already written a lot of <a href="https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux">boilerplate code for testing any redis operation using lettuce</a>, I'm going to be showing you this technique using a reactive lettuce client, however the basic concept should transfer easily to any other client.</p>
+<p>Redis Transactions do not operate exactly the way you would expect if you're coming from a relational database management system like MySQL or postrgres. It's mostly useful for optimistic locking, but honestly there are better ways to accomplish many of the things you're probably trying to, like <a href="https://nickolasfisher.com/blog/How-to-Run-a-Lua-Script-against-Redis-using-Lettuce">running a lua script with arguments</a> [which is guaranteed to be atomic]. The <a href="https://redis.io/topics/transactions">documentation on transactions in redis</a> describes some of the caveats, the biggest one probably being that it does not support rollbacks, only commits or discards.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/expiring-individual-elements-in-a-redis-set/">
+    <a class="read-more" href="http://localhost:1313/blog/redis-transactions-reactive-lettuce-buyer-beware/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -256,8 +194,8 @@
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-24 20:35:47 &#43;0000 UTC" title='Sat, Apr 24, 2021, 8:35 PM UTC'>
+      24/04/2021
     </time>
   </span>
 
@@ -283,24 +221,88 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/how-to-publish-and-subscribe-to-redis-using-lettuce/">How to Publish and Subscribe to Redis Using Lettuce</a>
+    <a href="http://localhost:1313/blog/subscribing-to-redis-channels-with-java-spring-boot-and-lettuce/">Subscribing to Redis Channels with Java, Spring Boot, and Lettuce</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-24 20:05:52 &#43;0000 UTC" title='Sat, Apr 24, 2021, 8:05 PM UTC'>
+      24/04/2021
     </time>
   </span>
 
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>Subscribing to topics in redis allows for a <em>fanout</em> behavior, where any number of subscribers can be notified of a message from a publisher.</p>
+<p>Pub/Sub in redis allows a publisher to send things to subscribers without knowing who is actually subscribed. In a previous post, we covered <a href="https://nickolasfisher.com/blog/How-to-Publish-and-Subscribe-to-Redis-Using-Lettuce">a simple unit test for publishing and subscribing to lettuce</a>, but if you want to have a subscription initialized on application startup, and respond to events, we'll have to do a bit more, which I'll demonstrate here.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/how-to-publish-and-subscribe-to-redis-using-lettuce/">
+    <a class="read-more" href="http://localhost:1313/blog/subscribing-to-redis-channels-with-java-spring-boot-and-lettuce/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/pre-loading-a-lua-script-into-redis-with-lettuce/">Pre Loading a Lua Script into Redis With Lettuce</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2021-04-24 18:05:29 &#43;0000 UTC" title='Sat, Apr 24, 2021, 6:05 PM UTC'>
+      24/04/2021
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
+<p>In my last article on <a href="https://nickolasfisher.com/blog/How-to-Run-a-Lua-Script-against-Redis-using-Lettuce">running a lua script against redis with lettuce</a>, we just sent the entire script [that redis will execute atomically] along with the arguments every time. For very small scripts this is unlikely to be a problem, but there is definitely a more efficient way to do this, using <a href="https://redis.io/commands/evalsha">EVALSHA</a>.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/pre-loading-a-lua-script-into-redis-with-lettuce/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/how-to-run-a-lua-script-against-redis-using-lettuce/">How to Run a Lua Script against Redis using Lettuce</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2021-04-24 16:55:51 &#43;0000 UTC" title='Sat, Apr 24, 2021, 4:55 PM UTC'>
+      24/04/2021
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
+<p>Running a lua script against redis is done using <a href="https://redis.io/commands/eval">EVAL</a>. The primary benefit of using a lua script is that the entire script is guaranteed to be run at once, and nothing else will interfere with it [it's atomic]. This allows for operating on multiple keys, or check-then-set type operations on the same key.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-run-a-lua-script-against-redis-using-lettuce/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

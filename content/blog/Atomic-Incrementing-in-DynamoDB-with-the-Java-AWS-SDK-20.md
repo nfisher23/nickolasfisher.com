@@ -1,6 +1,6 @@
 ---
 title: "Atomic Incrementing in DynamoDB with the Java AWS SDK 2.0"
-date: 2021-03-01T00:00:00
+date: 2021-03-28T02:00:30
 draft: false
 ---
 
@@ -10,7 +10,7 @@ When you update an item in DynamoDB, you can optionally update the item in place
 
 We will start by building off work done on a previous post where we [set up an embedded DynamoDB instance and integrated it with the AWS SDK 2.0](https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing). With that in place, we can create a test table and add an item to work with \[we obviously will need an item to increment in order to prove this out\]:
 
-``` java
+```java
     @Test
     public void atomicCounting() throws Exception {
         String currentTableName = &#34;PhonesAtomicCounting&#34;;
@@ -41,7 +41,7 @@ We create a partition and sort key on a table called **PhonesAtomicCounting**. T
 
 Now let&#39;s say that we want to blindly increment **NumberSold**, and we&#39;re okay with the consequences/caveat that it&#39;s not idempotent \[it will increment every time it&#39;s called, if you want idempotency you will want to look into Optimistic Locking\]. If that&#39;s our game, this is how it can be done:
 
-``` java
+```java
         UpdateItemRequest updateItemRequest = UpdateItemRequest.builder()
                 .tableName(currentTableName)
                 .key(getMapWith(stubCompanyName, stubPhoneName))
@@ -74,5 +74,3 @@ Now let&#39;s say that we want to blindly increment **NumberSold**, and we&#39;r
 ```
 
 Here, we update the item we created previously by incrementing **Version** by 1 and **NumberSold** by 2. We then verify that our changes applied by getting the item out of the table and verifying that the **NumberSold** did indeed increment by two.
-
-

@@ -1,6 +1,6 @@
 ---
 title: "The Java Stream API: An Introduction to Collecting Results"
-date: 2018-10-01T00:00:00
+date: 2018-10-21T15:46:38
 draft: false
 ---
 
@@ -9,7 +9,7 @@ You can view the sample code associated with this post [on GitHub](https://githu
 Calling `collect(..)` on a stream terminates a stream into a collection. We&#39;ve already seen that calling collect(Collectors.toList()) moves your stream into
 a List&lt;T&gt;, but you can also collect into a set. If we take our familiar collection of names in a String collection:
 
-``` java
+```java
 public static List&lt;String&gt; getListOfNames() {
     List&lt;String&gt; names = new ArrayList&lt;&gt;();
 
@@ -28,7 +28,7 @@ public static List&lt;String&gt; getListOfNames() {
 
 We can make a set out of them like so:
 
-``` java
+```java
 @Test
 public void collect_toSet() {
     Set&lt;String&gt; allJNames = names.stream().filter(name -&gt; name.startsWith(&#34;J&#34;)).collect(Collectors.toSet());
@@ -41,7 +41,7 @@ public void collect_toSet() {
 
 You can join a Stream without using a delimiter:
 
-``` java
+```java
 @Test
 public void collect_joining() {
     String allNamesJoined = names.stream().collect(Collectors.joining());
@@ -53,7 +53,7 @@ public void collect_joining() {
 
 Or you can include a delimiter:
 
-``` java
+```java
 @Test
 public void collect_joinWithDelimiter() {
     String commaDelimitedNames = names.stream().collect(Collectors.joining(&#34;,&#34;));
@@ -65,7 +65,7 @@ public void collect_joinWithDelimiter() {
 
 Let&#39;s move into a slightly more involved example. In a POJO class like so:
 
-``` java
+```java
 public class SimplePair {
 
     private String name;
@@ -97,7 +97,7 @@ public class SimplePair {
 
 And where we create pairs that have `(id: 1, name: pair1), (id: 2, name: pair2)`....
 
-``` java
+```java
 public static List&lt;SimplePair&gt; generateSimplePairs(int numToGenerate) {
     List&lt;SimplePair&gt; pairs = new ArrayList&lt;&gt;();
     for (int i = 1; i &lt;= numToGenerate; i&#43;&#43;) {
@@ -115,7 +115,7 @@ public static List&lt;SimplePair&gt; generateSimplePairs(int numToGenerate) {
 
 We can then collect after a call to `map(..)`, as map continues along the stream:
 
-``` java
+```java
 @Test
 public void collect_mapToString() {
     List&lt;SimplePair&gt; twoPairs = TestUtils.generateSimplePairs(2);
@@ -130,7 +130,7 @@ public void collect_mapToString() {
 Finally, we can collect a summary of statistics about certain primitive types. If we wanted statistics about the ids of the collection, we could get them with
 a call to `collect(Collectors.summarizingInt(SimplePair::getId))`:
 
-``` java
+```java
 @Test
 public void collectStatistics() {
     IntSummaryStatistics statistics = simplePairs.stream().collect(Collectors.summarizingInt(SimplePair::getId));
@@ -142,5 +142,3 @@ public void collectStatistics() {
 }
 
 ```
-
-

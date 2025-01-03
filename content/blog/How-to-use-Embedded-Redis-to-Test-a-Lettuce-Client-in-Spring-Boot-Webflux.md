@@ -1,6 +1,6 @@
 ---
 title: "How to use Embedded Redis to Test a Lettuce Client in Spring Boot Webflux"
-date: 2021-03-01T00:00:00
+date: 2021-03-27T21:22:32
 draft: false
 ---
 
@@ -10,7 +10,7 @@ The source code for this article [can be found on Github](https://github.com/nfi
 
 You will want to start by ensuring that you add lettuce and embedded redis to your **pom.xml**\[the config for gradle is analogous\]:
 
-``` xml
+```xml
         &lt;dependency&gt;
             &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
             &lt;artifactId&gt;lombok&lt;/artifactId&gt;
@@ -35,7 +35,7 @@ I also added lombok for convenience, as you can see.
 
 Let&#39;s set up a skeleton class with a couple methods which, when implemented, will expose get and set operations for a client:
 
-``` java
+```java
 public class RedisDataService {
 
     private final RedisStringReactiveCommands&lt;String, String&gt; redisStringReactiveCommands;
@@ -57,7 +57,7 @@ public class RedisDataService {
 
 Where our **Thing** DTO is \[note the lombok annotations generating code for us\]:
 
-``` java
+```java
 @Builder
 @Getter
 public class Thing {
@@ -69,7 +69,7 @@ public class Thing {
 
 Now we can write an automated test to target the behavior that we&#39;re about to write:
 
-``` java
+```java
 public class RedisDataServiceTest {
     private static RedisServer redisServer;
 
@@ -132,7 +132,7 @@ The framework for setting up embedded redis and testing it looks like so:
 
 As far as the test itself, we are just persisting to and reading from redis and letting the service abstraction handle it for us. Obviously, since we&#39;ve written no code yet, this will fail. To make it pass we can implement the code like so:
 
-``` java
+```java
 public class RedisDataService {
 
     private final RedisStringReactiveCommands&lt;String, String&gt; redisStringReactiveCommands;
@@ -158,5 +158,3 @@ public class RedisDataService {
 This code is pretty straightforward: write to redis using a simple key/value **set**, and read from redis using a key/value **get**. Once you get the value out of redis, throw it into a data structure for the client.
 
 Remember to [check out the source code on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis).
-
-

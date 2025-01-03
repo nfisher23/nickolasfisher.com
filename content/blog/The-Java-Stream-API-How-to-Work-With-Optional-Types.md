@@ -1,6 +1,6 @@
 ---
 title: "The Java Stream API: How to Work With Optional Types"
-date: 2018-10-01T00:00:00
+date: 2018-10-20T21:59:38
 draft: false
 ---
 
@@ -18,7 +18,7 @@ specify behavior that we want to take place if a value exists or not.
 
 For example, working with our familiar set of names:
 
-``` java
+```java
 public static List&lt;String&gt; getListOfNames() {
     List&lt;String&gt; names = new ArrayList&lt;&gt;();
 
@@ -38,7 +38,7 @@ public static List&lt;String&gt; getListOfNames() {
 We can select the last element, sorted by case, with the
 max(String::comparingToIgnoreCase) declaration. When we do that, we get an Optional:
 
-``` java
+```java
 Optional&lt;String&gt; maxName = names.stream().max(String::compareToIgnoreCase);
 
 ```
@@ -47,7 +47,7 @@ Now, if we didn&#39;t get a maximum name--which might happen if the collection w
 One way to deal with that is with the `OrElse(..)` method, which says &#34;if there is a value in the Optional, give me that value. If there is not a value in the Optional, then give me the value I pass in
 to the OrElse method:
 
-``` java
+```java
 @Test
 public void optional_max() {
     Optional&lt;String&gt; maxName = names.stream().max(String::compareToIgnoreCase);
@@ -59,7 +59,7 @@ public void optional_max() {
 
 Above, we can see that Josephine is the max string, i.e. the one last alphabetically in the collection. But what if there is no value? The behavior is predictable:
 
-``` java
+```java
 @Test
 public void optional_orElse() {
     Optional&lt;String&gt; doesntExist = names.stream().filter(name -&gt; name.startsWith(&#34;Z&#34;)).findAny();
@@ -72,7 +72,7 @@ public void optional_orElse() {
 Sometimes, if the Optional&lt;T&gt; is empty, we want to run a method that generates a value for use. We can do that with `OrElseGet(..)`,
 which takes a Supplier&lt;T&gt;. Here, we will compute the current time value as a String:
 
-``` java
+```java
 @Test
 public void optional_orElseGet() {
     Optional&lt;String&gt; doesntExist = names.stream().filter(name -&gt; name.startsWith(&#34;Z&#34;)).findAny();
@@ -88,7 +88,7 @@ If we don&#39;t get a value in an Optional, we might want to throw a custom exce
 NullPointerException, which might be too vague for us to easily find a solution to. We can throw a custom exception with
 `OrElseThrow(..)`. Here, we will throw a RuntimeException:
 
-``` java
+```java
 @Test(expected = RuntimeException.class)
 public void optional_orElseThrow() {
     Optional&lt;String&gt; doesntExist = names.stream().filter(name -&gt; name.startsWith(&#34;Z&#34;)).findAny();
@@ -101,7 +101,7 @@ Perhaps the most useful of the methods we can run on an Optional&lt;T&gt; is `if
 contains a value, does nothing otherwise, and it takes a Consumer&lt;T&gt;. If we have a real simple Consumer that simply saves the value you
 pass into it:
 
-``` java
+```java
 private class SimpleConsumer implements Consumer&lt;String&gt; {
     String internalValue = null;
 
@@ -115,7 +115,7 @@ private class SimpleConsumer implements Consumer&lt;String&gt; {
 
 We can then validate that the method does, in fact, run, with a test like so:
 
-``` java
+```java
 @Test
 public void optional_ifPresent_exists() {
     Optional&lt;String&gt; alan = names.stream().filter(name -&gt; name.equals(&#34;Alan&#34;)).findFirst();
@@ -130,7 +130,7 @@ public void optional_ifPresent_exists() {
 
 Whereas it does nothing if there isn&#39;t a value:
 
-``` java
+```java
 @Test
 public void optional_ifPresent_DNE() {
     Optional&lt;String&gt; notHere = names.stream().filter(name -&gt; name.equals(&#34;Not a Real Name&#34;)).findFirst();
@@ -154,5 +154,3 @@ public void optional_map() {
 }
 
 ```
-
-

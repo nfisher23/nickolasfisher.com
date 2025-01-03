@@ -1,6 +1,6 @@
 ---
 title: "A VagrantFile for Elasticsearch, Logstash, and Kibana (On Three Different Servers)"
-date: 2018-11-01T00:00:00
+date: 2018-11-18T13:42:46
 draft: false
 ---
 
@@ -18,7 +18,7 @@ So, now we want to play around with all of it, and we&#39;ve decided to use [Vag
 
 First, we&#39;ll set up the VagrantFile. Navigate to the directory you want to set this up in and type:
 
-``` bash
+```bash
 $ vagrant init -m
 ```
 
@@ -67,6 +67,120 @@ So we need to:
 
 The steps can be expressed in a bash script like so (elasticsearch-provision.sh):
 
-``` bash
+```bash
 #!/bin/bash
 
+# install java 8
+apt install -y software-properties-common
+apt-add-repository -y ppa:webupd8team/java
+apt update
+echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+apt install -y oracle-java8-installer
+
+# install elasticsearch
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.4.2.deb
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.4.2.deb.sha512
+shasum -a 512 -c elasticsearch-6.4.2.deb.sha512
+sudo dpkg -i elasticsearch-6.4.2.deb
+
+# configure elasticsearch to be available on port 9200
+sudo chmod 777 /etc/elasticsearch
+sudo touch /etc/elasticsearch/elasticsearch.yml
+sudo cat &lt;&lt; EOF &gt; /etc/elasticsearch/elasticsearch.yml
+path.data: /var/lib/elasticsearch
+path.logs: /var/log/elasticsearch
+network.host: 192.168.56.111
+http.port: 9200-9300
+EOF
+
+echo &#34;restarting service...&#34;
+
+service elasticsearch restart
+
+# available on startup
+update-rc.d elasticsearch defaults 95 10
+
+```
+
+If you run:
+
+```bash
+$ vagrant up elasticsearch
+
+```
+
+Then, after a few minutes of provisioning and letting the service get fully ramped up, you can
+
+```
+$ curl 192.168.56.111:9200
+
+```
+
+And you should see the Elasticsearch tagline response.
+
+The setup for Kibana is a bit easier since we don&#39;t need to install Java (this is kibana-provision.sh):
+
+```bash
+#/bin/bash
+wget https://artifacts.elastic.co/downloads/kibana/kibana-6.4.2-amd64.deb
+shasum -a 512 kibana-6.4.2-amd64.deb
+dpkg -i kibana-6.4.2-amd64.deb
+
+# configure kibana to be available on port 5601 and connect to elasticsearch instance
+chmod 777 /etc/kibana
+touch /etc/kibana/kibana.yml
+cat &lt;&lt; EOF &gt; /etc/kibana/kibana.yml
+server.port: 5601
+server.host: 192.168.56.112
+elasticsearch.url: http://192.168.56.111:9200
+EOF
+
+service kibana restart
+
+# available on startup
+update-rc.d kibana defaults 95 10
+
+```
+
+Once this is up (run $ vagrant up kibana), you should be able to navigate to 192.168.56.112:5601 in your browser and see Kibana&#39;s dashboard come up.
+
+Finally, here&#39;s the Logstash script (logstash-provision.sh):
+
+```bash
+#!/bin/bash
+
+# install java 8
+apt install -y software-properties-common
+apt-add-repository -y ppa:webupd8team/java
+apt update
+echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+apt install -y oracle-java8-installer
+
+# install logstash
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+apt-get install apt-transport-https
+echo &#34;deb https://artifacts.elastic.co/packages/6.x/apt stable main&#34; | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
+apt-get update &amp;&amp; apt-get install logstash
+
+# configure logstash to be available on port 5044 and send to elasticsearch
+sudo chmod 777 /etc/logstash
+sudo touch /etc/logstash/conf.d/ex-pipeline.conf
+sudo cat &lt;&lt; EOF &gt; /etc/logstash/conf.d/ex-pipeline.conf
+input {
+  beats {
+    host =&gt; &#34;192.168.56.113&#34;
+    port =&gt; &#34;5044&#34;
+  }
+}
+output {
+  elasticsearch {
+    hosts =&gt; [ &#34;192.168.56.111:9200&#34; ]
+  }
+}
+EOF
+
+service logstash restart
+
+```
+
+You now have your playground, go conquer the world with it.

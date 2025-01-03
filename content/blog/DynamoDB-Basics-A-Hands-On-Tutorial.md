@@ -1,6 +1,6 @@
 ---
 title: "DynamoDB Basics: A Hands On Tutorial"
-date: 2020-07-01T00:00:00
+date: 2020-07-12T18:36:05
 draft: false
 ---
 
@@ -12,7 +12,7 @@ This tutorial is meant to give you a basic overview of how to bootstrap a local 
 
 To work with dynamo locally, I just used [the docker image provided by AWS](https://hub.docker.com/r/amazon/dynamodb-local/). Simply create a **docker-compose.yaml** file like so:
 
-``` yaml
+```yaml
 version: &#39;3.7&#39;
 services:
   dynamodb-local:
@@ -25,14 +25,14 @@ services:
 
 After you&#39;ve created this file, navigate in your shell to where it exists and run:
 
-``` bash
+```bash
 docker-compose up -d
 
 ```
 
 Now that we have one running, we can start messing with it. First you&#39;ll need some AWS credentials \[locally, this container just looks for the existence of credentials, there is nothing magic about them. Obviously, up on AWS infrastructure they will have to be valid\]:
 
-``` bash
+```bash
 export AWS_SECRET_ACCESS_KEY=&#34;FAKE&#34;
 export AWS_ACCESS_KEY_ID=&#34;FAKE&#34;
 
@@ -40,14 +40,14 @@ export AWS_ACCESS_KEY_ID=&#34;FAKE&#34;
 
 If you&#39;re just messing around on the command line, this should also help make your life easier:
 
-``` bash
+```bash
 alias awslocal=&#34;aws --endpoint-url http://localhost:8000 --region=us-west-2&#34;
 
 ```
 
 We can verify the latter is working properly with:
 
-``` bash
+```bash
 awslocal dynamodb describe-limits
 
 ```
@@ -58,7 +58,7 @@ At this point, we&#39;re ready to try a couple of basic operations. DynamoDB has
 
 I&#39;m going to structure table with a composite primary key. In Dynamo, a composite primary key is made up of a partition key and a sort key. The partition key is fed to a hash function by dynamo, and the output hash then determines where an item with that partition key is physically stored in the cluster. The sort key just says &#34;on this partition, I want you to keep these items physically close to each other, and ultimately keep them in order.&#34; This largely makes range queries more efficient. Here&#39;s what it looks like to create this using the AWS CLI:
 
-``` bash
+```bash
 aws --endpoint-url http://localhost:8000 --region=us-west-2 dynamodb create-table \
   --billing-mode PAY_PER_REQUEST \
   --table-name Phones \
@@ -68,7 +68,7 @@ aws --endpoint-url http://localhost:8000 --region=us-west-2 dynamodb create-tabl
 
 Now we&#39;re going to add data to this table. An item in DynamoDB is very similar to a row in a relational database, and attributes \[in an item\] are very similar to the columns of that row. In dynamo, to add an item to a table, you use **put-item**. I&#39;ve created a template (used by **printf**) and a helper function to make this a bit easier, but here&#39;s the code:
 
-``` bash
+```bash
 #!/bin/bash
 
 TEMPLATE=$(cat &lt;&lt;&#39;EOF&#39;
@@ -116,7 +116,7 @@ put_dynamo_local &#34;$GOOGL_CONF&#34;
 
 We now have four items in our table. We can see the &#34;Model&#34; of the four items with a **scan** of all the items and some simple **jq** parsing:
 
-``` bash
+```bash
 $ aws --endpoint-url http://localhost:8000 --region=us-west-2 dynamodb scan --table-name Phones | jq -r &#34;.Items | map(.Model.S) | .[]&#34;
 Confusing Phone
 Awesome Phone
@@ -127,7 +127,7 @@ Lame Phone
 
 The final operation I&#39;m going to point out in this intro is **querying**. If we want to get a single item out of dynamo with our composite primary key, we have to provide both the partition key as well as the sort key (you can also choose a range of acceptable values for the sort key, or just get all the items with the same partition key if that&#39;s what you want to do):
 
-``` bash
+```bash
 #!/bin/bash
 
 EQ_TEMPLATE=$(cat &lt;&lt;&#39;EOF&#39;
@@ -166,7 +166,7 @@ query_local_dynamo &#34;$MOTO_COOL&#34;
 
 Here, you should get a response similar to this:
 
-``` json
+```json
 {
     &#34;Items&#34;: [
         {
@@ -196,5 +196,3 @@ Here, you should get a response similar to this:
 ```
 
 Dynamo is simple at its core, but because of the tradeoffs that it needs to make in order to accomplish its high availability, I would recommend you get intimately familiar with it. Again, if you haven&#39;t already, check out the [core components](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.CoreComponents.html).
-
-

@@ -158,54 +158,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/setting-up-a-python-lambda-to-trigger-on-dynamodb-streams-via-the-aws-cli/">Setting up a Python Lambda to Trigger on DynamoDB Streams via the AWS CLI</a>
+    <a href="http://localhost:1313/blog/basic-python-lambda-function-uploads-using-the-aws-cli/">Basic Python Lambda Function Uploads using the AWS CLI</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-02-01 00:00:00 &#43;0000 UTC" title='Mon, Feb 1, 2021, 12:00 AM UTC'>
-      01/02/2021
+    <time datetime="2021-02-06 21:07:12 &#43;0000 UTC" title='Sat, Feb 6, 2021, 9:07 PM UTC'>
+      06/02/2021
     </time>
   </span>
 
   <div class="description">
     
-      <p>DynamoDB streams record information about what has changed in a DynamoDB table, and AWS lambdas are ways to run code without managing servers yourself. DynamoDB streams also have an integration with AWS Lambdas so that any change to a DynamoDB table can be processed by an AWS Lambda&ndash;still without worrying about keeping your servers up or maintaining them. That is the subject of this post.</p>
+      <p>AWS Lambda functions were the first &quot;serverless&quot; way to run code. Of course, there are still servers, but the point is that you can nearly forget about managing those servers and all of that is owned by AWS.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/setting-up-a-python-lambda-to-trigger-on-dynamodb-streams-via-the-aws-cli/">
-      Read more
-      <span class="w-4 h-4 stroke-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-</svg>
-
-      </span>
-    </a>
-  </div>
-</article>
-
-  
-    <article class="flex flex-col gap-1">
-  <h1>
-    <a href="http://localhost:1313/blog/dynamodb-and-duplicate-keys-in-global-secondary-indexes/">DynamoDB and Duplicate Keys in Global Secondary Indexes</a>
-  </h1>
-  
-  <span class="date">
-    <time datetime="2020-11-01 00:00:00 &#43;0000 UTC" title='Sun, Nov 1, 2020, 12:00 AM UTC'>
-      01/11/2020
-    </time>
-  </span>
-
-  <div class="description">
-    
-      <p>If there's something in the documentation about what the behavior of a DynamoDB Global Secondary Index is when there are duplicate keys in the index, it isn't easy to find. I tested this empirically with an embedded DynamoDB mock for java and will quickly share my findings here with you.</p>
-    
-  </div>
-
-  <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/dynamodb-and-duplicate-keys-in-global-secondary-indexes/">
+    <a class="read-more" href="http://localhost:1313/blog/basic-python-lambda-function-uploads-using-the-aws-cli/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -224,8 +193,8 @@
   </h1>
   
   <span class="date">
-    <time datetime="2020-11-01 00:00:00 &#43;0000 UTC" title='Sun, Nov 1, 2020, 12:00 AM UTC'>
-      01/11/2020
+    <time datetime="2020-11-28 20:57:47 &#43;0000 UTC" title='Sat, Nov 28, 2020, 8:57 PM UTC'>
+      28/11/2020
     </time>
   </span>
 
@@ -255,8 +224,8 @@
   </h1>
   
   <span class="date">
-    <time datetime="2020-11-01 00:00:00 &#43;0000 UTC" title='Sun, Nov 1, 2020, 12:00 AM UTC'>
-      01/11/2020
+    <time datetime="2020-11-28 20:16:05 &#43;0000 UTC" title='Sat, Nov 28, 2020, 8:16 PM UTC'>
+      28/11/2020
     </time>
   </span>
 
@@ -282,23 +251,54 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/query-a-dynamodb-global-secondary-index-in-java/">Query a DynamoDB Global Secondary Index in Java</a>
+    <a href="http://localhost:1313/blog/working-with-nested-attributes-dynamodb-and-the-java-sdk-20/">Working with Nested Attributes, DynamoDB, and the Java SDK 2.0</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-11-01 00:00:00 &#43;0000 UTC" title='Sun, Nov 1, 2020, 12:00 AM UTC'>
-      01/11/2020
+    <time datetime="2020-11-15 22:59:11 &#43;0000 UTC" title='Sun, Nov 15, 2020, 10:59 PM UTC'>
+      15/11/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p>A <a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.html">DynamoDB Global Secondary Index</a> is an eventually consistent way to efficiently query for data that is not normally found without a table scan. It has <a href="https://nickolasfisher.com/blog/Query-a-DynamoDB-Local-Secondary-Index-with-Java">some similarities to Local Secondary Indexes, which we covered in the last post</a>, but are more flexible than them because they can be created, updated, and deleted after the base table has been created, which is not true of Local Secondary Indexes.</p>
+      <p><a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.Attributes.html">Nested attributes in DynamoDB</a> are a way to group data within an item together. The attributes are said to be nested if they are embedded within another attribute.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/query-a-dynamodb-global-secondary-index-in-java/">
+    <a class="read-more" href="http://localhost:1313/blog/working-with-nested-attributes-dynamodb-and-the-java-sdk-20/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/scanning-a-dynamodb-table-in-java-with-the-aws-sdk-20/">Scanning a DynamoDB table in Java with the AWS SDK 2.0</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2020-11-07 02:08:37 &#43;0000 UTC" title='Sat, Nov 7, 2020, 2:08 AM UTC'>
+      07/11/2020
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p><a href="https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html">Scanning in DynamoDB</a> is exactly what it sounds like: loop through every single record in a table, optionally filtering for items with a certain condition when dynamo returns them to you. In general, you <em>shouldn't do this</em>. DynamoDB is designed to store and manage a very large amount of data. Scanning through a large amount of data is very expensive, even in a distributed world. In the best case, you'll be waiting a long time to see results. In the worst case, you might see service outages as you burn through your RCUs.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/scanning-a-dynamodb-table-in-java-with-the-aws-sdk-20/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

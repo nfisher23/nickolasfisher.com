@@ -1,6 +1,6 @@
 ---
 title: "A Guide to Operating on Sorted Sets in Redis with Lettuce"
-date: 2021-04-01T00:00:00
+date: 2021-04-17T08:15:31
 draft: false
 ---
 
@@ -14,7 +14,7 @@ A sorted set can be thought of as a set with a score. The elements are sorted ac
 
 To add to a set, you need to specify the score, and to update the score for an element in the set, you run the exact same command \[&#34;add&#34;\]. Here is an example:
 
-``` java
+```java
     @Test
     public void zAddAndUpdate() {
         String setKey = &#34;set-key-1&#34;;
@@ -54,7 +54,7 @@ Here, we&#39;re adding an element to a sorted set \[the set is created when the 
 
 It&#39;s a common need to get a range \[in this case, all elements\] of elements in a sorted set and return their scores along with the elements:
 
-``` java
+```java
     @Test
     public void zRange_Rank_AndScore() {
         String setKey = &#34;set-key-1&#34;;
@@ -97,7 +97,7 @@ We&#39;re using **zrangebyscoreWIthScores** to get a collection of elements and 
 
 As the title of this section states, we also might want to remove any section of a sorted set based on a range of scores. To accomplish that, we will want to use **zremrangebyscore**:
 
-``` java
+```java
     @Test
     public void zRevRangeByScore() {
         String setKey = &#34;set-key-1&#34;;
@@ -134,5 +134,3 @@ As the title of this section states, we also might want to remove any section of
 ```
 
 Here we&#39;re dropping any elements with score between 90 and 210, which in this specific case will just be the &#34;first&#34; and &#34;second&#34; elements which have been given scores of 100 and 200, respectively.
-
-

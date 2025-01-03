@@ -1,6 +1,6 @@
 ---
 title: "How to Return a Response Entity in Spring Boot Webflux"
-date: 2020-07-01T00:00:00
+date: 2020-07-19T16:07:33
 draft: false
 ---
 
@@ -8,7 +8,7 @@ In my last post on [getting started with spring boot webflux and AWS DynamoDB](h
 
 It turns out it was pretty simple. This handler code from that post:
 
-``` java
+```java
     public Mono&lt;ServerResponse&gt; getSinglePhoneHandler(ServerRequest serverRequest) {
         String companyName = serverRequest.pathVariable(&#34;company-name&#34;);
         String modelName = serverRequest.pathVariable(&#34;model-name&#34;);
@@ -42,7 +42,7 @@ It turns out it was pretty simple. This handler code from that post:
 
 Can be refactored into this:
 
-``` java
+```java
 @RestController
 public class DynamoController {
 
@@ -86,5 +86,3 @@ public class DynamoController {
 ```
 
 The important part that can be easy to miss in that we are using **map** rather than **flatMap**.
-
-

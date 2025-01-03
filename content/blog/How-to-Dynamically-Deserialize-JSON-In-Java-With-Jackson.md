@@ -1,6 +1,6 @@
 ---
 title: "How to Dynamically Deserialize JSON In Java With Jackson"
-date: 2018-11-01T00:00:00
+date: 2018-11-18T12:45:53
 draft: false
 ---
 
@@ -10,7 +10,7 @@ You can find the sample code associated with this blog post [on GitHub](https://
 
 Java is a statically typed language, whose types must be known at compile time. Conversely, dynamically typed languages are the wild wild west--we can, and often do, decide to let any variable be whatever it wants to be at runtime. This is the inherent problem between JSON and Java--JavaScript is dynamic, Java is static. So, when we get a JSON payload like:
 
-``` json
+```json
 {
     &#34;hasErrors&#34;: false,
     &#34;body&#34;: {
@@ -22,7 +22,7 @@ Java is a statically typed language, whose types must be known at compile time. 
 
 We can make a POJO to deserialize pretty easily, like:
 
-``` java
+```java
 public class ResponseObject {
 
     @JsonProperty(&#34;hasErrors&#34;)
@@ -56,7 +56,7 @@ And this will deserialize with a call to ObjectMapper.readValue(json, ResponseOb
 
 However, what if the same service also has a response like:
 
-``` json
+```json
 {
     &#34;hasErrors&#34;: true,
     &#34;body&#34;: [
@@ -75,7 +75,7 @@ In Java, since we have defined the body to be an object, trying to deserialize i
 
 Jackson defaults to defining each node in the JSON object structure as a JsonNode. So, if we want to be able to handle multiple types of bodies (both arrays and objects, for example), we can simply defer the deserialization into a Java class until after we&#39;ve had a chance to process it. We can then define another POJO as:
 
-``` java
+```java
 public class DynamicResponseObject {
 
     @JsonProperty(&#34;hasErrors&#34;)
@@ -98,7 +98,7 @@ public class DynamicResponseObject {
 
 And we can access the actual properties of our node underneath with a myriad of [methods for JsonNode](https://fasterxml.github.io/jackson-databind/javadoc/2.7/com/fasterxml/jackson/databind/JsonNode.html). For example, if we want to see whether the body is an array or object, we can call isArray() or isObject():
 
-``` java
+```java
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DynamicDeserializationApplicationTests {
@@ -128,7 +128,7 @@ public class DynamicDeserializationApplicationTests {
 
 If we want to see the properties of something we know is an object, we can call get(..) and transform it into whatever we think the type is (here using asText() to get it as a String):
 
-``` java
+```java
     @Test
     public void normalResponse_accessNodeDynamically() throws Exception {
         DynamicResponseObject dynamicResponseObject = objectMapper.readValue(NORMAL_RESPONSE, DynamicResponseObject.class);
@@ -143,7 +143,7 @@ If we want to see the properties of something we know is an object, we can call 
 
 We can see the array properties by using get(..) with an int argument:
 
-``` java
+```java
     @Test
     public void abnormalResponse_accessNodesDynamically() throws Exception {
         DynamicResponseObject dynamicResponseObject = objectMapper.readValue(RESPONSE_WITH_ERRORS, DynamicResponseObject.class);
@@ -158,7 +158,7 @@ We can see the array properties by using get(..) with an int argument:
 
 Now, if we want to take it a step further and deserialize into a Java object, which has the obvious advantage of being compile-time safe (provided it deserializes correctly from the API) and providing Intellisense to developers, we will have to get a little creative. We can use an ObjectMapper to deserialize the node as a String like:
 
-``` java
+```java
     @JsonIgnore
     private SimpleObject simpleObject;
 
@@ -181,7 +181,7 @@ Now, if we want to take it a step further and deserialize into a Java object, wh
 
 And we can similarly define an error class:
 
-``` java
+```java
 public class Error {
 
     @JsonProperty(&#34;errorMessage&#34;)
@@ -196,7 +196,7 @@ public class Error {
 
 And then deserialize it like:
 
-``` java
+```java
     @JsonIgnore
     private List&lt;Error&gt; errors;
 
@@ -221,7 +221,7 @@ And then deserialize it like:
 
 Keep in mind that we can&#39;t inject an ObjectMapper into this POJO class because it gets deserialized, and not created by a DI framework (like, for example, Spring). It would be smart to not instantiate a new ObjectMapper in the class itself, since the benefits of dependency injection are pretty obvious at this point. If you are using Spring, you can ask for a previously defined ObjectMapper by leveraging the ApplicationContext. Create an ApplicationContextProvider like:
 
-``` java
+```java
 @Component
 public class ApplicationContextProvider implements ApplicationContextAware {
 
@@ -241,7 +241,7 @@ public class ApplicationContextProvider implements ApplicationContextAware {
 
 And then get a bit of a hacked DI result by calling it inside your POJO:
 
-``` java
+```java
     @JsonIgnore
     ObjectMapper objectMapper = ApplicationContextProvider.getApplicationContext().getBean(ObjectMapper.class);
 
@@ -250,5 +250,3 @@ And then get a bit of a hacked DI result by calling it inside your POJO:
 Which is still kind of ugly, but at least reduces the cost of instantiation duplication.
 
 Definitely [download the source code for this post](https://github.com/nfisher23/json-with-jackson-tricks) and play around with it if it&#39;s not clear to you.
-
-

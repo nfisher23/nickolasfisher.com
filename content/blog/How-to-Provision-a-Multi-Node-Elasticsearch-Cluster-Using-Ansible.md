@@ -1,6 +1,6 @@
 ---
 title: "How to Provision a Multi Node Elasticsearch Cluster Using Ansible"
-date: 2019-03-01T00:00:00
+date: 2019-03-03T23:15:27
 draft: false
 ---
 
@@ -14,7 +14,7 @@ To properly work along with the following example, you&#39;ll need ansible and p
 
 I&#39;m electing to use [Molecule](https://nickolasfisher.com/blog/How-to-do-Test-Driven-Development-on-Your-Ansible-Roles-Using-Molecule) to initialize an ansible role for me, and vagrant as the VM provider:
 
-``` bash
+```bash
 $ molecule init role -d vagrant -r install-elasticsearch-cluster
 $ cd install-elasticsearch-cluster
 
@@ -22,7 +22,7 @@ $ cd install-elasticsearch-cluster
 
 We can use some convenient yaml syntax to define some inventory for fleshing out our role in the **molecule/default/molecule.yml** file. First, adjust the platforms section to look like the following:
 
-``` yaml
+```yaml
 platforms:
   - name: elasticsearchNode1
     box: ubuntu/xenial64
@@ -58,7 +58,7 @@ platforms:
 
 This will instruct molecule to create three virtual machines, each of the Ubuntu/xenial64 distribution, with 4GB of RAM, and IP addresses of 192.168.56.(101-103). By specifying the name option, we also have implicitly specified that our &#34;inventory&#34; for any local testing will contain the host names elasticsearchNode1, elasticsearchNode2, and elasticsearchNode3. This is important, as we can then define host variables for each of these in our playbooks in the provisioner section:
 
-``` yaml
+```yaml
 provisioner:
   name: ansible
   inventory:
@@ -79,7 +79,7 @@ We will be using these variables in a bit.
 
 Actually installing Elasticsearch is pretty straightforward if you elect to use the **deb** distribution file. All we need is Java 8 as a prerequisite, which is available via the package manager on xenial64. Set your **tasks/main.yml** file to look like:
 
-``` java
+```java
 ---
 - name: ensure Java is installed
   apt:
@@ -104,7 +104,7 @@ Actually installing Elasticsearch is pretty straightforward if you elect to use 
 
 We need to add, at a minimum, some variables to work with. For brevity&#39;s sake I&#39;ll include some variables which will become important later. Edit your **defaults/main.yml** file to look like:
 
-``` yaml
+```yaml
 node_name: example_node
 is_master_node: true
 
@@ -119,7 +119,7 @@ The deb file automatically includes a systemd service file. By default, it looks
 
 We can use a Jinja2 template to make this playbook more reuseable, utilizing many of the variables that were previously defined. First, create a **templates/elasticsearch.yml.j2** file from your root directory, and populate it with the following:
 
-``` yaml
+```yaml
 cluster.name: {{ cluster_name }}
 network:
   publish_host: {{ ansible_facts[&#39;all_ipv4_addresses&#39;] | last }}
@@ -146,10 +146,8 @@ The most critical parts (the parts that make the cluster work together) are the 
 
 With the above configured, you should be able to run:
 
-``` bash
+```bash
 $ molecule create &amp;&amp; molecule converge
 ```
 
 And, eventually, the cluster should come up and sync with each other. If you hit [http://192.168.56.101:9200](http://192.168.56.101:9200), [http://192.168.56.102:9200](http://192.168.56.102:9200,), or [http://192.168.56.103:9200](http://192.168.56.103:9200), you should see the same cluster\_uuid in each case, letting you know that they are working together.
-
-

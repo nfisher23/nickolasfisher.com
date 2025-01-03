@@ -1,6 +1,6 @@
 ---
 title: "How to use Caffeine Caches Effectively in Spring Boot Webflux"
-date: 2021-03-01T00:00:00
+date: 2021-03-13T21:36:45
 draft: false
 ---
 
@@ -10,7 +10,7 @@ When someone talks about a caffeine cache, they are talking about [Ben Manes cac
 
 I&#39;m going to build off of some sample code in a previous blog post about a more primitive form of [caching in webflux](https://nickolasfisher.com/blog/InMemory-Caching-in-Sprint-Boot-WebfluxProject-Reactor), if you recall we had a **RetryService** that made a downstream network call like so:
 
-``` java
+```java
 @Service
 public class RetryService {
     private final WebClient serviceAWebClient;
@@ -37,7 +37,7 @@ What the service does isn&#39;t particularly important for this article, however
 
 The first thing we&#39;ll do is make a **CachingService** that wraps our **RetryService**, and a skeleton method that we&#39;ll fill in in a moment:
 
-``` java
+```java
 @Service
 public class CachingService {
 
@@ -56,7 +56,7 @@ public class CachingService {
 
 This is where **WelcomeMessage** is a simple DTO like so:
 
-``` java
+```java
 public class WelcomeMessage {
     private String message;
 
@@ -79,7 +79,7 @@ public class WelcomeMessage {
 
 Now we&#39;ll write a unit test targeting the behavior we want to see: what we want is that successive calls with the same locale gets us the same response, and we don&#39;t continue to invoke the underlying service that actually produces that value in that case. We can also sanity check that different locale inputs get different outputs:
 
-``` java
+```java
     @Test
     public void getCachedWelcomeMono_cachesSuccess() {
         RetryService mockRetryService = Mockito.mock(RetryService.class);
@@ -118,7 +118,7 @@ Now we&#39;ll write a unit test targeting the behavior we want to see: what we w
 
 Here, we setup a mock response that uses the argument to generate the response, leveraging Mockito, and then we make 3 requests to this caching service in succession for the english locale. We follow up with five requests for the russian locale. If you run this test now, it will fail, because we assert that the underlying mono from the mock service was invoked only twice--which will be true when we add caching but is currently false. We can get this test to pass with the following code:
 
-``` java
+```java
         private final Cache&lt;String, WelcomeMessage&gt;
             WELCOME_MESSAGE_CACHE = Caffeine.newBuilder()
                                         .expireAfterWrite(Duration.ofMinutes(5))
@@ -143,5 +143,3 @@ Here, we check if the message is in the cache \[returning it if it is\]. If it d
 It&#39;s important, though not particularly consequential, to note that this means that in very high throughput services, this will result in multiple calls to the downstream service because this is a check-then-act process that does not lock. But that should be perfectly fine for the vast majority of cases.
 
 Remember to check out the [source code for this post on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience). Happy caching.
-
-

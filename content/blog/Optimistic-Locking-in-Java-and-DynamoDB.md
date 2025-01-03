@@ -1,6 +1,6 @@
 ---
 title: "Optimistic Locking in Java and DynamoDB"
-date: 2020-10-01T00:00:00
+date: 2020-10-11T20:19:42
 draft: false
 ---
 
@@ -12,7 +12,7 @@ The source code for this post [can be found on Github](https://github.com/nfishe
 
 Assuming everything is wired up correctly, first we need data to work with, so we will initiate the create table operation, then wait for that to complete:
 
-``` java
+```java
     public static final String COMPANY = &#34;Company&#34;;
     public static final String MODEL = &#34;Model&#34;;
 
@@ -59,7 +59,7 @@ This code leverages a **retry** on **Mono** to keep retrying in the case that th
 
 With this in place, let&#39;s add an item to this table. First here&#39;s a helper method:
 
-``` java
+```java
     private Map&lt;String, AttributeValue&gt; getMapWith(String companyName, String modelName) {
         Map&lt;String, AttributeValue&gt; map = new HashMap&lt;&gt;();
 
@@ -73,7 +73,7 @@ With this in place, let&#39;s add an item to this table. First here&#39;s a help
 
 And we can add to our test like so:
 
-``` java
+```java
         String stubCompanyName = &#34;Nokia&#34;;
         String stubPhoneName = &#34;flip-phone-1&#34;;
 
@@ -95,7 +95,7 @@ And we can add to our test like so:
 
 The configuration of this dynamo table necessitates that we include a **Company** and **Model**, because that is our primary key \[it&#39;s fair to think of this as a composite primary key for the most part, there are some minor differences\]. The total object we&#39;re inserting here looks like:
 
-``` json
+```json
 {
     &#34;Company&#34;: &#34;Nokia&#34;,
     &#34;Model&#34;: &#34;flip-phone-1&#34;,
@@ -109,7 +109,7 @@ Now for the fun part. Optimistic locking is often done by tracking the version o
 
 If you haven&#39;t yet taken a look at the [reference for conditional expression in dynamodb](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html), I would suggest that you do so now. This is what it looks like in Java:
 
-``` java
+```java
         Map&lt;String, AttributeValue&gt; itemAttributesOptLocking = getMapWith(stubCompanyName, stubPhoneName);
 
         itemAttributesOptLocking.put(&#34;Color&#34;, AttributeValue.builder().s(&#34;Blue&#34;).build());
@@ -142,7 +142,17 @@ If you haven&#39;t yet taken a look at the [reference for conditional expression
 
 Here, we try to overwrite the existing item we just wrote with **version 0**. Since the version actually in dynamo will be 1, we can make this assertion:
 
-```java
+```json&gt;{
+    &#34;Company&#34;: &#34;Nokia&#34;,
+    &#34;Model&#34;: &#34;flip-phone-1&#34;,
+    &#34;Color&#34;: &#34;Blue&#34;,
+    &#34;Version&#34;: 1
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We also have a conditional expression checking for the version being equal to &lt;strong&gt;0&lt;/strong&gt;. Because the version in dynamo is actually &lt;strong&gt;1&lt;/strong&gt;, this conditional check fails and the record is not persisted. We verify that we first get an exception of type &lt;strong&gt;ConditionalCheckFailedException&lt;/strong&gt; with this block:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=
         StepVerifier.create(Mono.fromFuture(dynamoDbAsyncClient.putItem(conditionalPutItem)))
                 .expectErrorMatches(throwable -&gt; throwable instanceof ConditionalCheckFailedException)
                 .verify();
@@ -151,7 +161,7 @@ Here, we try to overwrite the existing item we just wrote with **version 0**. Si
 
 We then get the item in dynamo and verify that the color has not changed, it is correctly &#34;Orange&#34;:
 
-``` java
+```java
         StepVerifier.create(Mono.fromFuture(dynamoDbAsyncClient.getItem(
                 GetItemRequest.builder()
                         .tableName(currentTableName)
@@ -165,5 +175,3 @@ We then get the item in dynamo and verify that the color has not changed, it is 
 ```
 
 You should be able to follow this pattern for your use case. Remember to [check out the code on Github](https://github.com/nfisher23/webflux-and-dynamo)!
-
-

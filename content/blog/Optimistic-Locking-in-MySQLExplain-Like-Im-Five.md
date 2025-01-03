@@ -1,6 +1,6 @@
 ---
 title: "Optimistic Locking in MySQL--Explain Like I&#39;m Five"
-date: 2020-07-01T00:00:00
+date: 2020-07-26T00:00:56
 draft: false
 ---
 
@@ -12,14 +12,14 @@ So what is it? It&#39;s not locking at all, it&#39;s just another form of concur
 
 #### 1\. Start a MySQL database \[I&#39;m using docker, obviously\]:
 
-``` bash
+```bash
 $ docker container run --env &#34;MYSQL_ALLOW_EMPTY_PASSWORD=true&#34; -d -p 3306:3306 mysql
 
 ```
 
 #### 2\. Setup test data
 
-``` bash
+```bash
 $ mysql --protocol tcp -u root
 CREATE SCHEMA IF NOT EXISTS myschema;
 
@@ -42,7 +42,7 @@ VALUES
 
 Open two different terminals, I&#39;ll call them **T1** and **T2** and start typing in the order specified by the comments:
 
-``` bash
+```bash
 #### T1
 $ mysql --protocol tcp - u root
 USE myschema;
@@ -63,7 +63,7 @@ SELECT * FROM mytable where prim_key = 1;
 
 Notice that T2 did not block, even though we&#39;re in a transaction. What does this mean? It means that the remainder of each transaction is made with an assumption about how the data was at the start of the transaction. If both threads start marching forward and want to update that data without optimistic locking, then one will be overwriting the other one:
 
-``` bash
+```bash
 #### T1 - DON&#39;T ACTUALLY EXECUTE THIS
 UPDATE mytable SET second_column = &#39;jackson&#39; where prim_key = 1;
 
@@ -82,7 +82,24 @@ Depending on the order of these two distinct transactions, one is going to be ov
 
 Optimistic Locking &#34;fixes&#34; this problem by observing some attribute about the data that it is changing, and if that value has changed the code will roll back the transaction. This can be made atomic in two ways: first, MySQL will hold open a lock on data that is being UPDATED (not selected, by default), and second, include the piece of data in the actual update as a WHERE condition, so that if the operation fails we can see the number of rows that were updated. If the number of rows that were updated is zero, then it&#39;s an optimistic locking exception and we should roll back:
 
-``` bash
+```bash
 #### T1 - Pay attention to the output
 UPDATE mytable SET second_column = &#39;jackson&#39; where prim_key = 1;
 
+# optimistic locking check:
+UPDATE mytable SET version = version &#43; 1 WHERE prim_key = 1 AND version = 1;
+
+COMMIT;
+
+#### T2 - Watch the output!
+UPDATE mytable SET second_column = &#39;johnson&#39; where prim_key = 1;
+
+# optimistic locking check:
+UPDATE mytable SET version = version &#43; 1 WHERE prim_key = 1 AND version = 1;
+
+# ^ no rows affected! Roll back the transaction
+ROLLBACK;
+
+```
+
+If you run each of them in the right order, you will see the UPDATE on the second terminal pause until the first terminal commits the transaction, which makes this operation concurrent safe and more performant than setting the transaction isolation level to SERIALIZABLE.

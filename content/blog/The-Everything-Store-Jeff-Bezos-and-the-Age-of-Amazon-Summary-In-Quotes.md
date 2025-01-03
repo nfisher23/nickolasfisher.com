@@ -1,6 +1,6 @@
 ---
 title: "The Everything Store, Jeff Bezos and the Age of Amazon: Summary In Quotes"
-date: 2018-10-01T00:00:00
+date: 2018-10-28T18:05:38
 draft: false
 ---
 
@@ -45,5 +45,3 @@ draft: false
 &gt; &#34;They \[Amazon\] have an absolute willingness to torch the landscape around them to emerge the winner.&#34;
 
 &gt; &#34;Amazon executives view MAPs and similar techniques as the last vestiges of an old way of doing business--gimmicks, that inefficient companies use to protect their bloated margins.&#34;
-
-

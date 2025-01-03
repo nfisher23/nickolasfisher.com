@@ -1,6 +1,6 @@
 ---
 title: "DynamoDB and Spring Boot Webflux - A Working Introduction"
-date: 2020-07-01T00:00:00
+date: 2020-07-18T23:07:05
 draft: false
 ---
 
@@ -14,7 +14,7 @@ This post was an experiment to get dynamo and spring boot webflux to play nice w
 
 If you go to [the sprint boot initializr](https://start.spring.io/) and create a new project with the reactive web option, you can then setup your maven dependencies to look something like this:
 
-``` xml
+```xml
 &lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;
 &lt;project xmlns=&#34;http://maven.apache.org/POM/4.0.0&#34; xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;
          xsi:schemaLocation=&#34;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&#34;&gt;
@@ -95,7 +95,7 @@ The two important dependencies here are v2 of the AWS SDK and spring webflux.
 
 You will want to set up your local DynamoDB environment, you can refer to [a previous post I created on that subject to help you out there](https://nickolasfisher.com/blog/DynamoDB-Basics-A-Hands-On-Tutorial), and we can then configure our AWS SDK to point to that for the purposes of this tutorial:
 
-``` java
+```java
 @Configuration
 public class Config {
 
@@ -118,7 +118,7 @@ Continuing with the last post, we&#39;re going to reuse the **Phones** table, wh
 
 Our data model in spring boot is pretty straightforward. This generic template, including types:
 
-``` json
+```json
 {
     &#34;Company&#34;: {
         &#34;S&#34;: &#34;%s&#34;
@@ -142,7 +142,7 @@ Our data model in spring boot is pretty straightforward. This generic template, 
 
 Can be pretty easily digested into a POJO:
 
-``` java
+```java
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Phone {
@@ -159,7 +159,7 @@ public class Phone {
 
 I elected to use handlers rather than using the more familiar Spring Boot annotations. The biggest issue I had was that I could not find a clean way to customize the response code \[Edit: I figured it out like twenty minutes after I wrote this, [here&#39;s the follow up blog post](https://nickolasfisher.com/blog/How-to-Return-a-Response-Entity-in-Spring-Boot-Webflux)\]. Here is some code that creates (PUTs) a new item and also allows you to read an item by the company and model name:
 
-``` java
+```java
 @Component
 public class PhoneHandler {
 
@@ -227,7 +227,7 @@ public class PhoneHandler {
 
 Handlers are pretty straightforward, they just take a request interface and respond with a response interface wrapped in a Mono. To actually make use of these we will have to register some more code to map a route to the function \[I put this back in **Config.java**\]:
 
-``` java
+```java
     @Bean
     public RouterFunction&lt;ServerResponse&gt; getPhoneRoutes(PhoneHandler phoneHandler) {
         return route(RequestPredicates.PUT(&#34;/phone&#34;), phoneHandler::createPhoneHandler)
@@ -238,7 +238,7 @@ Handlers are pretty straightforward, they just take a request interface and resp
 
 Finally, if you start up the application, then run a bit of bash to test it you should be able to see it in action:
 
-``` bash
+```bash
 #!/bin/bash
 PHONE_TEMPLATE=$(cat &lt;&lt;&#39;EOF&#39;
 {
@@ -255,3 +255,15 @@ EOF
 
 NOKIA=$(printf &#34;$PHONE_TEMPLATE&#34;)
 
+# create a new object using the template defined above
+curl -v -XPUT localhost:8080/phone -H &#34;Content-Type: application/json&#34; --data &#34;$NOKIA&#34;
+
+# view the object
+curl -v -XGET &#34;http://localhost:8080/company/Nokia/model/1998%20dumb%20phone/phone&#34;
+
+# you should see a 404 here, the object does not exist:
+curl -v -XGET &#34;http://localhost:8080/company/Nokia/model/not-real/phone&#34;
+
+```
+
+And with that, you should be in a good place to start.

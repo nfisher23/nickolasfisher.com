@@ -1,6 +1,6 @@
 ---
 title: "How to Configure Prometheus to Scrape and Aggregate Data From a Spring Boot 2.x Application"
-date: 2020-05-01T00:00:00
+date: 2020-05-30T20:33:50
 draft: false
 ---
 
@@ -29,7 +29,7 @@ ENTRYPOINT cd /app &amp;&amp; mvn spring-boot:run
 
 At this point, we can set up the **docker-compose.yml**, which will represent a production like environment on our local machine:
 
-``` yaml
+```yaml
 version: &#39;3&#39;
   # `docker-compose build` to rebuild
   app:
@@ -56,7 +56,7 @@ version: &#39;3&#39;
 We are leveraging the isolated network that docker compose creates for us in this process and we are also leveraging spring configuration override. **SPRING\_DATASOURCE\_URL** is the same as if we
 would have specified a property in our **application.yml** that had something like:
 
-``` yaml
+```yaml
 spring.datasource.url: jdbc:postgresql://db:5432/local
 ```
 
@@ -72,7 +72,7 @@ And see some prometheus metrics output.
 
 To wire up prometheus, we will want to [use a built in prometheus image](https://hub.docker.com/r/prom/prometheus/) available on docker hub. We can add that to the **services** section in our docker compose file like so:
 
-``` yaml
+```yaml
   prom:
     image: prom/prometheus
     ports:
@@ -98,9 +98,52 @@ To wire up prometheus, we will want to [use a built in prometheus image](https:/
 
 You will also need to set up your **prometheus.yml** file to find and scrape your application:
 
-``` yaml
+```yaml
 global:
   scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
   evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
   # scrape_timeout is set to the global default (10s).
 
+# Load rules once and periodically evaluate them according to the global &#39;evaluation_interval&#39;.
+rule_files:
+# - &#34;first_rules.yml&#34;
+# - &#34;second_rules.yml&#34;
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it&#39;s Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=` to any timeseries scraped from this config.
+  - job_name: &#39;prometheus&#39;
+    # metrics_path defaults to &#39;/metrics&#39;
+    # scheme defaults to &#39;http&#39;.
+    static_configs:
+      - targets: [&#39;127.0.0.1:9090&#39;]
+
+  - job_name: &#39;spring-actuator&#39;
+    metrics_path: &#39;/actuator/prometheus&#39;
+    scrape_interval: 5s
+    static_configs:
+      - targets: [&#39;app:8080&#39;] # run ifconfig and get host ip
+
+```
+
+The really important part of this config, once again leveraging the DNS in the docker compose file, is:
+
+```yaml
+  - job_name: &#39;spring-actuator&#39;
+    metrics_path: &#39;/actuator/prometheus&#39;
+    scrape_interval: 5s
+    static_configs:
+      - targets: [&#39;app:8080&#39;] # run ifconfig and get host ip
+
+```
+
+This tells prometheus to scrape our application every five seconds, and the URL to resolve to is our exposed **/actuator/prometheus**. To run the example [provided in the source code](https://github.com/nfisher23/prometheus-metrics-ex), you will have to first create and modify a file to have the right permissions, then you can start it up:
+
+```
+$ mkdir graf-data &amp;&amp; chmod 777 graf-data
+$ docker-compose up -d
+
+```
+
+After everything downloads and comes up properly, you can get to grafana at port 3000 or prometheus on port 9090, and you should see the data flowing from our application to make it so.

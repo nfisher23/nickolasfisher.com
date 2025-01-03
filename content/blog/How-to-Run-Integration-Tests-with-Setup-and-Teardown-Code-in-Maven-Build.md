@@ -1,6 +1,6 @@
 ---
 title: "How to Run Integration Tests with Setup and Teardown Code in Maven Build"
-date: 2018-11-01T00:00:00
+date: 2018-11-24T14:49:09
 draft: false
 ---
 
@@ -12,7 +12,7 @@ You can use the [maven failsafe plugin](https://maven.apache.org/surefire/maven-
 
 To begin with, you should understand the [Maven Phase Lifecycle](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html), in particular take a look at [The Complete Maven Phase Lifecycle](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#Lifecycle_Reference). First, we need to bind our integration tests, which should exist in a separate directory as our unit tests, to the integration-test phase. Update your pom to include this (in the build/plugins section):
 
-``` xml
+```xml
             &lt;!-- use the codehaus plugin to add a new test source, to keep unit and integration tests separated --&gt;
             &lt;plugin&gt;
                 &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
@@ -36,8 +36,8 @@ To begin with, you should understand the [Maven Phase Lifecycle](https://maven.a
 
 We will then assume any integration tests will end in IT, and add this section to the pom as well. Here I&#39;ll assume your integration tests are in the **src/testintegration/java/com/nickolasfisher/postgresintegration/tests** directory:
 
-``` xml
-            &lt;!-- the failsafe plugin runs our integration tests. By convention, we will consider every class ending in IT an integration test module--&gt;
+```xml
+            &lt;!-- the failsafe plugin runs our integration tests. By convention, we will consider every class ending in IT an integration test module--&gt;
             &lt;plugin&gt;
                 &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
                 &lt;artifactId&gt;maven-failsafe-plugin&lt;/artifactId&gt;
@@ -65,7 +65,7 @@ We will then assume any integration tests will end in IT, and add this section t
 
 If we then have an integration test in the appropriate folder like:
 
-``` java
+```java
 public class PostgresAppIT {
 
     @Test
@@ -79,7 +79,7 @@ public class PostgresAppIT {
 
 Then run
 
-``` bash
+```bash
 $ mvn verify
 ```
 
@@ -87,7 +87,7 @@ You will see the integration tests run separately from the unit tests, and in pa
 
 Now we need a way to execute code in the pre-integration-test and post-integration-test phase. We can use another org.codehaus plugin, the [exec-maven-plugin](https://www.mojohaus.org/exec-maven-plugin/), to accomplish that. First we have to add sources, and here I&#39;ll assume your pre and post integration test code will reside in **src/testintegration/java/com/nickolasfisher/postgresintegration/setup** and **src/testintegration/java/com/nickolasfisher/postgresintegration/teardown**, respectively. We can update our build helper add sources section to look like:
 
-``` xml
+```xml
             &lt;plugin&gt;
                 &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
                 &lt;artifactId&gt;build-helper-maven-plugin&lt;/artifactId&gt;
@@ -123,7 +123,7 @@ Now we need a way to execute code in the pre-integration-test and post-integrati
 
 And we can create PreIntegrationTest and PostIntegrationTest classes to run arbitrary Java code like:
 
-``` java
+```java
 public class PreIntegrationSetup {
 
     public static void main(String args[]) {
@@ -135,7 +135,7 @@ public class PreIntegrationSetup {
 
 And:
 
-``` java
+```java
 public class PostIntegrationTeardown {
 
     public static void main(String args[]) {
@@ -146,7 +146,7 @@ public class PostIntegrationTeardown {
 
 Finally, we can update our pom file to include the exec-maven-plugin referenced above:
 
-``` xml
+```xml
             &lt;plugin&gt;
                 &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
                 &lt;artifactId&gt;exec-maven-plugin&lt;/artifactId&gt;
@@ -179,5 +179,3 @@ Finally, we can update our pom file to include the exec-maven-plugin referenced 
 [Go get the source code](https://github.com/nfisher23/integration-testing-postgres-and-spring) and checkout the correct commit (991015831dd71bae58c8a045ffe76c390e9f2bf8) to see this in action.
 
 Finally, if you&#39;re using Spring, there is a way to [use Spring&#39;s ApplicationContext in your setup and teardown code](https://nickolasfisher.com/blog/How-to-Use-Springs-Dependency-Injection-in-Setup-And-Teardown-Code-For-Integration-Tests-With-Maven), which is a much more maintable way to ensure everything fits correctly together.
-
-

@@ -1,6 +1,6 @@
 ---
 title: "Working with Redis Hashes using Lettuce And Webflux"
-date: 2021-04-01T00:00:00
+date: 2021-04-11T22:26:29
 draft: false
 ---
 
@@ -14,7 +14,7 @@ Hashes in redis are basically just objects. There&#39;s a key to get to the obje
 
 The easiest way to get started is to set a hash object and then get all of those key/value pairs:
 
-``` java
+```java
 public class HashesTest extends BaseSetupAndTeardownRedis {
 
     @Test
@@ -53,7 +53,7 @@ The above example shows that we can set key/value pairs inside of our key. In th
 
 The real value of hashes are going to come from manipulating individual fields inside of the hash. For example, let&#39;s start with the same set of data we did in the previous example:
 
-``` java
+```java
     @Test
     public void getAndSetSingleValueInHash() {
         RedisReactiveCommands&lt;String, String&gt; redisReactiveCommands = redisClient.connect().reactive();
@@ -73,7 +73,7 @@ The real value of hashes are going to come from manipulating individual fields i
 
 We can then set and get individual fields inside of that hash set with something like this:
 
-``` java
+```java
         StepVerifier.create(redisReactiveCommands.hget(&#34;hash-set-key&#34;, &#34;key-1&#34;))
                 .expectNextMatches(val -&gt; val.equals(&#34;value-1&#34;))
                 .verifyComplete();
@@ -97,5 +97,3 @@ We can then set and get individual fields inside of that hash set with something
 We get **key-1**, then change the value under **key-2**, then we verify that both the value under **key-2** was changed, but also that the value under our **key-1** was left unchanged.
 
 While there are many more operations available to you \[linked at the top of this article\], you should be in pretty good shape after this introduction, and I&#39;ll leave you to it.
-
-

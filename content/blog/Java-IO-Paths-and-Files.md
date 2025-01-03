@@ -1,6 +1,6 @@
 ---
 title: "Java IO: Paths and Files"
-date: 2018-11-01T00:00:00
+date: 2018-11-03T13:18:09
 draft: false
 ---
 
@@ -10,7 +10,7 @@ System paths and file manipulation, usually within the java.nio package, in Java
 
 You can find the absolute path:
 
-``` java
+```java
 @Test
 public void visitingDirectories_walkSubDirectories() throws Exception {
     try (Stream&lt;Path&gt; entries  = Files.walk(Paths.get(Utils.pathToResources))) {
@@ -24,7 +24,7 @@ public void visitingDirectories_walkSubDirectories() throws Exception {
 
 With the absolute path of your current working directory in place, you can then ask for the parent, filename, root, and many other metadata qualities:
 
-``` java
+```java
 @Test
 public void someUsefulStuff() {
     Path absolutePath = Paths.get(&#34;&#34;).toAbsolutePath();
@@ -46,7 +46,7 @@ public void someUsefulStuff() {
 
 You can get a `Scanner` and scan through all the characters:
 
-``` java
+```java
 @Test
 public void getScannerFromPath() throws Exception {
     Path pathToExampleFile = Paths.get(Utils.simpleExampleFilePath);
@@ -61,7 +61,7 @@ public void getScannerFromPath() throws Exception {
 
 Another way to read a file as a String (in this example, a file with UTF-8 character set) is to start by reading all the bytes from that file, and then constructing a String out of that byte array:
 
-``` java
+```java
 @Test
 public void files_readAllBytes_thenStrings() throws Exception {
     Path pathToExampleFile = Paths.get(Utils.simpleExampleFilePath);
@@ -76,7 +76,7 @@ public void files_readAllBytes_thenStrings() throws Exception {
 
 You can, similarly, read in all the lines as a `List&lt;String&gt;`:
 
-``` java
+```java
 @Test
 public void files_sequenceOfLines() throws Exception {
     Path pathToExampleFile = Paths.get(Utils.simpleExampleFilePath);
@@ -90,7 +90,7 @@ public void files_sequenceOfLines() throws Exception {
 
 For write operations, you can write a string by converting them to bytes, with the appropriate character set, then using `Files.write(..)`:
 
-``` java
+```java
 @Test
 public void files_writeStringToFile() throws Exception {
     String stuffToWrite = &#34;some new text&#34;;
@@ -106,7 +106,7 @@ public void files_writeStringToFile() throws Exception {
 
 The default behavior of `Files.write(..)` is to overwrite a file if it already exists. If you want to append a file, you can do so by passing the `StandardOpenOption` enumerated value into the third argument:
 
-``` java
+```java
 @Test
 public void files_appendToFile() throws Exception {
     String beginnings = &#34;some next text\n&#34;;
@@ -124,5 +124,3 @@ public void files_appendToFile() throws Exception {
 }
 
 ```
-
-

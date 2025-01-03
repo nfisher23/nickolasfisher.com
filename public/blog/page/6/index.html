@@ -158,23 +158,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/why-redis-pubsub-is-not-sqs-and-vice-versa/">Why Redis Pub/Sub is not SQS, and Vice Versa</a>
+    <a href="http://localhost:1313/blog/breaking-down-lettuce-mset-commands-in-clustered-redis/">Breaking down Lettuce MSET Commands in Clustered Redis</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-10 23:26:07 &#43;0000 UTC" title='Sat, Apr 10, 2021, 11:26 PM UTC'>
+      10/04/2021
     </time>
   </span>
 
   <div class="description">
     
-      <p><a href="https://redis.io/topics/pubsub">Redis has a pub/sub feature</a> whereby there are publishers and subscribers, and publishers can fanout messages to subscribers. SQS [ <a href="https://aws.amazon.com/sqs/">amazon's simple queue service</a>] has message senders and receivers. They can both be useful, but in practice they produce different results.</p>
+      <p>To follow along with this post, it would be best if you have already <a href="https://nickolasfisher.com/blog/Bootstrap-a-Local-Sharded-Redis-Cluster-in-Five-Minutes">set up your local redis cluster</a> and know how to <a href="https://nickolasfisher.com/blog/Configuring-Lettuce-to-work-with-Clustered-Redis">connect to a redis cluster and interact with it via Lettuce</a>. And the source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/why-redis-pubsub-is-not-sqs-and-vice-versa/">
+    <a class="read-more" href="http://localhost:1313/blog/breaking-down-lettuce-mset-commands-in-clustered-redis/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -189,23 +189,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/working-with-lists-in-redis-using-lettuce-and-webflux/">Working with Lists in Redis using Lettuce and Webflux</a>
+    <a href="http://localhost:1313/blog/configuring-lettucewebflux-to-work-with-clustered-redis/">Configuring Lettuce/Webflux to work with Clustered Redis</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-10 22:27:54 &#43;0000 UTC" title='Sat, Apr 10, 2021, 10:27 PM UTC'>
+      10/04/2021
     </time>
   </span>
 
   <div class="description">
     
-      <p>As of this writing, there are a solid <a href="https://redis.io/commands/#list">twenty or so commands you can execute against redis for the list data type</a>. This article will be walking through some of the more common operations you are likely to need when interacting with redis and lists using lettuce, and <a href="https://github.com/nfisher23/reactive-programming-webflux">the source code can be found on Github</a>.</p>
+      <p>Lettuce has some pretty nice out of the box support for working with clustered redis. This combination&ndash;a reactive client and application along with clustered redis&ndash;is about as scalable, performant, and resilient as things can get in distributed systems [though there are other tradeoffs which are not the subject of this post].</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/working-with-lists-in-redis-using-lettuce-and-webflux/">
+    <a class="read-more" href="http://localhost:1313/blog/configuring-lettucewebflux-to-work-with-clustered-redis/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -220,23 +220,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/working-with-redis-hashes-using-lettuce-and-webflux/">Working with Redis Hashes using Lettuce And Webflux</a>
+    <a href="http://localhost:1313/blog/bootstrap-a-local-sharded-redis-cluster-in-five-minutes/">Bootstrap a Local Sharded Redis Cluster in Five Minutes</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-10 18:24:12 &#43;0000 UTC" title='Sat, Apr 10, 2021, 6:24 PM UTC'>
+      10/04/2021
     </time>
   </span>
 
   <div class="description">
     
-      <p>There are about <a href="https://redis.io/commands/#hash">15 or so commands you can execute against redis for hash types</a> as of this writing. This article will demonstrate some of the more common operations you're likely to need when using lettuce as your client.</p>
+      <p>If you're interested in understanding details of how clustered redis works [that is to say, if you're more or less responsible for operationalizing it], there is an excellent <a href="https://redis.io/topics/cluster-tutorial">section in the redis documentation</a> that goes into some detail on it. I would advise everyone to read that at some point, but if you just want to get started hacking this is the TLDR; article that you're looking for. We will run through some basic commands to get up and running, and you can use this cluster to help figure out the details later on.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/working-with-redis-hashes-using-lettuce-and-webflux/">
+    <a class="read-more" href="http://localhost:1313/blog/bootstrap-a-local-sharded-redis-cluster-in-five-minutes/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -251,24 +251,24 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/working-with-string-types-in-redis-using-lettuce-and-webflux/">Working with String Types in Redis using Lettuce and Webflux</a>
+    <a href="http://localhost:1313/blog/setup-and-use-a-dynamodb-test-container-with-the-aws-java-sdk-20/">Setup and Use a DynamoDB Test Container with the AWS Java SDK 2.0</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-10 16:13:09 &#43;0000 UTC" title='Sat, Apr 10, 2021, 4:13 PM UTC'>
+      10/04/2021
     </time>
   </span>
 
   <div class="description">
     
-      <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>There are, as of this writing, <a href="https://redis.io/commands/#string">27 different string operations available in the redis API</a>. Lettuce appears to have interfaces that directly support all of them.</p>
+      <p>The source code for this article <a href="https://github.com/nfisher23/webflux-and-dynamo">can be found on Github</a>.</p>
+<p>Using <a href="https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing">embedded dynamodb for testing</a> is, in my experience, kind of flakey and unpredictable. Because of the weird way it pulls in SQLite on a per operating system basis, it can sometimes work locally and not work on the build server. Sometimes it's just not working for some unexplained reason and wiping the directory that the code is in and re-cloning fixes it. Not a fun time.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/working-with-string-types-in-redis-using-lettuce-and-webflux/">
+    <a class="read-more" href="http://localhost:1313/blog/setup-and-use-a-dynamodb-test-container-with-the-aws-java-sdk-20/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -283,24 +283,24 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/atomic-incrementing-in-dynamodb-with-the-java-aws-sdk-20/">Atomic Incrementing in DynamoDB with the Java AWS SDK 2.0</a>
+    <a href="http://localhost:1313/blog/how-to-configure-lettuce-to-use-redis-read-replicas-in-spring-boot-webflux/">How to Configure Lettuce to use Redis Read Replicas in Spring Boot Webflux</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-03-01 00:00:00 &#43;0000 UTC" title='Mon, Mar 1, 2021, 12:00 AM UTC'>
-      01/03/2021
+    <time datetime="2021-03-28 19:22:27 &#43;0000 UTC" title='Sun, Mar 28, 2021, 7:22 PM UTC'>
+      28/03/2021
     </time>
   </span>
 
   <div class="description">
     
-      <p>The source code for this post <a href="https://github.com/nfisher23/webflux-and-dynamo">can be found on Github</a>.</p>
-<p>When you update an item in DynamoDB, you can optionally update the item in place. That is, instead of <strong>read-increment-write</strong>, you can just issue a command that says <strong>increment this value in place</strong>. This behavior is detailed in the <a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html#WorkingWithItems.AtomicCounters">AWS documentation</a>, and I will provide an example for how to do so with the Java AWS SDK 2.0, which has full reactive support.</p>
+      <p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
+<p>Lettuce supports reading from redis replicas, but with the caveat that it doesn't [out of the box] provide you with the fine-grained control over <em>when</em> to read from the replicas that you're likely to want.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/atomic-incrementing-in-dynamodb-with-the-java-aws-sdk-20/">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-configure-lettuce-to-use-redis-read-replicas-in-spring-boot-webflux/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

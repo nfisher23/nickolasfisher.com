@@ -1,6 +1,6 @@
 ---
 title: "Improving Java IO Performance: Does Compression Actually Help?"
-date: 2018-11-01T00:00:00
+date: 2018-11-17T18:55:03
 draft: false
 ---
 
@@ -10,7 +10,7 @@ The question &#34;does compression actually help?&#34; is admittedly pretty load
 
 We&#39;ll write a CSV file that contains 1M lines, where each line looks like &#34;0,1,2,3...,8,9&#34;. First, I&#39;ll set up the benchmark runner JMH with JUnit:
 
-``` java
+```java
     public static void runBenchmark(Class clazz) throws Exception {
         Options options = new OptionsBuilder()
                 .include(clazz.getName() &#43; &#34;.*&#34;)
@@ -40,11 +40,11 @@ We&#39;ll write a CSV file that contains 1M lines, where each line looks like &#
 
 Then I&#39;ll set up a benchmark that writes and reads without compression, using the file size as the buffer in the second case:
 
-``` java
+```java
     public static int NUMBER_OF_CSV_LINES = 1000000;
 ```
 
-``` java
+```java
     @Benchmark
     public void readAndWriteWithoutCompression() throws Exception {
         writeUncompressedFileToDisk(Utils.getCsv(NUMBER_OF_CSV_LINES), millionLineCsvFilePath);
@@ -71,7 +71,7 @@ Then I&#39;ll set up a benchmark that writes and reads without compression, usin
 
 And I&#39;ll set up a comparison benchmark that using compression, specifically using ZipInputStream and ZipOutputStream (using the ZIP algorithm):
 
-``` java
+```java
     @Benchmark
     public void readAndWriteCompressedData() throws Exception {
         compressAndWriteFile(Utils.getCsv(NUMBER_OF_CSV_LINES), compressedLargeCsvFile);
@@ -102,7 +102,7 @@ And I&#39;ll set up a comparison benchmark that using compression, specifically 
 
 The performance comparison on my machine between these two approaches came to:
 
-``` bash
+```bash
 Benchmark                                        Mode  Cnt    Score   Error  Units
 CompressionTests.readAndWriteCompressedData      avgt    2  472.763          ms/op
 CompressionTests.readAndWriteWithoutCompression  avgt    2  407.777          ms/op
@@ -111,5 +111,3 @@ CompressionTests.readAndWriteWithoutCompression  avgt    2  407.777          ms/
 So, in this particular case, it&#39;s faster to write normal data size to disk and pull out the same size. However, the advantage of compression in this case could also be that you&#39;re saving on disk storage, which could provide value.
 
 I did run these benchmarks on another machine and noticed a ~3 times improvement in _speed_ for compression, so the specific environment is probably important. Like everything else, tinker aggressively with these concepts if you&#39;re tasked with optimization.
-
-

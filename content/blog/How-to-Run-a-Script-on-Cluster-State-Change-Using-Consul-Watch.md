@@ -1,6 +1,6 @@
 ---
 title: "How to Run a Script on Cluster State Change Using Consul Watch"
-date: 2019-05-01T00:00:00
+date: 2019-05-25T22:18:42
 draft: false
 ---
 
@@ -29,7 +29,7 @@ Like all python scripts, this reads pretty much like English, and we can see tha
 
 Next, we&#39;ll need to drop the script on the server where Consul is provisioned. Insert the following line in the **tasks/main.yml** file:
 
-``` yaml
+```yaml
 - name: send consul watch script
   copy:
     dest: &#34;{{ consul_config_dir }}/watch_script.py&#34;
@@ -44,7 +44,7 @@ This is just a POC, but you will want to lock down the script to be owned by Con
 
 Finally, adjust your **templates/consul.config.j2** file to look like:
 
-``` json
+```json
 {
     &#34;node_name&#34;: &#34;{{ node_name }}&#34;,
     &#34;addresses&#34;: {
@@ -73,7 +73,7 @@ Finally, adjust your **templates/consul.config.j2** file to look like:
 
 The critical part of this is the &#34;watches&#34; section, which will be rendered by Jinja2 as:
 
-``` json
+```json
     &#34;watches&#34;: [
         {
             &#34;type&#34;: &#34;checks&#34;,
@@ -86,10 +86,8 @@ Which tells Consul that, whenever there is a state changes related to nodes or s
 
 If you run:
 
-``` bash
+```bash
 $ molecule create &amp;&amp; molecule converge
 ```
 
 At this point, you will see the cluster come up. To prove that the file gets created and populated by our script, you can either restart one of the Consul Agents, or refer to a previous post on [registering a simple java service to a consul cluster](https://nickolasfisher.com/blog/How-to-Register-a-Spring-Boot-Service-to-a-Consul-Cluster). Either one will demo the functionality provided.
-
-

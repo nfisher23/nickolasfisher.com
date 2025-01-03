@@ -158,23 +158,24 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/how-to-return-a-response-entity-in-spring-boot-webflux/">How to Return a Response Entity in Spring Boot Webflux</a>
+    <a href="http://localhost:1313/blog/dynamodb-and-spring-boot-webflux-a-working-introduction/">DynamoDB and Spring Boot Webflux - A Working Introduction</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-07-01 00:00:00 &#43;0000 UTC" title='Wed, Jul 1, 2020, 12:00 AM UTC'>
-      01/07/2020
+    <time datetime="2020-07-18 23:07:05 &#43;0000 UTC" title='Sat, Jul 18, 2020, 11:07 PM UTC'>
+      18/07/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p>In my last post on <a href="https://nickolasfisher.com/blog/DynamoDB-and-Spring-Boot-Webflux-A-Working-Introduction">getting started with spring boot webflux and AWS DynamoDB</a>, I mentioned that it wasn't immediately obvious to find a way to customize the response code in a spring boot <strong>RestController</strong>, so I opted to use handlers instead.</p>
+      <p>The source code for this post <a href="https://github.com/nfisher23/webflux-and-dynamo">can be found on Github</a>.</p>
+<p>The <a href="https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/welcome.html">latest AWS SDK for java</a> uses a reactive client to send requests to various AWS services, including DynamoDB. Reactive programming is ultimately more robust at the edges&ndash;once you start experiencing latency anywhere in your stack, if your tech is not reactive, you're going to have a significantly worse time than if it were.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/how-to-return-a-response-entity-in-spring-boot-webflux/">
+    <a class="read-more" href="http://localhost:1313/blog/dynamodb-and-spring-boot-webflux-a-working-introduction/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -189,23 +190,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/optimistic-locking-in-mysqlexplain-like-im-five/">Optimistic Locking in MySQL--Explain Like I&amp;#39;m Five</a>
+    <a href="http://localhost:1313/blog/dynamodb-basics-a-hands-on-tutorial/">DynamoDB Basics: A Hands On Tutorial</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-07-01 00:00:00 &#43;0000 UTC" title='Wed, Jul 1, 2020, 12:00 AM UTC'>
-      01/07/2020
+    <time datetime="2020-07-12 18:36:05 &#43;0000 UTC" title='Sun, Jul 12, 2020, 6:36 PM UTC'>
+      12/07/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p>Optimistic Locking is a compromise to improve performance. If processors were infinitely fast, we wouldn't need it and it would add unnecessary complexity. But, well, they aren't.</p>
+      <p>DynamoDB is a fully managed distributed datastore that does a great job of alleviating the operational overhead of building very scalable systems.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/optimistic-locking-in-mysqlexplain-like-im-five/">
+    <a class="read-more" href="http://localhost:1313/blog/dynamodb-basics-a-hands-on-tutorial/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -224,8 +225,8 @@
   </h1>
   
   <span class="date">
-    <time datetime="2020-06-01 00:00:00 &#43;0000 UTC" title='Mon, Jun 1, 2020, 12:00 AM UTC'>
-      01/06/2020
+    <time datetime="2020-06-20 22:47:02 &#43;0000 UTC" title='Sat, Jun 20, 2020, 10:47 PM UTC'>
+      20/06/2020
     </time>
   </span>
 
@@ -251,24 +252,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/how-to-configure-rest-assured-to-record-the-latency-of-every-request-in-a-custom-way/">How to Configure Rest Assured to Record the Latency of Every Request In a Custom Way</a>
+    <a href="http://localhost:1313/blog/how-to-setup-and-use-kubernetes-in-docker-kind/">How to Setup and Use Kubernetes in Docker [kind]</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-06-01 00:00:00 &#43;0000 UTC" title='Mon, Jun 1, 2020, 12:00 AM UTC'>
-      01/06/2020
+    <time datetime="2020-06-20 19:32:30 &#43;0000 UTC" title='Sat, Jun 20, 2020, 7:32 PM UTC'>
+      20/06/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p>Sample code associated with this post can be found <a href="https://github.com/nfisher23/examples-testing-stuff">on Github</a>.</p>
-<p><a href="https://github.com/rest-assured/rest-assured/wiki/Usage">Rest Assured</a> is a library that makes it easy to write api based automated tests in java. Recently I needed to find a way to record the latency of each request as well as some metadata about it [request path, method, things of that nature]. I found a nice way to do this with <a href="https://github.com/rest-assured/rest-assured/wiki/Usage#filters">rest assured filters</a>, and I'm going to share that with you in this article.</p>
+      <p><a href="https://kind.sigs.k8s.io/">kind</a> is a tool that spins up a kubernetes cluster of arbitrary size on your local machine. It is, in my experience, more lightweight than minikube, and also allows for a multi node setup.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/how-to-configure-rest-assured-to-record-the-latency-of-every-request-in-a-custom-way/">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-setup-and-use-kubernetes-in-docker-kind/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -283,23 +283,24 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/how-to-setup-and-use-kubernetes-in-docker-kind/">How to Setup and Use Kubernetes in Docker [kind]</a>
+    <a href="http://localhost:1313/blog/how-to-configure-rest-assured-to-record-the-latency-of-every-request-in-a-custom-way/">How to Configure Rest Assured to Record the Latency of Every Request In a Custom Way</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-06-01 00:00:00 &#43;0000 UTC" title='Mon, Jun 1, 2020, 12:00 AM UTC'>
-      01/06/2020
+    <time datetime="2020-06-13 21:06:52 &#43;0000 UTC" title='Sat, Jun 13, 2020, 9:06 PM UTC'>
+      13/06/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p><a href="https://kind.sigs.k8s.io/">kind</a> is a tool that spins up a kubernetes cluster of arbitrary size on your local machine. It is, in my experience, more lightweight than minikube, and also allows for a multi node setup.</p>
+      <p>Sample code associated with this post can be found <a href="https://github.com/nfisher23/examples-testing-stuff">on Github</a>.</p>
+<p><a href="https://github.com/rest-assured/rest-assured/wiki/Usage">Rest Assured</a> is a library that makes it easy to write api based automated tests in java. Recently I needed to find a way to record the latency of each request as well as some metadata about it [request path, method, things of that nature]. I found a nice way to do this with <a href="https://github.com/rest-assured/rest-assured/wiki/Usage#filters">rest assured filters</a>, and I'm going to share that with you in this article.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/how-to-setup-and-use-kubernetes-in-docker-kind/">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-configure-rest-assured-to-record-the-latency-of-every-request-in-a-custom-way/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

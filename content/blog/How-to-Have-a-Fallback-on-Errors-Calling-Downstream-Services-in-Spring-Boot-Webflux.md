@@ -1,6 +1,6 @@
 ---
 title: "How to Have a Fallback on Errors Calling Downstream Services in Spring Boot Webflux"
-date: 2020-09-01T00:00:00
+date: 2020-09-26T16:04:14
 draft: false
 ---
 
@@ -10,7 +10,7 @@ Things break. When you start adding more and more microservices, things will bre
 
 I&#39;m going to build off of some of the boilerplate code [written in previous blog posts](https://nickolasfisher.com/blog/How-to-Make-Sequential-API-Calls-and-Merge-the-Results-In-Spring-Boot-Webflux). If you&#39;ll recall, we had a **WebClient** configured like so:
 
-``` java
+```java
 @Configuration
 public class Config {
 
@@ -34,7 +34,7 @@ public class Config {
 
 And with that in place, let&#39;s create the boilerplate for a java service that will wrap a call to an external client, one that sometimes behaves badly and fails:
 
-``` java
+```java
 @Service
 public class FallbackService {
 
@@ -54,7 +54,7 @@ public class FallbackService {
 
 This method will allow us to get a **WelcomeMessage** that is locale specific, so that somebody who wants to receive a welcome message in french \[because, say, that&#39;s the only language they speak\] can do so. That DTO looks like this:
 
-``` java
+```java
 public class WelcomeMessage {
     private String message;
 
@@ -71,7 +71,7 @@ public class WelcomeMessage {
 
 Following TDD, we will now create the test class:
 
-``` java
+```java
 @ExtendWith(MockServerExtension.class)
 public class FallbackServiceIT {
 
@@ -122,7 +122,7 @@ Similar to previous posts, we&#39;re leveraging **MockServer** here to simulate 
 
 Now let&#39;s change the service code to make it pass:
 
-``` java
+```java
     public Mono&lt;WelcomeMessage&gt; getWelcomeMessageByLocale(String locale) {
         return this.serviceAWebClient.get()
                 .uri(uriBuilder -&gt; uriBuilder.path(&#34;/locale/{locale}/message&#34;).build(locale))
@@ -138,7 +138,7 @@ Okay, so this is fine if the downstream service is behaving normally, but what i
 
 To simulate this failure, we can similarly use **MockServer**:
 
-``` java
+```java
     @Test
     public void welcomeMessage_fallsBackToEnglishWhenError() {
         this.clientAndServer.when(
@@ -159,7 +159,7 @@ To simulate this failure, we can similarly use **MockServer**:
 
 With this now in place, we can start examining the different ways we can accomplish our goals here. One option is to just use **onErrorReturn**:
 
-``` java
+```java
     public Mono&lt;WelcomeMessage&gt; getWelcomeMessageByLocale(String locale) {
         return this.serviceAWebClient.get()
                 .uri(uriBuilder -&gt; uriBuilder.path(&#34;/locale/{locale}/message&#34;).build(locale))
@@ -172,7 +172,7 @@ With this now in place, we can start examining the different ways we can accompl
 
 This is obviously very simple, but pretty crude. I generally prefer to use a different overloaded method for that, which is to use a **Predicate** to first check that the error type is one we are okay with falling back on:
 
-``` java
+```java
     public Mono&lt;WelcomeMessage&gt; getWelcomeMessageByLocale(String locale) {
         return this.serviceAWebClient.get()
                 .uri(uriBuilder -&gt; uriBuilder.path(&#34;/locale/{locale}/message&#34;).build(locale))
@@ -188,5 +188,3 @@ This is obviously very simple, but pretty crude. I generally prefer to use a dif
 ```
 
 With either of those changes, our test now passes, and we&#39;ve added a small but meaningful win to our app! Remember to [check out the source code on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience) to see this in action.
-
-

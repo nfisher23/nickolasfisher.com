@@ -1,6 +1,6 @@
 ---
 title: "How to Set Up A Private Local Network On Your PC With VirtualBox"
-date: 2018-10-01T00:00:00
+date: 2018-10-28T14:27:31
 draft: false
 ---
 
@@ -53,7 +53,7 @@ For me, the NAT interface was enp0s3, and the host-only interface was named enp0
 
 Your configuration file should be changed to look like this:
 
-``` yaml
+```yaml
 network:
   ethernets:
     enp0s3:
@@ -75,5 +75,3 @@ And your machine is configured. You can validate that it works by connecting via
 `$ ssh your_username@192.168.56.101`
 
 While you can do this for every VM that you want to configure, including multiple ones, I would instead recommend you move on from this exercise and shorten the feedback loop by [setting up Vagrant to simulate a cloud-like environment](https://nickolasfisher.com/blog/How-to-Simulate-Distributed-Systems-in-the-Cloud-with-Vagrant).
-
-

@@ -1,6 +1,6 @@
 ---
 title: "How to Prevent Certain Exceptions from Tripping a Resilience4j Circuit"
-date: 2021-05-01T00:00:00
+date: 2021-05-01T21:14:55
 draft: false
 ---
 
@@ -10,7 +10,7 @@ The Resilience4j circuit breaker by default considers any exception thrown insid
 
 It&#39;s not uncommon to throw exceptions as a part of normal business logic--they might be thrown because of an _exceptional circumstance_, but that doesn&#39;t mean that there is an error or something wrong with the downstream resource you&#39;re trying to interact with. For example, Spring&#39;s **RestTemplate** will throw an exception on a 4xx response code, and this will by default trip the circuit and prevent future calls from going through:
 
-``` java
+```java
     @Test
     public void clientErrorException_stillTripsTheCircuit() {
         HttpRequest expectedFirstRequest = HttpRequest.request()
@@ -63,7 +63,7 @@ If you want to not count specific types of exceptions as being errors, then the 
 
 In general I prefer to say &#34;if it&#39;s an exception, then something is most likely wrong&#34; unless it meets a specific number of things that I know are fine. So, in this example, a 404 response doesn&#39;t actually mean anything is wrong with the downstream service, and we can ignore it in the configuration like so:
 
-``` java
+```java
         CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig
                 .custom()
                 .ignoreException(throwable -&gt; {
@@ -78,7 +78,7 @@ Passing in a lambda as a **Predicate**, we know that **NotFound** is a subclass 
 
 The full test that now proves this works is thus:
 
-``` java
+```java
     @Test
     public void excludingClientErrorExceptions_fromTheCount() {
         HttpRequest expectedFirstRequest = HttpRequest.request()
@@ -129,5 +129,3 @@ The full test that now proves this works is thus:
 ```
 
 And with that, you should be good to go.
-
-

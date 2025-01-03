@@ -1,6 +1,6 @@
 ---
 title: "Expiring Individual Elements in a Redis Set"
-date: 2021-04-01T00:00:00
+date: 2021-04-18T20:13:11
 draft: false
 ---
 
@@ -14,7 +14,7 @@ To start with, instead of using a vanilla set, we&#39;re going to use a sorted s
 
 So let&#39;s add three entries in our sorted set, sleeping for 100 milliseconds in between adding each one, and every time we add an element we specify the **score** as the current number of milliseconds since epoch:
 
-``` java
+```java
     @Test
     public void expireElementsPeriodically() throws Exception {
         String setKey = &#34;values-set-key&#34;;
@@ -41,7 +41,7 @@ So let&#39;s add three entries in our sorted set, sleeping for 100 milliseconds 
 
 Now you&#39;ll have three entries in the set \[&#34;first&#34;, &#34;second&#34;, and &#34;third&#34;\]. Each entry will have a score that is the epoch millisecond timestamp of when it was entered. It&#39;s important to note that redis doesn&#39;t know that--it just keeps the entries sorted by an arbitrary score. If we want to expire them, we now just have to issue one command, which is to pick a time that we consider entries in the set to be invalid and remove them by score:
 
-``` java
+```java
         // expire everything older than 250ms ago
         Mono&lt;Long&gt; expireOldEntriesMono = redisReactiveCommands.zremrangebyscore(setKey,
                 Range.create(0, Instant.now().minus(250, ChronoUnit.MILLIS).toEpochMilli())
@@ -64,7 +64,7 @@ Here we&#39;re expiring everything older than 250ms ago, which should just delet
 
 In the above example, we didn&#39;t _really_ set the expiry of every element in the set. What we did was specify when we put the element in there, and then later decided what was &#34;too old&#34; for us at some future date. A better way to do this would be to make the score associated with each element to be the _actual time it should expire_, then periodically remove entries older than right now:
 
-``` java
+```java
     @Test
     public void expireElementsPeriodically() throws Exception {
         String setKey = &#34;values-set-key&#34;;
@@ -107,5 +107,3 @@ In the above example, we didn&#39;t _really_ set the expiry of every element in 
 ```
 
 This approach is probably going to be more intuitive than deciding on behalf of the entire set what needs to be expired.
-
-

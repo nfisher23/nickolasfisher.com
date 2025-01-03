@@ -1,6 +1,6 @@
 ---
 title: "The Java Stream API: Concatenating, Sorting, and Flat-Mapping"
-date: 2018-10-01T00:00:00
+date: 2018-10-20T21:32:57
 draft: false
 ---
 
@@ -8,7 +8,7 @@ The sample code associated with this post can be found [on GitHub](https://githu
 
 Sometimes, we will have two different streams of data that we want to aggregate into one stream to analyze. In that case, we can use the `Stream.concat(..)` method. Here, if we take our list of names from before:
 
-``` java
+```java
 public static List&lt;String&gt; getListOfNames() {
     List&lt;String&gt; names = new ArrayList&lt;&gt;();
 
@@ -27,7 +27,7 @@ public static List&lt;String&gt; getListOfNames() {
 
 We can concatenate those names that start with &#34;Jo&#34; with those names that start with &#34;Ja&#34;:
 
-``` java
+```java
 @Test
 public void concatenating() {
     Stream&lt;String&gt; startsWithJo = names.stream().filter(name -&gt; name.startsWith(&#34;Jo&#34;));
@@ -41,7 +41,7 @@ public void concatenating() {
 
 In such situations, it&#39;s not uncommon to want to find those values which are distinct--i.e. different from other values in the stream. We can do that with the distinct(..) method:
 
-``` java
+```java
 @Test
 public void distinct() {
     String jolene = &#34;Jolene&#34;;
@@ -62,7 +62,7 @@ public void distinct() {
 
 You can sort a stream&#39;s elements using the `.sorted(..)` method, which takes a Comparator&lt;T&gt;. Here, we&#39;ll sort the stream&#39;s elements by the first letter in each name:
 
-``` java
+```java
 @Test
 public void sorting() {
     Stream&lt;String&gt; sortedByFirstLetter = names.stream().sorted(new Comparator&lt;String&gt;() {
@@ -89,7 +89,7 @@ public void sorting() {
 You can _flat map_ a stream of a stream. Flat mapping is weird to think about at first, but basically it applies a mapping function to each of the streams within a stream. Say we have a stream-generating
 function that takes a word and returns a Stream of letters as Strings:
 
-``` java
+```java
 private Stream&lt;String&gt; getCharactersAsStream(String word) {
     List&lt;String&gt; chars = new ArrayList&lt;&gt;();
     for (int i = 0; i &lt; word.length(); i&#43;&#43;) {
@@ -102,7 +102,7 @@ private Stream&lt;String&gt; getCharactersAsStream(String word) {
 Now, calling this method on a stream of names would yield a stream that, if collected, would look like \[\[&#34;j&#34;,&#34;o&#34;,&#34;h&#34;,&#34;n&#34;\],\[&#34;j&#34;,&#34;a&#34;,&#34;c&#34;,&#34;o&#34;,&#34;b&#34;\]...\]. This could be difficult to work with, so let&#39;s say we want to map
 that collection that removes the inner collections, leaving us with \[&#34;j&#34;,&#34;o&#34;,&#34;h&#34;,&#34;n&#34;,&#34;j&#34;,&#34;a&#34;,&#34;c&#34;,&#34;o&#34;,&#34;b&#34;,...\]. Well, flat map is how you do it:
 
-``` java
+```java
 @Test
 public void flatMapping() {
     Stream&lt;Stream&lt;String&gt;&gt; streamsOnStreams = names.stream().map(name -&gt; getCharactersAsStream(name));
@@ -128,5 +128,3 @@ public void flatMapping() {
 }
 
 ```
-
-

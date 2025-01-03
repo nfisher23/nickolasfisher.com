@@ -148,8 +148,8 @@ Logstash primarily exists to extract useful information out of plain-text logs. 
 
     <div class="meta">
       
-      <time datetime="2019-03-01 00:00:00 &#43;0000 UTC" title='Fri, Mar 1, 2019, 12:00 AM UTC'>
-        01/03/2019 - Estimated reading time: 2 minutes
+      <time datetime="2019-03-06 23:33:35 &#43;0000 UTC" title='Wed, Mar 6, 2019, 11:33 PM UTC'>
+        06/03/2019 - Estimated reading time: 4 minutes
       </time>
 
        
@@ -193,7 +193,71 @@ Logstash primarily exists to extract useful information out of plain-text logs. 
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule create
 </span></span></code></pre></div><p>Will give you the two virtual machines outlined above.</p>
 <p>I'll jump ahead here and set up a variable we're going to use in our playbook, which is the logstash version in a deb file that we're going to use:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"></code></pre></div></section>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#6272a4"># vars file for install-logstash</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">logstash_deb_file</span>: logstash-6.4.0.deb
+</span></span></code></pre></div><p>Because I want this to be compatible with the post on <a href="https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible">installing a multi-node elasticsearch cluster,</a> I'm electing to use logstash version 6.4.0.</p>
+<p>We can setup our <strong>tasks/main.yml</strong> file to perform the necessary steps in an idempotent way. These are pretty straightforward:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># tasks file for install-logstash</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: ensure Java is installed
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">apt</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: <span style="color:#ff79c6">&amp;#34;openjdk-8-jdk&amp;#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">state</span>: present
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">update_cache</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: download deb package
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">get_url</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: <span style="color:#ff79c6">&amp;#34;/etc/{{</span> logstash_deb_file }}&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">url</span>: <span style="color:#ff79c6">&amp;#34;https://artifacts.elastic.co/downloads/logstash/{{</span> logstash_deb_file }}&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">checksum</span>: <span style="color:#ff79c6">&amp;#34;sha512:https://artifacts.elastic.co/downloads/logstash/{{</span> logstash_deb_file }}.sha512&amp;#34;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: install from deb package
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">apt</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">deb</span>: <span style="color:#ff79c6">&amp;#34;/etc/{{</span> logstash_deb_file }}&amp;#34;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">notify</span>: restart logstash
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: setup conf filter
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: /etc/logstash/conf.d/my-pipeline.conf
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">src</span>: my-pipeline.conf.j2
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">force</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">mode</span>: <span style="color:#bd93f9">0644</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">notify</span>: restart logstash
+</span></span></code></pre></div><p>We use the logstash_deb_file variable liberally here, as you can see. We need java installed for logstash, and while I'd like to use Java 11, the Elastic Stack has been relatively slow in upgrading their code base to be supportive of it, so Java 8 is what it is for now. We then simply get and install logstash via the deb file, and move a jinja2 template (about to show you that one) into the <strong>conf.d</strong> folder so logstash can give us some pipelines to work with.</p>
+<p>In the <strong>templates</strong> folder, create a file called <strong>my-pipeline.conf.j2</strong> and fill it with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>input {
+</span></span><span style="display:flex;"><span>  beats {
+</span></span><span style="display:flex;"><span>    host =&amp;gt; &amp;#34;{{ ansible_facts[&amp;#39;all_ipv4_addresses&amp;#39;] | last }}&amp;#<span style="color:#bd93f9">34</span>;
+</span></span><span style="display:flex;"><span>    port =&amp;gt; &amp;#<span style="color:#bd93f9">34</span>;<span style="color:#bd93f9">5044</span>&amp;#<span style="color:#bd93f9">34</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>filter {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>output {
+</span></span><span style="display:flex;"><span>  elasticsearch {
+</span></span><span style="display:flex;"><span>    hosts =&amp;gt; [&amp;#34;192.168.56.101:9200&amp;#34;, &amp;#34;192.168.56.102:9200&amp;#34;, &amp;#34;192.168.56.103:9200&amp;#34;]
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This simple pipeline grabs the last IP address defined on our ansible host (192.168.56.111 for lsNode1) and sets up a listener on port 5044 to collect input from beats. There are no filters defined, and it will just pass any messages it gets straight onto an elasticsearch cluster.</p>
+<p>I've hardcoded three addresses for elasticsearch here. To make this more extensible, those should be externalized to variables and eventually pulled out of your inventory file.</p>
+<p>You will also need a handler in the <strong>handlers/main.yml</strong> file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># handlers file for install-logstash</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: restart logstash
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">service</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: logstash
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">state</span>: restarted
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span></code></pre></div><p>You should, at this point, be able to run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule converge
+</span></span></code></pre></div><p>And see the logstash instances come up without issue.</p>
+<p>Be sure to <a href="https://github.com/nfisher23/some-ansible-examples">pull down the GitHub code</a> if you get stuck somewhere.</p>
+</section>
 
   
     

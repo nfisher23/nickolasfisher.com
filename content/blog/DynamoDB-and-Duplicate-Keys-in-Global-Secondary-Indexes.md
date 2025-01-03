@@ -1,6 +1,6 @@
 ---
 title: "DynamoDB and Duplicate Keys in Global Secondary Indexes"
-date: 2020-11-01T00:00:00
+date: 2020-11-01T23:27:39
 draft: false
 ---
 
@@ -24,7 +24,7 @@ First, we have to set up our table to work with. This table will have:
 
 Here&#39;s the code, because it&#39;s java using the builder pattern, it&#39;s pretty verbose:
 
-``` java
+```java
     @Test
     public void gsiDuplicateKeysExample() throws Exception {
         String currentTableName = &#34;DuplicateKeysTest&#34;;
@@ -83,7 +83,7 @@ Here&#39;s the code, because it&#39;s java using the builder pattern, it&#39;s p
 
 Now we&#39;ll populate some test data. We&#39;ll put three items in our table, all with the same hash attribute of &#34;Google&#34;, all with different range attributes, as well as two of them with a year attribute of &#34;2012&#34;.
 
-``` java
+```java
 
         String partitionKey = &#34;Google&#34;;
         String rangeKey1 = &#34;Pixel 1&#34;;
@@ -112,7 +112,7 @@ So now one of two things will happen, depending on the behavior of DynamoDB when
 
 It turns out that it does not overwrite on indexes \[as it does on the base table\] and instead allows you to get all the items with the same key. Here&#39;s the assertion that proves it:
 
-``` java
+```java
 
         Thread.sleep(1000); // GSI&#39;s are eventually consistent
 
@@ -148,5 +148,3 @@ It turns out that it does not overwrite on indexes \[as it does on the base tabl
 We verify that there are two items with the same hash key, then verify that they are unique by checking the &#34;Color&#34; attribute on those items
 
 You should be able to clone the source repository and run this test, it will pass. Remember you can [check out the source code on Github](https://github.com/nfisher23/webflux-and-dynamo/blob/master/src/test/java/com/nickolasfisher/reactivedynamo/PhoneServiceTest.java#L565) and play around with this yourself.
-
-

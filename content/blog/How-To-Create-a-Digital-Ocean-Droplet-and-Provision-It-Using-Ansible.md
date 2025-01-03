@@ -1,6 +1,6 @@
 ---
 title: "How To Create a Digital Ocean Droplet and Provision It Using Ansible"
-date: 2019-06-01T00:00:00
+date: 2019-06-15T20:40:48
 draft: false
 ---
 
@@ -16,19 +16,19 @@ To get started, make sure you [create your own digital ocean api token](https://
 
 To create a droplet, take your digital ocean api token and set an environment variable for this shell session:
 
-``` bash
+```bash
 $ export DO_API_TOKEN=abcdefghijklmnop123456
 ```
 
 Now navigate to the directory that you want this playbook to reside in and create an empty file:
 
-``` bash
+```bash
 $ touch create_droplet_sample.yml
 ```
 
 If you running ansible 2.8 or greater, we can create a droplet, add a tag, then add the host to a &#34;do&#34; host group like so:
 
-``` yaml
+```yaml
 ---
 - hosts: localhost
   connection: local
@@ -68,7 +68,7 @@ This uses the digital\_ocean\_droplet module to create a droplet only if it does
 
 If you running an ansible version &lt; 2.8, you&#39;re playbook would look something like this instead:
 
-``` yaml
+```yaml
 ---
 - hosts: localhost
   connection: local
@@ -110,7 +110,7 @@ There are a few differences in children of the digital\_ocean module, and you&#3
 
 To prove that it works properly, we&#39;ll deploy a simple static nginx server that returns a custom index page. The next part of the playbook is the same regardless of your ansible version:
 
-``` yaml
+```yaml
 ....
 
 - hosts: do
@@ -143,7 +143,7 @@ To prove that it works properly, we&#39;ll deploy a simple static nginx server t
 
 In the same directory, we&#39;ll place our custom index.html file with the following contents:
 
-``` html
+```html
 &lt;h1&gt;You made it&lt;/h1&gt;
 &lt;p&gt;This should show up instead of nginx home page&lt;/p&gt;
 
@@ -157,5 +157,3 @@ Note that you will have to type &#34;yes&#34;, by default, when prompted to conn
 [defaults]
 host_key_checking = False
 ```
-
-

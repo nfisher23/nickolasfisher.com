@@ -1,6 +1,6 @@
 ---
 title: "How to Migrate a Real PostgreSQL Database Using Flyway with Spring Boot"
-date: 2019-04-01T00:00:00
+date: 2019-04-20T16:37:18
 draft: false
 ---
 
@@ -10,7 +10,7 @@ We spent the last post figuring out [how to migrate an embedded PostgreSQL datab
 
 To do this in a maintainable way, we will want to leverage [Spring Profiles](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html) to allow us to retain local development as an option and switch to another setup relatively quickly. We will change our **application.yml** file to look like:
 
-``` yaml
+```yaml
 spring.profiles.active: dev
 
 ---
@@ -51,8 +51,61 @@ end
 
 This Vagrantfile needs a **postgres-provision.sh** bash script in the same directory, which looks like this:
 
-``` bash
+```bash
 #!/bin/bash
 
 sudo apt-get update &amp;&amp; sudo apt-get -y install postgresql
 
+# set the default to listen to all addresses
+sudo sed -i &#34;/port*/a listen_addresses = &#39;*&#39;&#34; /etc/postgresql/10/main/postgresql.conf
+
+# allow any authentication mechanism from any client
+sudo sed -i &#34;$ a host all all all trust&#34; /etc/postgresql/10/main/pg_hba.conf
+
+# create db named testdb
+sudo su postgres -c &#34;createdb testdb&#34;
+
+# restart the service to allow changes to take effect
+sudo service postgresql restart
+
+```
+
+This creates a PostgreSQL database and exposes it (with no security) to the outside world, which in this case is just our local development environment.
+
+Do:
+
+```bash
+$ cd postgres-vm
+$ vagrant up
+```
+
+And, once the VM is up and running, you can:
+
+```bash
+$ cd ..
+$ mvn clean install
+$ SPRING_PROFILES_ACTIVE=stage java -jar target/flywaystuff-1.0.jar
+```
+
+The application will come up and connect to our local database at this point. You can verify that the migration ran properly with:
+
+```bash
+$ cd ../postgres-vm
+$ vagrant ssh
+$ sudo -i -u postgres
+$ psql -d testdb
+testdb=# \dt
+```
+
+You should get an output like this:
+
+```
+                 List of relations
+ Schema |         Name          | Type  |  Owner
+--------&#43;-----------------------&#43;-------&#43;----------
+ public | employee              | table | postgres
+ public | flyway_schema_history | table | postgres
+(2 rows)
+```
+
+And we have done it successfully.

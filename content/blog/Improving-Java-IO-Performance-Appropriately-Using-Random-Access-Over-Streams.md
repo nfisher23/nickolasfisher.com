@@ -1,6 +1,6 @@
 ---
 title: "Improving Java IO Performance: Appropriately Using Random Access Over Streams"
-date: 2018-11-01T00:00:00
+date: 2018-11-17T18:37:39
 draft: false
 ---
 
@@ -17,7 +17,7 @@ Instead of reading every byte into memory, then, the cursor-ish implementation w
 
 Let&#39;s create a csv file with 100K lines, where each line is 0,1,2,...,8,9:
 
-``` java
+```java
     @BeforeClass
     public static void setupLargeCsv() throws Exception {
         Path pathToLargeCsv = Paths.get(Utils.largeCsvFilePath);
@@ -46,7 +46,7 @@ Let&#39;s create a csv file with 100K lines, where each line is 0,1,2,...,8,9:
 
 And set up our benchmark runner with JMH:
 
-``` java
+```java
     public static void runBenchmark(Class clazz) throws Exception {
         Options options = new OptionsBuilder()
                 .include(clazz.getName() &#43; &#34;.*&#34;)
@@ -76,7 +76,7 @@ And set up our benchmark runner with JMH:
 
 Let&#39;s assume we want to stop off and read each character that is 20K characters in. Because of the structure of the csv file, we know that these will all be &#39;0&#39;. If we want to implement that using an InputStream/BufferedInputStream we would do this:
 
-``` java
+```java
     public static int INTERVAL = 20000;
     @Benchmark
     public void scanningThroughWithBufferedInputStream() throws Exception {
@@ -101,7 +101,7 @@ The reason we need to keep skipping is because the bufferedInputStream.skip(..) 
 
 The performance of this method on my machine comes out to:
 
-``` bash
+```bash
 Benchmark                                                 Mode  Cnt  Score   Error  Units
 RandomAccessTests.scanningThroughWithBufferedInputStream  avgt    2  0.038          ms/op
 
@@ -109,7 +109,7 @@ RandomAccessTests.scanningThroughWithBufferedInputStream  avgt    2  0.038      
 
 Conversely, doing that with a RandomAccessFile would look like this:
 
-``` java
+```java
     @Benchmark
     public void seekingToPosition() throws Exception {
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(Utils.largeCsvFilePath, &#34;r&#34;)) {
@@ -125,12 +125,10 @@ Conversely, doing that with a RandomAccessFile would look like this:
 
 And the performance of both methods run back to back, on my machine, looks like:
 
-``` bash
+```bash
 Benchmark                                                 Mode  Cnt  Score   Error  Units
 RandomAccessTests.scanningThroughWithBufferedInputStream  avgt    2  0.038          ms/op
 RandomAccessTests.seekingToPosition                       avgt    2  0.019          ms/op
 ```
 
 Or, by utilizing the RandomAccessFile, we have achieved approximately double the performance improvement.
-
-

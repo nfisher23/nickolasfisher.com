@@ -1,6 +1,6 @@
 ---
 title: "Java IO: Zip Archive Manipulation"
-date: 2018-11-01T00:00:00
+date: 2018-11-03T12:27:15
 draft: false
 ---
 
@@ -11,7 +11,7 @@ A [ZIP file format](https://en.wikipedia.org/wiki/Zip_(file_format)) is a compre
 Java provides an extension to the `FileOutputStream` called ZipOutputStream, which allows you to write data to a zip directory in the format described above.
 Here, we will write any text passed in to a single file (called &#34;some-single-file.txt&#34;) in a zip directory at `fullPath`. The zip directory will be overwritten if it already exists:
 
-``` java
+```java
 private void writeAndZipText(String fullPath, String textToWrite) throws Exception {
     try (FileOutputStream fileOutputStream = new FileOutputStream(fullPath)) {
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
@@ -30,7 +30,7 @@ private void writeAndZipText(String fullPath, String textToWrite) throws Excepti
 
 We can easily read anything from a zip directory using `ZipFile`. We can read all of the content as a String (by casting each byte value to a character) in sequential order from an entire zip directory like so:
 
-``` java
+```java
 private String readAllTextFromZip(String fullPath) throws Exception {
     StringBuilder builder = new StringBuilder();
     try (ZipFile zipFile = new ZipFile(fullPath)) {
@@ -51,7 +51,7 @@ private String readAllTextFromZip(String fullPath) throws Exception {
 
 We can validate that this works as expected with a simple test:
 
-``` java
+```java
 @Test
 public void writeZip() throws Exception {
     String pathToFile = Utils.pathToResources &#43; &#34;zip-output-ex.zip&#34;;
@@ -64,5 +64,3 @@ public void writeZip() throws Exception {
 }
 
 ```
-
-

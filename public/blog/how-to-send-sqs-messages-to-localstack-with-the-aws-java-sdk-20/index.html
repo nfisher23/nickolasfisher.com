@@ -148,8 +148,8 @@ The completely rewritten AWS SDK for Java 2.0 comes with full reactive programmi
 
     <div class="meta">
       
-      <time datetime="2020-09-01 00:00:00 &#43;0000 UTC" title='Tue, Sep 1, 2020, 12:00 AM UTC'>
-        01/09/2020 - Estimated reading time: 3 minutes
+      <time datetime="2020-09-12 20:54:13 &#43;0000 UTC" title='Sat, Sep 12, 2020, 8:54 PM UTC'>
+        12/09/2020 - Estimated reading time: 3 minutes
       </time>
 
        
@@ -162,8 +162,35 @@ The completely rewritten AWS SDK for Java 2.0 comes with full reactive programmi
   <section><p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux/blob/master/README.md">can be found on Github</a>.</p>
 <p>The completely rewritten <a href="https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/welcome.html">AWS SDK for Java 2.0</a> comes with full reactive programming support all the way down. I wanted a way to test it out without spending any more or being at risk of spending too much money, so I used <a href="https://github.com/localstack/localstack">localstack</a>. This post is largely walking you through what I came up with.</p>
 <h2 id="the-infra">The Infra</h2>
-<p>To start with, you will want to ensure you have docker and docker-compose installed. Then you can <a href="https://github.com/localstack/localstack/blob/master/docker-compose.yml">copy the localstack docker-compose file from the github repo</a> into your own <strong>docker-compose.yaml</strong> file</p>
-<p>Now that we have a local AWS clone running, let's create a queue for us to use with the aws cli:</p>
+<p>To start with, you will want to ensure you have docker and docker-compose installed. Then you can <a href="https://github.com/localstack/localstack/blob/master/docker-compose.yml">copy the localstack docker-compose file from the github repo</a> into your own <strong>docker-compose.yaml</strong> file like so:</p>
+<pre tabindex="0"><code class="language-yaml&gt;version:" data-lang="yaml&gt;version:">
+services:
+  localstack:
+    container_name: &amp;#34;${LOCALSTACK_DOCKER_NAME-localstack_main}&amp;#34;
+    image: localstack/localstack
+    ports:
+      - &amp;#34;4566-4599:4566-4599&amp;#34;
+      - &amp;#34;${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}&amp;#34;
+    environment:
+      - SERVICES=${SERVICES- }
+      - DEBUG=${DEBUG- }
+      - DATA_DIR=${DATA_DIR- }
+      - PORT_WEB_UI=${PORT_WEB_UI- }
+      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR- }
+      - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - HOST_TMP_FOLDER=${TMPDIR}
+    volumes:
+      - &amp;#34;${TMPDIR:-/tmp/localstack}:/tmp/localstack&amp;#34;
+      - &amp;#34;/var/run/docker.sock:/var/run/docker.sock&amp;#34;
+
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+
+&amp;lt;p&amp;gt;Navigate to the directory where that file lives and run:&amp;lt;/p&amp;gt;
+
+&amp;lt;pre&amp;gt;&amp;lt;code class=
+docker-compose up -d
+</code></pre><p>Now that we have a local AWS clone running, let's create a queue for us to use with the aws cli:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_SECRET_ACCESS_KEY</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_ACCESS_KEY_ID</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>

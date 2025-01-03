@@ -147,7 +147,7 @@
 
     <div class="meta">
       
-      <time datetime="2018-12-01 00:00:00 &#43;0000 UTC" title='Sat, Dec 1, 2018, 12:00 AM UTC'>
+      <time datetime="2018-12-01 12:56:02 &#43;0000 UTC" title='Sat, Dec 1, 2018, 12:56 PM UTC'>
         01/12/2018 - Estimated reading time: 3 minutes
       </time>
 
@@ -234,7 +234,7 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">temporalAdjusters_getFirstTuesday</span>() {
 </span></span><span style="display:flex;"><span>        LocalDate firstTuesday <span style="color:#ff79c6">=</span> LocalDate.<span style="color:#50fa7b">of</span>(2018, 6,1)
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">with</span>(TemporalAdjusters.<span style="color:#50fa7b">nextOrSame</span>(DayOfWeek.<span style="color:#50fa7b">TUESDAY</span>));
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">with</span>(TemporalAdjusters.<span style="color:#50fa7b">nextOrSame</span>(DayOfWeek.<span style="color:#50fa7b">TUESDAY</span>));
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        assertEquals(<span style="color:#ff79c6">&amp;</span>#34;TUESDAY<span style="color:#ff79c6">&amp;</span>#34;, firstTuesday.<span style="color:#50fa7b">getDayOfWeek</span>().<span style="color:#50fa7b">toString</span>());
 </span></span><span style="display:flex;"><span>    }
@@ -242,7 +242,7 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
 </span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">temporalAdjusters_getNthWeekdayInMonth</span>() {
 </span></span><span style="display:flex;"><span>        LocalDate secondMondayInJune <span style="color:#ff79c6">=</span> LocalDate.<span style="color:#50fa7b">of</span>(2018, 6, 1)
-</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">with</span>(TemporalAdjusters.<span style="color:#50fa7b">dayOfWeekInMonth</span>(2, DayOfWeek.<span style="color:#50fa7b">MONDAY</span>));
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">with</span>(TemporalAdjusters.<span style="color:#50fa7b">dayOfWeekInMonth</span>(2, DayOfWeek.<span style="color:#50fa7b">MONDAY</span>));
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        assertEquals(LocalDate.<span style="color:#50fa7b">of</span>(2018,6,11), secondMondayInJune);
 </span></span><span style="display:flex;"><span>    }

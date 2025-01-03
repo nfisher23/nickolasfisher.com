@@ -162,7 +162,7 @@
   </h1>
   
   <span class="date">
-    <time datetime="2021-05-01 00:00:00 &#43;0000 UTC" title='Sat, May 1, 2021, 12:00 AM UTC'>
+    <time datetime="2021-05-01 14:44:31 &#43;0000 UTC" title='Sat, May 1, 2021, 2:44 PM UTC'>
       01/05/2021
     </time>
   </span>
@@ -190,23 +190,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/a-guide-to-operating-on-multiple-sets-in-redis-with-lettuce/">A Guide to Operating on Multiple Sets in Redis with Lettuce</a>
+    <a href="http://localhost:1313/blog/subscribing-to-channels-in-clustered-redis-with-lettuce/">Subscribing to Channels in Clustered Redis With Lettuce</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-25 18:43:42 &#43;0000 UTC" title='Sun, Apr 25, 2021, 6:43 PM UTC'>
+      25/04/2021
     </time>
   </span>
 
   <div class="description">
     
-      <p>In the last article, we showed how to do some of the most common single set operations against redis, this article will focus on operating on multiple sets using a lettuce client against redis. Specifically, we'll focus on subtracting, intersecting, and adding sets. The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
+      <p>We already know <a href="https://nickolasfisher.com/blog/Subscribing-to-Redis-Channels-with-Java-Spring-Boot-and-Lettuce">how to subscribe to redis using lettuce</a> when it's not running in clustered mode. If it's running in clustered mode, it's not terribly different, but I did discover one thing that is interesting, which is the subject of this article.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/a-guide-to-operating-on-multiple-sets-in-redis-with-lettuce/">
+    <a class="read-more" href="http://localhost:1313/blog/subscribing-to-channels-in-clustered-redis-with-lettuce/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -221,23 +221,24 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/a-guide-to-operating-on-sorted-sets-in-redis-with-lettuce/">A Guide to Operating on Sorted Sets in Redis with Lettuce</a>
+    <a href="http://localhost:1313/blog/pre-loading-lua-scripts-into-clustered-redis-with-lettuce/">Pre Loading Lua Scripts into Clustered Redis with Lettuce</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-25 17:37:07 &#43;0000 UTC" title='Sun, Apr 25, 2021, 5:37 PM UTC'>
+      25/04/2021
     </time>
   </span>
 
   <div class="description">
     
-      <p>Sorted Sets in redis are one of my personal favorite tools when operating at scale. As of this writing, <a href="https://redis.io/commands/#sorted_set">there are over 30 unique operations you can perform against sorted sets in redis</a>. This article will focus on some of the more common ones you're going to need to know, and it will use a reactive lettuce client to demonstrate them.</p>
+      <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on github</a>.</p>
+<p>In a previous article, we showed how to <a href="https://nickolasfisher.com/blog/Pre-Loading-a-Lua-Script-into-Redis-With-Lettuce">efficiently execute a lua script in redis using lettuce</a>. To really scale our caching solution horizontally [and elegantly deal with many scaling headaches], we will also want to make sure we can execute our lua scripts against clustered redis, which as we'll see here is pretty straightforward.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/a-guide-to-operating-on-sorted-sets-in-redis-with-lettuce/">
+    <a class="read-more" href="http://localhost:1313/blog/pre-loading-lua-scripts-into-clustered-redis-with-lettuce/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -252,23 +253,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/a-guide-to-simple-set-operations-in-redis-with-lettuce/">A Guide to Simple Set Operations in Redis with Lettuce</a>
+    <a href="http://localhost:1313/blog/why-redis-pubsub-is-not-sqs-and-vice-versa/">Why Redis Pub/Sub is not SQS, and Vice Versa</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-24 23:52:19 &#43;0000 UTC" title='Sat, Apr 24, 2021, 11:52 PM UTC'>
+      24/04/2021
     </time>
   </span>
 
   <div class="description">
     
-      <p>There are, as of this writing, about <a href="https://redis.io/commands/#set">15 distinct operations available to someone wanting to work with sets in redis</a>. This article seeks to cover some of the more basic ones using a reactive lettuce client, and <a href="https://nickolasfisher.com/blog/A-Guide-to-Operating-on-Multiple-Sets-in-Redis-with-Lettuce">a follow up article</a> will seek to deal with explaining some of the more common operations against multiple sets, rather than a single set in this case.</p>
+      <p><a href="https://redis.io/topics/pubsub">Redis has a pub/sub feature</a> whereby there are publishers and subscribers, and publishers can fanout messages to subscribers. SQS [ <a href="https://aws.amazon.com/sqs/">amazon's simple queue service</a>] has message senders and receivers. They can both be useful, but in practice they produce different results.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/a-guide-to-simple-set-operations-in-redis-with-lettuce/">
+    <a class="read-more" href="http://localhost:1313/blog/why-redis-pubsub-is-not-sqs-and-vice-versa/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -283,23 +284,24 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/bootstrap-a-local-sharded-redis-cluster-in-five-minutes/">Bootstrap a Local Sharded Redis Cluster in Five Minutes</a>
+    <a href="http://localhost:1313/blog/optimistic-locking-in-redis-with-reactive-lettuce/">Optimistic Locking in Redis with Reactive Lettuce</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-24 21:32:36 &#43;0000 UTC" title='Sat, Apr 24, 2021, 9:32 PM UTC'>
+      24/04/2021
     </time>
   </span>
 
   <div class="description">
     
-      <p>If you're interested in understanding details of how clustered redis works [that is to say, if you're more or less responsible for operationalizing it], there is an excellent <a href="https://redis.io/topics/cluster-tutorial">section in the redis documentation</a> that goes into some detail on it. I would advise everyone to read that at some point, but if you just want to get started hacking this is the TLDR; article that you're looking for. We will run through some basic commands to get up and running, and you can use this cluster to help figure out the details later on.</p>
+      <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
+<p>Optimistic Locking in Redis is one of the only reasons to want to use transactions, in my opinion. You can ensure a grouping of atomic operations only occur if a watched key does not change out from underneath you. On the CLI, this might start with:</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/bootstrap-a-local-sharded-redis-cluster-in-five-minutes/">
+    <a class="read-more" href="http://localhost:1313/blog/optimistic-locking-in-redis-with-reactive-lettuce/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

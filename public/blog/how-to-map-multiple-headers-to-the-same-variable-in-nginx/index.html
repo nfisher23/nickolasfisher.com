@@ -147,8 +147,8 @@
 
     <div class="meta">
       
-      <time datetime="2020-05-01 00:00:00 &#43;0000 UTC" title='Fri, May 1, 2020, 12:00 AM UTC'>
-        01/05/2020 - Estimated reading time: 3 minutes
+      <time datetime="2020-05-24 20:26:02 &#43;0000 UTC" title='Sun, May 24, 2020, 8:26 PM UTC'>
+        24/05/2020 - Estimated reading time: 3 minutes
       </time>
 
        
@@ -264,7 +264,26 @@ map $http_x_new_header $actual_variable {
   default $default_variable;
 }
 </code></pre><p>If you restart nginx now ( <strong>docker-compose down &amp;&amp; docker-compose up -d</strong>), you can see it in action:</p>
-<pre tabindex="0"><code></code></pre></section>
+<pre tabindex="0"><code># regular call
+$ curl localhost:9000/endpoint
+&amp;lt;h1&amp;gt;The primary html page&amp;lt;/h1&amp;gt;
+
+# using the new header like before
+$ curl -H &amp;#34;X-New-Header: secondary&amp;#34; localhost:9000/something
+&amp;lt;h1&amp;gt;The secondary, as in NOT primary, html page&amp;lt;/h1&amp;gt;
+
+# using the legacy header
+$ curl -H &amp;#34;X-Legacy-Header: secondary&amp;#34; localhost:9000/something
+&amp;lt;h1&amp;gt;The secondary, as in NOT primary, html page&amp;lt;/h1&amp;gt;
+
+# using both headers cause why not
+$ curl -H &amp;#34;X-Legacy-Header: secondary&amp;#34; -H &amp;#34;X-New-Header: secondary&amp;#34; localhost:9000/something~
+&amp;lt;h1&amp;gt;The secondary, as in NOT primary, html page&amp;lt;/h1&amp;gt;
+
+# notice what happens when the value is changed
+$ curl -H &amp;#34;X-Legacy-Header: idk&amp;#34; -H &amp;#34;X-New-Header: huh&amp;#34; localhost:9000/something~
+&amp;lt;h1&amp;gt;The primary html page&amp;lt;/h1&amp;gt;
+</code></pre></section>
 
   
     

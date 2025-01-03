@@ -1,6 +1,6 @@
 ---
 title: "Configuring an In Memory DynamoDB instance with Java for Integration Testing"
-date: 2020-10-01T00:00:00
+date: 2020-10-10T00:02:25
 draft: false
 ---
 
@@ -12,7 +12,7 @@ I&#39;m going to work off of a template that I used in a previous blog post, [he
 
 To start, to make it &#34;cross platform&#34; you&#39;ll need to do some funky things in your pom file. First, ensure that you&#39;re pointing to the correct maven instance by adding the dynamo repository:
 
-``` xml
+```xml
     &lt;repositories&gt;
         &lt;repository&gt;
             &lt;id&gt;dynamodblocal&lt;/id&gt;
@@ -25,7 +25,7 @@ To start, to make it &#34;cross platform&#34; you&#39;ll need to do some funky t
 
 The actual dependencies you&#39;ll need seem to be basically these two:
 
-``` xml
+```xml
         &lt;dependency&gt;
             &lt;groupId&gt;com.amazonaws&lt;/groupId&gt;
             &lt;artifactId&gt;DynamoDBLocal&lt;/artifactId&gt;
@@ -43,7 +43,7 @@ The actual dependencies you&#39;ll need seem to be basically these two:
 
 And now is where things might get a little weird. We need to pass in a system property variable for sqlite, which embedded dynamo is using under the hood, and add a dynamo package to the manifest. So first you&#39;ll add two plugin configs:
 
-``` xml
+```xml
             &lt;plugin&gt;
                 &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
                 &lt;artifactId&gt;maven-dependency-plugin&lt;/artifactId&gt;
@@ -78,7 +78,7 @@ And now is where things might get a little weird. We need to pass in a system pr
 
 Then some plugin management config:
 
-``` xml
+```xml
         &lt;pluginManagement&gt;
             &lt;plugins&gt;
                 &lt;plugin&gt;
@@ -97,7 +97,7 @@ Then some plugin management config:
 
 Now, on my machine, which is running linux mint, i was able to get this code to run and pass:
 
-``` java
+```java
 public class PhoneServiceTest {
 
     private static DynamoDBProxyServer dynamoProxy;
@@ -177,5 +177,3 @@ public class PhoneServiceTest {
 As seems pretty obvious here, we&#39;re starting up dynamo before we run our test, we are creating a tale with a hash and range key named **Phones**, then we are verifying that the table was created by listing all the tables \[there should be one table after we create it, somewhat obviously\]. This test passes for me and is good enough to get started with.
 
 You might want to take that example demonstrating it in github if you&#39;re having trouble getting this to work on your OS, since this solution doesn&#39;t seem to have the abstractions setup just yet. Otherwise, I am at least happy this appears to be working for now on my box.
-
-

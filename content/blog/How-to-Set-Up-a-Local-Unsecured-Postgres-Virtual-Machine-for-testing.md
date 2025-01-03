@@ -1,6 +1,6 @@
 ---
 title: "How to Set Up a Local Unsecured Postgres Virtual Machine (for testing)"
-date: 2018-11-01T00:00:00
+date: 2018-11-24T12:47:47
 draft: false
 ---
 
@@ -35,8 +35,28 @@ In the same directory as the VagrantFile, we&#39;re going to need a file called 
 
 The following bash script accomplishes that, and also creates a test database called &#34;testdb&#34; as another place to toy around:
 
-``` bash
+```bash
 #!/bin/bash
 
 sudo apt-get update &amp;&amp; sudo apt-get -y install postgresql
 
+# set the default to listen to all addresses
+sudo sed -i &#34;/port*/a listen_addresses = &#39;*&#39;&#34; /etc/postgresql/10/main/postgresql.conf
+
+# allow any authentication mechanism from any client
+sudo sed -i &#34;$ a host all all all trust&#34; /etc/postgresql/10/main/pg_hba.conf
+
+# create db named testdb
+sudo su postgres -c &#34;createdb testdb&#34;
+
+# restart the service to allow changes to take effect
+sudo service postgresql restart
+```
+
+If you run
+
+```bash
+$ vagrant up
+```
+
+You should see your VM go live and be ready to play in your sandbox.

@@ -1,6 +1,6 @@
 ---
 title: "How to do a Rolling Upgrade of Multiple Logstash Instances Using Ansible"
-date: 2019-03-01T00:00:00
+date: 2019-03-17T23:27:43
 draft: false
 ---
 
@@ -14,13 +14,13 @@ This post will examine an in place upgrade of logstash.
 
 We can create out ansible role using Molecule, and use vagrant as our local virtual machine provider:
 
-``` bash
+```bash
 $ molecule init role -r upgrade-logstash -d vagrant
 ```
 
 First, we&#39;ll need to adjust our **molecule/default/molecule.yml** file by creating some virtual machine to drop our logstash instances on:
 
-``` yaml
+```yaml
 platforms:
   - name: lsNode1
     box: ubuntu/xenial64
@@ -46,7 +46,7 @@ platforms:
 
 We can then include our work from the previous post on provisioning logstash to first ensure that we have a logstash instance to upgrade. We can simply include it as a dependency and let ansible find it (note: you will either have to have your directory structure like the samples on github or you will need to configure ansible to look for the appropriate roles). Modify your **meta/main.yml** file to look like
 
-``` yaml
+```yaml
 ---
 dependencies:
   - role: install-logstash
@@ -54,7 +54,7 @@ dependencies:
 
 At this point, you should be able to run
 
-``` bash
+```bash
 $ molecule create &amp;&amp; molecule converge
 ```
 
@@ -62,7 +62,7 @@ To get your VMs up and logstash on them.
 
 We will create a logstash upgrade yml file and only use it when we have a parameter upgrade\_ls set to true. I&#39;m dropping this file in **tasks/upgrade\_ls.yml:**
 
-``` yaml
+```yaml
 ---
 - name: ensure logstash already present
   service:
@@ -108,5 +108,50 @@ We will create a logstash upgrade yml file and only use it when we have a parame
 
 This can then be invoked in the **tasks/main.yml** file by adjusting it like so:
 
-``` yaml
+```yaml
 ---
+# tasks file for upgrade-logstash
+- include: upgrade_ls.yml
+  when: upgrade_ls
+
+```
+
+We will then adjust our provisioner section in the **molecule/default/molecule.yml** file to look like:
+
+```yaml
+provisioner:
+  name: ansible
+  inventory:
+    host_vars:
+      lsNode1:
+        upgrade_ls: true
+        ls_version_to_upgrade_to: logstash-6.5.3.deb
+      lsNode2:
+        upgrade_ls: true
+        ls_version_to_upgrade_to: logstash-6.5.3.deb
+
+```
+
+As you can see, we will be upgrade logstash to version 6.5.3 in this example.
+
+Finally, we will want to upgrade one at a time, which means that we&#39;ll use the serial flag in our **molecule/default/playbook.yml**:
+
+```yaml
+---
+- name: Converge
+  hosts: all
+  serial: 1
+  roles:
+    - role: upgrade-logstash
+
+```
+
+At this point, you should be able to run:
+
+```bash
+$ molecule converge
+```
+
+And see it upgrade one, wait for it to come up, then upgrade the other one.
+
+Definitely go [see the source code on GitHub](https://github.com/nfisher23/some-ansible-examples) to get your hands on this example.

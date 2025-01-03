@@ -1,6 +1,6 @@
 ---
 title: "The New New Thing, A Silicon Valley Story: Summary in Quotes"
-date: 2018-10-01T00:00:00
+date: 2018-10-27T15:58:30
 draft: false
 ---
 
@@ -31,5 +31,3 @@ draft: false
 &gt; &#34;That was the burden of the technical man: he knew the many ways technology could fail, and he realized that he alone was responsible for its success.&#34;
 
 &gt; &#34;What happened to Clark in silicon valley was far more interesting than luck. It was the interplay of a character who had a deep feel for technology and a taste for anarchy, with an environment that rewarded both traits.&#34;
-
-

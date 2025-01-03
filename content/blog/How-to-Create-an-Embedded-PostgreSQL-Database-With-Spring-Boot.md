@@ -1,6 +1,6 @@
 ---
 title: "How to Create an Embedded PostgreSQL Database With Spring Boot"
-date: 2019-04-01T00:00:00
+date: 2019-04-20T15:28:25
 draft: false
 ---
 
@@ -12,7 +12,7 @@ Automating database tests, and maintaining consistency between environments, is 
 
 To start using a PostgreSQL in memory database (with _as little_ spring boot magic as possible), you will first need to ensure that you have a PostgreSQL dependency. If you&#39;re using Maven, that&#39;s:
 
-``` xml
+```xml
 &lt;dependency&gt;
     &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
     &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
@@ -22,7 +22,7 @@ To start using a PostgreSQL in memory database (with _as little_ spring boot mag
 
 We can then resort to using [opentable](https://github.com/opentable/otj-pg-embedded) as the in memory engine by adding another dependency:
 
-``` xml
+```xml
 &lt;dependency&gt;
     &lt;groupId&gt;com.opentable.components&lt;/groupId&gt;
     &lt;artifactId&gt;otj-pg-embedded&lt;/artifactId&gt;
@@ -33,7 +33,7 @@ We can then resort to using [opentable](https://github.com/opentable/otj-pg-embe
 
 Finally, wherever we want the embedded database, we can spin it up with default settings like:
 
-``` java
+```java
 package com.nickolasfisher.flywaystuff;
 
 ... imports ...
@@ -56,5 +56,3 @@ public class DevConfig {
 ```
 
 Next up, we&#39;ll look at using [Flyway](https://flywaydb.org/) to run idempotent database migration scripts against our database on application startup, giving the application flexible and full control over the state of the schemas it owns.
-
-

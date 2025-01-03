@@ -148,8 +148,8 @@ Unit testing with Maven is built in, and is the preferred way of validating code
 
     <div class="meta">
       
-      <time datetime="2018-11-01 00:00:00 &#43;0000 UTC" title='Thu, Nov 1, 2018, 12:00 AM UTC'>
-        01/11/2018 - Estimated reading time: 3 minutes
+      <time datetime="2018-11-24 14:49:09 &#43;0000 UTC" title='Sat, Nov 24, 2018, 2:49 PM UTC'>
+        24/11/2018 - Estimated reading time: 3 minutes
       </time>
 
        
@@ -183,7 +183,7 @@ Unit testing with Maven is built in, and is the preferred way of validating code
 </span></span><span style="display:flex;"><span>                &amp;lt;/executions&amp;gt;
 </span></span><span style="display:flex;"><span>            &amp;lt;/plugin&amp;gt;
 </span></span></code></pre></div><p>We will then assume any integration tests will end in IT, and add this section to the pom as well. Here I'll assume your integration tests are in the <strong>src/testintegration/java/com/nickolasfisher/postgresintegration/tests</strong> directory:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>            &amp;lt;!-- the failsafe plugin runs our integration tests. By convention, we will consider every class ending in IT an integration test module--&amp;gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>            &amp;lt;!-- the failsafe plugin runs our integration tests. By convention, we will consider every class ending in IT an integration test module--&amp;gt;
 </span></span><span style="display:flex;"><span>            &amp;lt;plugin&amp;gt;
 </span></span><span style="display:flex;"><span>                &amp;lt;groupId&amp;gt;org.apache.maven.plugins&amp;lt;/groupId&amp;gt;
 </span></span><span style="display:flex;"><span>                &amp;lt;artifactId&amp;gt;maven-failsafe-plugin&amp;lt;/artifactId&amp;gt;

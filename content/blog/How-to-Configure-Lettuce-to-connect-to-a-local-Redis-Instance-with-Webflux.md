@@ -1,6 +1,6 @@
 ---
 title: "How to Configure Lettuce to connect to a local Redis Instance with Webflux"
-date: 2021-03-01T00:00:00
+date: 2021-03-28T17:49:16
 draft: false
 ---
 
@@ -10,7 +10,7 @@ In a previous post, we detailed [how to write integration tests for lettuce clie
 
 We will build off of code from that previous blog post. If you&#39;ll recall, we had a service like so:
 
-``` java
+```java
 @Service
 public class RedisDataService {
 
@@ -38,7 +38,7 @@ The current problem here is that there is no **RedisStringReactiveCommands** bea
 
 To do so is fairly straightforward. Let&#39;s start by creating a configuration class that contains the necessary host, port, and beans:
 
-``` java
+```java
 @Configuration
 @ConfigurationProperties(prefix = &#34;lettuce&#34;)
 public class RedisConfig {
@@ -81,7 +81,7 @@ public class RedisConfig {
 
 With this in place, we can now change our **application.yaml** configuration file to contain the host and port we&#39;re looking for. Since we&#39;re going to stand up a local redis instance, we&#39;ll use the loopback and a standard redis port:
 
-``` yaml
+```yaml
 lettuce:
   host: 127.0.0.1
   port: 6379
@@ -90,7 +90,7 @@ lettuce:
 
 Now let&#39;s run a quick manual verification of our setup. I&#39;m first going to create a controller class that leverages our data service and just returns what&#39;s in redis for that integer key:
 
-``` java
+```java
 @RestController
 public class SampleController {
     private final RedisDataService redisDataService;
@@ -111,7 +111,7 @@ public class SampleController {
 
 And I&#39;ll setup a **docker-compose.yaml** to provision my local redis:
 
-``` yaml
+```yaml
 #version: &#34;3.3&#34;
 services:
   redis:
@@ -123,7 +123,7 @@ services:
 
 If you hop to the directory where that docker compose file is defined, then run:
 
-``` bash
+```bash
 $ docker-compose up
 
 ```
@@ -132,7 +132,7 @@ Then you can start up your service.
 
 A quick test that everything is working properly could be:
 
-``` bash
+```bash
 $ redis-cli set 3 &#34;something&#34;
 OK
 $ curl localhost:8080/redis/3 | json_pp
@@ -144,5 +144,3 @@ $ curl localhost:8080/redis/3 | json_pp
 ```
 
 And you should be good to go
-
-

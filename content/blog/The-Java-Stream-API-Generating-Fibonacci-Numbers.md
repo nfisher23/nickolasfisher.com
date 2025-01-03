@@ -1,6 +1,6 @@
 ---
 title: "The Java Stream API: Generating Fibonacci Numbers"
-date: 2018-10-01T00:00:00
+date: 2018-10-20T21:13:49
 draft: false
 ---
 
@@ -10,7 +10,7 @@ From the knowledge gained via [creating custom Java Stream objects](https://nick
 to have a little bit of fun with this. The fibonacci number sequence starts with \[0, 1\], and adds each of the previous two elements to create the next element in the sequence.
 This looks like \[0, 1, 1, 2, 3, 5, 8, 13, 21...\], and goes on &#34;forever.&#34; We can thus create a template that computes all Fibonacci numbers by implementing a Supplier&lt;T&gt;. like so:
 
-``` java
+```java
 import java.util.function.Supplier;
 
 public class SupplyFibonacci implements Supplier&lt;Integer&gt; {
@@ -43,8 +43,8 @@ public class SupplyFibonacci implements Supplier&lt;Integer&gt; {
 
 Which we can validate like so:
 
-``` java
-    @Test
+```java
+    @Test
     public void validate_fibonacci() {
         List&lt;Integer&gt; tenFibs = Stream.generate(new SupplyFibonacci()).limit(10).collect(Collectors.toList());
 
@@ -60,12 +60,10 @@ Which we can validate like so:
 
 And we can use that sequence to get any Fibonacci number we want, bounded by the laws of physics and bits. In this case, things start to get wonky around Fibonacci ~50 or so, due to machine precision breaking down:
 
-``` java
+```java
     @Test
     public void fibonacciStream_printVals() {
         Stream.generate(new SupplyFibonacci()).peek(System.out::println).limit(25).collect(Collectors.toList());
     }
 
 ```
-
-

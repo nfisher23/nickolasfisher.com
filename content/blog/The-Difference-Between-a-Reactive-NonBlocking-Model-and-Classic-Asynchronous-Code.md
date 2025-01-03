@@ -1,6 +1,6 @@
 ---
 title: "The Difference Between a Reactive Non-Blocking Model and Classic Asynchronous Code"
-date: 2019-07-01T00:00:00
+date: 2019-07-06T15:10:01
 draft: false
 ---
 
@@ -12,7 +12,7 @@ This was confusing to me at first, so I dug in and got a solid example working t
 
 Reactive Programming across network boundaries is fundamentally different from just making asynchronous calls in exactly one way. We&#39;ll start with an example from a [previous blog post on making concurrent API calls in Spring Boot](https://nickolasfisher.com/blog/How-to-Make-Concurrent-Service-API-Calls-in-Java-Using-Spring-Boot). In that example, the primary block to consider was this:
 
-``` java
+```java
 @Component
 public class ConcurrentRunner implements CommandLineRunner {
 
@@ -57,7 +57,7 @@ So, what if we could design a model where our threads were always working? What 
 
 From that previous blog post, make sure that you have a slow service that we can interact with. In a nutshell, the endpoint we&#39;ll hit can look like this:
 
-``` java
+```java
 @SpringBootApplication
 @RestController
 public class SlowApplication {
@@ -77,7 +77,7 @@ public class SlowApplication {
 
 If we have this service running on **port 9000**, then we can configure a reactive `WebClient` to use that as a base url. Going off a previous post on [configuring Reactive Netty in Spring Boot](https://nickolasfisher.com/blog/How-to-Configure-Reactive-Netty-in-Spring-Boot-in-Depth), we can modify our event loop group to have just five threads:
 
-``` java
+```java
     @Bean
     public NioEventLoopGroup nioEventLoopGroup() {
         return new NioEventLoopGroup(5);
@@ -93,7 +93,7 @@ If we have this service running on **port 9000**, then we can configure a reacti
 
 We can then implement a command line runner. In this case, we&#39;ll have it loop one thousand times:
 
-``` java
+```java
 @Component
 public class ReactiveCallsRunner implements CommandLineRunner {
 
@@ -122,7 +122,7 @@ Before we run this, what do we expect to see? Well, the service that we are hitt
 
 If you run this:
 
-``` bash
+```bash
 $ mvn spring-boot:run
 
 ```
@@ -156,5 +156,3 @@ Then, assuming your slow service is up and running on port 9000, your logs shoul
 We can see that we are reusing the same five threads, and that all of these calls go out within about 5 milliseconds of each other. This is where the real advantage of reactive web comes into play: when you have latency and it&#39;s unpredictable, then this kind of architecture will still be consistent.
 
 Even if you set the thread pool size to 1, we can still send out 1000 requests in under a few hundred milliseconds, despite the fact that the service we&#39;re calling takes two seconds to respond.
-
-

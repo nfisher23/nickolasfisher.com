@@ -1,6 +1,6 @@
 ---
 title: "Using Hashtags in Clustered Redis with Lettuce and Webflux"
-date: 2021-04-01T00:00:00
+date: 2021-04-11T16:12:09
 draft: false
 ---
 
@@ -13,7 +13,7 @@ In clustered redis, any non hash tagged key can be sent unpredictably \[well, ac
 
 Given that the lettuce client can automatically handle many cross-slot commands on your behalf \[for example, [automatically sending chunked MSET commands to the correct node](https://nickolasfisher.com/blog/Breaking-down-Lettuce-MSET-Commands-in-Clustered-Redis)\], it&#39;s usually preferable to just define your key and let the lettuce client take care of it. However, if you find that you want to ensure a group of keys all end up on the same node, you have to use hash tags. To demonstrate, let&#39;s build off of some previous code that [configures lettuce to communicate to clustered redis](https://nickolasfisher.com/blog/Configuring-Lettuce-to-work-with-Clustered-Redis). We can run this code to demonstrate that the little formula to get a key&#39;s hash slot is indeed different depending on the key used:
 
-``` java
+```java
 @Service
 public class PostConstructExecutor {
 
@@ -44,7 +44,7 @@ public class PostConstructExecutor {
 
 If you run this block of code against your clustered redis, you&#39;ll see an output similar to:
 
-``` bash
+```bash
 key slot number for not-hashtag.0 is 11206
 key slot number for not-hashtag.1 is 15335
 key slot number for not-hashtag.2 is 2948
@@ -60,7 +60,7 @@ key slot number for not-hashtag.9 is 15087
 
 You can then run this little script against the ports that represent each node in our cluster:
 
-``` bash
+```bash
 $ for port in 30001 30002 30003; do echo &#34;\nport (therefore node): $port&#34;; redis-cli -p $port -c keys &#39;*&#39;; done
 
 port (therefore node): 30001
@@ -85,7 +85,7 @@ Okay, so they definitely end up on different nodes as expected, and lettuce did 
 
 For example, we can change our loop to look something like this:
 
-``` java
+```java
         for (int i = 0; i &lt; 10; i&#43;&#43;) {
             String candidateHashTaggedKey = &#34;{some:hashtag}.&#34; &#43; i;
             Long keySlotNumber = redisClusterReactiveCommands.clusterKeyslot(candidateHashTaggedKey).block();
@@ -97,7 +97,7 @@ For example, we can change our loop to look something like this:
 
 And the log output should look nearly exactly like this:
 
-``` bash
+```bash
 key slot number for {some:hashtag}.0 is 2574
 key slot number for {some:hashtag}.1 is 2574
 key slot number for {some:hashtag}.2 is 2574
@@ -113,7 +113,7 @@ key slot number for {some:hashtag}.9 is 2574
 
 And we can rerun our little shell script--we should see all these keys end up on the same node because they share the same hash slot, which was determined by plugging our hashtag into the hash slot function:
 
-``` bash
+```bash
 $ for port in 30001 30002 30003; do echo &#34;\nport (therefore node): $port&#34;; redis-cli -p $port -c keys &#39;*&#39;; done
 
 port (therefore node): 30001
@@ -144,5 +144,3 @@ So that lines up with our intuition and is good news. Some parting thoughts for 
 - If you have a good reason and decide to use them, make sure that you define them so that they have high cardinality--or that there are a large number of distinct hash tags that logically group the right keys together, but don&#39;t overdo it.
 
 And with that, you should be good to go.
-
-

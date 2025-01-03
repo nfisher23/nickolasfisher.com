@@ -1,6 +1,6 @@
 ---
 title: "Scanning a DynamoDB table in Java with the AWS SDK 2.0"
-date: 2020-11-01T00:00:00
+date: 2020-11-07T02:08:37
 draft: false
 ---
 
@@ -12,7 +12,7 @@ But, if you&#39;re sure you want to do it, here&#39;s how. The [source code for 
 
 Building off of previous posts, in particular one where we setup an embedded DynamoDB instance in Java, I&#39;ll start by creating a table with a hash and range key \[&#34;Company&#34; and &#34;Model&#34;, both strings\], then putting three items in it:
 
-``` java
+```java
     @Test
     public void scanning() throws Exception {
         String currentTableName = &#34;ScanTest&#34;;
@@ -37,13 +37,14 @@ Building off of previous posts, in particular one where we setup an embedded Dyn
         Map&lt;String, AttributeValue&gt; pixel2ItemAttributes = getMapWith(partitionKey, rangeKey3);
         pixel2ItemAttributes.put(COLOR, AttributeValue.builder().s(&#34;Cyan&#34;).build());
         pixel2ItemAttributes.put(YEAR, AttributeValue.builder().n(&#34;2014&#34;).build());
-        putItem(currentTableName, pixel2ItemAttributes);    }
+        putItem(currentTableName, pixel2ItemAttributes);
+    }
 
 ```
 
 With this in place, we can start scanning. If we include no filter, then scanning will return everything back to us. If there are so many items that they exceed certain quotas, then there will be pagination. In this case, three items isn&#39;t big enough for dynamo to bother with pagination:
 
-``` java
+```java
 
         // scan everything, return everything
         ScanRequest scanEverythingRequest = ScanRequest.builder().tableName(currentTableName).build();
@@ -60,7 +61,7 @@ We can also include a filter expression to limit the number of results. Critical
 
 Here, we include a filter expression on the color being &#34;Cyan&#34;:
 
-``` java
+```java
 
         // scan everything, return just items with Color == &#34;Cyan&#34;
         ScanRequest scanForCyanRequest = ScanRequest.builder()
@@ -79,5 +80,3 @@ Here, we include a filter expression on the color being &#34;Cyan&#34;:
 ```
 
 Feel free to [get the source code from Github](https://github.com/nfisher23/webflux-and-dynamo/blob/master/src/test/java/com/nickolasfisher/reactivedynamo/PhoneServiceTest.java#L670) and play around with it yourself. You will be able to run this integration test and see it pass.
-
-

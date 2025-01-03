@@ -1,6 +1,6 @@
 ---
 title: "Improving Java IO Performance: Formatting Costs"
-date: 2018-11-01T00:00:00
+date: 2018-11-17T18:27:31
 draft: false
 ---
 
@@ -10,7 +10,7 @@ Another potential source of I/O bottlenecks, across any medium, could be the pro
 
 We can compare the performance of a couple of different options related to formatting by comparing the MessageFormatter class with simple addition. With a test setup like so:
 
-``` java
+```java
     public static void runBenchmark(Class clazz) throws Exception {
         Options options = new OptionsBuilder()
                 .include(clazz.getName() &#43; &#34;.*&#34;)
@@ -40,7 +40,7 @@ We can compare the performance of a couple of different options related to forma
 
 We can compare the performance of a MessageFormatter in both a precompiled state and a state that is not precompiled:
 
-``` java
+```java
     public static int COUNT = 25000;
     public static int NUM = 7;
 
@@ -72,7 +72,7 @@ We can compare the performance of a MessageFormatter in both a precompiled state
 
 The performance of these methods on my machine look like:
 
-``` bash
+```bash
 Benchmark                                                     Mode  Cnt    Score   Error  Units
 FormattingCostsTests.formatUsingMessageFormatter_preCompiled  avgt    2  275.921          ms/op
 FormattingCostsTests.formatWithoutPrecompiling                avgt    2  334.822          ms/op
@@ -80,7 +80,7 @@ FormattingCostsTests.formatWithoutPrecompiling                avgt    2  334.822
 
 Now, we can achieve the same result using garden variety addition, and compare that to a completely precompiled state:
 
-``` java
+```java
     @Benchmark
     public void printingWithNoFormattingCosts() {
         for (int i = 0; i &lt; COUNT; i&#43;&#43;) {
@@ -100,7 +100,7 @@ Now, we can achieve the same result using garden variety addition, and compare t
 
 The resulting performance of everything together, on my machine, is:
 
-``` bash
+```bash
 Benchmark                                                     Mode  Cnt    Score   Error  Units
 FormattingCostsTests.formatUsingAddition                      avgt    2   59.710          ms/op
 FormattingCostsTests.formatUsingMessageFormatter_preCompiled  avgt    2  275.921          ms/op
@@ -109,5 +109,3 @@ FormattingCostsTests.printingWithNoFormattingCosts            avgt    2   57.381
 ```
 
 Or, the decision to not use the MessageFormatter class achieved a dramatic (~4 times) performance improvement.
-
-

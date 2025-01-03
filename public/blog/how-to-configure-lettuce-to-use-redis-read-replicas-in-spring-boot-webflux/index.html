@@ -148,8 +148,8 @@ Lettuce supports reading from redis replicas, but with the caveat that it doesn&
 
     <div class="meta">
       
-      <time datetime="2021-03-01 00:00:00 &#43;0000 UTC" title='Mon, Mar 1, 2021, 12:00 AM UTC'>
-        01/03/2021 - Estimated reading time: 6 minutes
+      <time datetime="2021-03-28 19:22:27 &#43;0000 UTC" title='Sun, Mar 28, 2021, 7:22 PM UTC'>
+        28/03/2021 - Estimated reading time: 6 minutes
       </time>
 
        
@@ -357,7 +357,15 @@ The basic idea is that we will configure two different clients: one that connect
 <p>There's an important note for what follows here: because I'm running these tests on a computer running Linux, I can actually access the containers running by their bridge IP address. Therefore, if the IP address for a redis node inside the docker network is <strong>127.22.0.2</strong>, I can actually run this redis-cli command and it works:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ redis-cli -p <span style="color:#bd93f9">6379</span> -h 172.22.0.2 info
 </span></span><span style="display:flex;"><span>...bunch of stuff...
-</span></span></code></pre></div></section>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Replication</span>
+</span></span><span style="display:flex;"><span>role:master
+</span></span><span style="display:flex;"><span>connected_slaves:1
+</span></span><span style="display:flex;"><span>slave0:ip<span style="color:#ff79c6">=</span>172.22.0.3,port<span style="color:#ff79c6">=</span>6379,state<span style="color:#ff79c6">=</span>online,offset<span style="color:#ff79c6">=</span>2828,lag<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p><strong>You can't do this on mac</strong> [or, I'm pretty sure, Windows].</p>
+<p>Because lettuce is getting the replica IP address from the primary [by running INFO, as I did here], starting up this example on a non-Linux box won't &quot;just work&quot; as long as the application is running on your host machine, and not in the docker compose network. You will likely have to create a special configuration for local only to get around this issue for now, but this will work in a &quot;real&quot; environment or if you configure redis in a non-docker environment.</p>
+<p>Do remember to <a href="https://github.com/nfisher23/reactive-programming-webflux">check out the sample code on Github</a>, which even if you're developing on a non Linux box should be a good place to start for higher environments</p>
+</section>
 
   
     

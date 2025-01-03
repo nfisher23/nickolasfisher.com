@@ -148,8 +148,8 @@ Consul is a distributed service discovery engine. It&#39;s primary purpose is to
 
     <div class="meta">
       
-      <time datetime="2019-04-01 00:00:00 &#43;0000 UTC" title='Mon, Apr 1, 2019, 12:00 AM UTC'>
-        01/04/2019 - Estimated reading time: 2 minutes
+      <time datetime="2019-04-27 19:49:14 &#43;0000 UTC" title='Sat, Apr 27, 2019, 7:49 PM UTC'>
+        27/04/2019 - Estimated reading time: 4 minutes
       </time>
 
        
@@ -170,7 +170,101 @@ Consul is a distributed service discovery engine. It&#39;s primary purpose is to
 <p>Consul is written using Golang&ndash;a huge draw of Golang is that it is almost always compiled ahead-of-time, to a binary executable of the target machine. To get consul to run on our machine, then, it suffices for us to figure out what the OS of that machine will be. In this example, we are using Ubuntu, which is a Linux distribution, and we can thus install consul_(version)_linux_amd64.zip (see the <a href="https://www.consul.io/downloads.html">Consul Downloads</a> page for any other distributions).</p>
 <p>In your ansible role, modify your <strong>vars/main.yml</strong> file to look like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
-</span></span></code></pre></div></section>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># vars file for consul-server</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">consul_version</span>: <span style="color:#bd93f9">1.4.2</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">consul_zip_file</span>: consul_{{ consul_version }}_linux_amd64.zip
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">consul_install_dir</span>: /usr/local/bin
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">consul_config_dir</span>: /etc/consul
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">consul_data_dir</span>: /var/data
+</span></span></code></pre></div><p>We will need all of these in a moment, they are all pretty self explanatory.</p>
+<p>While you can technically pass in a large collection of configuration parameters to consul at startup time, it is much more manageable to pass in a configuration file using <a href="https://www.consul.io/docs/agent/options.html#_config_file">-config-dir or -config-file</a>&ndash;for this example, we will do exactly that. Our Jinja2 template for our consul configuration file can go in <strong>templates/consul.config.j2</strong> and look like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    &amp;#34;node_name&amp;#34;: &amp;#34;example&amp;#34;,
+</span></span><span style="display:flex;"><span>    &amp;#34;addresses&amp;#34;: {
+</span></span><span style="display:flex;"><span>        &amp;#34;http&amp;#34;: &amp;#34;{{ ansible_facts[&amp;#39;all_ipv4_addresses&amp;#39;] | last }} <span style="color:#bd93f9">127.0</span>.<span style="color:#bd93f9">0.1</span>&amp;#<span style="color:#bd93f9">34</span>;
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;server&amp;#<span style="color:#bd93f9">34</span>;: <span style="color:#ff79c6">true</span>,
+</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;advertise_addr&amp;#<span style="color:#bd93f9">34</span>;: &amp;#<span style="color:#bd93f9">34</span>;{{ ansible_facts[&amp;#39;all_ipv4_addresses&amp;#39;] | last }}&amp;#<span style="color:#bd93f9">34</span>;,
+</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;client_addr&amp;#<span style="color:#bd93f9">34</span>;: &amp;#<span style="color:#bd93f9">34</span>;<span style="color:#bd93f9">127.0</span>.<span style="color:#bd93f9">0.1</span> {{ ansible_facts[&amp;#39;all_ipv4_addresses&amp;#39;] | last }}&amp;#<span style="color:#bd93f9">34</span>;,
+</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;connect&amp;#<span style="color:#bd93f9">34</span>;: {
+</span></span><span style="display:flex;"><span>        &amp;#34;enabled&amp;#34;: true
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;data_dir&amp;#<span style="color:#bd93f9">34</span>;: &amp;#<span style="color:#bd93f9">34</span>;{{ consul_data_dir }}&amp;#<span style="color:#bd93f9">34</span>;,
+</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;bootstrap&amp;#<span style="color:#bd93f9">34</span>;: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This tells Consul to run in Server Mode, and to bootstrap itself on startup. It also specifies the IP of the target machine using ansible_facts, and specifies the data directory with data_dir.</p>
+<p>We can now move forward with the template for our Systemd service. In your <strong>templates/consul.service.j2</strong> file:</p>
+<pre tabindex="0"><code>[Unit]
+Description=solo consul server example
+
+[Service]
+WorkingDirectory={{ consul_config_dir }}
+User=root
+ExecStart={{ consul_install_dir }}/consul agent -config-dir={{ consul_config_dir }}
+
+[Install]
+WantedBy=multi-user.target
+</code></pre><p>This is very simple: the user running this process is root, and we are using configuration parameters from our vars/main.yml file to generate this file on the fly.</p>
+<p>We need two more things for this role to be complete. The first is an Ansible handler to restart consul when we make critical changes that require a restart. In <strong>handlers/main.yml</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># handlers file for consul-server</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: restart consul
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">systemd</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: consul.service
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">daemon_reload</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">state</span>: restarted
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span></code></pre></div><p>Finally, we can specify the tasks that are going to carry out the installation for us. In <strong>tasks/main.yml</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># tasks file for consul-server</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: get consul zip
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">get_url</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: <span style="color:#ff79c6">&amp;#34;/etc/{{</span> consul_zip_file }}&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">url</span>: <span style="color:#ff79c6">&amp;#34;https://releases.hashicorp.com/consul/{{</span> consul_version }}/{{ consul_zip_file }}&amp;#34;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: ensure unzip present
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">apt</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: unzip
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">update_cache</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: place unzipped consul on path
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">unarchive</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">src</span>: <span style="color:#ff79c6">&amp;#34;/etc/{{</span> consul_zip_file }}&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: <span style="color:#ff79c6">&amp;#34;{{</span> consul_install_dir }}&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">remote_src</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: ensure directories for data and config exists
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">file</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">path</span>: <span style="color:#ff79c6">&amp;#34;{{</span> item }}&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">state</span>: directory
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">with_items</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">&amp;#34;{{</span> consul_config_dir }}&amp;#34;
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">&amp;#34;{{</span> consul_data_dir }}&amp;#34;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: send consul configuration file
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: <span style="color:#ff79c6">&amp;#34;{{</span> consul_config_dir }}/config.json&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">src</span>: consul.config.j2
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">notify</span>: restart consul
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: ensure consul service file exists
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: /etc/systemd/system/consul.service
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">src</span>: consul.service.j2
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">force</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">mode</span>: <span style="color:#bd93f9">0644</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">notify</span>: restart consul
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span></code></pre></div><p>The critical steps here are: downloading consul, placing the unzipped binary on the path, ensuring configuration and systemd template files are up there in their appropriate location. We let the handler start Consul up for us.</p>
+<p>Once you run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule create &amp;amp;&amp;amp; molecule converge
+</span></span></code></pre></div><p>And the virtual machine comes up, you should be able to hit 192.168.56.211:8500, and see ﻿Consul Agent﻿ come up.</p>
+</section>
 
   
     

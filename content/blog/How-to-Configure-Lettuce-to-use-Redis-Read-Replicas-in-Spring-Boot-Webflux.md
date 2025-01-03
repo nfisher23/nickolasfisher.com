@@ -1,6 +1,6 @@
 ---
 title: "How to Configure Lettuce to use Redis Read Replicas in Spring Boot Webflux"
-date: 2021-03-01T00:00:00
+date: 2021-03-28T19:22:27
 draft: false
 ---
 
@@ -10,7 +10,7 @@ Lettuce supports reading from redis replicas, but with the caveat that it doesn&
 
 You can, as the documentation states, just set up your redis client like so:
 
-``` java
+```java
     public RedisStringReactiveCommands&lt;String, String&gt; redisReplicaReactiveCommands(RedisConfig redisConfig) {
         RedisURI redisPrimaryURI = RedisURI.builder()
                 .withHost(redisConfig.getHost())
@@ -40,7 +40,7 @@ But what if you have parts of your application where eventual consistency can be
 
 Let&#39;s start by reusing work from a previous post where we set up a redis leader/follower setup. We leveraged docker/docker compose, where our **docker-compose.yaml** looked like this:
 
-``` yaml
+```yaml
 version: &#39;3.8&#39;
 
 services:
@@ -68,7 +68,7 @@ networks:
 
 Running:
 
-``` bash
+```bash
 $ docker-compose up -d
 
 ```
@@ -82,7 +82,7 @@ _Be sure to check out the &#34;caveat&#34; section below if you planning on runn
 To get lettuce to play ball, we can leverage spring qualifiers to pass in a different **RedisStringReactiveCommands** service into our data service.
 The basic idea is that we will configure two different clients: one that connects to the primary for everything, and one that uses the read replicas. Here&#39;s the config class:
 
-``` java
+```java
 @Configuration
 public class RedisConfig {
     @Bean(&#34;redis-primary-commands&#34;)
@@ -126,7 +126,7 @@ public class RedisConfig {
 
 With this, we can modify our service to use it properly like so:
 
-``` java
+```java
 @Service
 @Log4j2
 public class RedisDataService {
@@ -167,7 +167,7 @@ Here, anytime you call **getThingPrimary**, it will use a client connection pool
 
 Let&#39;s set up a controller to do some sanity testing that our configuration does what it&#39;s supposed to:
 
-``` java
+```java
 @RestController
 public class SampleController {
     private final RedisDataService redisDataService;
@@ -195,7 +195,7 @@ public class SampleController {
 
 One more thing we can do is add a package level debug log for lettuce, so we can inspect the output and see what commands are being executed where:
 
-``` yaml
+```yaml
 redis-primary:
   host: 127.0.0.1
   port: 6379
@@ -206,7 +206,7 @@ logging.level.io.lettuce.core: DEBUG
 
 When I start up the app locally, I can curl to invoke the endpoints:
 
-``` bash
+```bash
 $ redis-cli set 3 &#34;something&#34;
 OK
 $ curl localhost:8080/redis/3 | json_pp
@@ -224,7 +224,7 @@ $ curl localhost:8080/primary-redis/3 | json_pp
 
 And with debug logging working as expected, I can see in the logs:
 
-``` bash
+```bash
  INFO 19336 --- [or-http-epoll-1] c.n.r.service.RedisDataService           : getting 3 from replica
 DEBUG 19336 --- [or-http-epoll-1] io.lettuce.core.RedisChannelHandler      : dispatching command SubscriptionCommand [type=GET, output=ValueOutput [output=null, error=&#39;null&#39;], commandType=io.lettuce.core.protocol.Command]
 DEBUG 19336 --- [or-http-epoll-1] i.l.c.m.MasterReplicaConnectionProvider  : getConnectionAsync(READ)
@@ -256,6 +256,19 @@ Digging in there, you can see that when we hit the replica, we are connecting to
 
 There&#39;s an important note for what follows here: because I&#39;m running these tests on a computer running Linux, I can actually access the containers running by their bridge IP address. Therefore, if the IP address for a redis node inside the docker network is **127.22.0.2**, I can actually run this redis-cli command and it works:
 
-``` bash
+```bash
 $ redis-cli -p 6379 -h 172.22.0.2 info
 ...bunch of stuff...
+# Replication
+role:master
+connected_slaves:1
+slave0:ip=172.22.0.3,port=6379,state=online,offset=2828,lag=0
+...
+
+```
+
+**You can&#39;t do this on mac** \[or, I&#39;m pretty sure, Windows\].
+
+Because lettuce is getting the replica IP address from the primary \[by running INFO, as I did here\], starting up this example on a non-Linux box won&#39;t &#34;just work&#34; as long as the application is running on your host machine, and not in the docker compose network. You will likely have to create a special configuration for local only to get around this issue for now, but this will work in a &#34;real&#34; environment or if you configure redis in a non-docker environment.
+
+Do remember to [check out the sample code on Github](https://github.com/nfisher23/reactive-programming-webflux), which even if you&#39;re developing on a non Linux box should be a good place to start for higher environments

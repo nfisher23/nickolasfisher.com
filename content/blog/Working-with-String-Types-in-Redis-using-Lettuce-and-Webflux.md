@@ -1,6 +1,6 @@
 ---
 title: "Working with String Types in Redis using Lettuce and Webflux"
-date: 2021-04-01T00:00:00
+date: 2021-04-11T19:01:16
 draft: false
 ---
 
@@ -14,7 +14,7 @@ This article will walk you through some of the more common commands and how to u
 
 We&#39;re going to build off of previous work where we [set up a redis test container to test lettuce](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux), and assuming you have cloned that project and are following along with the right dependencies, I will make a new test class that for now just creates the test container, configured a redis client against that container, and flushes \[removes in redis lingo\] all the data from redis after each test method runs:
 
-``` java
+```java
 @Testcontainers
 public class StringTypesTest {
 
@@ -44,7 +44,7 @@ With this in place, we can begin hacking away.
 
 This is straightforward:
 
-``` java
+```java
     @Test
     public void setAndGet() {
         RedisReactiveCommands&lt;String, String&gt; redisReactiveCommands = redisClient.connect().reactive();
@@ -75,7 +75,7 @@ We set **some-key-1** to have **some-value-1**, and verify it&#39;s there. We th
 
 If we don&#39;t like that interface of adding an additional argument for set nx, set ex, etc., then lettuce does provide a slightly more intuitive interface:
 
-``` java
+```java
     @Test
     public void setNx() throws Exception {
         RedisReactiveCommands&lt;String, String&gt; redisReactiveCommands = redisClient.connect().reactive();
@@ -108,7 +108,7 @@ We show that trying to set a value that already exists with the nx option fails,
 
 **append** will append a string to an existing string, then return the length of the existing string:
 
-``` java
+```java
     @Test
     public void append() {
         RedisReactiveCommands&lt;String, String&gt; redisReactiveCommands = redisClient.connect().reactive();
@@ -136,7 +136,7 @@ We set a key to work with, then append **-more-stuff** to the value, then assert
 
 **incrby** increments the value associated with that key by the specified amount. So if the value is 7 and we **incrby** 8, we should get 15:
 
-``` java
+```java
     @Test
     public void incrBy() {
         RedisReactiveCommands&lt;String, String&gt; redisReactiveCommands = redisClient.connect().reactive();
@@ -158,7 +158,7 @@ Here, we assert exactly that, 7 &#43; 8 is indeed 15 and it is returned to us by
 
 **mset** and **mget** are just the multiples version of **get** and **set**. If we **mset** then we are setting multiple keys at once. If we **mget** then we are getting multiple values from the keys at once:
 
-``` java
+```java
     @Test
     public void mget() {
         RedisReactiveCommands&lt;String, String&gt; redisReactiveCommands = redisClient.connect().reactive();
@@ -189,5 +189,3 @@ Here, we assert exactly that, 7 &#43; 8 is indeed 15 and it is returned to us by
 We set three keys and values in the same command using **mset**, then use **mget** to assert that we do in fact get three keys and values in response. The interface returns a flux, so to simplify it we just collect the flux into a mono containing a list of all the emitted items.
 
 You can feel free to explore the previously linked other string commands that redis exposes via its API, but this should be a good start.
-
-

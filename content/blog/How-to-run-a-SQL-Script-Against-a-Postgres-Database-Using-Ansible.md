@@ -1,6 +1,6 @@
 ---
 title: "How to run a SQL Script Against a Postgres Database Using Ansible"
-date: 2019-02-01T00:00:00
+date: 2019-02-09T15:44:26
 draft: false
 ---
 
@@ -12,5 +12,85 @@ From where I sit, there are two good options for dealing with database migration
 
 There are a few different ways to run a SQL script against Postgres using Ansible. The first is to take a sql file and dump it on the server you&#39;re managing, then run the sql script using a psql command. First we&#39;ll install Postgres for a Debian distribution with apt:
 
-``` yaml
+```yaml
 ---
+# tasks file for run-sql-postgres
+- name: install postgres
+  apt:
+    update_cache: yes
+    name: [&#39;postgresql&#39;, &#39;postgresql-contrib&#39;]
+    state: present
+```
+
+Next I&#39;ll create a testing database to run the scripts against with the built in postgresql\_db ansible module:
+
+```yaml
+- name: ensure psycopg2
+  apt:
+    name: python-psycopg2
+
+- name: ensure testing database created
+  postgresql_db:
+    name: testdb # required. name of the database to add or remove
+  become_user: postgres
+
+```
+
+In our ansible role directory, we&#39;ll create a **files/migrate.sql** file with the following contents:
+
+```sql
+CREATE TABLE IF NOT EXISTS products (
+    product_id serial PRIMARY KEY,
+    name varchar(100),
+    price numeric
+);
+
+```
+
+With the file in place, we can return to our **tasks/main.yml** file and add a first example:
+
+```yaml
+# first method
+- name: dump a database file
+  copy:
+    dest: /etc/migrate.sql
+    src: migrate.sql
+  register: sql_file_path
+
+- name: run custom sql script
+  command: &#34;psql testdb -f {{ sql_file_path.dest }}&#34;
+  become_user: postgres
+  register: sql_response_file
+
+- name: debug response
+  debug:
+    var: sql_response_file
+
+```
+
+This sends the file to **/etc/migrate.sql**, then uses the command module to run psql with the **-f** option for files. You can run it yourself and see the type of response that you&#39;re getting. With this method, it will **always** report the &#34;run custom sql script&#34; task as **changed**. You can optionally choose to modify that behavior with the changed\_when option.
+
+The second method will read the file into a variable, then use the variable to run psql with the **-c** option for command:
+
+```yaml
+# second method
+- name: load sql into variable
+  set_fact:
+    migrate_sql: &#34;{{ lookup(&#39;file&#39;, &#39;migrate.sql&#39;) }}&#34;
+
+- name: debug variable
+  debug:
+    var: migrate_sql
+
+- name: run custom script from variable
+  command: psql testdb -c &#34;{{ migrate_sql }}&#34;
+  become_user: postgres
+  register: sql_response_variable
+
+- name:
+  debug:
+    var: sql_response_variable
+
+```
+
+In both cases, the variables will report a virtually identical output.

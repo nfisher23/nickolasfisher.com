@@ -1,6 +1,6 @@
 ---
 title: "Making Sense of Mono Error Handling in Spring Boot Webflux/Project Reactor"
-date: 2021-03-01T00:00:00
+date: 2021-03-21T18:27:16
 draft: false
 ---
 
@@ -17,7 +17,7 @@ How many of these are actually valuable? In practice, the only one you&#39;re li
 
 This one you will use probably 95% of the time. It&#39;s simple: if the mono upstream emits an error, you get to decide how to deal with it. Here&#39;s an example:
 
-``` java
+```java
     @Test
     public void onErrorMono_simple() {
         Mono&lt;Object&gt; errorMono = Mono.defer(() -&gt;
@@ -41,7 +41,7 @@ Here, we just blindly provide a static fallback. If at any time the **errorMono*
 
 In the case where you have a fallback option that isn&#39;t static--for example, you&#39;re trying to contact the primary database and it fails, so you fallback to a cache, you can do pretty much the same thing, and just fallback to a **Mono** that actually does something \[typically in the form of a service\]:
 
-``` java
+```java
     @Test
     public void onErrorMono_slightlyLessSimple() {
         Mono&lt;Object&gt; errorMono = Mono.defer(() -&gt;
@@ -71,7 +71,7 @@ If **fallbackMono** fails, in this case, then the entire chain will fail as the 
 
 There&#39;s another variant here that&#39;s worth mentioning. You can introduce a [Predicate](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Predicate.html) to match against an exception, then you&#39;ll only conditionally execute the fallback behavior. This is very valuable when you&#39;re dealing with downstream service calls, for example, because you probably want to match on a **5xx** response code, but matching on a **4xx** response code would be irresponsible \[client side error, after all\]. So you can chain **onErrorResume** calls until you get the match you want, and tune your fallback appropriately:
 
-``` java
+```java
     @Test
     public void onErrorMono_matching() {
         Mono&lt;Object&gt; errorMono = Mono.defer(() -&gt;
@@ -105,7 +105,7 @@ Here we have two different types of fallback behaviors depending on the message 
 
 This one is basically a simplified version of **onErrorResume**. You can provide a static value to fall back to:
 
-``` java
+```java
     @Test
     public void onErrorMono_returnStatic() {
         Mono&lt;Object&gt; errorMono = Mono.defer(() -&gt;
@@ -127,7 +127,7 @@ In practice, what&#39;s the added value here? An ever so slight amount of reduce
 
 This one is just used to map one error type to another:
 
-``` java
+```java
     @Test
     public void onErrorMono_map() {
         Mono&lt;Object&gt; errorMono = Mono.defer(() -&gt;
@@ -154,5 +154,3 @@ To quote the documentation for this class of methods:
 **&#34;The mode doesn&#39;t really make sense on a Mono, since we&#39;re sure there will be no further value to continue with: onErrorResume(Function) is a more classical fit then.&#34;**
 
 It&#39;s only really useful if you&#39;re propagating the configuration to an upstream **Flux**. I wouldn&#39;t suggest spending a lot of time on this one and stick to **onErrorResume**.
-
-

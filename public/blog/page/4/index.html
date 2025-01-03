@@ -158,24 +158,56 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/how-to-run-a-lua-script-against-redis-using-lettuce/">How to Run a Lua Script against Redis using Lettuce</a>
+    <a href="http://localhost:1313/blog/how-to-publish-and-subscribe-to-redis-using-lettuce/">How to Publish and Subscribe to Redis Using Lettuce</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-24 16:37:18 &#43;0000 UTC" title='Sat, Apr 24, 2021, 4:37 PM UTC'>
+      24/04/2021
     </time>
   </span>
 
   <div class="description">
     
       <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>Running a lua script against redis is done using <a href="https://redis.io/commands/eval">EVAL</a>. The primary benefit of using a lua script is that the entire script is guaranteed to be run at once, and nothing else will interfere with it [it's atomic]. This allows for operating on multiple keys, or check-then-set type operations on the same key.</p>
+<p>Subscribing to topics in redis allows for a <em>fanout</em> behavior, where any number of subscribers can be notified of a message from a publisher.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/how-to-run-a-lua-script-against-redis-using-lettuce/">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-publish-and-subscribe-to-redis-using-lettuce/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/expiring-individual-elements-in-a-redis-set/">Expiring Individual Elements in a Redis Set</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2021-04-18 20:13:11 &#43;0000 UTC" title='Sun, Apr 18, 2021, 8:13 PM UTC'>
+      18/04/2021
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
+<p>Redis does not allow you to set the expiration on individual members in a set, it only allows you to set an expiration on the entire set itself. If you want to have a sort of expiry on individual elements in a set, this article shares a workaround to that problem that works well in practice. Because I have already written a lot of <a href="https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux">boilerplate code for testing any redis operation using lettuce</a>, I'm going to be showing you this technique using a reactive lettuce client, however the basic concept should transfer easily to any other client.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/expiring-individual-elements-in-a-redis-set/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -194,8 +226,8 @@
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-17 09:35:41 &#43;0000 UTC" title='Sat, Apr 17, 2021, 9:35 AM UTC'>
+      17/04/2021
     </time>
   </span>
 
@@ -222,24 +254,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/optimistic-locking-in-redis-with-reactive-lettuce/">Optimistic Locking in Redis with Reactive Lettuce</a>
+    <a href="http://localhost:1313/blog/a-guide-to-operating-on-sorted-sets-in-redis-with-lettuce/">A Guide to Operating on Sorted Sets in Redis with Lettuce</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-17 08:15:31 &#43;0000 UTC" title='Sat, Apr 17, 2021, 8:15 AM UTC'>
+      17/04/2021
     </time>
   </span>
 
   <div class="description">
     
-      <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>Optimistic Locking in Redis is one of the only reasons to want to use transactions, in my opinion. You can ensure a grouping of atomic operations only occur if a watched key does not change out from underneath you. On the CLI, this might start with:</p>
+      <p>Sorted Sets in redis are one of my personal favorite tools when operating at scale. As of this writing, <a href="https://redis.io/commands/#sorted_set">there are over 30 unique operations you can perform against sorted sets in redis</a>. This article will focus on some of the more common ones you're going to need to know, and it will use a reactive lettuce client to demonstrate them.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/optimistic-locking-in-redis-with-reactive-lettuce/">
+    <a class="read-more" href="http://localhost:1313/blog/a-guide-to-operating-on-sorted-sets-in-redis-with-lettuce/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -254,56 +285,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/pre-loading-a-lua-script-into-redis-with-lettuce/">Pre Loading a Lua Script into Redis With Lettuce</a>
+    <a href="http://localhost:1313/blog/a-guide-to-operating-on-multiple-sets-in-redis-with-lettuce/">A Guide to Operating on Multiple Sets in Redis with Lettuce</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
+    <time datetime="2021-04-17 08:12:31 &#43;0000 UTC" title='Sat, Apr 17, 2021, 8:12 AM UTC'>
+      17/04/2021
     </time>
   </span>
 
   <div class="description">
     
-      <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>In my last article on <a href="https://nickolasfisher.com/blog/How-to-Run-a-Lua-Script-against-Redis-using-Lettuce">running a lua script against redis with lettuce</a>, we just sent the entire script [that redis will execute atomically] along with the arguments every time. For very small scripts this is unlikely to be a problem, but there is definitely a more efficient way to do this, using <a href="https://redis.io/commands/evalsha">EVALSHA</a>.</p>
+      <p>In the last article, we showed how to do some of the most common single set operations against redis, this article will focus on operating on multiple sets using a lettuce client against redis. Specifically, we'll focus on subtracting, intersecting, and adding sets. The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/pre-loading-a-lua-script-into-redis-with-lettuce/">
-      Read more
-      <span class="w-4 h-4 stroke-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-</svg>
-
-      </span>
-    </a>
-  </div>
-</article>
-
-  
-    <article class="flex flex-col gap-1">
-  <h1>
-    <a href="http://localhost:1313/blog/pre-loading-lua-scripts-into-clustered-redis-with-lettuce/">Pre Loading Lua Scripts into Clustered Redis with Lettuce</a>
-  </h1>
-  
-  <span class="date">
-    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
-      01/04/2021
-    </time>
-  </span>
-
-  <div class="description">
-    
-      <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on github</a>.</p>
-<p>In a previous article, we showed how to <a href="https://nickolasfisher.com/blog/Pre-Loading-a-Lua-Script-into-Redis-With-Lettuce">efficiently execute a lua script in redis using lettuce</a>. To really scale our caching solution horizontally [and elegantly deal with many scaling headaches], we will also want to make sure we can execute our lua scripts against clustered redis, which as we'll see here is pretty straightforward.</p>
-    
-  </div>
-
-  <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/pre-loading-lua-scripts-into-clustered-redis-with-lettuce/">
+    <a class="read-more" href="http://localhost:1313/blog/a-guide-to-operating-on-multiple-sets-in-redis-with-lettuce/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

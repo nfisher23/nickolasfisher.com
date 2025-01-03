@@ -1,6 +1,6 @@
 ---
 title: "How to Register a Spring Boot Service to a Consul Cluster"
-date: 2019-05-01T00:00:00
+date: 2019-05-25T16:24:46
 draft: false
 ---
 
@@ -8,7 +8,7 @@ In a previous post, we saw [how to provision a simple consul client/server clust
 
 First, pull up the [spring boot initializer](https://start.spring.io/). Select web and spring cloud, then download and unpack the project. Your pom.xml should look something like this:
 
-``` xml
+```xml
 &lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;
 &lt;project xmlns=&#34;http://maven.apache.org/POM/4.0.0&#34; xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;
          xsi:schemaLocation=&#34;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&#34;&gt;
@@ -78,7 +78,7 @@ You will need the web dependency to allow Consul to check your health endpoint, 
 
 What remains is some spring boot automagic. If you took after the post on provisioning your consul cluster and [you started it using the sample code](https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server), you will have a Consul agent running in client mode available at **192.168.56.212**, and it will be receiving communications on port **8500**. All you will need to make this happen is some changes to your **application.yml** inside of your resources folder:
 
-``` yaml
+```yaml
 spring:
   application:
     name: consulregister
@@ -92,7 +92,7 @@ spring:
 
 You can then go to your application directory and run:
 
-``` bash
+```bash
 $ mvn spring-boot:run
 ```
 
@@ -105,7 +105,7 @@ After a bit, you should see your application register to consul with a log entry
 
 You can then ask consul to verify that it contains the service:
 
-``` bash
+```bash
 $ curl http://192.168.68.212:8500/v1/agent/services | json_pp
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
@@ -131,5 +131,3 @@ $ curl http://192.168.68.212:8500/v1/agent/services | json_pp
 ```
 
 And you&#39;re good to go.
-
-

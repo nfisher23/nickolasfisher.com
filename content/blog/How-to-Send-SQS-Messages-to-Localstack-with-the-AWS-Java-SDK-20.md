@@ -1,6 +1,6 @@
 ---
 title: "How to Send SQS Messages to Localstack with the AWS Java SDK 2.0"
-date: 2020-09-01T00:00:00
+date: 2020-09-12T20:54:13
 draft: false
 ---
 
@@ -10,11 +10,42 @@ The completely rewritten [AWS SDK for Java 2.0](https://docs.aws.amazon.com/sdk-
 
 ## The Infra
 
-To start with, you will want to ensure you have docker and docker-compose installed. Then you can [copy the localstack docker-compose file from the github repo](https://github.com/localstack/localstack/blob/master/docker-compose.yml) into your own **docker-compose.yaml** file
+To start with, you will want to ensure you have docker and docker-compose installed. Then you can [copy the localstack docker-compose file from the github repo](https://github.com/localstack/localstack/blob/master/docker-compose.yml) into your own **docker-compose.yaml** file like so:
+
+```yaml&gt;version: &#39;2.1&#39;
+
+services:
+  localstack:
+    container_name: &#34;${LOCALSTACK_DOCKER_NAME-localstack_main}&#34;
+    image: localstack/localstack
+    ports:
+      - &#34;4566-4599:4566-4599&#34;
+      - &#34;${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}&#34;
+    environment:
+      - SERVICES=${SERVICES- }
+      - DEBUG=${DEBUG- }
+      - DATA_DIR=${DATA_DIR- }
+      - PORT_WEB_UI=${PORT_WEB_UI- }
+      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR- }
+      - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - HOST_TMP_FOLDER=${TMPDIR}
+    volumes:
+      - &#34;${TMPDIR:-/tmp/localstack}:/tmp/localstack&#34;
+      - &#34;/var/run/docker.sock:/var/run/docker.sock&#34;
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Navigate to the directory where that file lives and run:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=
+docker-compose up -d
+
+```
 
 Now that we have a local AWS clone running, let&#39;s create a queue for us to use with the aws cli:
 
-``` bash
+```bash
 
 export AWS_SECRET_ACCESS_KEY=&#34;FAKE&#34;
 export AWS_ACCESS_KEY_ID=&#34;FAKE&#34;
@@ -30,7 +61,7 @@ aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name &#34;$QUE
 
 Create a spring boot project \[e.g. use the spring initializr\]. You will want to make your **pom.xml** includes a similar **dependencyManagement** section as well as the aws sqs sdk:
 
-``` xml
+```xml
 ...metadata...
 
     &lt;dependencyManagement&gt;
@@ -93,7 +124,7 @@ Create a spring boot project \[e.g. use the spring initializr\]. You will want t
 
 With that, we need to configure our **SqsClient** to communicate with local. We can do that with something like:
 
-``` java
+```java
 @Configuration
 public class AwsSqsConfig {
 
@@ -121,7 +152,7 @@ public class AwsSqsConfig {
 
 And once we have our sqs client set up, actually sending a message is pretty straightforward. I included here a **PostConstruct** that will send of six messages right at application start up:
 
-``` java
+```java
 @Component
 public class SQSSenderBean {
 
@@ -155,7 +186,7 @@ public class SQSSenderBean {
 
 If you start up the application, then use the CLI to get a message off the queue:
 
-``` java
+```java
 export AWS_SECRET_ACCESS_KEY=&#34;FAKE&#34;
 export AWS_ACCESS_KEY_ID=&#34;FAKE&#34;
 export AWS_DEFAULT_REGION=us-east-1
@@ -167,7 +198,7 @@ aws --endpoint-url http://localhost:4566 sqs receive-message --queue-url &#34;$Q
 
 You should see something like:
 
-``` json
+```json
 {
     &#34;Messages&#34;: [
         {
@@ -188,5 +219,3 @@ You should see something like:
 ```
 
 And you should be good to go
-
-

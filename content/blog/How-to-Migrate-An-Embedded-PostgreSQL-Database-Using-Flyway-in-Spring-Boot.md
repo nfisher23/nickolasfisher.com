@@ -1,6 +1,6 @@
 ---
 title: "How to Migrate An Embedded PostgreSQL Database Using Flyway in Spring Boot"
-date: 2019-04-01T00:00:00
+date: 2019-04-20T16:00:34
 draft: false
 ---
 
@@ -12,7 +12,7 @@ If you&#39;re also using an [Embedded PostgreSQL database](https://nickolasfishe
 
 The first thing that we will need to do is add the flyway dependency which, if you&#39;re using Maven, is:
 
-``` xml
+```xml
 &lt;dependency&gt;
     &lt;groupId&gt;org.flywaydb&lt;/groupId&gt;
     &lt;artifactId&gt;flyway-core&lt;/artifactId&gt;
@@ -21,14 +21,14 @@ The first thing that we will need to do is add the flyway dependency which, if y
 
 While there is some [Spring Boot magic for running migration scripts with Flyway](https://docs.spring.io/spring-boot/docs/current/reference/html/howto-database-initialization.html), the magic can often make it hard to customize it (and, eventually, you will most likely need to customize it). With a bit of work we can remove the magic and get exactly what we want, using code. To prevent the magic from getting in the way of this example, be sure to add this to your **application.yml**:
 
-``` yaml
+```yaml
 spring.flyway.enabled: false
 
 ```
 
 If we have our in memory database from the last post set up using a Spring Profile called &#34;dev&#34;:
 
-``` java
+```java
 package com.nickolasfisher.flywaystuff;
 
 ... imports ...
@@ -51,7 +51,7 @@ public class DevConfig {
 
 We can use **@PostConstruct** to run our migration immediately after the application context wiring itself:
 
-``` java
+```java
 package com.nickolasfisher.flywaystuff;
 
 ... imports ...
@@ -76,19 +76,19 @@ public class Migrate {
 
 Here, any migration scripts found in our **src/main/resources/db/migration** directory will be run in an idempotent fashion. You can read up on the [conventions that flyway uses to decide the order of migration scripts](https://flywaydb.org/getstarted/how), but for this example we will add two SQL files. The first I&#39;ll call **V1\_\_init.sql**:
 
-``` sql
+```sql
 CREATE TABLE employee (id int, name text);
 ```
 
 The second will be **V2\_\_update.sql**:
 
-``` sql
+```sql
 ALTER TABLE employee ALTER COLUMN id SET NOT NULL;
 ```
 
 We can verify that this works with something like this:
 
-``` java
+```java
 package com.nickolasfisher.flywaystuff;
 
 ... imports ...
@@ -116,16 +116,14 @@ public class RegularWriter {
 
 If you run:
 
-``` bash
+```bash
 $ mvn clean install
 ```
 
 And then:
 
-``` bash
+```bash
 $ java -jar target/flywaystuff-1.0.jar
 ```
 
 You will see the application come up successfully and execute/query the database in memory every 5 seconds.
-
-

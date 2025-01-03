@@ -1,6 +1,6 @@
 ---
 title: "Query a DynamoDB Local Secondary Index with Java"
-date: 2020-10-01T00:00:00
+date: 2020-10-31T22:49:54
 draft: false
 ---
 
@@ -16,7 +16,7 @@ We&#39;re going to be building off of previous posts where we have worked with D
 
 Since we have to define the index at table creation time, here is some java code to set up a table for us \[note: in a production or production-like environment, I would strongly recommend you use something like terraform to manage table creation/modification\]
 
-``` java
+```java
     @Test
     public void localSecondaryIndex() throws Exception {
         String currentTableName = &#34;LocalIndexTest&#34;;
@@ -84,7 +84,7 @@ After specifying what we want the index to look like, we include that specificat
 
 Now we&#39;ll put some data into our newly created table. This follows the pattern/ [reuses code from some previous posts](https://nickolasfisher.com/blog/Querying-DynamoDB-in-Java-with-the-AWS-SDK-20) and I won&#39;t belabor it here:
 
-``` java
+```java
         String partitionKey = &#34;Google&#34;;
         String rangeKey1 = &#34;Pixel 1&#34;;
         String rangeKey2 = &#34;Future Phone&#34;;
@@ -114,7 +114,7 @@ We put three items into this table, all with the same hash attribute as &#34;Goo
 
 When we decide that we need to use an index, we have to specify the index at the time of querying \[if it is using a range attribute that is different from the range attribute associated with the base table\]. Let&#39;s say we want to get all Google phones after the year of 2013. Leveraging the index we just created, that could look something like:
 
-``` java
+```java
         Condition equalsGoogleCondition = Condition.builder()
                 .comparisonOperator(ComparisonOperator.EQ)
                 .attributeValueList(
@@ -160,5 +160,3 @@ When we decide that we need to use an index, we have to specify the index at the
 Here, we create two **Condition** s \[think: query conditions\]. One gets used to indicate the hash key equals Google, the other is to indicate that the year associated with the item is strictly greater than 2013. We then use **indexName** in the DSL to specify that we need to use a specific index to pull this off. Finally, we validate the results are what we expect, leveraging **Mono** and **StepVerifier**. There is where our query is actually executed against dynamo and we get the response we are looking for \[two records, Pixel 2 and Future Phone\]. You should be able to run this test and see it pass.
 
 Remember to [check out the source code for this article on Github](https://github.com/nfisher23/webflux-and-dynamo/blob/master/src/test/java/com/nickolasfisher/reactivedynamo/PhoneServiceTest.java#L338).
-
-

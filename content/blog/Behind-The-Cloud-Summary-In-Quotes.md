@@ -1,6 +1,6 @@
 ---
 title: "Behind The Cloud: Summary In Quotes"
-date: 2018-12-01T00:00:00
+date: 2018-12-16T00:49:43
 draft: false
 ---
 
@@ -40,5 +40,3 @@ Behind the Cloud, by Marc Benioff, is his own story about how Salesforce became 
 &gt; Larry Ellison
 
 &gt; Hiring was, and still is, the most important thing we do.
-
-

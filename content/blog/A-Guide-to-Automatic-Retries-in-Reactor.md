@@ -1,6 +1,6 @@
 ---
 title: "A Guide to Automatic Retries in Reactor"
-date: 2020-08-01T00:00:00
+date: 2020-08-16T16:22:09
 draft: false
 ---
 
@@ -14,7 +14,7 @@ Reactor has a lot of extension points to pretty easily retry in the case of fail
 
 I&#39;m going to extend some sample code from a previous blog post on [testing WebClient using MockServer in Spring Boot Webflux](https://nickolasfisher.com/blog/How-to-use-Mock-Server-to-End-to-End-Test-Any-WebClient-Calls-in-Spring-Boot-Webflux) to bootstrap us here. Recall, in that post, we had a really simple service:
 
-``` java
+```java
 @Service
 public class MyService {
 
@@ -36,7 +36,7 @@ public class MyService {
 
 We were using MockServer and binding our webclient to that mock server with:
 
-``` java
+```java
 public class MyServiceTest {
 
     private ClientAndServer mockServer;
@@ -70,7 +70,7 @@ So let&#39;s add a test case using this framework. The test should setup mock se
 
 We can make this happen by implementing our own custom [ExpectationResponseCallback](https://javadoc.io/static/org.mock-server/mockserver-core/5.6.1/org/mockserver/mock/action/ExpectationResponseCallback.html). Because java does not let you modify variables which were declared outside of the closure inside the closure, I&#39;m also going to use an **AtomicInteger** because it has some convenience methods like **incrementAndGet**:
 
-``` java
+```java
         AtomicInteger counter = new AtomicInteger(0);
         mockServer.when(
                 request()
@@ -99,7 +99,7 @@ Every time **GET &#34;/legacy/persons&#34;** is called, mock server will invoke 
 
 All of the relevant code for this test can now be laid out like so:
 
-``` java
+```java
     private String getDownstreamResponseDTOAsString() throws JsonProcessingException {
         DownstreamResponseDTO downstreamResponseDTO = new DownstreamResponseDTO();
 
@@ -153,7 +153,7 @@ All of the relevant code for this test can now be laid out like so:
 
 If you run this with:
 
-``` bash
+```bash
 mvn clean install
 
 ```
@@ -164,7 +164,7 @@ You will see the test fail, which makes sense because we have not yet created th
 
 A naive implementation of retrying could use some of the [built in Retry methods that ship with Reactor](https://projectreactor.io/docs/core/release/api/reactor/util/retry/Retry.html). We can get a passing test by instructing the **Flux** to retry up to three times:
 
-``` java
+```java
         return this.webClient.get()
                 .uri(&#34;/legacy/persons&#34;)
                 .retrieve()
@@ -175,7 +175,7 @@ A naive implementation of retrying could use some of the [built in Retry methods
 
 While this is, err, fine, we should also want a bit more control over the backoff strategy so that we are not overwhelming the downstream service. This can be done with something like:
 
-``` java
+```java
         return this.webClient.get()
                 .uri(&#34;/legacy/persons&#34;)
                 .retrieve()
@@ -188,7 +188,7 @@ This backoff strategy will automatically include a jitter for us so that a thund
 
 By invoking **backoff** we can then enter into a fluent API \[a [RetryBackoffSpec](https://projectreactor.io/docs/core/release/api/reactor/util/retry/RetryBackoffSpec.html)\], and can further customize it with something like:
 
-``` java
+```java
 this.webClient.get()
 .uri(&#34;/legacy/persons&#34;)
 .retrieve()
@@ -201,5 +201,3 @@ this.webClient.get()
 ```
 
 It&#39;s important to note that there is also [a Retry in reactor-extra](https://projectreactor.io/docs/extra/snapshot/api/reactor/retry/Retry.html), but this has now been deprecated in favor of the Retry functionality listed above, which ships with Reactor Core as of this article. You should use the library that ships with reactor core and save yourself a dependency.
-
-

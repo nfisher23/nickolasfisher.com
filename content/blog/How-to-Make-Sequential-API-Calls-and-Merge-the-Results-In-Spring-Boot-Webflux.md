@@ -1,6 +1,6 @@
 ---
 title: "How to Make Sequential API Calls and Merge the Results In Spring Boot Webflux"
-date: 2020-09-01T00:00:00
+date: 2020-09-19T16:01:14
 draft: false
 ---
 
@@ -20,7 +20,7 @@ In this case, we need **zipWhen**.
 
 You can spin up an application in the sprint boot initializr or whatever is most comfortable to you \[ensure you&#39;re selecting the **Spring Reactive Web** option\]. Since we&#39;re making a network call, we will want to start by setting up our WebClient:
 
-``` java
+```java
 public class Config {
 
     @Bean(&#34;service-a-web-client&#34;)
@@ -43,7 +43,7 @@ Here I&#39;ve included a connection and read timeout of 1 second just because th
 
 Now let&#39;s set up the situation, first we will make two DTOs, expected to be received on two different calls: **FirstCallDTO** and **SecondCallDTO**:
 
-``` java
+```java
 package com.nickolasfisher.webflux.model;
 
 public class FirstCallDTO {
@@ -78,7 +78,7 @@ public class SecondCallDTO {
 
 I&#39;m also going to add mockserver as a test dependency and write the test first \[TDD\]. So you can modify your **pom.xml** to include:
 
-``` java
+```java
         &lt;dependency&gt;
             &lt;groupId&gt;org.mock-server&lt;/groupId&gt;
             &lt;artifactId&gt;mockserver-junit-jupiter&lt;/artifactId&gt;
@@ -95,7 +95,7 @@ I&#39;m also going to add mockserver as a test dependency and write the test fir
 
 We will create a bare bones service called **CombiningCallsService** to work with, starting with it empty as is the TDD way:
 
-``` java
+```java
 @Service
 public class CombiningCallsService {
 
@@ -114,7 +114,7 @@ public class CombiningCallsService {
 
 Then we can write the test, leveraging mockserver&#39;s direct integration with junit by just using an annotation, and setting up data:
 
-``` java
+```java
 @ExtendWith(MockServerExtension.class)
 public class CombiningCallsServiceIT {
     private CombiningCallsService combiningCallsService;
@@ -185,7 +185,7 @@ The one test in this class with:
 
 If you run this test, it predictably fails. We can get it to pass by leveraging zipWhen, which will be a callback that is only invoked after the previous Mono completes, then passes in the result of that mono into the next one:
 
-``` java
+```java
 @Service
 public class CombiningCallsService {
 
@@ -217,5 +217,3 @@ public class CombiningCallsService {
 That final lambda that just returns **secondCallDTO** is a resolver function. If necessary, you can do more with that by injecting your own custom code there, changing the return type, whatever.
 
 And with that you should be good to go. Reminder: [this code is on github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience).
-
-

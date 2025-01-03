@@ -1,6 +1,6 @@
 ---
 title: "Redis Transactions, Reactive Lettuce: Buyer Beware"
-date: 2021-04-01T00:00:00
+date: 2021-04-24T20:48:04
 draft: false
 ---
 
@@ -18,7 +18,7 @@ The first thing you&#39;ll need to take note of is that you don&#39;t get transa
 
 Once we do have a dedicated connection, we can start a transaction using **MULTI**:
 
-``` java
+```java
     @Test
     public void transactions() throws InterruptedException {
         RedisReactiveCommands&lt;String, String&gt; firstConnection =
@@ -38,7 +38,7 @@ Once we do have a dedicated connection, we can start a transaction using **MULTI
 
 Here is where things get weird. The way transactions work in redis is that each command gets queued \[by responding with QUEUED\], and once you commit \[EXEC\], then all the queued commands get executed at once. The way that works with the CLI looks like this:
 
-``` bash
+```bash
 $ redis-cli
 127.0.0.1:6379&gt; MULTI
 OK
@@ -53,7 +53,7 @@ So the CLI will actually respond to your commands with QUEUED and you can be con
 
 Not so with lettuce. If we, at this point, try to run code like so:
 
-``` java
+```java
         StepVerifier.create(firstConnection.set(&#34;key-1&#34;, &#34;value-1&#34;))
                 .expectNext(&#34;OK&#34;)
                 .verifyComplete();
@@ -62,7 +62,7 @@ Not so with lettuce. If we, at this point, try to run code like so:
 
 Then our code will spin and spin and not complete naturally, so we don&#39;t get confirmation that our command was sent and acknowledged by redis. That&#39;s because the lettuce client _won&#39;t call onNext or onComplete until the transaction actually commits_. We can demonstrated this by modifying our test to look like:
 
-``` java
+```java
     @Test
     public void transactions() throws InterruptedException {
         RedisReactiveCommands&lt;String, String&gt; firstConnection =
@@ -104,7 +104,7 @@ Then our code will spin and spin and not complete naturally, so we don&#39;t get
 
 While this test passes, which does tell us that transactions &#34;work&#34; in the sense that nothing actually happens until EXEC is run, the printed output from the test tells the real story:
 
-``` bash
+```bash
 running exec
 response from set within transaction: OK
 exec responded
@@ -112,5 +112,3 @@ exec responded
 ```
 
 That is, we don&#39;t get our response from setting the transaction until after EXEC has been sent to the server. This is personally not behavior that I&#39;m fond of, because we lose the backpressure associated with getting a reply and acting on that reply. Between this and the sketchy implementation of redis transactions, I would recommend you leave reactive transactions using lettuce in redis out of your toolbox and find a different way to solve your problem.
-
-

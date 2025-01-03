@@ -1,6 +1,6 @@
 ---
 title: "How to Publish and Subscribe to Redis Using Lettuce"
-date: 2021-04-01T00:00:00
+date: 2021-04-24T16:37:18
 draft: false
 ---
 
@@ -10,7 +10,7 @@ Subscribing to topics in redis allows for a _fanout_ behavior, where any number 
 
 With the cli, you can simply run:
 
-``` bash
+```bash
 redis-cli subscribe some-channel
 Reading messages... (press Ctrl-C to quit)
 1) &#34;subscribe&#34;
@@ -21,7 +21,7 @@ Reading messages... (press Ctrl-C to quit)
 
 Then, in another terminal, we can:
 
-``` bash
+```bash
 redis-cli publish some-channel some-message
 (integer) 1
 
@@ -29,7 +29,7 @@ redis-cli publish some-channel some-message
 
 And we will see in the original terminal where we&#39;re still subscribed:
 
-``` bash
+```bash
 1) &#34;message&#34;
 2) &#34;some-channel&#34;
 3) &#34;some-message&#34;
@@ -42,7 +42,7 @@ In java using lettuce, the process is pretty similar, but subscribing is a littl
 
 For a fast feedback loop, you can refer to either using [embedded redis to test lettuce](https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux) or [using a redis test container to test lettuce](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux) as a starting point. Once that&#39;s in place, subscribing and publishing looks like this:
 
-``` java
+```java
     @Test
     public void publishAndSubscribe() throws Exception {
         StatefulRedisPubSubConnection&lt;String, String&gt; pubSubConnection =
@@ -71,5 +71,3 @@ For a fast feedback loop, you can refer to either using [embedded redis to test 
 ```
 
 The gist of the code is that we publish to the channel after we subscribe, and verify that we actually received a message by asserting that an **AtomicBoolean** was flipped to true. This test passes.
-
-

@@ -1,6 +1,6 @@
 ---
 title: "How to Use Spring&#39;s Dependency Injection in Setup And Teardown Code For Integration Tests With Maven"
-date: 2018-11-01T00:00:00
+date: 2018-11-24T15:51:32
 draft: false
 ---
 
@@ -10,7 +10,7 @@ In our last post on [Using Maven to Setup and Teardown Integration Tests](https:
 
 To demonstrate, refer to my post on [setting up an unsecured local postgreSQL VM for testing purposes](https://nickolasfisher.com/blog/How-to-Set-Up-a-Local-Unsecured-Postgres-Virtual-Machine-for-testing). Assuming you have this vagrant VM up and running, we can create a simple bean for our data source and a JdbcTemplate like so:
 
-``` java
+```java
 @Configuration
 public class AppConfig {
 
@@ -38,7 +38,7 @@ public class AppConfig {
 
 And we&#39;ll configure our datasource via the application.yml properties file in our resources folder:
 
-``` yaml
+```yaml
 spring:
   datasource:
     password: postgres
@@ -50,7 +50,7 @@ spring:
 
 Our integration test will run a query against a TMP\_TABLE table, and validate that we have two entries which are (1, &#34;first&#34;) and (2, &#34;second&#34;):
 
-``` java
+```java
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AppConfig.class})
 @ComponentScan(value = &#34;com.nickolasfisher.postgresintegration&#34;)
@@ -95,7 +95,7 @@ public class PostgresAppIT {
 
 If we then want to set up and teardown our data for this test, we need to create the table if it doesn&#39;t exist, insert the appropriate data, then destroy the data or the table in our teardown environment. Thankfully, we can access the application context by getting the return value on SpringApplication.run(..) and getting any beans we want out of that:
 
-``` java
+```java
 @ComponentScan(&#34;com.nickolasfisher.postgresintegration&#34;)
 public class PreIntegrationSetup {
 
@@ -128,7 +128,7 @@ public class PreIntegrationSetup {
 
 And we can teardown our data, in this case I will choose to destroy the table completely from the test database, like:
 
-``` java
+```java
 @ComponentScan(&#34;com.nickolasfisher.postgresintegration&#34;)
 public class PostIntegrationTeardown {
 
@@ -155,5 +155,3 @@ public class PostIntegrationTeardown {
 ```
 
 Definitely go [download the source code](https://github.com/nfisher23/integration-testing-postgres-and-spring) to see and tinker with this in action.
-
-

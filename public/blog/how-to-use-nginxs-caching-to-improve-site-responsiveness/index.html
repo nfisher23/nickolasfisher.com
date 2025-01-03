@@ -148,8 +148,8 @@ In my last post, I provided an example for how to set up an Nginx Reverse Proxy 
 
     <div class="meta">
       
-      <time datetime="2019-04-01 00:00:00 &#43;0000 UTC" title='Mon, Apr 1, 2019, 12:00 AM UTC'>
-        01/04/2019 - Estimated reading time: 2 minutes
+      <time datetime="2019-04-06 17:14:30 &#43;0000 UTC" title='Sat, Apr 6, 2019, 5:14 PM UTC'>
+        06/04/2019 - Estimated reading time: 4 minutes
       </time>
 
        
@@ -202,7 +202,66 @@ server {
 }
 </code></pre><p>Add the variables to the <strong>nginx/vars/main.yml</strong> file so it looks like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
-</span></span></code></pre></div></section>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># vars file for nginx</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">app_port</span>: <span style="color:#bd93f9">8080</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">site_alias</span>: my-site
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">remove_nginx_defaults</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">nginx_cache_path</span>: /etc/nginx/cache
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">nginx_cache_name</span>: my_cache
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">nginx_use_cache</span>: <span style="color:#ff79c6">true</span>
+</span></span></code></pre></div><p>If you deploy this now, the parsed nginx conf file will result in a proxy_cache_path declaration looking like:</p>
+<pre tabindex="0"><code>proxy_cache_path /etc/nginx/cache levels=1:2 keys_zone=my_cache:10m max_size=10g
+                 inactive=60m use_temp_path=off;
+</code></pre><p>However, nothing will change yet&ndash;the slow endpoint will still take 2.5 seconds, because we aren't using the cache yet. To start using it, we have to declare the cache in the location block, then specify how long we want it to be valid for. In our case, we will also have to ensure that the proxy_cache_bypass declaration is not in place. Because Nginx, by default, honors the Cache-Control header (which is usually used to specify that the client wants the newest version of this resource) and <em>we know the content has not changed,</em> we will also tell Nginx to ignore the Cache-Control header. Our <strong>server.conf.j2</strong> file in the nginx role can finally look like:</p>
+<pre tabindex="0"><code>{% if nginx_use_cache %}
+proxy_cache_path {{ nginx_cache_path }} levels=1:2 keys_zone={{ nginx_cache_name }}:10m max_size=10g
+                 inactive=60m use_temp_path=off;
+{% endif %}
+
+server {
+    location / {
+{% if nginx_use_cache %}
+        proxy_cache {{ nginx_cache_name }};
+        proxy_ignore_headers Cache-Control;
+        proxy_cache_valid any 60s;
+
+{% endif %}
+        proxy_pass http://localhost:{{ app_port }};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection keep-alive;
+        proxy_set_header Host $http_host;
+{% if not nginx_use_cache %}
+        proxy_cache_bypass $http_upgrade;
+{% endif %}
+    }
+}
+</code></pre><p>When you run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule converge
+</span></span></code></pre></div><p>You should now see the parsed Jinja file looking like:</p>
+<pre tabindex="0"><code>proxy_cache_path /etc/nginx/cache levels=1:2 keys_zone=my_cache:10m max_size=10g
+                 inactive=60m use_temp_path=off;
+
+server {
+    location / {
+        proxy_cache my_cache;
+        proxy_cache_valid any 60s;
+
+        proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection keep-alive;
+        proxy_set_header Host $http_host;
+    }
+}
+</code></pre><p>And, most importantly, the <a href="http:/192.168.56.202/slow">http:/192.168.56.202/slow</a> endpoint gets cached. The first time will take 2.5 seconds, but every subsequent request takes about 1ms (on my machine). The cache, in the way we have configured it, is valid for 60 seconds, then will invalidate itself.</p>
+<p>Some further reading:</p>
+<ul>
+<li><a href="https://docs.nginx.com/nginx/admin-guide/content-cache/content-caching/">NGINX Content Caching</a></li>
+<li><a href="https://www.nginx.com/blog/nginx-caching-guide/">A Guide to Caching with NGINX and NGINX Plus</a></li>
+</ul>
+</section>
 
   
     

@@ -1,6 +1,6 @@
 ---
 title: "How to Automatically Retry on a Webclient Timeout in Spring Boot Webflux"
-date: 2020-10-01T00:00:00
+date: 2020-10-03T16:09:51
 draft: false
 ---
 
@@ -14,7 +14,7 @@ Depending on the request that you&#39;re making, it can often be retried effecti
 
 I&#39;m going to build off of some work in [a previous blog post about fallbacks](https://nickolasfisher.com/blog/How-to-Have-a-Fallback-on-Errors-Calling-Downstream-Services-in-Spring-Boot-Webflux). You&#39;ll recall that we had setup a WebClient like so:
 
-``` java
+```java
 @Configuration
 public class Config {
 
@@ -40,7 +40,7 @@ This **WebClient** already has a timeout of 1 second configured, which in many c
 
 I&#39;ll also steal our DTO from the last post:
 
-``` java
+```java
 public class WelcomeMessage {
     private String message;
 
@@ -63,7 +63,7 @@ public class WelcomeMessage {
 
 With this, let&#39;s set up a barebones services that will soon contain the code we&#39;re looking for:
 
-``` java
+```java
 @Service
 public class RetryService {
     private final WebClient serviceAWebClient;
@@ -80,7 +80,7 @@ public class RetryService {
 
 This code doesn&#39;t do anything yet. Now let&#39;s make a test class, configured with the familiar MockServer setup that we&#39;ve leveraged before:
 
-``` java
+```java
 @ExtendWith(MockServerExtension.class)
 public class RetryServiceIT {
 
@@ -156,7 +156,7 @@ This code:
 
 Now, following TDD, let&#39;s write code that passes this test:
 
-``` java
+```java
     public Mono&lt;WelcomeMessage&gt; getWelcomeMessageAndHandleTimeout(String locale) {
         return this.serviceAWebClient.get()
                 .uri(uriBuilder -&gt; uriBuilder.path(&#34;/locale/{locale}/message&#34;).build(locale))
@@ -178,5 +178,3 @@ This code:
 4. We specify that any exception which is of type **TimeoutException** should be retried twice, for a total of three attempts.
 
 If you now run the test, it will pass. Remember to [check out the source code on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience)!
-
-

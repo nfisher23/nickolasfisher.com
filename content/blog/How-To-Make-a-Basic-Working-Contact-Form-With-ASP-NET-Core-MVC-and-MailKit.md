@@ -1,6 +1,6 @@
 ---
 title: "How To Make a Basic Working Contact Form With ASP .NET Core MVC and MailKit"
-date: 2018-08-01T00:00:00
+date: 2018-08-04T00:00:00
 draft: false
 ---
 
@@ -314,24 +314,3 @@ Enter valid server credentials in the startup class and we&#39;re good to go! A 
     This will allow you to test locally, and when you publish to production it will load the new settings.
 
 I hope you enjoyed this post. Please get ahold of me if you need clarification or if you think I&#39;ve made an error.
-
-[Next Post\
-How to Configure Visual Studio to Implement the Yarn Package Manager](How-to-Configure-Visual-Studio-to-Implement-the-Yarn-Package-Manager)
-
-[![](https://nickfisher.sfo2.cdn.digitaloceanspaces.com/static/nick-face.png)](/About)
-
-[Nick Fisher](/About) is a software engineer in the Pacific Northwest.
-He focuses on building highly scalable and maintainable backend systems.
-
-
-#### Latest Posts
-
-[How to Prevent Certain Exceptions from Tripping a Resilience4j Circuit](/blog/How-to-Prevent-Certain-Exceptions-from-Tripping-a-Resilience4j-Circuit) [Configuring, Testing, and Using Circuit Breakers on Rest API calls with Resilience4j](/blog/Configuring-Testing-and-Using-Circuit-Breakers-on-Rest-API-calls-with-Resilience4j) [How to Retry API Requests in Java using Resilience4j](/blog/How-to-Retry-API-Requests-in-Java-using-Resilience4j) [How to Test Latency with a Mock Server in Java](/blog/How-to-Test-Latency-with-a-Mock-Server-in-Java) [An Introduction to Redis Streams via Lettuce](/blog/An-Introduction-to-Redis-Streams-via-Lettuce) [Using Redis as a Distributed Lock with Lettuce](/blog/Using-Redis-as-a-Distributed-Lock-with-Lettuce)
-
-#### Latest Posts
-
-[How to Prevent Certain Exceptions from Tripping a Resilience4j Circuit](/blog/How-to-Prevent-Certain-Exceptions-from-Tripping-a-Resilience4j-Circuit) [Configuring, Testing, and Using Circuit Breakers on Rest API calls with Resilience4j](/blog/Configuring-Testing-and-Using-Circuit-Breakers-on-Rest-API-calls-with-Resilience4j) [How to Retry API Requests in Java using Resilience4j](/blog/How-to-Retry-API-Requests-in-Java-using-Resilience4j) [How to Test Latency with a Mock Server in Java](/blog/How-to-Test-Latency-with-a-Mock-Server-in-Java) [An Introduction to Redis Streams via Lettuce](/blog/An-Introduction-to-Redis-Streams-via-Lettuce) [Using Redis as a Distributed Lock with Lettuce](/blog/Using-Redis-as-a-Distributed-Lock-with-Lettuce)
-
-- [Home](/Home)
-- [About](/About)
-- [Contact](/Contact)

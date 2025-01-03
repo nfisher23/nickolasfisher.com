@@ -147,8 +147,8 @@
 
     <div class="meta">
       
-      <time datetime="2021-02-01 00:00:00 &#43;0000 UTC" title='Mon, Feb 1, 2021, 12:00 AM UTC'>
-        01/02/2021 - Estimated reading time: 2 minutes
+      <time datetime="2021-02-06 21:07:12 &#43;0000 UTC" title='Sat, Feb 6, 2021, 9:07 PM UTC'>
+        06/02/2021 - Estimated reading time: 4 minutes
       </time>
 
        
@@ -206,7 +206,82 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker-compose up
 </span></span></code></pre></div><h2 id="deploy-and-run-our-python-lambda-function">Deploy and run our Python Lambda Function</h2>
 <p>To actually start using our lambda function now that we have our infrastructure and code ready, we will first need to create an IAM role to run the lambda, then attach a policy to that role to allow it to operate as a lambda. We could optionally create our own policy, but AWS has a bunch of policies ready for us to already use, and for this article we'll just reuse it:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"></code></pre></div></section>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># bunch of fake creds to make the cli happy</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_SECRET_ACCESS_KEY</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_ACCESS_KEY_ID</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_DEFAULT_REGION</span><span style="color:#ff79c6">=</span>us-east-1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># create role, attach lambda policy to role</span>
+</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 iam create-role --role-name lambda-python-ex --assume-role-policy-document file://trust-policy.json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 iam attach-role-policy --role-name lambda-python-ex --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+</span></span></code></pre></div><p>And with that in place, we're just a few bash commands away from uploading and invoking our function. Assuming you have our lambda from earlier in a file called <strong>my_func.py</strong>, the following will upload your lambda, invoke it, display the response, then show logs that were shipped to cloudwatch:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># you have to zip it up to upload it</span>
+</span></span><span style="display:flex;"><span>zip my_func.zip my_func.py
+</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 lambda create-function --function-name my-python-function <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>  --zip-file fileb://my_func.zip --handler my_func.lambda_handler --runtime python3.8 <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>  --role arn:aws:iam::000000000000:role/lambda-python-ex
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># invoke the lambda and save the result to a file</span>
+</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 lambda invoke --function-name my-python-function --payload &amp;<span style="color:#6272a4">#39;{&amp;#34;first_name&amp;#34;: &amp;#34;jack&amp;#34;, &amp;#34;last_name&amp;#34;: &amp;#34;berry&amp;#34;}&amp;#39; response.json</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># display the response from invoking the lambda</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;response from lambda&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;-------&amp;#34;</span>
+</span></span><span style="display:flex;"><span>cat response.json | json_pp
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;-------&amp;#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># show some logs</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">FIRST_STREAM_NAME</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 logs describe-log-streams --log-group-name /aws/lambda/my-python-function | jq -r &amp;<span style="color:#6272a4">#34;.logStreams[0].logStreamName&amp;#34;)</span>
+</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 logs get-log-events --log-group-name /aws/lambda/my-python-function --log-stream-name &amp;<span style="color:#6272a4">#34;$FIRST_STREAM_NAME&amp;#34; --limit 25 | jq -r &amp;#34;.events | map(.message)[]&amp;#34;</span>
+</span></span></code></pre></div><p>On my machine, this outputs:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>updating: my_func.py <span style="color:#ff79c6">(</span>deflated 41%<span style="color:#ff79c6">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;FunctionName&amp;#34;: &amp;#34;my-python-function&amp;#34;,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;FunctionArn&amp;#34;: &amp;#34;arn:aws:lambda:us-east-1:000000000000:function:my-python-function&amp;#34;,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;Runtime&amp;#34;: &amp;#34;python3.8&amp;#34;,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;Role&amp;#34;: &amp;#34;arn:aws:iam::000000000000:role/lambda-python-ex&amp;#34;,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;Handler&amp;#34;: &amp;#34;my_func.lambda_handler&amp;#34;,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;CodeSize&amp;#34;: 368,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;Description&amp;#34;: &amp;#34;&amp;#34;,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;Timeout&amp;#34;: 3,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;LastModified&amp;#34;: &amp;#34;2021-02-13T22:14:50.861&amp;#43;0000&amp;#34;,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;CodeSha256&amp;#34;: &amp;#34;g9IeN8RAA49Qeu49SpVFfscd0dpML3z0NFNCYvOw9dI=&amp;#34;,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;Version&amp;#34;: &amp;#34;$LATEST&amp;#34;,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;VpcConfig&amp;#34;: {},</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;TracingConfig&amp;#34;: {</span>
+</span></span><span style="display:flex;"><span>        &amp;<span style="color:#6272a4">#34;Mode&amp;#34;: &amp;#34;PassThrough&amp;#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>,
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;RevisionId&amp;#34;: &amp;#34;bbdd6125-d76b-4270-97c5-2f8c34d8f94c&amp;#34;,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;State&amp;#34;: &amp;#34;Active&amp;#34;,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;LastUpdateStatus&amp;#34;: &amp;#34;Successful&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;StatusCode&amp;#34;: 200,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;LogResult&amp;#34;: &amp;#34;&amp;#34;,</span>
+</span></span><span style="display:flex;"><span>    &amp;<span style="color:#6272a4">#34;ExecutedVersion&amp;#34;: &amp;#34;$LATEST&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>response from lambda
+</span></span><span style="display:flex;"><span>-------
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>   &amp;<span style="color:#6272a4">#34;last_name&amp;#34; : &amp;#34;berry&amp;#34;,</span>
+</span></span><span style="display:flex;"><span>   &amp;<span style="color:#6272a4">#34;hello&amp;#34; : &amp;#34;well hello there&amp;#34;,</span>
+</span></span><span style="display:flex;"><span>   &amp;<span style="color:#6272a4">#34;first_name&amp;#34; : &amp;#34;jack&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>-------
+</span></span><span style="display:flex;"><span>START RequestId: d9c9acaf-bb83-1dd5-16a4-46e92c9f13b5 Version: <span style="color:#8be9fd;font-style:italic">$LATEST</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>INFO<span style="color:#ff79c6">]</span>  2021-02-13T22:14:52.552Z        d9c9acaf-bb83-1dd5-16a4-46e92c9f13b5    Event: <span style="color:#ff79c6">{</span>&amp;<span style="color:#6272a4">#39;first_name&amp;#39;: &amp;#39;jack&amp;#39;, &amp;#39;last_name&amp;#39;: &amp;#39;berry&amp;#39;}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">[</span>INFO<span style="color:#ff79c6">]</span>  2021-02-13T22:14:52.552Z        d9c9acaf-bb83-1dd5-16a4-46e92c9f13b5    context: <span style="color:#ff79c6">{</span>&amp;<span style="color:#6272a4">#39;aws_request_id&amp;#39;: &amp;#39;d9c9acaf-bb83-1dd5-16a4-46e92c9f13b5&amp;#39;, &amp;#39;log_group_name&amp;#39;: &amp;#39;/aws/lambda/my-python-function&amp;#39;, &amp;#39;log_stream_name&amp;#39;: &amp;#39;2021/02/13/[$LATEST]016f3b4e250d5d1a10426f2b48e41a6a&amp;#39;, &amp;#39;function_name&amp;#39;: &amp;#39;my-python-function&amp;#39;, &amp;#39;memory_limit_in_mb&amp;#39;: &amp;#39;1536&amp;#39;, &amp;#39;function_version&amp;#39;: &amp;#39;$LATEST&amp;#39;, &amp;#39;invoked_function_arn&amp;#39;: &amp;#39;arn:aws:lambda:us-east-1:000000000000:function:my-python-function&amp;#39;, &amp;#39;client_context&amp;#39;: None, &amp;#39;identity&amp;#39;: &amp;lt;__main__.CognitoIdentity object at 0x7f00224ad490&amp;gt;, &amp;#39;_epoch_deadline_time_in_ms&amp;#39;: 1613254495363}</span>
+</span></span><span style="display:flex;"><span>END RequestId: d9c9acaf-bb83-1dd5-16a4-46e92c9f13b5
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>REPORT RequestId: d9c9acaf-bb83-1dd5-16a4-46e92c9f13b5  Init Duration: 283.11 ms        Duration: 4.64 ms       Billed Duration: <span style="color:#bd93f9">5</span> ms   Memory Size: <span style="color:#bd93f9">1536</span> MB    Max Memory Used: <span style="color:#bd93f9">24</span> MB
+</span></span></code></pre></div><p>Note that you can optionall delete your lambda function and clean up your logs like so:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># delete function, logs for cleanliness</span>
+</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 logs delete-log-group --log-group-name <span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 logs describe-log-groups | jq -r &amp;<span style="color:#6272a4">#34;.logGroups[0].logGroupName&amp;#34;)</span>
+</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 lambda delete-function --function-name my-python-function
+</span></span></code></pre></div><p>And with that, you should be in a good place to start tinkering with this locally</p>
+</section>
 
   
     

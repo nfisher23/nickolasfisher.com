@@ -1,6 +1,6 @@
 ---
 title: "How to use Optimistic Locking in DynamoDB via the AWS CLI"
-date: 2020-08-01T00:00:00
+date: 2020-08-01T20:46:28
 draft: false
 ---
 
@@ -12,7 +12,7 @@ DynamoDB offers [conditional expressions](https://docs.aws.amazon.com/amazondyna
 
 Here&#39;s a dynamo local container in a docker compose file:
 
-``` yaml
+```yaml
 version: &#39;3.7&#39;
 services:
   dynamodb-local:
@@ -25,14 +25,14 @@ services:
 
 Start this up with:
 
-``` bash
+```bash
 $ docker-compose up -d
 
 ```
 
 If you do not have any valid AWS credentials on your local, you will have to set some fake ones or the CLI will complain:
 
-``` bash
+```bash
 export AWS_SECRET_ACCESS_KEY=&#34;FAKE&#34;
 export AWS_ACCESS_KEY_ID=&#34;FAKE&#34;
 
@@ -40,7 +40,7 @@ export AWS_ACCESS_KEY_ID=&#34;FAKE&#34;
 
 Now we&#39;ll create a table for the purposes of this tutorial, then create a sample record to work with:
 
-``` bash
+```bash
 #!/bin/bash
 
 aws --endpoint-url http://localhost:8000 --region=us-west-2 dynamodb create-table \
@@ -93,7 +93,7 @@ item has an attribute named **Version**. We will use this version attribute in t
 
 The first operation we can demonstrate conditional updates on is [update-item](https://docs.aws.amazon.com/cli/latest/reference/dynamodb/update-item.html). This doesn&#39;t replace the entry in its entirety, but is rather meant to be used to operate on specific attributes in your item. For example, we can just execute a non-conditional update by setting the size on our record to be 100:
 
-``` bash
+```bash
 KEY_TEMPLATE=$(cat &lt;&lt;EOF
 {
     &#34;Company&#34;: {
@@ -129,7 +129,7 @@ aws --endpoint-url http://localhost:8000 --region=us-west-2 dynamodb update-item
 
 If we now query for the record then we will see our changes reflected. Here&#39;s a script I&#39;ve called **query.sh**, which you can use to verify changes at any point during this tutorial:
 
-``` bash
+```bash
 #!/bin/bash
 
 EQ_TEMPLATE=$(cat &lt;&lt;&#39;EOF&#39;
@@ -169,7 +169,7 @@ query_local_dynamo &#34;$MOTO_COOL&#34;
 
 After the operations above, if you run **query.sh**, you should see this returned to you:
 
-``` json
+```json
 {
     &#34;Items&#34;: [
         {
@@ -203,7 +203,7 @@ After the operations above, if you run **query.sh**, you should see this returne
 
 We can add a **condition-expression** to update only when our passed in condition is true. In our case, we want to both increment the version and make sure that the current version is what we assume it is:
 
-``` bash
+```bash
 SIZE_CURR_VERSION_TEMPLATE=$(cat &lt;&lt;EOF
 {
     &#34;:size&#34;: {
@@ -219,3 +219,40 @@ SIZE_CURR_VERSION_TEMPLATE=$(cat &lt;&lt;EOF
 EOF
 )
 
+# update size to 200 if version is 1, also increment version to 2
+SIZE_200=$(printf &#34;$SIZE_CURR_VERSION_TEMPLATE&#34; &#34;200&#34; &#34;1&#34; &#34;2&#34;)
+aws --endpoint-url http://localhost:8000 --region=us-west-2 dynamodb update-item \
+    --table-name Phones \
+    --key &#34;$MOTO_COOL_KEY&#34; \
+    --update-expression &#34;SET Size = :size, Version = :new_version&#34; \
+    --condition-expression &#34;Version = :curr_version&#34; \
+    --expression-attribute-values &#34;$SIZE_200&#34;
+
+```
+
+You should see this reflected if you query dynamo using the script above.
+
+To prove that it actually fails when it should fail, we can try to set the size to 300, but only if the version is 1. If you ran the code from above you should see this fail:
+
+```bash
+# ..someone else is trying to update size to 300 if the version is 1, also trying to set to version 2, fails!
+SIZE_300=$(printf &#34;$SIZE_CURR_VERSION_TEMPLATE&#34; &#34;300&#34; &#34;1&#34; &#34;2&#34;)
+aws --endpoint-url http://localhost:8000 --region=us-west-2 dynamodb update-item \
+    --table-name Phones \
+    --key &#34;$MOTO_COOL_KEY&#34; \
+    --update-expression &#34;SET Size = :size, Version = :new_version&#34; \
+    --condition-expression &#34;Version = :curr_version&#34; \
+    --expression-attribute-values &#34;$SIZE_300&#34;
+
+```
+
+Output:
+
+```bash
+An error occurred (ConditionalCheckFailedException) when calling the UpdateItem operation: The conditional request failed
+
+```
+
+If you run the query, you will also see that the size is still 200 while the version remains at 2.
+
+You will notice that this **--condition-expression** is also a parameter option on the **put-item** operation, thus this pattern will work for the two most common operations against a dynamo item.

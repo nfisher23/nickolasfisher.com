@@ -1,6 +1,6 @@
 ---
 title: "Exploring Lombok: How to use @Builder, @Accessors, and @Wither for POJO Classes"
-date: 2019-02-01T00:00:00
+date: 2019-02-09T15:50:55
 draft: false
 ---
 
@@ -14,7 +14,7 @@ The Builder annotation is based off of the popular design pattern from Effective
 
 This:
 
-``` java
+```java
 @Builder
 public class Person {
     private String firstName;
@@ -25,7 +25,7 @@ public class Person {
 
 Can be called anywhere in the code like so:
 
-``` java
+```java
 Person person = Person.builder()
                 .firstName(&#34;Jack&#34;)
                 .lastName(&#34;Bauer&#34;)
@@ -36,7 +36,7 @@ Person person = Person.builder()
 
 But in practice this isn&#39;t particularly helpful. Typically this is combined with @Getter to access an immutable object after building it:
 
-``` java
+```java
 @Builder
 @Getter
 public class Person {
@@ -48,8 +48,8 @@ public class Person {
 
 Which can then be very practically applied like so:
 
-``` java
-    @Test
+```java
+    @Test
     public void testBuilder() {
         Person person = Person.builder()
                 .firstName(&#34;Jack&#34;)
@@ -67,7 +67,7 @@ Which can then be very practically applied like so:
 
 The [accessors](https://projectlombok.org/features/experimental/Accessors) annotation is currently an &#34;experimental&#34; feature. The most powerful feature puts it in a similar camp to @Builder, which is it&#39;s **chain** option. This adjusts the behavior of setters to return **this** after setting the value, making modifications to existing objects more compact:
 
-``` java
+```java
 @Accessors(chain = true)
 @Setter @Getter
 public class Person {
@@ -99,7 +99,7 @@ This usage implies that the object is mutable, but still has valid use cases fro
 
 The [wither](https://projectlombok.org/features/experimental/Wither) annotation is also experimental, with a less favorable current view than accessors by the community. We use Wither exclusively on a field, at the moment, and when we use it in code it returns a **clone** of the object, with the only modified field being the field called by .with\*\*\*(..). If we add a **@Wither** to our Person:
 
-``` java
+```java
 @Builder
 @Getter
 public class Person {
@@ -116,7 +116,7 @@ public class Person {
 
 We can then see that it properly clones the object like so:
 
-``` java
+```java
 @Test
 public void testWither() {
     Person person = Person.builder()
@@ -134,5 +134,3 @@ public void testWither() {
 ```
 
 This is another very useful annotation in concurrent programming. If you have a set of data that is far more often read than it is written, then the above immutable and easily clone-able Person is thread safe.
-
-

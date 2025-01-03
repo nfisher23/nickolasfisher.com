@@ -148,8 +148,8 @@ In a previous post, we saw how to provision a multi-node elasticsearch cluster u
 
     <div class="meta">
       
-      <time datetime="2019-03-01 00:00:00 &#43;0000 UTC" title='Fri, Mar 1, 2019, 12:00 AM UTC'>
-        01/03/2019 - Estimated reading time: 3 minutes
+      <time datetime="2019-03-16 23:17:03 &#43;0000 UTC" title='Sat, Mar 16, 2019, 11:17 PM UTC'>
+        16/03/2019 - Estimated reading time: 4 minutes
       </time>
 
        
@@ -229,7 +229,112 @@ In a previous post, we saw how to provision a multi-node elasticsearch cluster u
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">when</span>: upgrade_es
 </span></span></code></pre></div><p>And create a <strong>tasks/upgrade_es.yml</strong> file, which will house all of the upgrade logic:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
-</span></span></code></pre></div></section>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># tasks file for upgrade-elasticsearch-cluster</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: ensure elasticsearch already present
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">service</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: elasticsearch
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">state</span>: started
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: ensure elasticsearch is up and available
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">wait_for</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">host</span>: <span style="color:#bd93f9">127.0.0.1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">port</span>: <span style="color:#bd93f9">9200</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">delay</span>: <span style="color:#bd93f9">5</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: get elasticsearch to upgrade to
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">get_url</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: <span style="color:#ff79c6">&amp;#34;/etc/{{</span> es_version_to_upgrade_to }}&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">url</span>: <span style="color:#ff79c6">&amp;#34;https://artifacts.elastic.co/downloads/elasticsearch/{{</span> es_version_to_upgrade_to }}&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">checksum</span>: <span style="color:#ff79c6">&amp;#34;sha512:https://artifacts.elastic.co/downloads/elasticsearch/{{</span> es_version_to_upgrade_to }}.sha512&amp;#34;
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: perform upgrade process as root
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">block</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: disable shard allocation
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uri</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">url</span>: http://127.0.0.1:9200/_cluster/settings
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">body</span>: <span style="color:#ff79c6">&amp;#39;{&amp;#34;persistent&amp;#34;:{&amp;#34;cluster.routing.allocation.enable&amp;#34;:&amp;#34;none&amp;#34;}}&amp;#39;</span> <span style="color:#6272a4"># specify no shard allocation</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">body_format</span>: json
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">method</span>: PUT
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: stop non essential indexing to speed up shard recovery
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uri</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">url</span>: http://127.0.0.1:9200/_flush/synced
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">method</span>: POST
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">ignore_errors</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: get cluster id
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uri</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">url</span>: http://127.0.0.1:9200
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">register</span>: pre_upgrade_cluster_info
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: shut down node
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">service</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: elasticsearch
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">state</span>: stopped
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: upgrade node
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">apt</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">deb</span>: <span style="color:#ff79c6">&amp;#34;/etc/{{</span> es_version_to_upgrade_to }}&amp;#34;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: bring up node
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">service</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: elasticsearch
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">state</span>: started
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">notify</span>: wait for elasticsearch to start
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">meta</span>: flush_handlers
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: validate it joins cluster
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uri</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">url</span>: http://127.0.0.1:9200
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">register</span>: post_upgrade_cluster_info
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">until</span>: pre_upgrade_cluster_info.json.cluster_uuid == post_upgrade_cluster_info.json.cluster_uuid
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">retries</span>: <span style="color:#bd93f9">3</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">delay</span>: <span style="color:#bd93f9">10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: reenable shard allocation
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">uri</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">url</span>: http://127.0.0.1:9200/_cluster/settings
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">body</span>: <span style="color:#ff79c6">&amp;#39;{&amp;#34;persistent&amp;#34;:{&amp;#34;cluster.routing.allocation.enable&amp;#34;:null}}&amp;#39;</span> <span style="color:#6272a4"># reenabling the setting removes shard allocation</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">body_format</span>: json
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">method</span>: PUT
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: wait for elasticsearch to recover
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">script</span>: check_es_health.py
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">register</span>: es_recovery_response
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">until</span>: es_recovery_response.rc == 0
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">retries</span>: <span style="color:#bd93f9">15</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">delay</span>: <span style="color:#bd93f9">10</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span></code></pre></div><p>There is one script that has to run located at <strong>files/check_es_health.py</strong>. This is pretty simple:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#6272a4">#!/usr/bin/python</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> urllib2
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> sys
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response <span style="color:#ff79c6">=</span> urllib2<span style="color:#ff79c6">.</span>urlopen(<span style="color:#ff79c6">&amp;</span><span style="color:#6272a4">#34;http://127.0.0.1:9200/_cat/health&amp;#34;)</span>
+</span></span><span style="display:flex;"><span>body <span style="color:#ff79c6">=</span> response<span style="color:#ff79c6">.</span>read()
+</span></span><span style="display:flex;"><span>response<span style="color:#ff79c6">.</span>close()
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> <span style="color:#ff79c6">&amp;</span><span style="color:#6272a4">#34;green&amp;#34; in body:</span>
+</span></span><span style="display:flex;"><span>    sys<span style="color:#ff79c6">.</span>exit(<span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">else</span>:
+</span></span><span style="display:flex;"><span>    sys<span style="color:#ff79c6">.</span>exit(<span style="color:#bd93f9">1</span>)
+</span></span></code></pre></div><p>Finally, there is one handler in <strong>handlers/main.yml</strong> file that looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># handlers file for upgrade-elasticsearch-cluster</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: wait for elasticsearch to start
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">wait_for</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">host</span>: <span style="color:#bd93f9">127.0.0.1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">port</span>: <span style="color:#bd93f9">9200</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">delay</span>: <span style="color:#bd93f9">5</span>
+</span></span></code></pre></div><p>To run the <a href="https://github.com/nfisher23/some-ansible-examples">source code from github,</a> you will have to first leave the upgrade_es flag to be false. Then run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule create &amp;amp;&amp;amp; molecule converge
+</span></span></code></pre></div><p>After the VMs come up and they have working elasticsearch instances, you need to add the <strong>serial: 1</strong> flag at the top of the <strong>molecule/default/playbook.yml</strong> file. Then switch the <strong>upgrade_es</strong> flag to <strong>true</strong>, and run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule converge
+</span></span></code></pre></div><p>The virtual machines will then be upgraded one by one, stopping until the instance comes up and is available.</p>
+</section>
 
   
     

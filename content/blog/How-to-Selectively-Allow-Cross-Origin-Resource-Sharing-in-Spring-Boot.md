@@ -1,6 +1,6 @@
 ---
 title: "How to Selectively Allow Cross Origin Resource Sharing in Spring Boot"
-date: 2019-05-01T00:00:00
+date: 2019-05-18T19:12:46
 draft: false
 ---
 
@@ -25,7 +25,7 @@ It will make this request to the same endpoint that your browser wants to talk t
 
 Thankfully, Spring Boot provides a very easy mechanism to set a cross origin policy that can be defined in one place. In this example, I set up a CORS mapping to allow all requests for a default Angular application that gets served at localhost:4200:
 
-``` java
+```java
 @Configuration
 @Profile(&#34;dev&#34;)
 public class AppConfig {
@@ -44,5 +44,3 @@ public class AppConfig {
 ```
 
 For more information, take a look at the [current spring documentation on CORS support](https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-cors).
-
-

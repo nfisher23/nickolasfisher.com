@@ -158,23 +158,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/scanning-a-dynamodb-table-in-java-with-the-aws-sdk-20/">Scanning a DynamoDB table in Java with the AWS SDK 2.0</a>
+    <a href="http://localhost:1313/blog/dynamodb-and-duplicate-keys-in-global-secondary-indexes/">DynamoDB and Duplicate Keys in Global Secondary Indexes</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-11-01 00:00:00 &#43;0000 UTC" title='Sun, Nov 1, 2020, 12:00 AM UTC'>
+    <time datetime="2020-11-01 23:27:39 &#43;0000 UTC" title='Sun, Nov 1, 2020, 11:27 PM UTC'>
       01/11/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p><a href="https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html">Scanning in DynamoDB</a> is exactly what it sounds like: loop through every single record in a table, optionally filtering for items with a certain condition when dynamo returns them to you. In general, you <em>shouldn't do this</em>. DynamoDB is designed to store and manage a very large amount of data. Scanning through a large amount of data is very expensive, even in a distributed world. In the best case, you'll be waiting a long time to see results. In the worst case, you might see service outages as you burn through your RCUs.</p>
+      <p>If there's something in the documentation about what the behavior of a DynamoDB Global Secondary Index is when there are duplicate keys in the index, it isn't easy to find. I tested this empirically with an embedded DynamoDB mock for java and will quickly share my findings here with you.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/scanning-a-dynamodb-table-in-java-with-the-aws-sdk-20/">
+    <a class="read-more" href="http://localhost:1313/blog/dynamodb-and-duplicate-keys-in-global-secondary-indexes/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -189,23 +189,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/working-with-nested-attributes-dynamodb-and-the-java-sdk-20/">Working with Nested Attributes, DynamoDB, and the Java SDK 2.0</a>
+    <a href="http://localhost:1313/blog/query-a-dynamodb-global-secondary-index-in-java/">Query a DynamoDB Global Secondary Index in Java</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-11-01 00:00:00 &#43;0000 UTC" title='Sun, Nov 1, 2020, 12:00 AM UTC'>
+    <time datetime="2020-11-01 22:40:46 &#43;0000 UTC" title='Sun, Nov 1, 2020, 10:40 PM UTC'>
       01/11/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p><a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.Attributes.html">Nested attributes in DynamoDB</a> are a way to group data within an item together. The attributes are said to be nested if they are embedded within another attribute.</p>
+      <p>A <a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.html">DynamoDB Global Secondary Index</a> is an eventually consistent way to efficiently query for data that is not normally found without a table scan. It has <a href="https://nickolasfisher.com/blog/Query-a-DynamoDB-Local-Secondary-Index-with-Java">some similarities to Local Secondary Indexes, which we covered in the last post</a>, but are more flexible than them because they can be created, updated, and deleted after the base table has been created, which is not true of Local Secondary Indexes.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/working-with-nested-attributes-dynamodb-and-the-java-sdk-20/">
+    <a class="read-more" href="http://localhost:1313/blog/query-a-dynamodb-global-secondary-index-in-java/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -220,23 +220,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/configuring-an-in-memory-dynamodb-instance-with-java-for-integration-testing/">Configuring an In Memory DynamoDB instance with Java for Integration Testing</a>
+    <a href="http://localhost:1313/blog/query-a-dynamodb-local-secondary-index-with-java/">Query a DynamoDB Local Secondary Index with Java</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-10-01 00:00:00 &#43;0000 UTC" title='Thu, Oct 1, 2020, 12:00 AM UTC'>
-      01/10/2020
+    <time datetime="2020-10-31 22:49:54 &#43;0000 UTC" title='Sat, Oct 31, 2020, 10:49 PM UTC'>
+      31/10/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p>While using the AWS SDK 2.0, which has support for reactive programming, it became clear that there was no straightforward support for an embedded dynamo db instance for testing. I spent a fair amount of time figuring it out by starting with <a href="https://github.com/aws/aws-sdk-java-v2/blob/93269d4c0416d0f72e086774265847d6af0d54ec/services-custom/dynamodb-enhanced/src/test/java/software/amazon/awssdk/extensions/dynamodb/mappingclient/functionaltests/LocalDynamoDb.java">this github link</a> and ultimately adapting it to my own needs.</p>
+      <p>DynamoDB's Local Secondary Indexes allow for more query flexibility than a traditional partition and range key combination. They are also the only index in DynamoDB where a strongly consistent read can be requested [global secondary indexes, the other index that dynamo supports, can at best be eventually consistent]. I will walk through an example for how to use local secondary indexes in dynamo using the AWS SDK 2.0 for Java, which has full reactive support, in this post.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/configuring-an-in-memory-dynamodb-instance-with-java-for-integration-testing/">
+    <a class="read-more" href="http://localhost:1313/blog/query-a-dynamodb-local-secondary-index-with-java/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -251,24 +251,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/how-to-automatically-retry-on-a-webclient-timeout-in-spring-boot-webflux/">How to Automatically Retry on a Webclient Timeout in Spring Boot Webflux</a>
+    <a href="http://localhost:1313/blog/set-time-to-live-ttl-on-dynamodb-items-using-java/">Set Time to Live [TTL] on DynamoDB Items using Java</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-10-01 00:00:00 &#43;0000 UTC" title='Thu, Oct 1, 2020, 12:00 AM UTC'>
-      01/10/2020
+    <time datetime="2020-10-18 13:43:39 &#43;0000 UTC" title='Sun, Oct 18, 2020, 1:43 PM UTC'>
+      18/10/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience">can be found on Github</a>.</p>
-<p>Intermittent network flapping, or any one downstream host of several clones responding slowly, is a not uncommon thing that happens in a microservices architecture, especially if you're using java applications, where the JIT compiler can often make initial requests slower than they ought to be.</p>
+      <p>In this post, we'll demonstrate how <a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html">expiring items in DynamoDB</a> works in java, using the AWS SDK 2.0+, which has full reactive support.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/how-to-automatically-retry-on-a-webclient-timeout-in-spring-boot-webflux/">
+    <a class="read-more" href="http://localhost:1313/blog/set-time-to-live-ttl-on-dynamodb-items-using-java/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -283,24 +282,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/inmemory-caching-in-sprint-boot-webfluxproject-reactor/">In-Memory Caching in Sprint Boot Webflux/Project Reactor</a>
+    <a href="http://localhost:1313/blog/querying-dynamodb-in-java-with-the-aws-sdk-20/">Querying DynamoDB in Java with the AWS SDK 2.0</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-10-01 00:00:00 &#43;0000 UTC" title='Thu, Oct 1, 2020, 12:00 AM UTC'>
-      01/10/2020
+    <time datetime="2020-10-18 13:38:22 &#43;0000 UTC" title='Sun, Oct 18, 2020, 1:38 PM UTC'>
+      18/10/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p>Sample code for this article <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience">can be found on Github</a>.</p>
-<p>In memory caching can significantly improve performance in a microservices environment, usually because of the tail latency involved in calling downstream services. Caching can also <em>help</em> with resilience, though the extent to which that matters will depend on how you're actually leveraging that caching. There are two flavors of caching that you're like to want to use, the first is using the Mono as a hot source [which is demonstrated here], and the second would be when you want to <a href="https://nickolasfisher.com/blog/How-to-use-Caffeine-Caches-Effectively-in-Spring-Boot-Webflux">selectively cache individual key/value pairs</a>.</p>
+      <p>Queries in DynamoDB allow you to find data. This is only an option to you if your table has a partition and sort key.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/inmemory-caching-in-sprint-boot-webfluxproject-reactor/">
+    <a class="read-more" href="http://localhost:1313/blog/querying-dynamodb-in-java-with-the-aws-sdk-20/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

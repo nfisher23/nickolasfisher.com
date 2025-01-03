@@ -1,6 +1,6 @@
 ---
 title: "Configuring Lettuce/Webflux to work with Clustered Redis"
-date: 2021-04-01T00:00:00
+date: 2021-04-10T22:27:54
 draft: false
 ---
 
@@ -12,7 +12,7 @@ To follow along here, you&#39;re going to want to make sure you have [set up a l
 
 First, add lettuce to your **pom.xml**:
 
-``` xml
+```xml
         &lt;dependency&gt;
             &lt;groupId&gt;io.lettuce&lt;/groupId&gt;
             &lt;artifactId&gt;lettuce-core&lt;/artifactId&gt;
@@ -23,7 +23,7 @@ First, add lettuce to your **pom.xml**:
 
 Then add some configuration that sets up a **RedisClusterClient** and **RedisClusterReactiveCommands**: bean
 
-``` java
+```java
 @Configuration
 @ConfigurationProperties(&#34;redis-cluster&#34;)
 public class LettuceConfig {
@@ -65,7 +65,7 @@ public class LettuceConfig {
 
 And change your **application.yml** so that this config can actually work:
 
-``` yaml
+```yaml
 redis-cluster:
   host: 127.0.0.1
   port: 30001
@@ -76,7 +76,7 @@ Note that I&#39;ve chosen port **30001** because that&#39;s a primary node in my
 
 Now let&#39;s actually use this to write some data to our redis cluster:
 
-``` java
+```java
 @Service
 public class PostConstructExecutor {
     private final RedisClusterReactiveCommands&lt;String, String&gt; redisClusterReactiveCommands;
@@ -103,7 +103,7 @@ When you start up this application, our chained set of commands will create 10 r
 
 We can verify that with a simple script that iterates through each primary instance in our cluster and runs a &#34;KEYS \*&#34;, like so:
 
-``` bash
+```bash
 $ for port in 30001 30002 30003; do redis-cli -p $port -c keys &#39;*&#39;; done
 1) &#34;hello-0&#34;
 2) &#34;hello-8&#34;
@@ -119,5 +119,3 @@ $ for port in 30001 30002 30003; do redis-cli -p $port -c keys &#39;*&#39;; done
 ```
 
 Again, if your port numbers for your local clustered redis are different, then you should use those instead of **30001 30002 30003**. And with this, you should be good to go.
-
-

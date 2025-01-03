@@ -1,6 +1,6 @@
 ---
 title: "How to Configure Rest Assured to Record the Latency of Every Request In a Custom Way"
-date: 2020-06-01T00:00:00
+date: 2020-06-13T21:06:52
 draft: false
 ---
 
@@ -18,7 +18,7 @@ Follow the prompts, set it up to be whatever you want.
 
 You will then need to add a couple of dependencies, I&#39;ll just list out all of them here:
 
-``` xml
+```xml
   &lt;dependencies&gt;
     &lt;dependency&gt;
       &lt;groupId&gt;junit&lt;/groupId&gt;
@@ -48,7 +48,7 @@ You will then need to add a couple of dependencies, I&#39;ll just list out all o
 
 I&#39;ll write out a couple of simple examples so I can demonstrate how to best do this:
 
-``` java
+```java
     @Test
     public void getGoogleHomepage() {
         RestAssured.with()
@@ -82,7 +82,7 @@ And, provided google and duck duck go have their services available, you will se
 
 Now let&#39;s say we have a bunch of tests and we want to track the latency of each one, and further let&#39;s say we have to send that to a file in some form of custom logic. We can execute whatever custom logic we want with a [filter](https://github.com/rest-assured/rest-assured/wiki/Usage#filters).
 
-``` java
+```java
     static {
         RestAssured.requestSpecification = RestAssured.with()
                 .filter(new Filter() {
@@ -113,5 +113,3 @@ time: 325
 ```
 
 This brings up an important point, and that&#39;s [JVM warmups](https://stackoverflow.com/questions/36198278/why-does-the-jvm-require-warmup). This specific type of analysis is really only going to be useful if you have a lot of tests, then it will tend to average itself out. But with only two tests, tracking latency like this is not particularly useful.
-
-

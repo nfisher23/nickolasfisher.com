@@ -158,12 +158,43 @@
   
     <article class="flex flex-col gap-1">
   <h1>
+    <a href="http://localhost:1313/blog/set-up-a-basic-leaderfollower-redis-cluster-locally-using-docker/">Set up a Basic Leader/Follower Redis Cluster Locally using Docker</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2021-03-28 18:57:07 &#43;0000 UTC" title='Sun, Mar 28, 2021, 6:57 PM UTC'>
+      28/03/2021
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>In general, you will want to keep your development environment and your higher environments as similar as makes sense [times it doesn't make sense: when it costs too much], to catch bugs early and often. Here, we'll quickly run through how to set up a leader/follower topology for redis using docker/docker-compose on your local machine.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/set-up-a-basic-leaderfollower-redis-cluster-locally-using-docker/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
     <a href="http://localhost:1313/blog/how-to-configure-lettuce-to-connect-to-a-local-redis-instance-with-webflux/">How to Configure Lettuce to connect to a local Redis Instance with Webflux</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-03-01 00:00:00 &#43;0000 UTC" title='Mon, Mar 1, 2021, 12:00 AM UTC'>
-      01/03/2021
+    <time datetime="2021-03-28 17:49:16 &#43;0000 UTC" title='Sun, Mar 28, 2021, 5:49 PM UTC'>
+      28/03/2021
     </time>
   </span>
 
@@ -190,55 +221,24 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/how-to-configure-lettuce-to-use-redis-read-replicas-in-spring-boot-webflux/">How to Configure Lettuce to use Redis Read Replicas in Spring Boot Webflux</a>
+    <a href="http://localhost:1313/blog/atomic-incrementing-in-dynamodb-with-the-java-aws-sdk-20/">Atomic Incrementing in DynamoDB with the Java AWS SDK 2.0</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-03-01 00:00:00 &#43;0000 UTC" title='Mon, Mar 1, 2021, 12:00 AM UTC'>
-      01/03/2021
+    <time datetime="2021-03-28 02:00:30 &#43;0000 UTC" title='Sun, Mar 28, 2021, 2:00 AM UTC'>
+      28/03/2021
     </time>
   </span>
 
   <div class="description">
     
-      <p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
-<p>Lettuce supports reading from redis replicas, but with the caveat that it doesn't [out of the box] provide you with the fine-grained control over <em>when</em> to read from the replicas that you're likely to want.</p>
+      <p>The source code for this post <a href="https://github.com/nfisher23/webflux-and-dynamo">can be found on Github</a>.</p>
+<p>When you update an item in DynamoDB, you can optionally update the item in place. That is, instead of <strong>read-increment-write</strong>, you can just issue a command that says <strong>increment this value in place</strong>. This behavior is detailed in the <a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html#WorkingWithItems.AtomicCounters">AWS documentation</a>, and I will provide an example for how to do so with the Java AWS SDK 2.0, which has full reactive support.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/how-to-configure-lettuce-to-use-redis-read-replicas-in-spring-boot-webflux/">
-      Read more
-      <span class="w-4 h-4 stroke-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-</svg>
-
-      </span>
-    </a>
-  </div>
-</article>
-
-  
-    <article class="flex flex-col gap-1">
-  <h1>
-    <a href="http://localhost:1313/blog/how-to-unit-test-that-a-reactor-mono-was-actually-subscribed-to/">How to Unit Test that a Reactor Mono was Actually Subscribed to</a>
-  </h1>
-  
-  <span class="date">
-    <time datetime="2021-03-01 00:00:00 &#43;0000 UTC" title='Mon, Mar 1, 2021, 12:00 AM UTC'>
-      01/03/2021
-    </time>
-  </span>
-
-  <div class="description">
-    
-      <p>There's a very insidious bug that can happen when you're writing reactive code, and it basically comes down to whether an underlying <strong>Mono</strong> in a chain of operations was actually <strong>subscribed to</strong>, rather than merely observing a method invocation. I'll demonstrate with an example.</p>
-    
-  </div>
-
-  <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/how-to-unit-test-that-a-reactor-mono-was-actually-subscribed-to/">
+    <a class="read-more" href="http://localhost:1313/blog/atomic-incrementing-in-dynamodb-with-the-java-aws-sdk-20/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -257,8 +257,8 @@
   </h1>
   
   <span class="date">
-    <time datetime="2021-03-01 00:00:00 &#43;0000 UTC" title='Mon, Mar 1, 2021, 12:00 AM UTC'>
-      01/03/2021
+    <time datetime="2021-03-27 23:52:07 &#43;0000 UTC" title='Sat, Mar 27, 2021, 11:52 PM UTC'>
+      27/03/2021
     </time>
   </span>
 
@@ -285,24 +285,24 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/how-to-use-caffeine-caches-effectively-in-spring-boot-webflux/">How to use Caffeine Caches Effectively in Spring Boot Webflux</a>
+    <a href="http://localhost:1313/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux/">How to use Embedded Redis to Test a Lettuce Client in Spring Boot Webflux</a>
   </h1>
   
   <span class="date">
-    <time datetime="2021-03-01 00:00:00 &#43;0000 UTC" title='Mon, Mar 1, 2021, 12:00 AM UTC'>
-      01/03/2021
+    <time datetime="2021-03-27 21:22:32 &#43;0000 UTC" title='Sat, Mar 27, 2021, 9:22 PM UTC'>
+      27/03/2021
     </time>
   </span>
 
   <div class="description">
     
-      <p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience">can be found on Github</a>.</p>
-<p>When someone talks about a caffeine cache, they are talking about <a href="https://github.com/ben-manes/caffeine">Ben Manes caching library</a>, which is a high performance, in memory cache written for java. If you're using reactive streams, you can't reliably use a LoadingCache because it's blocking by default. Thankfully, tapping into a couple of basic features of reactive streams and caffeine can get us there.</p>
+      <p>The source code for this article <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis">can be found on Github</a>.</p>
+<p><a href="https://github.com/lettuce-io/lettuce-core">Lettuce</a> is a redis client with reactive support. There is a super handy <a href="https://github.com/kstyrc/embedded-redis">embedded redis for java project</a> out there, and this kind of integration testing inside your service is worth its weight in gold, in my humble opinion. This post will detail how to merge both of these worlds together, and set up redis integration tests when you're using a lettuce client.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/how-to-use-caffeine-caches-effectively-in-spring-boot-webflux/">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

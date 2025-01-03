@@ -1,6 +1,6 @@
 ---
 title: "Subscribing to Redis Channels with Java, Spring Boot, and Lettuce"
-date: 2021-04-01T00:00:00
+date: 2021-04-24T20:05:52
 draft: false
 ---
 
@@ -12,7 +12,7 @@ Pub/Sub in redis allows a publisher to send things to subscribers without knowin
 
 We will want to make sure we have [the right configuration to connect to redis using lettuce](https://nickolasfisher.com/blog/How-to-Configure-Lettuce-to-connect-to-a-local-Redis-Instance-with-Webflux) with something like:
 
-``` java
+```java
 @Configuration
 public class RedisConfig {
 
@@ -30,7 +30,7 @@ public class RedisConfig {
 
 Where our **RedisPrimaryConfig** looks like:
 
-``` java
+```java
 @Configuration
 @ConfigurationProperties(prefix = &#34;redis-primary&#34;)
 public class RedisPrimaryConfig {
@@ -58,7 +58,7 @@ public class RedisPrimaryConfig {
 
 And our **application.yml** has the host and port \[this example is a locally redis instance\]:
 
-``` yaml
+```yaml
 redis-primary:
   host: 127.0.0.1
   port: 6379
@@ -67,7 +67,7 @@ redis-primary:
 
 We can then add our **RedisPubSubReactiveCommands** bean to our **RedisConfig** configuration class:
 
-``` java
+```java
     @Bean(&#34;redis-subscription-commands&#34;)
     public RedisPubSubReactiveCommands&lt;String, String&gt; redisPubSubReactiveCommands(RedisClient redisClient) {
         return redisClient.connectPubSub().reactive();
@@ -77,7 +77,7 @@ We can then add our **RedisPubSubReactiveCommands** bean to our **RedisConfig** 
 
 With the boilerplate out of the way, we can finally leverage **@PostConstruct** to subscribe to one or more redis channels of our choosing, just after we initialize our IoC container and just before the application finishes starting up:
 
-``` java
+```java
 @Service
 public class RedisSubscriptionInitializer {
 
@@ -107,7 +107,7 @@ In this case, we&#39;re just logging all the messages we get from **channel-1**,
 
 If I start up this application and have my local redis instance up and running, I can:
 
-``` bash
+```bash
 $redis-cli publish channel-1 some-message-1
 (integer) 1
 $redis-cli publish channel-1 some-message-2
@@ -117,7 +117,7 @@ $redis-cli publish channel-1 some-message-2
 
 Note that the response indicates how many subscribers the message was delivered to. I can then cross check the logs on my application:
 
-``` bash
+```bash
 [llEventLoop-5-2] c.n.r.s.RedisSubscriptionInitializer     : found message in channel 1: some-message-1
 [llEventLoop-5-2] c.n.r.s.RedisSubscriptionInitializer     : found message in channel 1: some-message-2
 
@@ -125,12 +125,10 @@ Note that the response indicates how many subscribers the message was delivered 
 
 Then, if I SIGINT the application and try sending another message, I will see that it delivers it to zero subscribers:
 
-``` bash
+```bash
 $ redis-cli publish channel-1 some-message-3
 (integer) 0
 
 ```
 
 So this should be a good starting point for you.
-
-

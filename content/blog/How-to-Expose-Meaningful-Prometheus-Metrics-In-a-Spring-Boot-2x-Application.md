@@ -1,6 +1,6 @@
 ---
 title: "How to Expose Meaningful Prometheus Metrics In a Spring Boot 2.x Application"
-date: 2020-05-01T00:00:00
+date: 2020-05-30T19:21:40
 draft: false
 ---
 
@@ -14,7 +14,7 @@ Spring boot has out of the box support for prometheus, but it requires a bit of 
 
 You can [spin up a spring boot application](https://start.spring.io/) with the initializr, select MVC with actuator, then add some dependencies to your pom:
 
-``` xml
+```xml
         &lt;!-- Micormeter core dependecy  --&gt;
         &lt;dependency&gt;
             &lt;groupId&gt;io.micrometer&lt;/groupId&gt;
@@ -42,7 +42,7 @@ With that in place, if you start up the application and hit the prometheus endpo
 
 That&#39;s because you have to enable the prometheus endpoint in the **application.yml**:
 
-``` yaml
+```yaml
 management:
   endpoint:
     metrics:
@@ -60,3 +60,88 @@ Now if you start up the application, you&#39;ll start seeing some metrics come o
 
 ```
 $ curl localhost:8080/actuator/prometheus | grep jvm_memory_used_bytes
+# HELP jvm_memory_used_bytes The amount of used memory
+# TYPE jvm_memory_used_bytes gauge
+jvm_memory_used_bytes{area=&#34;heap&#34;,id=&#34;G1 Survivor Space&#34;,} 7340032.0
+jvm_memory_used_bytes{area=&#34;heap&#34;,id=&#34;G1 Old Gen&#34;,} 1.4454272E7
+jvm_memory_used_bytes{area=&#34;nonheap&#34;,id=&#34;Metaspace&#34;,} 4.183572E7
+jvm_memory_used_bytes{area=&#34;nonheap&#34;,id=&#34;CodeHeap &#39;non-nmethods&#39;&#34;,} 1227392.0
+jvm_memory_used_bytes{area=&#34;heap&#34;,id=&#34;G1 Eden Space&#34;,} 1.01711872E8
+jvm_memory_used_bytes{area=&#34;nonheap&#34;,id=&#34;Compressed Class Space&#34;,} 5336000.0
+jvm_memory_used_bytes{area=&#34;nonheap&#34;,id=&#34;CodeHeap &#39;non-profiled nmethods&#39;&#34;,} 9015552.0
+
+```
+
+### Adding a Database - Free Metrics
+
+Spring boot will start aggregating metrics for you automatically if it falls into a certain category. Let&#39;s say we add a postgres data source to our application by adding this to our **application.yml**:
+
+```yaml
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: pswd
+    username: jack
+    url: jdbc:postgresql://127.0.0.1:5432/local
+
+```
+
+Also make sure to add this dependency to your **pom.xml**:
+
+```xml
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
+            &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
+            &lt;scope&gt;runtime&lt;/scope&gt;
+        &lt;/dependency&gt;
+
+```
+
+Finally, let&#39;s set up a docker-compose file to get us a local database to work with:
+
+```yaml
+version: &#34;3&#34;
+services:
+  db:
+    image: postgres
+    ports:
+      - 5432:5432
+    env_file:
+      - database.env
+```
+
+We can make the **database.env** file look like:
+
+```
+POSTGRES_USER=jack
+POSTGRES_PASSWORD=pswd
+POSTGRES_DB=local
+
+```
+
+And with that in place, go ahead and bring up the docker-compose database and start the application:
+
+```
+$ docker-compose up -d
+```
+
+(in directory with **pom.xml**)
+
+```
+mvn spring-boot:run
+```
+
+If you then ask for prometheus metrics, you&#39;ll see quite a few that include data on the Hikari datasource connection pool:
+
+```
+$ curl localhost:8080/actuator/prometheus | grep hikaricp_connections_
+hikaricp_connections_max{pool=&#34;HikariPool-1&#34;,} 10.0
+# HELP hikaricp_connections_min Min connections
+# TYPE hikaricp_connections_min gauge
+hikaricp_connections_min{pool=&#34;HikariPool-1&#34;,} 10.0
+# HELP hikaricp_connections_pending Pending threads
+# TYPE hikaricp_connections_pending gauge
+hikaricp_connections_pending{pool=&#34;HikariPool-1&#34;,} 0.0
+```
+
+With this, you&#39;re off to the races.

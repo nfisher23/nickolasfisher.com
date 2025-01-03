@@ -1,6 +1,6 @@
 ---
 title: "A Guide to Simple Set Operations in Redis with Lettuce"
-date: 2021-04-01T00:00:00
+date: 2021-04-17T08:09:37
 draft: false
 ---
 
@@ -14,7 +14,7 @@ The first thing we&#39;ll cover is adding elements to a set, viewing the members
 
 **sadd** adds elements to a set only if they don&#39;t already exist, and returns the number of elements in a set that were added, **smembers** returns all the elements, and **srem** removes elements only if they exist, returning the number that was removed:
 
-``` java
+```java
     @Test
     public void sAdd_and_sRem() {
         String setKey = &#34;set-key-1&#34;;
@@ -54,7 +54,7 @@ This code is pretty straightforward, we&#39;re adding an element that already ex
 
 Another operation you&#39;re likely to care quite a bit about is **sismember**. This operation tells you whether an element exists in the set and is an O\[1\] operation:
 
-``` java
+```java
     @Test
     public void sisMember() {
         String setKey = &#34;set-key-1&#34;;
@@ -82,5 +82,3 @@ Another operation you&#39;re likely to care quite a bit about is **sismember**. 
 Here we add two elements to a set to start with \[&#34;value-1&#34; and &#34;value-2&#34;\], then verify that using **sismember** does indeed verify that an element not in the set returns **false**, then an element that is actually in the set returns **true**.
 
 And with that, you should be good to go.
-
-

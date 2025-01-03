@@ -1,6 +1,6 @@
 ---
 title: "Antifragile, by Nassim Nicholas Taleb: Summary In Quotes"
-date: 2018-12-01T00:00:00
+date: 2018-12-16T08:06:43
 draft: false
 ---
 
@@ -66,5 +66,3 @@ Antifragile, by Nassim Nicholas Taleb, presents a truly unique viewpoint about t
 &gt; ..and marketing beyond conveying information is insecurity.
 
 &gt; A physician takes no pleasure in the health of even his friends, a soldier does not wish for the peace of his country.
-
-

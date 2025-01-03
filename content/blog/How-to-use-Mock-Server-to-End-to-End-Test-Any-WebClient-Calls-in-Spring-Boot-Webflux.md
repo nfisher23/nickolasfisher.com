@@ -1,6 +1,6 @@
 ---
 title: "How to use Mock Server to End to End Test Any WebClient Calls in Spring Boot Webflux"
-date: 2020-08-01T00:00:00
+date: 2020-08-08T22:44:14
 draft: false
 ---
 
@@ -14,7 +14,7 @@ There are a few different ways to [run MockServer with junit](https://www.mock-s
 
 I&#39;m going to reuse code from my last blog post on [mocking dependencies and unit testing in webflux](https://nickolasfisher.com/blog/How-to-Mock-Dependencies-and-Unit-Test-in-Spring-Boot-Webflux). If you recall, we had a really simple service with basically no logic:
 
-``` java
+```java
 package com.nickolasfisher.testing.service;
 
 import com.nickolasfisher.testing.dto.DownstreamResponseDTO;
@@ -44,7 +44,7 @@ public class MyService {
 
 To write a test for this, let&#39;s first get mock server setting up properly. You will want to add the mock server dependency to your **pom.xml** if you&#39;re using maven, or your **build.gradle** if you&#39;re using gradle:
 
-``` xml
+```xml
 &lt;dependency&gt;
     &lt;groupId&gt;org.mock-server&lt;/groupId&gt;
     &lt;artifactId&gt;mockserver-netty&lt;/artifactId&gt;
@@ -55,7 +55,7 @@ To write a test for this, let&#39;s first get mock server setting up properly. Y
 
 And create the test class somewhere in **src/test/...**. We will start and stop mock server as boilerplate:
 
-``` java
+```java
 public class MyServiceTest {
 
     private ClientAndServer mockServer;
@@ -77,7 +77,7 @@ I picked a static port in this case, but it&#39;s probably more robust to have j
 
 There are two things we would want to assert in a happy path test: first, that we are actually making the request and second, we are deserializing the response properly and it is making it into the **Flux**. One way to do this is by forcing the downstream call to block for us:
 
-``` java
+```java
 public class MyServiceTest {
 
     private ClientAndServer mockServer;
@@ -140,7 +140,7 @@ public class MyServiceTest {
 
 We are verifying that at least part of the response got loaded into our POJO properly with:
 
-``` java
+```java
 assertEquals(1, responses.size());
 assertEquals(&#34;first&#34;, responses.get(0).getFirstName());
 assertEquals(&#34;last&#34;, responses.get(0).getLastName());
@@ -149,7 +149,7 @@ assertEquals(&#34;last&#34;, responses.get(0).getLastName());
 
 And we are verifying the request was made with:
 
-``` java
+```java
 mockServer.verify(
         request().withMethod(HttpMethod.GET.name())
             .withPath(&#34;/legacy/persons&#34;)
@@ -160,5 +160,3 @@ mockServer.verify(
 Note that you would never want to use those blocking methods in any production code, but for testing it helps simplify our life and gives us a high degree of confidence we are doing things properly.
 
 As a reminder, you can [checkout and use this code on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing).
-
-

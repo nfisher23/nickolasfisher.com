@@ -1,6 +1,6 @@
 ---
 title: "A Concise Guide to Using Jasypt In Spring Boot for Configuration Encryption"
-date: 2020-05-01T00:00:00
+date: 2020-05-23T01:58:12
 draft: false
 ---
 
@@ -50,10 +50,9 @@ The newest integration between jasypt and spring boot means that these defaults 
 
 Continuing with the above example...
 
-Start by pulling down a spring boot project, e.g. the spring initializer. Then add this
-dependency:
+Start by pulling down a spring boot project, e.g. the spring initializer. Then add this dependency:
 
-``` xml
+```xml
         &lt;dependency&gt;
             &lt;groupId&gt;com.github.ulisesbocchio&lt;/groupId&gt;
             &lt;artifactId&gt;jasypt-spring-boot-starter&lt;/artifactId&gt;
@@ -64,7 +63,7 @@ dependency:
 
 Set up a configuration class called **AppConfig** like:
 
-``` java
+```java
 @Component
 public class AppConfig {
 
@@ -84,7 +83,7 @@ public class AppConfig {
 
 And a controller like:
 
-``` java
+```java
 @RestController
 public class MyController {
 
@@ -104,7 +103,7 @@ public class MyController {
 
 Don&#39;t forget to add the **@EnableEncryptableProperties** annotation:
 
-``` java
+```java
 @SpringBootApplication
 @EnableEncryptableProperties
 public class JasyptExampleApplication {
@@ -119,7 +118,7 @@ public class JasyptExampleApplication {
 
 To use the password we just generated, your **application.yml** will have to look like:
 
-``` yaml
+```yaml
 jasypt:
   encryptor:
     password: youcantguessme
@@ -168,7 +167,7 @@ HU&#43;pHQRhFmvgZ0p&#43;AK1zMHP0ayzyu3liyGLbHvzNy1Lu6gkI&#43;xapltrdescWNdAv
 
 Your **application.yml** can now drop the _algorithm_ and _iv-generator-classname_ in the distinction:
 
-``` yaml
+```yaml
 jasypt:
   encryptor:
     password: youcantguessme
@@ -183,7 +182,7 @@ And your application should start up and serve the secret at **localhost:8080/se
 
 There&#39;s no point in including the password that you used to encrypt your secrets in plaintext right next to your secret. In reality, you&#39;d have different [spring profiles](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-profiles) with a different encryption password for each profile. Then you would override the encryptor password with an environment variable at runtime, on whatever server this thing runs on. For example, change your **application.yml** to look like:
 
-``` yaml
+```yaml
 my.secret: ENC(yVwuQNWRUgy7guzYcfdew3j4zyjTK4WB6MdJuiMZFfe0NRGD/ziX&#43;p73ORWNze3I)
 ```
 
@@ -205,5 +204,3 @@ $ java -jar target/*.jar
 ```
 
 And your application should come up nice and fine.
-
-

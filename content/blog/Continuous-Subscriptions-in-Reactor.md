@@ -1,6 +1,6 @@
 ---
 title: "Continuous Subscriptions in Reactor"
-date: 2020-09-01T00:00:00
+date: 2020-09-12T17:14:10
 draft: false
 ---
 
@@ -8,7 +8,7 @@ There are use cases for wanting to immediately subscribe to a **Flux** or a **Mo
 
 To continuously subscribe to a **Flux**, the easiest way to do so is to use **repeat**:
 
-``` java
+```java
         Flux.generate(synchronousSink -&gt; synchronousSink.next(new Noop()))
             .repeat()
             .subscribe(noop -&gt; {
@@ -22,7 +22,7 @@ To continuously subscribe to a **Flux**, the easiest way to do so is to use **re
 
 Note that I&#39;m using this simple class to facilitate that example and a few below:
 
-``` java
+```java
 
     private static class Noop {
         private int something;
@@ -40,7 +40,7 @@ Note that I&#39;m using this simple class to facilitate that example and a few b
 
 This simple example will print &#34;noop&#34; to the console every time we hit a half or whole second. It&#39;s important to note that if your **Flux** throws an exception at this point, then the subscription will be terminated. If you want to just keep blindly retrying every time you hit an unexpected exception, that&#39;s a one liner to fix:
 
-``` java
+```java
         Flux.generate(synchronousSink -&gt; {
                 if (ZonedDateTime.now().getNano() / 1_000_000 % 500 == 0) {
                     synchronousSink.error(new RuntimeException());
@@ -63,7 +63,7 @@ This example generates an error every half or whole minute. A few &#34;noop&#34;
 
 We can also retry a **Mono** with the same syntax:
 
-``` java
+```java
         Mono.fromFuture(CompletableFuture.supplyAsync(() -&gt; new Noop()))
             .repeat()
             .subscribe(noop -&gt; {
@@ -77,7 +77,7 @@ We can also retry a **Mono** with the same syntax:
 
 An important related note: if you keep resubscribing to a mono from a **CompletableFuture** like this, the future will only actually execute once, and the value will just get propogated down multiple times. We can demonstrate this behavior like so:
 
-``` java
+```java
         AtomicInteger count = new AtomicInteger();
         Mono.fromFuture(CompletableFuture.supplyAsync(() -&gt; new Noop() {{ setSomething(count.incrementAndGet()); }}))
             .repeat()
@@ -92,7 +92,7 @@ An important related note: if you keep resubscribing to a mono from a **Completa
 
 This prints out:
 
-``` bash
+```bash
 noop 1
 noop 1
 noop 1
@@ -106,7 +106,7 @@ noop 1
 
 To get the **CompletableFuture** to execute every time, we need to wrap it in a **Supplier**, which will here be a lambda:
 
-``` java
+```java
         AtomicInteger count = new AtomicInteger();
         Mono.fromFuture(() -&gt; CompletableFuture.supplyAsync(() -&gt; new Noop() {{ setSomething(count.incrementAndGet()); }}))
             .repeat()
@@ -121,7 +121,7 @@ To get the **CompletableFuture** to execute every time, we need to wrap it in a 
 
 With this change, we can see in the console:
 
-``` bash
+```bash
 noop 231278
 noop 231279
 noop 231280
@@ -130,5 +130,3 @@ noop 231280
 ```
 
 Note that the same restrictions on an exception being thrown and terminating the continuous subscription apply--if you want to avoid that, you need to add in a **retry** just like we did with the **Flux** above.
-
-

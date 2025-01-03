@@ -148,8 +148,8 @@ When you&#39;re in a microservice environment, it often makes sense to make some
 
     <div class="meta">
       
-      <time datetime="2019-06-01 00:00:00 &#43;0000 UTC" title='Sat, Jun 1, 2019, 12:00 AM UTC'>
-        01/06/2019 - Estimated reading time: 4 minutes
+      <time datetime="2019-06-22 20:48:30 &#43;0000 UTC" title='Sat, Jun 22, 2019, 8:48 PM UTC'>
+        22/06/2019 - Estimated reading time: 4 minutes
       </time>
 
        
@@ -266,7 +266,24 @@ When you&#39;re in a microservice environment, it often makes sense to make some
 </span></span><span style="display:flex;"><span>        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;Total time: <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; Duration.<span style="color:#50fa7b">between</span>(start, Instant.<span style="color:#50fa7b">now</span>()).<span style="color:#50fa7b">getSeconds</span>());
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div></section>
+</span></span></code></pre></div><p>Now, if you are sure to start up the slow service from before, you should see five calls get made in a batch, then another five calls after the threads release.</p>
+<p>What do we expect to see here? Well, we have 5 threads in this process, and we know that the endpoint we are hitting will take about two seconds to respond. So, we should see a total time to completion of 4 seconds. Indeed, my stdout shows:</p>
+<pre tabindex="0"><code>response: {&amp;#34;hello&amp;#34;:&amp;#34;hello&amp;#34;}
+response: {&amp;#34;hello&amp;#34;:&amp;#34;hello&amp;#34;}
+response: {&amp;#34;hello&amp;#34;:&amp;#34;hello&amp;#34;}
+response: {&amp;#34;hello&amp;#34;:&amp;#34;hello&amp;#34;}
+response: {&amp;#34;hello&amp;#34;:&amp;#34;hello&amp;#34;}
+response: {&amp;#34;hello&amp;#34;:&amp;#34;hello&amp;#34;}
+response: {&amp;#34;hello&amp;#34;:&amp;#34;hello&amp;#34;}
+response: {&amp;#34;hello&amp;#34;:&amp;#34;hello&amp;#34;}
+response: {&amp;#34;hello&amp;#34;:&amp;#34;hello&amp;#34;}
+response: {&amp;#34;hello&amp;#34;:&amp;#34;hello&amp;#34;}
+Total time: 4
+</code></pre><p><strong>Further Suggested Reading:</strong></p>
+<ul>
+<li><a href="https://spring.io/guides/gs/async-method/">Async Calls in Spring Boot</a></li>
+</ul>
+</section>
 
   
     

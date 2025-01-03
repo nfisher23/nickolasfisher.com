@@ -1,6 +1,6 @@
 ---
 title: "A Guide to Operating on Multiple Sets in Redis with Lettuce"
-date: 2021-04-01T00:00:00
+date: 2021-04-17T08:12:31
 draft: false
 ---
 
@@ -12,7 +12,7 @@ Subtracting sets work similarly to subtracting numbers.
 
 You take the first set, and when there are elements in the second set that match the element in the first set, you take those out of the set that you return. Both the set you&#39;re subtracting from and the set you&#39;re using to subtract will remain unchanged.
 
-``` java
+```java
     @Test
     public void subtractingMultipleSets() {
         String firstSetKey = &#34;first-set-key&#34;;
@@ -59,7 +59,7 @@ Here, we create two sets, subtract them in both directions, then verify the orig
 
 Intersecting sets in redis means that only elements that are in both sets make it into the resulting set. You use **sinter** to intersect two different sets:
 
-``` java
+```java
     @Test
     public void intersectingMultipleSets() {
         String firstSetKey = &#34;first-set-key&#34;;
@@ -94,7 +94,7 @@ Intersecting sets in redis means that only elements that are in both sets make i
 
 Adding sets \[also called a **union**\] is basically the same as if you were to get all the members of both sets, then run **sadd** over and over again. Common elements only show up once because that&#39;s how sets work:
 
-``` java
+```java
     @Test
     public void addingMultipleSetsTogether() {
         String firstSetKey = &#34;first-set-key&#34;;
@@ -127,5 +127,3 @@ Adding sets \[also called a **union**\] is basically the same as if you were to 
 The identical sets we&#39;ve been creating for every test so far are here added together, which leads to a three element set of &#34;value-1&#34;, &#34;value-2&#34;, and &#34;value-3&#34;.
 
 And with that, you should be good to go.
-
-

@@ -1,6 +1,6 @@
 ---
 title: "How to Use Spring&#39;s Aspect Oriented Programming to log all Public Methods"
-date: 2018-11-01T00:00:00
+date: 2018-11-18T14:40:55
 draft: false
 ---
 
@@ -14,7 +14,7 @@ The things you&#39;ll need to get aspects enabled in your project are:
 
 - A reference in your pom.xml (if using maven) or your build.gradle (if using gradle). E.g. for spring boot and maven:
 
-``` xml
+```xml
 &lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-aop&lt;/artifactId&gt;
@@ -24,7 +24,7 @@ The things you&#39;ll need to get aspects enabled in your project are:
 - An aspect annotation above a bean definition. In our case, we can demonstrate an aspect that uses around-advice like so:
 
 
-``` java
+```java
 @Aspect
 @Component
 public class LoggerAspect {
@@ -50,7 +50,7 @@ public class LoggerAspect {
 
 Here, the @Around(..) annotation runs this block of code around any method that falls into our pointcut definition. Our pointcut definition is
 
-``` java
+```java
 execution(public * *(..)) &amp;&amp; within(com.nickolasfisher.aspectdemo..*)
 ```
 
@@ -58,7 +58,7 @@ Which says &#34;any public method&#34; and &#34;within the package com.nickolasf
 
 This works on both interfaces and classes. To demonstrate, we&#39;ll create a very simple interface:
 
-``` java
+```java
 public interface InterfaceToAspectOn {
     void emptyMethod1();
 
@@ -70,7 +70,7 @@ public interface InterfaceToAspectOn {
 
 Which we&#39;ll implement like so:
 
-``` java
+```java
 @Component
 public class ClassImplementingInterface implements InterfaceToAspectOn {
     @Override
@@ -93,7 +93,7 @@ public class ClassImplementingInterface implements InterfaceToAspectOn {
 
 We&#39;ll also create a standalone class to demonstrate an interface-less aspect execution:
 
-``` java
+```java
 @Component
 public class StandaloneClass {
     public void doSomethingInOtherClass() {
@@ -105,7 +105,7 @@ public class StandaloneClass {
 
 We can bring all of this together in our Spring Boot 2.0&#43; application by using Spring&#39;s [PostConstruct](https://docs.spring.io/spring/docs/4.3.20.RELEASE/spring-framework-reference/htmlsingle/#beans-postconstruct-and-predestroy-annotations):
 
-``` java
+```java
 @Component
 public class PostConstructRunner {
 
@@ -138,7 +138,7 @@ public class PostConstructRunner {
 
 When you run this application, you should see printed output that contains text like so:
 
-``` bash
+```bash
 -----------beginning around advice---------
 arguments: [some string input value]
 pointcut as long string: execution(public java.lang.String com.nickolasfisher.aspectdemo.classes.ClassImplementingInterface.methodThatReturns(java.lang.String))
@@ -151,5 +151,3 @@ returned value: some returned string
 ```
 
 While you can and should customize logs to fit your particular situation, you can use this template to get started in that process.
-
-

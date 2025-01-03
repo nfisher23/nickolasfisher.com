@@ -1,6 +1,6 @@
 ---
 title: "How to Setup and Use Kubernetes in Docker [kind]"
-date: 2020-06-01T00:00:00
+date: 2020-06-20T19:32:30
 draft: false
 ---
 
@@ -62,3 +62,30 @@ We can control the type of cluster that gets created with a [custom kind config 
 ```
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
+# 1 control plane node and 3 workers
+nodes:
+- role: control-plane
+- role: worker
+- role: worker
+- role: worker
+
+```
+
+Pretty obviously, this is a config for 1 kubernetes manager \[control plane\] node and 3 kubernetes worker nodes \[often just called &#34;nodes&#34;\]. We can create this cluster with:
+
+```
+kind create cluster --config my-kind-config.yaml
+
+```
+
+After like thirty seconds you&#39;ll be able to verify this with:
+
+```
+$ kubectl get nodes -A
+NAME                 STATUS     ROLES    AGE   VERSION
+kind-control-plane   NotReady   master   60s   v1.18.2
+kind-worker          Ready      &lt;none&gt;   20s   v1.18.2
+kind-worker2         NotReady   &lt;none&gt;   20s   v1.18.2
+kind-worker3         NotReady   &lt;none&gt;   24s   v1.18.2
+
+```

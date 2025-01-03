@@ -162,8 +162,8 @@
   </h1>
   
   <span class="date">
-    <time datetime="2020-10-01 00:00:00 &#43;0000 UTC" title='Thu, Oct 1, 2020, 12:00 AM UTC'>
-      01/10/2020
+    <time datetime="2020-10-11 20:19:42 &#43;0000 UTC" title='Sun, Oct 11, 2020, 8:19 PM UTC'>
+      11/10/2020
     </time>
   </span>
 
@@ -189,23 +189,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/query-a-dynamodb-local-secondary-index-with-java/">Query a DynamoDB Local Secondary Index with Java</a>
+    <a href="http://localhost:1313/blog/configuring-an-in-memory-dynamodb-instance-with-java-for-integration-testing/">Configuring an In Memory DynamoDB instance with Java for Integration Testing</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-10-01 00:00:00 &#43;0000 UTC" title='Thu, Oct 1, 2020, 12:00 AM UTC'>
-      01/10/2020
+    <time datetime="2020-10-10 00:02:25 &#43;0000 UTC" title='Sat, Oct 10, 2020, 12:02 AM UTC'>
+      10/10/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p>DynamoDB's Local Secondary Indexes allow for more query flexibility than a traditional partition and range key combination. They are also the only index in DynamoDB where a strongly consistent read can be requested [global secondary indexes, the other index that dynamo supports, can at best be eventually consistent]. I will walk through an example for how to use local secondary indexes in dynamo using the AWS SDK 2.0 for Java, which has full reactive support, in this post.</p>
+      <p>While using the AWS SDK 2.0, which has support for reactive programming, it became clear that there was no straightforward support for an embedded dynamo db instance for testing. I spent a fair amount of time figuring it out by starting with <a href="https://github.com/aws/aws-sdk-java-v2/blob/93269d4c0416d0f72e086774265847d6af0d54ec/services-custom/dynamodb-enhanced/src/test/java/software/amazon/awssdk/extensions/dynamodb/mappingclient/functionaltests/LocalDynamoDb.java">this github link</a> and ultimately adapting it to my own needs.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/query-a-dynamodb-local-secondary-index-with-java/">
+    <a class="read-more" href="http://localhost:1313/blog/configuring-an-in-memory-dynamodb-instance-with-java-for-integration-testing/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -220,23 +220,24 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/querying-dynamodb-in-java-with-the-aws-sdk-20/">Querying DynamoDB in Java with the AWS SDK 2.0</a>
+    <a href="http://localhost:1313/blog/inmemory-caching-in-sprint-boot-webfluxproject-reactor/">In-Memory Caching in Sprint Boot Webflux/Project Reactor</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-10-01 00:00:00 &#43;0000 UTC" title='Thu, Oct 1, 2020, 12:00 AM UTC'>
-      01/10/2020
+    <time datetime="2020-10-03 22:41:59 &#43;0000 UTC" title='Sat, Oct 3, 2020, 10:41 PM UTC'>
+      03/10/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p>Queries in DynamoDB allow you to find data. This is only an option to you if your table has a partition and sort key.</p>
+      <p>Sample code for this article <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience">can be found on Github</a>.</p>
+<p>In memory caching can significantly improve performance in a microservices environment, usually because of the tail latency involved in calling downstream services. Caching can also <em>help</em> with resilience, though the extent to which that matters will depend on how you're actually leveraging that caching. There are two flavors of caching that you're like to want to use, the first is using the Mono as a hot source [which is demonstrated here], and the second would be when you want to <a href="https://nickolasfisher.com/blog/How-to-use-Caffeine-Caches-Effectively-in-Spring-Boot-Webflux">selectively cache individual key/value pairs</a>.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/querying-dynamodb-in-java-with-the-aws-sdk-20/">
+    <a class="read-more" href="http://localhost:1313/blog/inmemory-caching-in-sprint-boot-webfluxproject-reactor/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -251,23 +252,24 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/set-time-to-live-ttl-on-dynamodb-items-using-java/">Set Time to Live [TTL] on DynamoDB Items using Java</a>
+    <a href="http://localhost:1313/blog/how-to-automatically-retry-on-a-webclient-timeout-in-spring-boot-webflux/">How to Automatically Retry on a Webclient Timeout in Spring Boot Webflux</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-10-01 00:00:00 &#43;0000 UTC" title='Thu, Oct 1, 2020, 12:00 AM UTC'>
-      01/10/2020
+    <time datetime="2020-10-03 16:09:51 &#43;0000 UTC" title='Sat, Oct 3, 2020, 4:09 PM UTC'>
+      03/10/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p>In this post, we'll demonstrate how <a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html">expiring items in DynamoDB</a> works in java, using the AWS SDK 2.0+, which has full reactive support.</p>
+      <p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience">can be found on Github</a>.</p>
+<p>Intermittent network flapping, or any one downstream host of several clones responding slowly, is a not uncommon thing that happens in a microservices architecture, especially if you're using java applications, where the JIT compiler can often make initial requests slower than they ought to be.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/set-time-to-live-ttl-on-dynamodb-items-using-java/">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-automatically-retry-on-a-webclient-timeout-in-spring-boot-webflux/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -282,23 +284,24 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/continuous-subscriptions-in-reactor/">Continuous Subscriptions in Reactor</a>
+    <a href="http://localhost:1313/blog/how-to-have-a-fallback-on-errors-calling-downstream-services-in-spring-boot-webflux/">How to Have a Fallback on Errors Calling Downstream Services in Spring Boot Webflux</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-09-01 00:00:00 &#43;0000 UTC" title='Tue, Sep 1, 2020, 12:00 AM UTC'>
-      01/09/2020
+    <time datetime="2020-09-26 16:04:14 &#43;0000 UTC" title='Sat, Sep 26, 2020, 4:04 PM UTC'>
+      26/09/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p>There are use cases for wanting to immediately subscribe to a <strong>Flux</strong> or a <strong>Mono</strong> immediately after the subscription has completed. The most obvious use case is if your application needs to continuously poll for values.</p>
+      <p>The source code for this post is <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience">available on Github</a>.</p>
+<p>Things break. When you start adding more and more microservices, things will break a lot more. This post is about how to provide a degraded experience to your users when things break.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/continuous-subscriptions-in-reactor/">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-have-a-fallback-on-errors-calling-downstream-services-in-spring-boot-webflux/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

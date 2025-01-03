@@ -1,6 +1,6 @@
 ---
 title: "The Java Stream API: Primitive Streams"
-date: 2018-10-01T00:00:00
+date: 2018-10-21T19:49:49
 draft: false
 ---
 
@@ -11,7 +11,7 @@ Thanks to Java&#39;s type erasure, something like Stream&lt;int&gt; would not wo
 
 However, the smaller and more focused primitive type streams are still quite useful. We can get a summary statistics of any IntStream like so:
 
-``` java
+```java
 @Test
 public void intStream_simpleEx() {
     IntStream intStream = IntStream.of(1,4,5,8,9,10);
@@ -25,7 +25,7 @@ public void intStream_simpleEx() {
 
 We can do the same with a DoubleStream:
 
-``` java
+```java
 @Test
 public void doubleStream_simpleEx() {
     DoubleStream doubleStream = DoubleStream.of(1.0, 2.5, 3.5, 6.5, 8.0);
@@ -40,7 +40,7 @@ public void doubleStream_simpleEx() {
 
 And with a LongStream:
 
-``` java
+```java
 @Test
 public void longStream_simpleEx() {
     LongStream longStream = LongStream.of(100, 101, 102, 103);
@@ -54,7 +54,7 @@ public void longStream_simpleEx() {
 
 We can turn a Stream&lt;?&gt; into a primitive stream by calling the corresponding mapping function, e.g. mapToInt(..). Here, we&#39;ll map a Stream&lt;SimplePair&gt;, where the SimplePair object just has a name (String) and id (int) into an IntStream:
 
-``` java
+```java
 @Test
 public void mapToIntStream() {
     IntStream nameLengths = pairs.stream().mapToInt(sp -&gt; sp.getName().length());
@@ -68,7 +68,7 @@ public void mapToIntStream() {
 
 We can go the other way any time we want to by calling boxed(). Here, we will move a primitive IntStream into a Stream&lt;Integer&gt;:
 
-``` java
+```java
 @Test
 public void intStream_mapToObjectStream() {
     IntStream intStream = IntStream.of(1, 1, 3, 3, 4);
@@ -80,5 +80,3 @@ public void intStream_mapToObjectStream() {
 }
 
 ```
-
-

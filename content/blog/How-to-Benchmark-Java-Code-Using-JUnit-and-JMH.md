@@ -1,6 +1,6 @@
 ---
 title: "How to Benchmark Java Code Using JUnit and JMH"
-date: 2018-11-01T00:00:00
+date: 2018-11-10T12:28:58
 draft: false
 ---
 
@@ -12,7 +12,7 @@ By insisting on running our JMH benchmarks in JUnit code, we can quickly and eas
 
 First, you&#39;ll need the maven dependency:
 
-``` xml
+```xml
 &lt;dependency&gt;
     &lt;groupId&gt;org.openjdk.jmh&lt;/groupId&gt;
     &lt;artifactId&gt;jmh-generator-annprocess&lt;/artifactId&gt;
@@ -24,7 +24,7 @@ First, you&#39;ll need the maven dependency:
 
 All you need is one JUnit test case, which will be the entry point for all of the benchmarks in your file:
 
-``` java
+```java
 @Test
 public void runBenchmarks() throws Exception {
     Options options = new OptionsBuilder()
@@ -50,7 +50,7 @@ Then, each benchmark case you want to run will be annotated with `@Benchmark`. F
 
 A `StringBuilder` fixes all of this, because it creates an ArrayList that takes existing strings and populates them into the ArrayList. When we are done, it concatenates everything in the data structure one time, which is much less costly. Here we will run the sub-optimal version described above:
 
-``` java
+```java
 private static String hello = &#34;not another hello world&#34;;
 
 @Benchmark
@@ -70,7 +70,7 @@ public void stringsWithoutStringBuilder() throws Exception {
 
 And here, we show the method that uses `StringBuilder`:
 
-``` java
+```java
 @Benchmark
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public void stringsWithStringBuilder() throws Exception {
@@ -88,7 +88,7 @@ public void stringsWithStringBuilder() throws Exception {
 
 The JMH benchmarks output the following on my machine (be sure to get the code and try them yourself):
 
-``` bash
+```bash
 Benchmark                                                   Mode  Cnt  Score   Error  Units
 JmhJunitSampleApplicationTests.stringsWithStringBuilder     avgt    6  0.031 ± 0.005  ms/op
 JmhJunitSampleApplicationTests.stringsWithoutStringBuilder  avgt    6  3.738 ± 0.614  ms/op
@@ -97,5 +97,3 @@ JmhJunitSampleApplicationTests.stringsWithoutStringBuilder  avgt    6  3.738 ± 
 As expected, concatenating the strings each time was much more costly, and in this case was ~120 times slower.
 
 For details on how to take full advantage of the JMH framework, be sure to read through the [samples](https://hg.openjdk.java.net/code-tools/jmh/file/tip/jmh-samples/src/main/java/org/openjdk/jmh/samples/), which double as well explained tutorials.
-
-

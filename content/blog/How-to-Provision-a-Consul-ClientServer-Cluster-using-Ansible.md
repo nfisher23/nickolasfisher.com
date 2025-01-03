@@ -1,6 +1,6 @@
 ---
 title: "How to Provision a Consul Client-Server Cluster using Ansible"
-date: 2019-04-01T00:00:00
+date: 2019-04-27T21:15:18
 draft: false
 ---
 
@@ -29,7 +29,7 @@ WantedBy=multi-user.target
 
 Because the Consul Client and Consul Server instances will be on different virtual machines, we will need to add one for the Consul Client in our **molecule/default/molecule.yml** file:
 
-``` yaml
+```yaml
 ---
 dependency:
   name: galaxy
@@ -87,7 +87,7 @@ The two main things that we have done here are:
 
 As luck would have it, we do not need to make any changes to the tasks/main.yml file. The only thing left to make this playbook &#34;just work&#34; is to modify the **templates/consul.config.j2** file to look like:
 
-``` json
+```json
 {
     &#34;node_name&#34;: &#34;{{ node_name }}&#34;,
     &#34;addresses&#34;: {
@@ -112,12 +112,10 @@ If we are running in server mode, we need the up and coming standalone server to
 
 If you run:
 
-``` bash
+```bash
 $ molecule create &amp;&amp; molecule converge
 ```
 
 You should be able to hit [http://192.168.56.211:8500/v1/agent/members](http://192.168.56.211:8500/v1/agent/members,) and see both the consul server and the consul client connected.
 
 Be sure to [go get the source code](https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server) so you can play around with this yourself.
-
-

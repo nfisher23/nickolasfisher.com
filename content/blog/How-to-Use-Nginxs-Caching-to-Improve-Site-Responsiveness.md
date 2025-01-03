@@ -1,6 +1,6 @@
 ---
 title: "How to Use Nginx&#39;s Caching to Improve Site Responsiveness"
-date: 2019-04-01T00:00:00
+date: 2019-04-06T17:14:30
 draft: false
 ---
 
@@ -14,7 +14,7 @@ You will want to be sure to have a good background in setting up a reverse proxy
 
 First, we&#39;ll add an endpoint in our Spring MVC application that simulates taking a long time to get a result. Maybe the database is overwhelmed, or maybe a GC process stops the world more often than we would like:
 
-``` java
+```java
 package com.nickolasfisher.simplemvc;
 
 import org.springframework.http.HttpStatus;
@@ -43,7 +43,7 @@ Here, when we hit the /slow endpoint, it will take 2.5 seconds to get a response
 
 If you run:
 
-``` bash
+```bash
 $ molecule create &amp;&amp; molecule converge
 ```
 
@@ -68,5 +68,84 @@ server {
 
 Add the variables to the **nginx/vars/main.yml** file so it looks like:
 
-``` yaml
+```yaml
 ---
+# vars file for nginx
+app_port: 8080
+site_alias: my-site
+remove_nginx_defaults: true
+
+nginx_cache_path: /etc/nginx/cache
+nginx_cache_name: my_cache
+nginx_use_cache: true
+```
+
+If you deploy this now, the parsed nginx conf file will result in a proxy\_cache\_path declaration looking like:
+
+```
+proxy_cache_path /etc/nginx/cache levels=1:2 keys_zone=my_cache:10m max_size=10g
+                 inactive=60m use_temp_path=off;
+```
+
+However, nothing will change yet--the slow endpoint will still take 2.5 seconds, because we aren&#39;t using the cache yet. To start using it, we have to declare the cache in the location block, then specify how long we want it to be valid for. In our case, we will also have to ensure that the proxy\_cache\_bypass declaration is not in place. Because Nginx, by default, honors the Cache-Control header (which is usually used to specify that the client wants the newest version of this resource) and _we know the content has not changed,_ we will also tell Nginx to ignore the Cache-Control header. Our **server.conf.j2** file in the nginx role can finally look like:
+
+```
+{% if nginx_use_cache %}
+proxy_cache_path {{ nginx_cache_path }} levels=1:2 keys_zone={{ nginx_cache_name }}:10m max_size=10g
+                 inactive=60m use_temp_path=off;
+{% endif %}
+
+server {
+    location / {
+{% if nginx_use_cache %}
+        proxy_cache {{ nginx_cache_name }};
+        proxy_ignore_headers Cache-Control;
+        proxy_cache_valid any 60s;
+
+{% endif %}
+        proxy_pass http://localhost:{{ app_port }};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection keep-alive;
+        proxy_set_header Host $http_host;
+{% if not nginx_use_cache %}
+        proxy_cache_bypass $http_upgrade;
+{% endif %}
+    }
+}
+
+```
+
+When you run:
+
+```bash
+$ molecule converge
+```
+
+You should now see the parsed Jinja file looking like:
+
+```
+proxy_cache_path /etc/nginx/cache levels=1:2 keys_zone=my_cache:10m max_size=10g
+                 inactive=60m use_temp_path=off;
+
+server {
+    location / {
+        proxy_cache my_cache;
+        proxy_cache_valid any 60s;
+
+        proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection keep-alive;
+        proxy_set_header Host $http_host;
+    }
+}
+
+```
+
+And, most importantly, the [http:/192.168.56.202/slow](http:/192.168.56.202/slow) endpoint gets cached. The first time will take 2.5 seconds, but every subsequent request takes about 1ms (on my machine). The cache, in the way we have configured it, is valid for 60 seconds, then will invalidate itself.
+
+Some further reading:
+
+- [NGINX Content Caching](https://docs.nginx.com/nginx/admin-guide/content-cache/content-caching/)
+- [A Guide to Caching with NGINX and NGINX Plus](https://www.nginx.com/blog/nginx-caching-guide/)

@@ -1,6 +1,6 @@
 ---
 title: "How to Configure Visual Studio to Implement the Yarn Package Manager"
-date: 2018-08-01T00:00:00
+date: 2018-08-08T00:00:00
 draft: false
 ---
 
@@ -46,5 +46,3 @@ Yarn will install the package in a node\_modules folder, which is inside the pro
 And presto! Now, if you add bootstrap, as before, it will save the distribution files to the _wwwroot/lib_ folder.
 
 I hope you enjoyed this post. Please contact me if you would like further clarification or if you think I have made an error.
-
-

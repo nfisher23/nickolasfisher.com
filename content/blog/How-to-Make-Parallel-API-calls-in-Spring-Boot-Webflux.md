@@ -1,6 +1,6 @@
 ---
 title: "How to Make Parallel API calls in Spring Boot Webflux"
-date: 2020-09-01T00:00:00
+date: 2020-09-19T16:03:01
 draft: false
 ---
 
@@ -14,7 +14,7 @@ Let&#39;s take the framework we started in the last post and demonstrate how thi
 
 Recall we had two simple DTOs:
 
-``` java
+```java
 public class FirstCallDTO {
     private Integer fieldFromFirstCall;
 
@@ -45,7 +45,7 @@ public class SecondCallDTO {
 
 Let&#39;s now add a DTO that will serve to merge the results of the these two DTOs:
 
-``` java
+```java
 public class MergedCallsDTO {
     private Integer fieldOne;
     private String fieldTwo;
@@ -71,7 +71,7 @@ public class MergedCallsDTO {
 
 With that in place, let&#39;s follow TDD and set up a bare bones method in our **CombiningCallsService**:
 
-``` java
+```java
     public Mono&lt;MergedCallsDTO&gt; mergedCalls(Integer firstEndpointParam, Integer secondEndpointParam) {
         return null;
     }
@@ -86,7 +86,7 @@ Our test should:
 
 That test, using mock server, can look like this:
 
-``` java
+```java
     @Test
     public void mergedCalls_callsBothEndpointsAndMergesResults() {
         HttpRequest expectedFirstRequest = HttpRequest.request()
@@ -129,7 +129,7 @@ While pretty self explanatory, we are using the reactor test&#39;s **StepVerifie
 
 You will, predictably, see this test fail without any code to make it pass, so let&#39;s write that code now:
 
-``` java
+```java
     public Mono&lt;MergedCallsDTO&gt; mergedCalls(Integer firstEndpointParam, Integer secondEndpointParam) {
         Mono&lt;FirstCallDTO&gt; firstCallDTOMono = this.serviceAWebClient.get()
                 .uri(uriBuilder -&gt; uriBuilder.path(&#34;/first/endpoint/{param}&#34;).build(firstEndpointParam))
@@ -161,5 +161,3 @@ You will, predictably, see this test fail without any code to make it pass, so l
 As you can see in the code comments, simply making a block of code return a **Mono** doesn&#39;t actually do anything until it is subscribed to. In the case of our test, we are subscribing directly to it. If we wrote an endpoint that were invoked when someone made an http request to our application, then it would get subscribed to only at the end of the chain and we wouldn&#39;t ever actually write **subscribe** anywhere.
 
 So, by using **zip**, they are both kicked off at the same time, and we wait for both of them to complete, merging the results with **map**. If you run the test, it will now pass.
-
-

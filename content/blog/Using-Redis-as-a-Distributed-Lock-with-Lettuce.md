@@ -1,6 +1,6 @@
 ---
 title: "Using Redis as a Distributed Lock with Lettuce"
-date: 2021-05-01T00:00:00
+date: 2021-05-01T14:44:31
 draft: false
 ---
 
@@ -25,7 +25,7 @@ Note: it will be much easier to follow along if you know [how to configure embed
 
 A simple implementation of our problem can look like this:
 
-``` java
+```java
     public Mono&lt;Void&gt; simpleDoIfLockAcquired(String lockKey, Mono&lt;Void&gt; thingToDo) {
         return redisReactiveCommands.setnx(lockKey, &#34;ACQUIRED&#34;)
                 .flatMap(acquired -&gt; {
@@ -43,7 +43,7 @@ A simple implementation of our problem can look like this:
 
 Here, we&#39;re using SETNX to atomically write a key with a value to redis. If the write fails, SETNX will tell us that is failed. We can pass in any operation \[represented as a Mono\] that we want to be performed. Here&#39;s an example using it and verifying we don&#39;t do anything twice in the normal use case:
 
-``` java
+```java
     @Test
     public void distributedLocking() {
         AtomicInteger numTimesCalled = new AtomicInteger(0);
@@ -77,7 +77,7 @@ For one, we have no timeout on that lock--so if the underlying thing that we&#39
 
 We can improve upon this situation with some code like the following:
 
-``` java
+```java
     public Mono&lt;Void&gt; doIfLockAcquiredAndHandleErrors(String lockKey, Mono&lt;Void&gt; thingToDo) {
         SetArgs setArgs = new SetArgs().nx().ex(20);
         return redisReactiveCommands
@@ -107,7 +107,7 @@ We can improve upon this situation with some code like the following:
 
 This improves the situation for us and addresses some of the edge cases we need to worry about. I can write a test that uses this helper method with something like:
 
-``` java
+```java
     @Test
     public void distributedLockingAndErrorHandling() {
         AtomicInteger numTimesCalled = new AtomicInteger(0);
@@ -149,5 +149,3 @@ This improves the situation for us and addresses some of the edge cases we need 
 Here, if we use the same lock on a **Mono** that is erroring out on us, we eventually succeed because our locking helper method is deleting the lock after the operation failed for us.
 
 Finally, I have arbitrarily chosen 20 seconds and 200 seconds as the timeout for the PROCESSING and PROCESSED lock states, you will want to be sure to tune this to be relevant for your application.
-
-

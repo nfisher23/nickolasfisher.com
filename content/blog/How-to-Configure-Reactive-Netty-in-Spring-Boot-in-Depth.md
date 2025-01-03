@@ -1,6 +1,6 @@
 ---
 title: "How to Configure Reactive Netty in Spring Boot, in Depth"
-date: 2019-07-01T00:00:00
+date: 2019-07-06T14:30:43
 draft: false
 ---
 
@@ -16,7 +16,7 @@ Go to the [spring initializr](https://start.spring.io/), select WebFlux, and unz
 
 From our discussion above, it makes sense to have one event loop group, which represents a group of threads that all consume work from a queue, pick it up, and try to release that work as quickly as possible in a non-blocking way. We can choose from most of the classes that implement Netty&#39;s [EventLoopGroup](https://netty.io/4.0/api/io/netty/channel/EventLoopGroup.html), or if we are feeling ambitious we could hand roll our own. I will choose [NioEventLoopGroup](https://netty.io/4.0/api/io/netty/channel/nio/NioEventLoopGroup.html) and create a bean, so that the entry point looks like this:
 
-``` java
+```java
 @SpringBootApplication
 public class ReactiveexApplication {
 
@@ -34,7 +34,7 @@ public class ReactiveexApplication {
 
 To customize the web server, we will have to provide a `NettyReactiveWebServerFactory` bean and use the event loop group we have already defined:
 
-``` java
+```java
     @Bean
     public NettyReactiveWebServerFactory factory(NioEventLoopGroup eventLoopGroup) {
         NettyReactiveWebServerFactory factory = new NettyReactiveWebServerFactory();
@@ -54,7 +54,7 @@ To customize the web server, we will have to provide a `NettyReactiveWebServerFa
 
 To customize the `WebClient` we will have to register a `ReactorResourceFactory` that intentionally does not use the global resources, since we are defining our own:
 
-``` java
+```java
     @Bean
     public ReactorResourceFactory reactorResourceFactory(NioEventLoopGroup eventLoopGroup) {
         ReactorResourceFactory f= new ReactorResourceFactory();
@@ -72,7 +72,7 @@ To customize the `WebClient` we will have to register a `ReactorResourceFactory`
 
 We will use this `ReactorResourceFactory` to register a `ReactorClientHttpConnector`:
 
-``` java
+```java
     @Bean
     public ReactorClientHttpConnector reactorClientHttpConnector(ReactorResourceFactory r) {
         return new ReactorClientHttpConnector(r, m -&gt; m);
@@ -82,12 +82,10 @@ We will use this `ReactorResourceFactory` to register a `ReactorClientHttpConnec
 
 Finally, anytime we want our `WebClient` to participate in our custom defined thread pool, we can use this bean as the client connector:
 
-``` java
+```java
     @Bean
     public WebClient webClient(ReactorClientHttpConnector r) {
         return WebClient.builder().baseUrl(&#34;http://localhost:9000&#34;).clientConnector(r).build();
     }
 
 ```
-
-

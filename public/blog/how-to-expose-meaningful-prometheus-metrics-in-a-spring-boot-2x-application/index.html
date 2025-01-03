@@ -148,8 +148,8 @@ Prometheus is a metrics aggregator with its own presumed format. The basic idea 
 
     <div class="meta">
       
-      <time datetime="2020-05-01 00:00:00 &#43;0000 UTC" title='Fri, May 1, 2020, 12:00 AM UTC'>
-        01/05/2020 - Estimated reading time: 2 minutes
+      <time datetime="2020-05-30 19:21:40 &#43;0000 UTC" title='Sat, May 30, 2020, 7:21 PM UTC'>
+        30/05/2020 - Estimated reading time: 3 minutes
       </time>
 
        
@@ -194,7 +194,57 @@ Prometheus is a metrics aggregator with its own presumed format. The basic idea 
 </span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">include</span>: metrics,info,health,prometheus
 </span></span></code></pre></div><p>Now if you start up the application, you'll start seeing some metrics come out:</p>
 <pre tabindex="0"><code>$ curl localhost:8080/actuator/prometheus | grep jvm_memory_used_bytes
-</code></pre></section>
+# HELP jvm_memory_used_bytes The amount of used memory
+# TYPE jvm_memory_used_bytes gauge
+jvm_memory_used_bytes{area=&amp;#34;heap&amp;#34;,id=&amp;#34;G1 Survivor Space&amp;#34;,} 7340032.0
+jvm_memory_used_bytes{area=&amp;#34;heap&amp;#34;,id=&amp;#34;G1 Old Gen&amp;#34;,} 1.4454272E7
+jvm_memory_used_bytes{area=&amp;#34;nonheap&amp;#34;,id=&amp;#34;Metaspace&amp;#34;,} 4.183572E7
+jvm_memory_used_bytes{area=&amp;#34;nonheap&amp;#34;,id=&amp;#34;CodeHeap &amp;#39;non-nmethods&amp;#39;&amp;#34;,} 1227392.0
+jvm_memory_used_bytes{area=&amp;#34;heap&amp;#34;,id=&amp;#34;G1 Eden Space&amp;#34;,} 1.01711872E8
+jvm_memory_used_bytes{area=&amp;#34;nonheap&amp;#34;,id=&amp;#34;Compressed Class Space&amp;#34;,} 5336000.0
+jvm_memory_used_bytes{area=&amp;#34;nonheap&amp;#34;,id=&amp;#34;CodeHeap &amp;#39;non-profiled nmethods&amp;#39;&amp;#34;,} 9015552.0
+</code></pre><h3 id="adding-a-database---free-metrics">Adding a Database - Free Metrics</h3>
+<p>Spring boot will start aggregating metrics for you automatically if it falls into a certain category. Let's say we add a postgres data source to our application by adding this to our <strong>application.yml</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">spring</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">datasource</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">driver-class-name</span>: org.postgresql.Driver
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">password</span>: pswd
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">username</span>: jack
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">url</span>: jdbc:postgresql://127.0.0.1:5432/local
+</span></span></code></pre></div><p>Also make sure to add this dependency to your <strong>pom.xml</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        &amp;lt;dependency&amp;gt;
+</span></span><span style="display:flex;"><span>            &amp;lt;groupId&amp;gt;org.postgresql&amp;lt;/groupId&amp;gt;
+</span></span><span style="display:flex;"><span>            &amp;lt;artifactId&amp;gt;postgresql&amp;lt;/artifactId&amp;gt;
+</span></span><span style="display:flex;"><span>            &amp;lt;scope&amp;gt;runtime&amp;lt;/scope&amp;gt;
+</span></span><span style="display:flex;"><span>        &amp;lt;/dependency&amp;gt;
+</span></span></code></pre></div><p>Finally, let's set up a docker-compose file to get us a local database to work with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">version</span>: <span style="color:#ff79c6">&amp;#34;3&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">db</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: postgres
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#bd93f9">5432</span>:<span style="color:#bd93f9">5432</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">env_file</span>:
+</span></span><span style="display:flex;"><span>      - database.env
+</span></span></code></pre></div><p>We can make the <strong>database.env</strong> file look like:</p>
+<pre tabindex="0"><code>POSTGRES_USER=jack
+POSTGRES_PASSWORD=pswd
+POSTGRES_DB=local
+</code></pre><p>And with that in place, go ahead and bring up the docker-compose database and start the application:</p>
+<pre tabindex="0"><code>$ docker-compose up -d
+</code></pre><p>(in directory with <strong>pom.xml</strong>)</p>
+<pre tabindex="0"><code>mvn spring-boot:run
+</code></pre><p>If you then ask for prometheus metrics, you'll see quite a few that include data on the Hikari datasource connection pool:</p>
+<pre tabindex="0"><code>$ curl localhost:8080/actuator/prometheus | grep hikaricp_connections_
+hikaricp_connections_max{pool=&amp;#34;HikariPool-1&amp;#34;,} 10.0
+# HELP hikaricp_connections_min Min connections
+# TYPE hikaricp_connections_min gauge
+hikaricp_connections_min{pool=&amp;#34;HikariPool-1&amp;#34;,} 10.0
+# HELP hikaricp_connections_pending Pending threads
+# TYPE hikaricp_connections_pending gauge
+hikaricp_connections_pending{pool=&amp;#34;HikariPool-1&amp;#34;,} 0.0
+</code></pre><p>With this, you're off to the races.</p>
+</section>
 
   
     

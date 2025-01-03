@@ -1,6 +1,6 @@
 ---
 title: "DynamoDB Transactions and Java"
-date: 2020-11-01T00:00:00
+date: 2020-11-28T20:57:47
 draft: false
 ---
 
@@ -12,7 +12,7 @@ It is a claim made by AWS that transactions in DynamoDB are ACID--on this point,
 
 The [source code for what follows can be found on Github](https://github.com/nfisher23/webflux-and-dynamo/blob/master/src/test/java/com/nickolasfisher/reactivedynamo/PhoneServiceTest.java#L767). I will leverage work done in previous articles demonstrating how to set up an embedded DynamoDB instance for integration testing, as well as some helper methods. Let&#39;s start by creating our table and inserting some sample data:
 
-``` java
+```java
     @Test
     public void transactions() throws Exception {
         String currentTableName = &#34;TransactionsTest&#34;;
@@ -39,7 +39,7 @@ This code sets up a DynamoDB table with a hash key that is &#34;Company&#34; and
 
 Now, we can demonstrate an example transaction. Let&#39;s start by updating &#34;Pixel 1&#34; to have a &#34;Color&#34; of &#34;Red&#34;--but only if the Color is currently &#34;Blue&#34;. If the color is not blue, this operation will fail:
 
-``` java
+```java
 
         Map&lt;String, AttributeValue&gt; rangeKey1Map = Map.of(
             COMPANY, s(partitionKey),
@@ -85,7 +85,7 @@ After executing the update in a **TransactWriteItemsRequest**, we then verify wi
 
 That isn&#39;t really too interesting at this point. If everything in a &#34;transaction&#34; were guaranteed to succeed, we might as well use a **BatchWriteItemRequest**. It gets more useful when we demonstrate a partial failure. Let&#39;s now change two things at once, where because of a condition check failure on one of the items, the entire operation should fail:
 
-``` java
+```java
 
         Map&lt;String, AttributeValue&gt; rangeKey2Map = Map.of(
             COMPANY, s(partitionKey),
@@ -128,7 +128,7 @@ We are here reusing the **updateColorToRedOnlyIfColorIsAlreadyBlue** transact wr
 
 So far so good. Let&#39;s now get &#34;Future Phone&#34; out of dynamo and verify that the color is NOT orange--it should have stayed silver because it was submitted as a transaction:
 
-``` java
+```java
         CompletableFuture&lt;GetItemResponse&gt; getRangeKey2Future = dynamoDbAsyncClient.getItem(
             GetItemRequest.builder().key(rangeKey2Map).tableName(currentTableName).build()
         );
@@ -145,5 +145,3 @@ So far so good. Let&#39;s now get &#34;Future Phone&#34; out of dynamo and verif
 ```
 
 And this also passes! Be sure to [check out the source code for this article on Github](https://github.com/nfisher23/webflux-and-dynamo/blob/master/src/test/java/com/nickolasfisher/reactivedynamo/PhoneServiceTest.java#L767).
-
-

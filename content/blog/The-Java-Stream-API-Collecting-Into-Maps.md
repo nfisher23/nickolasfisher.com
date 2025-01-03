@@ -1,6 +1,6 @@
 ---
 title: "The Java Stream API: Collecting Into Maps"
-date: 2018-10-01T00:00:00
+date: 2018-10-21T16:07:06
 draft: false
 ---
 
@@ -12,7 +12,7 @@ using the `.toMap(..)` method.
 
 Starting with a SimplePair object:
 
-``` java
+```java
 public class SimplePair {
 
     private String name;
@@ -43,7 +43,7 @@ public class SimplePair {
 
 If we use the following method to set up five SimplePair objects in a collection:
 
-``` java
+```java
 public static List&lt;SimplePair&gt; generateSimplePairs(int numToGenerate) {
     List&lt;SimplePair&gt; pairs = new ArrayList&lt;&gt;();
     for (int i = 1; i &lt;= numToGenerate; i&#43;&#43;) {
@@ -62,7 +62,7 @@ Here, our collection would look like `[(id: 1, name: pair1), (id: 2, name: pair2
 
 We can thus use Streams to map the ids to the names:
 
-``` java
+```java
 @Test
 public void collect_mapIdToName() {
     Map&lt;Integer, String&gt; mapIdToName = simplePairs.stream().collect(Collectors.toMap(SimplePair::getId, SimplePair::getName));
@@ -75,7 +75,7 @@ public void collect_mapIdToName() {
 
 In the more common case where you want to map the id&#39;s to the object itself, use `Function.identity()`:
 
-``` java
+```java
 @Test
 public void collect_mapIdToPair() {
     Map&lt;Integer, SimplePair&gt; mapIdToObject = simplePairs.stream().collect(Collectors.toMap(SimplePair::getId, Function.identity()));
@@ -92,7 +92,7 @@ public void collect_mapIdToPair() {
 Unfortunately, there are caveats to this approach. If you insist on using the `toMap(..)` method, you will have to resolve duplicate values, if there are any,
 by adding a lambda that resolves the disparity. If we have more pairs with the same ids, by adding two with the id of three:
 
-``` java
+```java
 private void addDuplicatePairs() {
     simplePairs.add(new SimplePair() {{
         setId(3);
@@ -109,7 +109,7 @@ private void addDuplicatePairs() {
 
 We can resolve to the existing value or the new value, or by any other determination, like so:
 
-``` java
+```java
 @Test
 public void collect_resolveConflictsOnMap() {
     addDuplicatePairs();
@@ -137,7 +137,7 @@ To collect it into a list gets more complicated if you stay with the `.toMap(..)
 
 The easiest and most straightforward way to do that is to use the built in `groupingBy(..)` collector:
 
-``` java
+```java
 @Test
 public void groupingBy_sortToMap() {
     addDuplicatePairs();
@@ -156,7 +156,7 @@ public void groupingBy_sortToMap() {
 Finally, `partitioningBy(..)` allows you to map boolean values to a collection, where the &#34;true&#34; key maps to all the objects for which the lambda expression evaluates to &#34;true&#34;.
 Here, we add our duplicate pairs again, then place all the pairs that have an id of 3 into the true bucket, and all the others into the false bucket:
 
-``` java
+```java
 @Test
 public void parititioningBy_sortByTrueAndFalse() {
     addDuplicatePairs();
@@ -171,5 +171,3 @@ public void parititioningBy_sortByTrueAndFalse() {
 }
 
 ```
-
-

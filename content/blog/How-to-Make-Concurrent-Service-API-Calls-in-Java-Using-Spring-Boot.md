@@ -1,6 +1,6 @@
 ---
 title: "How to Make Concurrent Service API Calls in Java Using Spring Boot"
-date: 2019-06-01T00:00:00
+date: 2019-06-22T20:48:30
 draft: false
 ---
 
@@ -24,7 +24,7 @@ server.port=9000
 
 Then modify the entry point to look like this:
 
-``` java
+```java
 @SpringBootApplication
 @RestController
 public class SlowApplication {
@@ -53,7 +53,7 @@ Go back to the spring initializer, and select no additional dependencies. We&#39
 
 You will need to add a few to your **pom.xml**, if your using maven:
 
-``` xml
+```xml
         &lt;dependency&gt;
             &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
             &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
@@ -70,7 +70,7 @@ We will use the rest template to send calls to the other service, and we will us
 
 We will need an [executor](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/Executor.html) to spin up threads that our application can use, and we also need to add an **@EnableAsync** annotation to the entrypoint:
 
-``` java
+```java
 @SpringBootApplication
 @EnableAsync
 public class ConcurrentcallsApplication {
@@ -100,7 +100,7 @@ public class ConcurrentcallsApplication {
 
 We can then create a service class that will make calls to our other, &#34;slow&#34; microservice:
 
-``` java
+```java
 @Service
 public class SlowServiceCaller {
 
@@ -121,7 +121,7 @@ With this configuration, Spring will inject a proxy for every time **SlowService
 
 To demonstrate this, we&#39;ll fire up a **CommandLineRunner** like so:
 
-``` java
+```java
 @Component
 public class ConcurrentRunner implements CommandLineRunner {
 
@@ -149,4 +149,25 @@ public class ConcurrentRunner implements CommandLineRunner {
 
 ```
 
+Now, if you are sure to start up the slow service from before, you should see five calls get made in a batch, then another five calls after the threads release.
 
+What do we expect to see here? Well, we have 5 threads in this process, and we know that the endpoint we are hitting will take about two seconds to respond. So, we should see a total time to completion of 4 seconds. Indeed, my stdout shows:
+
+```
+response: {&#34;hello&#34;:&#34;hello&#34;}
+response: {&#34;hello&#34;:&#34;hello&#34;}
+response: {&#34;hello&#34;:&#34;hello&#34;}
+response: {&#34;hello&#34;:&#34;hello&#34;}
+response: {&#34;hello&#34;:&#34;hello&#34;}
+response: {&#34;hello&#34;:&#34;hello&#34;}
+response: {&#34;hello&#34;:&#34;hello&#34;}
+response: {&#34;hello&#34;:&#34;hello&#34;}
+response: {&#34;hello&#34;:&#34;hello&#34;}
+response: {&#34;hello&#34;:&#34;hello&#34;}
+Total time: 4
+
+```
+
+**Further Suggested Reading:**
+
+- [Async Calls in Spring Boot](https://spring.io/guides/gs/async-method/)

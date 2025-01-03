@@ -148,8 +148,8 @@ One of the biggest paradigm shifts in software engineering, since the invention 
 
     <div class="meta">
       
-      <time datetime="2018-11-01 00:00:00 &#43;0000 UTC" title='Thu, Nov 1, 2018, 12:00 AM UTC'>
-        01/11/2018 - Estimated reading time: 4 minutes
+      <time datetime="2018-11-25 15:53:22 &#43;0000 UTC" title='Sun, Nov 25, 2018, 3:53 PM UTC'>
+        25/11/2018 - Estimated reading time: 6 minutes
       </time>
 
        
@@ -232,7 +232,186 @@ server {
 </code></pre><p>Here, we use the load balancing feature to go between the two nodes defined in our service files above. Nginx will automatically detect if a port is not in use, and will not forward to that port if there is nothing to forward it to. For example, if both nodes are running and we decide to kill the one running on <a href="localhost:9000,">localhost:9000,</a> Nginx will route all requests to <a href="localhost:9001.">localhost:9001.</a></p>
 <p>I will use Git for source control, and will use <a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks">git's hooks feature</a>, particularly the post-receive file, to run a bash script on check in. The bash script will build the solution (including running any tests) and, if successful, will copy the directory with the built solution into our predetermined folder, then restart each service. Before starting the second service it will validate that the first one came up successfully, thus never shutting down both services at the same time:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#ff79c6">#!/bin/bash
-</span></span></span></code></pre></div></section>
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># checkout changes to release branch</span>
+</span></span><span style="display:flex;"><span>git --work-tree<span style="color:#ff79c6">=</span>/opt/build --git-dir<span style="color:#ff79c6">=</span>/srv/git/site.git checkout -f release
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># build the solution with maven and ensure it passes all the tests. If it fails, abort</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">cd</span> /opt/build
+</span></span><span style="display:flex;"><span>mvn clean install
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> <span style="color:#ff79c6">[[</span> &amp;<span style="color:#6272a4">#34;$?&amp;#34; -ne 0 ]]; then</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;build failed, stopping deployment&amp;#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">exit</span> <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rm -r /opt/site-node1/*
+</span></span><span style="display:flex;"><span>cp -r /opt/build/target /opt/site-node1/
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;restarting the first service&amp;#34;</span>
+</span></span><span style="display:flex;"><span>systemctl start site-node1.service
+</span></span><span style="display:flex;"><span>systemctl <span style="color:#8be9fd;font-style:italic">enable</span> site-node1.service
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">START_TIME</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;$(date &amp;#43;%s)&amp;#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">while</span> <span style="color:#ff79c6">[[</span> <span style="color:#f1fa8c">`</span>curl -s -o /dev/null -w &amp;<span style="color:#6272a4">#34;%{http_code}&amp;#34; localhost:9000` -ne 200 ]]; do</span>
+</span></span><span style="display:flex;"><span>  sleep 2s
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">[[</span> <span style="color:#f1fa8c">`</span>expr <span style="color:#ff79c6">$(</span>date &amp;<span style="color:#6272a4">#43;%s) - $START_TIME` -ge 60 ]]; then</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;timed out--something is wrong. Aborting...&amp;#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">exit</span> <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;first service up, restarting second service&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># stop the second service</span>
+</span></span><span style="display:flex;"><span>systemctl stop site-node2.service
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># copy the target directory from the build into the second node directory</span>
+</span></span><span style="display:flex;"><span>rm -r /opt/site-node2/*
+</span></span><span style="display:flex;"><span>cp -r /opt/build/target /opt/site-node2/
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># restart the second service</span>
+</span></span><span style="display:flex;"><span>systemctl start site-node2.service
+</span></span><span style="display:flex;"><span>systemctl <span style="color:#8be9fd;font-style:italic">enable</span> site-node2.service
+</span></span></code></pre></div><p>To stitch all of this together, I will use an ansible playbook to provision our server, and I will use Vagrant as a proof of concept. Here's the playbook, which sets up the environment we need to make all of this work:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">hosts</span>: all
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">become</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">gather_facts</span>: <span style="color:#ff79c6">no</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">pre_tasks</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: <span style="color:#ff79c6">&amp;#39;install</span> python2 on ubuntu 18&amp;#39;
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">raw</span>: test -e /usr/bin/python || (apt-get -y update &amp;amp;&amp;amp; apt-get install -y python-minimal)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">tasks</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: Gathering facts
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">setup</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: Get Java tarball
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">get_url</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">url</span>: https://download.java.net/java/GA/jdk10/10.0.1/fb4372174a714e6b8c52526dc134031e/10/openjdk-10.0.1_linux-x64_bin.tar.gz
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">dest</span>: /etc/open-jdk10.tar.gz
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: make java 10 directory
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">file</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">path</span>: /usr/lib/java10
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">state</span>: directory
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: unpack tarball
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">unarchive</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">dest</span>: /usr/lib/java10/
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">src</span>: /etc/open-jdk10.tar.gz
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">remote_src</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: update alternatives for java
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">alternatives</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: java
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">path</span>: /usr/lib/java10/jdk-10.0.1/bin/java
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">link</span>: /usr/bin/java
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">priority</span>: <span style="color:#bd93f9">2000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: set java environment variable
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">blockinfile</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">insertafter</span>: EOF
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">path</span>: /etc/environment
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">block</span>: export JAVA_HOME=/usr/lib/java10/jdk-10.0.1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: re-source env variables
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">shell</span>: . /etc/environment
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: install packages
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">apt</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: <span style="color:#ff79c6">&amp;#39;{{</span> item }}&amp;#39;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">state</span>: present
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">update_cache</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">with_items</span>:
+</span></span><span style="display:flex;"><span>        - nginx
+</span></span><span style="display:flex;"><span>        - maven
+</span></span><span style="display:flex;"><span>        - git
+</span></span><span style="display:flex;"><span>        - python-psycopg2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: allow ssh
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">ufw</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">rule</span>: allow
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: OpenSSH
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: allow http/https
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">ufw</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">rule</span>: allow
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">port</span>: <span style="color:#ff79c6">&amp;#39;{{</span> item }}&amp;#39;
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">with_items</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#bd93f9">443</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#bd93f9">80</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: setup rate limit over ssh
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">ufw</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">rule</span>: limit
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">port</span>: ssh
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">proto</span>: tcp
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">ufw</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">state</span>: enabled
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: create git directory and node directories
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">file</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">path</span>: <span style="color:#ff79c6">&amp;#39;{{</span> item }}&amp;#39;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">state</span>: directory
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">mode</span>: <span style="color:#bd93f9">0777</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">with_items</span>:
+</span></span><span style="display:flex;"><span>        - /srv/git/site.git
+</span></span><span style="display:flex;"><span>        - /opt/site-node1
+</span></span><span style="display:flex;"><span>        - /opt/site-node2
+</span></span><span style="display:flex;"><span>        - /opt/build
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: create git repo to push to
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">command</span>: git init --bare /srv/git/site.git
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">args</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">creates</span>: /srv/git/site.git/HEAD
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: copy node service files
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">copy</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">src</span>: <span style="color:#ff79c6">&amp;#39;{{</span> item }}&amp;#39;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">dest</span>: /etc/systemd/system
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">mode</span>: <span style="color:#bd93f9">0755</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">with_items</span>:
+</span></span><span style="display:flex;"><span>        - ./site-node1.service
+</span></span><span style="display:flex;"><span>        - ./site-node2.service
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: copy nginx config file
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">copy</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">src</span>: ./nginx_site_conf
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">dest</span>: /etc/nginx/sites-available
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: make link to sites-enabled
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">file</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">src</span>: /etc/nginx/sites-available/nginx_site_conf
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">dest</span>: /etc/nginx/sites-enabled/nginx_site_conf
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">state</span>: link
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: remove default configuration
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">file</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">path</span>: /etc/nginx/sites-enabled/default
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">state</span>: absent
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">register</span>: nginxconf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: reload nginx
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">command</span>: nginx -s reload
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">when</span>: nginxconf.changed
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: ensure nginx runs on boot
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">service</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">name</span>: nginx
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">enabled</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: create post-receive file to deploy solution on check in
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">copy</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">src</span>: ./post-receive.sh
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">dest</span>: /srv/git/site.git/hooks/post-receive
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">mode</span>: <span style="color:#bd93f9">0777</span>
+</span></span></code></pre></div><p>If you go <a href="https://github.com/nfisher23/simple-cicd-pipeline-with-spring">get the source code and install the prerequisites</a>, you can validate that this works by running:</p>
+<pre tabindex="0"><code>$ vagrant up
+</code></pre><p>Then, once the VM is provisioned:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git remote add local_vagrant root@192.168.56.121:/srv/git/site.git
+</span></span></code></pre></div><p>Finally:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git push local_vagrant release
+</span></span></code></pre></div><p>And watch the magic happen.</p>
+</section>
 
   
     

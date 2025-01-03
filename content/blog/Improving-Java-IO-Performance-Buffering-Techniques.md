@@ -1,6 +1,6 @@
 ---
 title: "Improving Java IO Performance: Buffering Techniques "
-date: 2018-11-01T00:00:00
+date: 2018-11-10T12:45:54
 draft: false
 ---
 
@@ -10,7 +10,7 @@ Now that we know [how to benchmark using junit and jmh](https://nickolasfisher.c
 
 First, we&#39;ll create a file to read from. I opt to make a comma separated variable (csv) file that has 10,000 lines of 1,2,3...,8,9:
 
-``` java
+```java
 private static String pathToResources = &#34;src/test/resources&#34;;
 private static String csvFilePath = pathToResources &#43; &#34;/simple-csv-file.csv&#34;;
 
@@ -35,7 +35,7 @@ public void setupFile() throws Exception {
 
 Then we have to configure the options we want to run the tests under, and put it inside a JUnit test so that it runs on build time:
 
-``` java
+```java
 @Test
 public void launchBenchmark() throws Exception {
     Options opt﻿ions = new OptionsBuilder()
@@ -65,7 +65,7 @@ When we ask for bytes from the OS, it&#39;s a fairly expensive operation end to 
 
 This benchmarked-method asks the OS to get us a byte with each call to `read()`:
 
-``` java
+```java
 @Benchmark
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public void noBuffering() throws Exception {
@@ -89,14 +89,14 @@ private int countNewLinesUsingStream(InputStream inputStream) throws Exception {
 
 The output on the benchmark on my machine from this method is:
 
-``` bash
+```bash
 Benchmark                                      Mode  Cnt    Score   Error  Units
 BufferingBenchmarkTests.noBuffering            avgt    2  170.308          ms/op
 ```
 
 So on two tries (after the warmups) we averaged 170 milliseconds per try. Now we will use Java&#39;s built in BufferedInputStream:
 
-``` java
+```java
 @Benchmark
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public void defaultJavaBuffering() throws Exception {
@@ -111,14 +111,14 @@ public void defaultJavaBuffering() throws Exception {
 
 The benchmark output on my machine is:
 
-``` bash
+```bash
 Benchmark                                      Mode  Cnt    Score   Error  Units
 BufferingBenchmarkTests.defaultJavaBuffering   avgt    2    0.693          ms/op
 ```
 
 So, by just adding a line of code (which automatically loads a chunk--8192 bytes as of this writing--of bytes at a time), we have increased our performance by ~245 times. Pretty crazy, but we can do even better. We can implement our own custom buffering code, which uses an array to store the buffered bytes in memory:
 
-``` java
+```java
 @Benchmark
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public void manualBufferingInCode() throws Exception {
@@ -146,7 +146,7 @@ private int countNewLinesManually(InputStream inputStream, int customBytesToBuff
 
 The benchmark results are:
 
-``` bash
+```bash
 Benchmark                                      Mode  Cnt    Score   Error  Units
 BufferingBenchmarkTests.manualBufferingInCode  avgt    2    0.148          ms/op
 
@@ -154,7 +154,7 @@ BufferingBenchmarkTests.manualBufferingInCode  avgt    2    0.148          ms/op
 
 Or a ~4.5 times performance improvement over our previous improvement, despite the fact that we used the same buffer size as is the default as of this writing (8192 bytes). We can try to make it even faster, though the results vary from machine to machine, by insisting that the buffer size be the size of the file. The obvious potential problem with this approach is that the file could be larger than the amount of available resources, which would seriously gum up the works:
 
-``` java
+```java
 @Benchmark
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public void useFileSizeAsBuffer() throws Exception {
@@ -169,12 +169,10 @@ public void useFileSizeAsBuffer() throws Exception {
 
 The results of all these operations taken together, on my machine, look like:
 
-``` bash
+```bash
 Benchmark                                      Mode  Cnt    Score   Error  Units
 BufferingBenchmarkTests.defaultJavaBuffering   avgt    2    0.693          ms/op
 BufferingBenchmarkTests.manualBufferingInCode  avgt    2    0.148          ms/op
 BufferingBenchmarkTests.noBuffering            avgt    2  170.308          ms/op
 BufferingBenchmarkTests.useFileSizeAsBuffer    avgt    2    0.188          ms/op
 ```
-
-

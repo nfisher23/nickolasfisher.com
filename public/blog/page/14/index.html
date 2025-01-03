@@ -158,86 +158,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/openapi-and-spring-boot-webflux-a-working-introduction/">OpenAPI and Spring Boot Webflux: A Working Introduction</a>
+    <a href="http://localhost:1313/blog/how-to-use-optimistic-locking-in-dynamodb-via-the-aws-cli/">How to use Optimistic Locking in DynamoDB via the AWS CLI</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-08-01 00:00:00 &#43;0000 UTC" title='Sat, Aug 1, 2020, 12:00 AM UTC'>
+    <time datetime="2020-08-01 20:46:28 &#43;0000 UTC" title='Sat, Aug 1, 2020, 8:46 PM UTC'>
       01/08/2020
     </time>
   </span>
 
   <div class="description">
     
-      <p>The <a href="http://spec.openapis.org/oas/v3.0.3">OpenAPI Specification</a> is an &quot;industry standard&quot; way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code&ndash;better yet, displayed while the app is running.</p>
+      <p>Optimistic Locking is a form of concurrency control that basically aims to prevent two different threads from accidentally overwriting data that another thread has already written. I covered <a href="https://nickolasfisher.com/blog/Optimistic-Locking-in-MySQLExplain-Like-Im-Five">optimistic locking in MySQL</a> in a previous blog post, which may or may not be easier to understand based on your background.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/openapi-and-spring-boot-webflux-a-working-introduction/">
-      Read more
-      <span class="w-4 h-4 stroke-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-</svg>
-
-      </span>
-    </a>
-  </div>
-</article>
-
-  
-    <article class="flex flex-col gap-1">
-  <h1>
-    <a href="http://localhost:1313/blog/dynamodb-and-spring-boot-webflux-a-working-introduction/">DynamoDB and Spring Boot Webflux - A Working Introduction</a>
-  </h1>
-  
-  <span class="date">
-    <time datetime="2020-07-01 00:00:00 &#43;0000 UTC" title='Wed, Jul 1, 2020, 12:00 AM UTC'>
-      01/07/2020
-    </time>
-  </span>
-
-  <div class="description">
-    
-      <p>The source code for this post <a href="https://github.com/nfisher23/webflux-and-dynamo">can be found on Github</a>.</p>
-<p>The <a href="https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/welcome.html">latest AWS SDK for java</a> uses a reactive client to send requests to various AWS services, including DynamoDB. Reactive programming is ultimately more robust at the edges&ndash;once you start experiencing latency anywhere in your stack, if your tech is not reactive, you're going to have a significantly worse time than if it were.</p>
-    
-  </div>
-
-  <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/dynamodb-and-spring-boot-webflux-a-working-introduction/">
-      Read more
-      <span class="w-4 h-4 stroke-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-</svg>
-
-      </span>
-    </a>
-  </div>
-</article>
-
-  
-    <article class="flex flex-col gap-1">
-  <h1>
-    <a href="http://localhost:1313/blog/dynamodb-basics-a-hands-on-tutorial/">DynamoDB Basics: A Hands On Tutorial</a>
-  </h1>
-  
-  <span class="date">
-    <time datetime="2020-07-01 00:00:00 &#43;0000 UTC" title='Wed, Jul 1, 2020, 12:00 AM UTC'>
-      01/07/2020
-    </time>
-  </span>
-
-  <div class="description">
-    
-      <p>DynamoDB is a fully managed distributed datastore that does a great job of alleviating the operational overhead of building very scalable systems.</p>
-    
-  </div>
-
-  <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/dynamodb-basics-a-hands-on-tutorial/">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-use-optimistic-locking-in-dynamodb-via-the-aws-cli/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -256,8 +193,8 @@
   </h1>
   
   <span class="date">
-    <time datetime="2020-07-01 00:00:00 &#43;0000 UTC" title='Wed, Jul 1, 2020, 12:00 AM UTC'>
-      01/07/2020
+    <time datetime="2020-07-26 21:54:59 &#43;0000 UTC" title='Sun, Jul 26, 2020, 9:54 PM UTC'>
+      26/07/2020
     </time>
   </span>
 
@@ -283,12 +220,43 @@
   
     <article class="flex flex-col gap-1">
   <h1>
+    <a href="http://localhost:1313/blog/optimistic-locking-in-mysqlexplain-like-im-five/">Optimistic Locking in MySQL--Explain Like I&amp;#39;m Five</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2020-07-26 00:00:56 &#43;0000 UTC" title='Sun, Jul 26, 2020, 12:00 AM UTC'>
+      26/07/2020
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>Optimistic Locking is a compromise to improve performance. If processors were infinitely fast, we wouldn't need it and it would add unnecessary complexity. But, well, they aren't.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/optimistic-locking-in-mysqlexplain-like-im-five/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
     <a href="http://localhost:1313/blog/how-to-forward-request-headers-to-downstream-services-in-spring-boot-webflux/">How to Forward Request Headers to Downstream Services in Spring Boot Webflux</a>
   </h1>
   
   <span class="date">
-    <time datetime="2020-07-01 00:00:00 &#43;0000 UTC" title='Wed, Jul 1, 2020, 12:00 AM UTC'>
-      01/07/2020
+    <time datetime="2020-07-19 19:39:10 &#43;0000 UTC" title='Sun, Jul 19, 2020, 7:39 PM UTC'>
+      19/07/2020
     </time>
   </span>
 
@@ -301,6 +269,37 @@
 
   <div class="mt-2">
     <a class="read-more" href="http://localhost:1313/blog/how-to-forward-request-headers-to-downstream-services-in-spring-boot-webflux/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/how-to-return-a-response-entity-in-spring-boot-webflux/">How to Return a Response Entity in Spring Boot Webflux</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2020-07-19 16:07:33 &#43;0000 UTC" title='Sun, Jul 19, 2020, 4:07 PM UTC'>
+      19/07/2020
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>In my last post on <a href="https://nickolasfisher.com/blog/DynamoDB-and-Spring-Boot-Webflux-A-Working-Introduction">getting started with spring boot webflux and AWS DynamoDB</a>, I mentioned that it wasn't immediately obvious to find a way to customize the response code in a spring boot <strong>RestController</strong>, so I opted to use handlers instead.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-return-a-response-entity-in-spring-boot-webflux/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

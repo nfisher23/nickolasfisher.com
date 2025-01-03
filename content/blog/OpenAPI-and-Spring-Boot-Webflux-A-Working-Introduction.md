@@ -1,6 +1,6 @@
 ---
 title: "OpenAPI and Spring Boot Webflux: A Working Introduction"
-date: 2020-08-01T00:00:00
+date: 2020-08-01T23:59:33
 draft: false
 ---
 
@@ -12,7 +12,7 @@ Let&#39;s set this up for spring boot webflux and start messing with it.
 
 Use the [spring boot initalizr](https://start.spring.io/) to create an application with the &#34;reactive web&#34; option. Then add this to your dependencies:
 
-``` xml
+```xml
         &lt;dependency&gt;
             &lt;groupId&gt;org.springdoc&lt;/groupId&gt;
             &lt;artifactId&gt;springdoc-openapi-webflux-ui&lt;/artifactId&gt;
@@ -23,14 +23,14 @@ Use the [spring boot initalizr](https://start.spring.io/) to create an applicati
 
 If you start up your application:
 
-``` bash
+```bash
 mvn spring-boot:run
 
 ```
 
 Then you can go into another terminal and see this in action:
 
-``` bash
+```bash
 $ curl localhost:8080/v3/api-docs | json_pp
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
@@ -57,7 +57,7 @@ You can also navigate to **http://localhost:8080/swagger-ui.html** by default an
 
 Let&#39;s create a simple entity and a simple controller and try that again:
 
-``` java
+```java
 public class Hello {
     private String firstName;
 
@@ -84,7 +84,7 @@ public class Hello {
 
 Now the controller:
 
-``` java
+```java
 @RestController
 public class DocumentedController {
 
@@ -106,7 +106,7 @@ public class DocumentedController {
 
 If you reboot the application then hit **/v3/api-docs** again, you will see a huge json object including:
 
-``` json
+```json
 ....
    &#34;paths&#34; : {
       &#34;/hello&#34; : {
@@ -136,7 +136,7 @@ If you reboot the application then hit **/v3/api-docs** again, you will see a hu
 
 If we then modify our DTO model with any constraints included in the **javax.validation.constraints.\*** module, we can also see that in the json blob and in the swagger UI:
 
-``` java
+```java
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -154,7 +154,7 @@ public class Hello {
 
 Reboot the app and you&#39;ll see a section on that api docs endpoint:
 
-``` json
+```json
    &#34;components&#34; : {
       &#34;schemas&#34; : {
          &#34;Hello&#34; : {
@@ -180,7 +180,7 @@ Reboot the app and you&#39;ll see a section on that api docs endpoint:
 
 If we want to modify the description or get more in depth about certain edge cases, response codes, etc., there are some fun annotations we can use:
 
-``` java
+```java
 @RestController
 public class DocumentedController {
 
@@ -204,5 +204,3 @@ public class DocumentedController {
 ```
 
 You will notice a change in both the swagger UI as well as the api docs endpoint. Feel free to take a closer look at [the documentation](https://springdoc.org/) (in particular, check out the [Frequently Asked Questions](https://springdoc.org/faq.html)) to get an idea of all the options available to you!
-
-

@@ -1,6 +1,6 @@
 ---
 title: "How to Simulate Distributed Systems in the Cloud with Vagrant"
-date: 2018-10-01T00:00:00
+date: 2018-10-28T14:28:13
 draft: false
 ---
 
@@ -50,7 +50,7 @@ We can further specify how much memory and how many cores to dedicate to this vi
 
 You can then set up root access, just like you get when you spin up a VM in the cloud, with the following provisioning specifics (assuming you&#39;ve got your ssh keys generated already):
 
-``` bash
+```bash
   config.vm.provision &#34;file&#34;, source: &#34;~/.ssh/id_rsa.pub&#34;, destination: &#34;~/.ssh/me.pub&#34;
   config.vm.provision &#34;shell&#34;, inline: &#34;cat /home/vagrant/.ssh/me.pub &gt;&gt; /home/vagrant/.ssh/authorized_keys&#34;
   config.vm.provision &#34;shell&#34;, inline: &#34;mkdir -p /root &amp;&amp; mkdir -p /root/.ssh/ &amp;&amp; cat /home/vagrant/.ssh/me.pub &gt;&gt; /root/.ssh/authorized_keys&#34;
@@ -91,5 +91,3 @@ Host 192.168.56.*
 I am assuming here that you plan on keeping your IP addresses in the 192.168.56.(whatever) range here, which is a reasonable convention to assume.
 
 You now have all the information you need to become a master of the distributed system universe. Remember us little people on your rise to prominence.
-
-

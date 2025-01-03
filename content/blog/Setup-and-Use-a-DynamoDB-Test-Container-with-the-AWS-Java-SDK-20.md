@@ -1,6 +1,6 @@
 ---
 title: "Setup and Use a DynamoDB Test Container with the AWS Java SDK 2.0"
-date: 2021-04-01T00:00:00
+date: 2021-04-10T16:13:09
 draft: false
 ---
 
@@ -14,7 +14,7 @@ Enter [test containers](https://www.testcontainers.org/). The drawback of test c
 
 To start with, you&#39;ll need to add a couple of dependencies to your **pom.xml** \[or your build.gradle, but I&#39;m using maven for this example\]:
 
-``` xml
+```xml
         &lt;dependency&gt;
             &lt;groupId&gt;org.testcontainers&lt;/groupId&gt;
             &lt;artifactId&gt;testcontainers&lt;/artifactId&gt;
@@ -32,7 +32,7 @@ To start with, you&#39;ll need to add a couple of dependencies to your **pom.xml
 
 Assuming you&#39;re using junit 5, you&#39;re a couple of annotations away from having what you want:
 
-``` java
+```java
 @Testcontainers
 public class DynamoTestContainerTest {
 
@@ -64,7 +64,7 @@ If you&#39;re not using junit 5, you will basically need to start the container 
 
 With this in place, we have our container running and we can create a client ready to use it. I&#39;ll do a bad thing and copy-paste some code from the other test class to prove it will actually work once we use it. Here&#39;s the full example:
 
-``` java
+```java
 public class DynamoTestContainerTest {
 
     public static final String COMPANY = &#34;Company&#34;;
@@ -136,5 +136,3 @@ public class DynamoTestContainerTest {
 ```
 
 And with that, you should be good to go.
-
-

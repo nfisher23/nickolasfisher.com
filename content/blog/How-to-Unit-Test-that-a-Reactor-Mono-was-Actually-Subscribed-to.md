@@ -1,6 +1,6 @@
 ---
 title: "How to Unit Test that a Reactor Mono was Actually Subscribed to"
-date: 2021-03-01T00:00:00
+date: 2021-03-13T22:35:48
 draft: false
 ---
 
@@ -10,7 +10,7 @@ Let&#39;s say you&#39;re writing a service that gets a piece of information, the
 
 So you go ahead and write a test that looks something like this:
 
-``` java
+```java
     @Test
     public void nothing() {
         RetryService mockRetryService = Mockito.mock(RetryService.class);
@@ -34,7 +34,7 @@ As displayed in the comment, this code is not verifying that the underlying Mono
 
 Here&#39;s an example where I pass this unit test, but the actual operation that **doAThing** is supposed to do when invoked does not happen:
 
-``` java
+```java
     public Mono&lt;Void&gt; getThenAct() {
         return this.retryService.getSomething(&#34;something&#34;)
                 // bug!
@@ -46,7 +46,7 @@ Here&#39;s an example where I pass this unit test, but the actual operation that
 
 To fix this problem, we want to track the subscription, not just the method invocation. Here&#39;s an example where we can fix our test to do that:
 
-``` java
+```java
     @Test
     public void nothing() {
         RetryService mockRetryService = Mockito.mock(RetryService.class);
@@ -76,7 +76,7 @@ Here, we use an **AtomicInteger** just to get around the inability of java progr
 
 If you run this test as it stands, it will fail. We can now write code to get that test to pass:
 
-``` java
+```java
     public Mono&lt;Void&gt; getThenAct() {
         return this.retryService.getSomething(&#34;something&#34;)
                 // not a bug!
@@ -87,5 +87,3 @@ If you run this test as it stands, it will fail. We can now write code to get th
 ```
 
 In reactive programming, write unit tests that verify that **Mono**&#39;s are actually subscribed to in this way if they return a **Void**, or you will regret it at some point, in the form of a bug.
-
-

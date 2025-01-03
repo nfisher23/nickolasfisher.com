@@ -1,6 +1,6 @@
 ---
 title: "Java IO: Creating and Traversing Files And Directories"
-date: 2018-11-01T00:00:00
+date: 2018-11-03T14:36:55
 draft: false
 ---
 
@@ -10,7 +10,7 @@ Using the static methods in the `Files` class, a member of the `java.nio.file` p
 
 We can create an input stream, in exactly the same way as we do with an explicit constructor, like:
 
-``` java
+```java
 @Test
 public void files_inputStreaming() throws Exception {
     Path pathToExampleFile = Paths.get(Utils.simpleExampleFilePath);
@@ -25,7 +25,7 @@ public void files_inputStreaming() throws Exception {
 
 You can create a directory with the `Files.createDirectory(..)` method:
 
-``` java
+```java
 @Test
 public void creatingDirsAndFiles_ex() throws Exception {
     Path pathToNewDir = Paths.get(Utils.pathToResources &#43; &#34;new-directory-to-create&#34;);
@@ -43,7 +43,7 @@ public void creatingDirsAndFiles_ex() throws Exception {
 
 If you have a directory beneath other directories that you want to create which do not already exist, like `parent/child/otherchild`, where child does not exist, the above attempt will fail. Make a simple change to `createDirectories(..)` and the method will take care of that for you:
 
-``` java
+```java
 @Test
 public void creatingDirectories_intermediateParentDirectories() throws Exception {
     Path newChainedPath = Paths.get(Utils.pathToResources &#43; &#34;parent-dir/sub-dir&#34;);
@@ -61,7 +61,7 @@ public void creatingDirectories_intermediateParentDirectories() throws Exception
 
 We can ask for metadata about files with `readAttributes(..)`:
 
-``` java
+```java
 @Test
 public void files_getAttributes() throws Exception {
     Path toExistingFile = Paths.get(Utils.simpleExampleFilePath);
@@ -76,7 +76,7 @@ public void files_getAttributes() throws Exception {
 
 We can access all of the `Path` s immediately beneath a directory with `Files.list(..)`:
 
-``` java
+```java
 @Test
 public void visitingDirectories_ex() throws Exception {
     try (Stream&lt;Path&gt; entries = Files.list(Paths.get(Utils.pathToResources))) {
@@ -90,7 +90,7 @@ public void visitingDirectories_ex() throws Exception {
 
 The above method will only list the immediate children. If you want to see all the `Path` s recursively, through each child directory, you&#39;ll need to use `Files.walk(..)`:
 
-``` java
+```java
 @Test
 public void visitingDirectories_walkSubDirectories() throws Exception {
     try (Stream&lt;Path&gt; entries  = Files.walk(Paths.get(Utils.pathToResources))) {
@@ -101,5 +101,3 @@ public void visitingDirectories_walkSubDirectories() throws Exception {
 }
 
 ```
-
-

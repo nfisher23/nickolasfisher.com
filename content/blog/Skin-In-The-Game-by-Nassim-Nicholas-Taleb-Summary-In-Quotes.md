@@ -1,6 +1,6 @@
 ---
 title: "Skin In The Game by Nassim Nicholas Taleb: Summary In Quotes"
-date: 2018-10-01T00:00:00
+date: 2018-10-27T15:34:27
 draft: false
 ---
 
@@ -35,5 +35,3 @@ The topic of this summary in quotes is [Skin In the Game](https://www.amazon.com
 &gt; &#34;To make money, you must first survive.&#34; -Warren Buffet
 
 &gt; &#34;Never cross a river if it is on average four feet deep.&#34;
-
-

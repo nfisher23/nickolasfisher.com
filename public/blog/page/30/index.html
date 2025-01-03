@@ -158,26 +158,59 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/the-java-stream-api-generating-fibonacci-numbers/">The Java Stream API: Generating Fibonacci Numbers</a>
+    <a href="http://localhost:1313/blog/the-java-stream-api-an-introduction-to-collecting-results/">The Java Stream API: An Introduction to Collecting Results</a>
   </h1>
   
   <span class="date">
-    <time datetime="2018-10-01 00:00:00 &#43;0000 UTC" title='Mon, Oct 1, 2018, 12:00 AM UTC'>
-      01/10/2018
+    <time datetime="2018-10-21 15:46:38 &#43;0000 UTC" title='Sun, Oct 21, 2018, 3:46 PM UTC'>
+      21/10/2018
     </time>
   </span>
 
   <div class="description">
     
-      <p>You can find the sample code for this post <a href="https://github.com/nfisher23/java_stream_api_samples">on GitHub</a>.</p>
-<p>From the knowledge gained via <a href="https://nickolasfisher.com/blog/The-Java-Stream-API-Creating-Custom-Lazy-Infinite-Streams">creating custom Java Stream objects</a>, we can start
-to have a little bit of fun with this. The fibonacci number sequence starts with [0, 1], and adds each of the previous two elements to create the next element in the sequence.
-This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&hellip;], and goes on &quot;forever.&quot; We can thus create a template that computes all Fibonacci numbers by implementing a Supplier&lt;T&gt;. like so:</p>
+      <p>You can view the sample code associated with this post <a href="https://github.com/nfisher23/java_stream_api_samples">on GitHub</a>.</p>
+<p>Calling <code>collect(..)</code> on a stream terminates a stream into a collection. We've already seen that calling collect(Collectors.toList()) moves your stream into
+a List&lt;T&gt;, but you can also collect into a set. If we take our familiar collection of names in a String collection:</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/the-java-stream-api-generating-fibonacci-numbers/">
+    <a class="read-more" href="http://localhost:1313/blog/the-java-stream-api-an-introduction-to-collecting-results/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/the-java-stream-api-creating-optional-types/">The Java Stream API: Creating Optional Types</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2018-10-21 15:22:54 &#43;0000 UTC" title='Sun, Oct 21, 2018, 3:22 PM UTC'>
+      21/10/2018
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>You can view the sample code associated with this post <a href="https://github.com/nfisher23/java_stream_api_samples">on GitHub</a>.</p>
+<p>While Optionals are often used in conjunction with the Java Stream API, you can also create your own.
+Now, why would you want to do that? Simply put, null pointer exceptions are not a fun time, and embracing optional
+types will greatly simplify code development, and prevent premature graying hair.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/the-java-stream-api-creating-optional-types/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -196,8 +229,8 @@ This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&hellip;], and goes on &quot;forever
   </h1>
   
   <span class="date">
-    <time datetime="2018-10-01 00:00:00 &#43;0000 UTC" title='Mon, Oct 1, 2018, 12:00 AM UTC'>
-      01/10/2018
+    <time datetime="2018-10-20 21:59:38 &#43;0000 UTC" title='Sat, Oct 20, 2018, 9:59 PM UTC'>
+      20/10/2018
     </time>
   </span>
 
@@ -224,24 +257,24 @@ This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&hellip;], and goes on &quot;forever
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/the-java-stream-api-parallel-streams/">The Java Stream API: Parallel Streams</a>
+    <a href="http://localhost:1313/blog/the-java-stream-api-concatenating-sorting-and-flatmapping/">The Java Stream API: Concatenating, Sorting, and Flat-Mapping</a>
   </h1>
   
   <span class="date">
-    <time datetime="2018-10-01 00:00:00 &#43;0000 UTC" title='Mon, Oct 1, 2018, 12:00 AM UTC'>
-      01/10/2018
+    <time datetime="2018-10-20 21:32:57 &#43;0000 UTC" title='Sat, Oct 20, 2018, 9:32 PM UTC'>
+      20/10/2018
     </time>
   </span>
 
   <div class="description">
     
-      <p>The sample code for this post can be found <a href="https://github.com/nfisher23/java_stream_api_samples">on GitHub</a>.</p>
-<p>Parallel Streams are simple to generate in Java. Instead of calling .stream(), you simply call parallelStream(). Here, we'll take our familiar list of names:</p>
+      <p>The sample code associated with this post can be found <a href="https://github.com/nfisher23/java_stream_api_samples">on GitHub</a>.</p>
+<p>Sometimes, we will have two different streams of data that we want to aggregate into one stream to analyze. In that case, we can use the <code>Stream.concat(..)</code> method. Here, if we take our list of names from before:</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/the-java-stream-api-parallel-streams/">
+    <a class="read-more" href="http://localhost:1313/blog/the-java-stream-api-concatenating-sorting-and-flatmapping/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -256,57 +289,26 @@ This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&hellip;], and goes on &quot;forever
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/the-java-stream-api-primitive-streams/">The Java Stream API: Primitive Streams</a>
+    <a href="http://localhost:1313/blog/the-java-stream-api-generating-fibonacci-numbers/">The Java Stream API: Generating Fibonacci Numbers</a>
   </h1>
   
   <span class="date">
-    <time datetime="2018-10-01 00:00:00 &#43;0000 UTC" title='Mon, Oct 1, 2018, 12:00 AM UTC'>
-      01/10/2018
+    <time datetime="2018-10-20 21:13:49 &#43;0000 UTC" title='Sat, Oct 20, 2018, 9:13 PM UTC'>
+      20/10/2018
     </time>
   </span>
 
   <div class="description">
     
-      <p>The sample code for this post can be found <a href="https://github.com/nfisher23/java_stream_api_samples">on GitHub</a>.</p>
-<p>While Streams in Java would typically be used on POJO or POJO-like data structures, Java also lets us deal directly with primitive type streams.
-Thanks to Java's type erasure, something like Stream&lt;int&gt; would not work, as the type argument must be an Object.</p>
+      <p>You can find the sample code for this post <a href="https://github.com/nfisher23/java_stream_api_samples">on GitHub</a>.</p>
+<p>From the knowledge gained via <a href="https://nickolasfisher.com/blog/The-Java-Stream-API-Creating-Custom-Lazy-Infinite-Streams">creating custom Java Stream objects</a>, we can start
+to have a little bit of fun with this. The fibonacci number sequence starts with [0, 1], and adds each of the previous two elements to create the next element in the sequence.
+This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&hellip;], and goes on &quot;forever.&quot; We can thus create a template that computes all Fibonacci numbers by implementing a Supplier&lt;T&gt;. like so:</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/the-java-stream-api-primitive-streams/">
-      Read more
-      <span class="w-4 h-4 stroke-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-</svg>
-
-      </span>
-    </a>
-  </div>
-</article>
-
-  
-    <article class="flex flex-col gap-1">
-  <h1>
-    <a href="http://localhost:1313/blog/the-java-stream-api-reduction-operations/">The Java Stream API: Reduction Operations</a>
-  </h1>
-  
-  <span class="date">
-    <time datetime="2018-10-01 00:00:00 &#43;0000 UTC" title='Mon, Oct 1, 2018, 12:00 AM UTC'>
-      01/10/2018
-    </time>
-  </span>
-
-  <div class="description">
-    
-      <p>The sample code for this post can be found <a href="https://github.com/nfisher23/java_stream_api_samples">on GitHub</a>.</p>
-<p>Reduction operations are a way to consolidate collections into one simple result.</p>
-    
-  </div>
-
-  <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/the-java-stream-api-reduction-operations/">
+    <a class="read-more" href="http://localhost:1313/blog/the-java-stream-api-generating-fibonacci-numbers/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

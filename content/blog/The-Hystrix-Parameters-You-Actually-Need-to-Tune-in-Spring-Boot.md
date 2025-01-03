@@ -1,6 +1,6 @@
 ---
 title: "The Hystrix Parameters You Actually Need to Tune in Spring Boot"
-date: 2020-06-01T00:00:00
+date: 2020-06-13T17:53:33
 draft: false
 ---
 
@@ -14,7 +14,7 @@ By default, there is no fallback, which means when the operation fails the excep
 
 To setup a fallback, use the **fallbackMethod** property like so:
 
-``` java
+```java
     @HystrixCommand(
             fallbackMethod = &#34;fallback&#34;)
     public String getDownstream(String uuid) {
@@ -38,7 +38,7 @@ By default, hystrix will use the same threadpool for all configured **HystrixCom
 
 If you set the thread pool key, then the library will create a separate threadpool that is not the default and give you the isolation between components that is a key reason to want to use hystrix in the first place: to give users a degraded experience that recovers more quickly, rather than giving users no experience at all because your app is borked:
 
-``` java
+```java
     @HystrixCommand(
             threadPoolKey = &#34;prim&#34;,
             fallbackMethod = &#34;fallback&#34;)
@@ -64,7 +64,7 @@ Hystrix by default will delegate the actual execution of the code in a **Hystrix
 
 You should set this property to a millisecond value that should theoretically never occur. If you&#39;ve set up the read timeout for a REST API call to be 3000 milliseconds, then you should set this to something like 4000 milliseconds--only necessary if there is a bug somewhere in the library that you&#39;re using. You can set it like so:
 
-``` java
+```java
     @HystrixCommand(commandProperties = {
             @HystrixProperty(name = &#34;execution.isolation.thread.timeoutInMilliseconds&#34;, value = &#34;2000&#34;)
     },
@@ -89,7 +89,7 @@ Here, we set it to 2000 milliseconds.
 
 The &#34;thread pool&#34; in a hystrix thread pool isn&#39;t really a thread pool so much as a gate to prevent over usage. Yes, a different thread is technically delegated to, but rather than be a buffer to balance the workload it is primarily meant to be a way to stop too much of the application&#39;s resources being saturated in a single misbehaving block of code. By default, the **coreSize** of the thread pool is 10 with no backing queue to wait for requests, which means that at any given time, only ten requests can be executing. This is usually fine, but can sometimes be a bit restrictive and you might want this to be higher. You can set it like so:
 
-``` java
+```java
     @HystrixCommand(commandProperties = {
             @HystrixProperty(name = &#34;execution.isolation.thread.timeoutInMilliseconds&#34;, value = &#34;2000&#34;)
     },
@@ -120,5 +120,3 @@ This property isn&#39;t really that important unless you&#39;re operating at sig
 You set this in the **commandProperties** section with the **name** of **circuitBreaker.sleepWindowInMilliseconds** and a value in milliseconds, e.g. 1000. We&#39;ll leave that exercise to the reader :)
 
 I threw up some kind of crummy code in this github repository: [https://github.com/nfisher23/hystrix-playground.](https://github.com/nfisher23/hystrix-playground.) Feel free to clone it and modify it as you see fit.
-
-

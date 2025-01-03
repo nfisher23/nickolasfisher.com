@@ -1,6 +1,6 @@
 ---
 title: "How to Set Up ClickOnce Continuous Deployment for WPF via Nginx"
-date: 2018-08-01T00:00:00
+date: 2018-08-08T00:08:00
 draft: false
 ---
 
@@ -53,5 +53,3 @@ Finally, we&#39;re ready to push this bad boy up. Exit out of your ssh session, 
 To get rid of the annoying &#34;this isn&#39;t a trusted app&#34; box, like I said, you&#39;ll have to pay for a not-so-cheap certificate from a CA, and renew that certificate every year or so. That barrier to entry is going to inhibit the growth of WPF applications on Windows Desktops, which is a shame, because WPF is actually pretty neat technology.
 
 Also, don&#39;t use git to push the files up via a repo and a post-receive file. For some reason (probably due to an interpreted change in the .manifest file from what I can tell), this causes problems. And it will make you a sad debugging panda.
-
-

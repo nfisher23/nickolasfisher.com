@@ -1,6 +1,6 @@
 ---
 title: "Pre Loading Lua Scripts into Clustered Redis with Lettuce"
-date: 2021-04-01T00:00:00
+date: 2021-04-25T17:37:07
 draft: false
 ---
 
@@ -12,7 +12,7 @@ In a previous article, we showed how to [efficiently execute a lua script in red
 
 If you have your [local clustered redis solution up and running](https://nickolasfisher.com/blog/Bootstrap-a-Local-Sharded-Redis-Cluster-in-Five-Minutes), we can poke around with the cli a bit \[note: this assumes your local cluster has three primary nodes with ports 30001-30003\]:
 
-``` bash
+```bash
 ➜  ~ redis-cli -p 30001 -c script load &#34;return redis.call(&#39;set&#39;,KEYS[1],ARGV[1],&#39;ex&#39;,ARGV[2])&#34;
 &#34;cf4df3d8eb7f521ceb285c6870e5713d79e2bb0b&#34;
 ➜  ~ redis-cli -p 30002 -c
@@ -33,7 +33,7 @@ Put simply, **you have to pre load your lua script on to each primary node** or 
 
 Lettuce will automatically load your script into each node for you, as we should be able to see from this example:
 
-``` java
+```java
    private void scriptLoad() {
         LOG.info(&#34;starting script load&#34;);
         String hashOfScript = redisClusterReactiveCommands.scriptLoad(&#34;return redis.call(&#39;set&#39;,KEYS[1],ARGV[1],&#39;ex&#39;,ARGV[2])&#34;)
@@ -49,7 +49,7 @@ Lettuce will automatically load your script into each node for you, as we should
 
 This code will run without errors--lettuce loads the script into each node for us, we use the sha returned from redis to tell each node which script to run, and we can sanity check the keys that were set with some cli commands \[note there&#39;s a 10 second expiry on each key--you might want to increase that\]
 
-``` bash
+```bash
 $ redis-cli -p 30002 -c mget foo1
 1) &#34;bar1&#34;
 $ redis-cli -p 30002 -c mget foo2
@@ -62,5 +62,3 @@ $ redis-cli -p 30002 -c mget foo2
 While that code technically works, it&#39;s not uncommon to need to add more nodes to a cluster. Without trying that locally myself, you will want to verify that the new nodes inherit the loaded script. If you don&#39;t \[if redis doesn&#39;t, ultimately\], you will probably suffer a partial outage because you&#39;ll be using a sha for a script that doesn&#39;t exist on that node.
 
 If that does indeed happen, then ensure that your code falls back to re-uploading the script if you get that error response and you should be able to gracefully and silently recover.
-
-

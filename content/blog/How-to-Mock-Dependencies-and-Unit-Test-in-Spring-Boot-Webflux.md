@@ -1,6 +1,6 @@
 ---
 title: "How to Mock Dependencies and Unit Test in Spring Boot Webflux"
-date: 2020-08-01T00:00:00
+date: 2020-08-08T22:14:53
 draft: false
 ---
 
@@ -14,7 +14,7 @@ We&#39;re going to make a single endpoint whose job is to filter the results fro
 
 Go to the [spring initializr](https://start.spring.io/) and select the reactive web option. After you have unzipped it, let&#39;s set up our data models, service, web client config, and controller:
 
-``` java
+```java
 public class DownstreamResponseDTO {
     private String firstName;
     private String lastName;
@@ -81,7 +81,7 @@ public class PersonDTO {
 
 As we can see, the downstream service will respond with the users SSN and deepest fear. Let&#39;s say for the sake of this example that our clients don&#39;t need that information. Here&#39;s our controller:
 
-``` java
+```java
 @RestController
 public class MyController {
 
@@ -108,7 +108,7 @@ public class MyController {
 
 And our service:
 
-``` java
+```java
 @Service
 public class MyService {
 
@@ -130,7 +130,7 @@ public class MyService {
 
 Finally, the webclient config, which is actually not useful to this tutorial but we can include for completeness:
 
-``` java
+```java
 @Configuration
 public class MyConfig {
 
@@ -147,7 +147,7 @@ public class MyConfig {
 
 Alright. Now, to write a unit test for this, we will mock out our service layer and have it respond with some mocked out values. This is pretty straightforward to do with mockito:
 
-``` java
+```java
 public class MyControllerTest {
     private MyService myServiceMock;
 
@@ -193,7 +193,7 @@ We finally assert that the first and last name of the mocked out objects are ind
 
 That basic structure should handle 80% of your unit testing needs in webflux. If you want to run these tests you can simply:
 
-``` bash
+```bash
 mvn clean install
 
 ```
@@ -201,5 +201,3 @@ mvn clean install
 As a reminder, feel free to check out the [source code for this post on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing).
 
 **Important Update**: There is a follow up article on how to [ensure that your reactor Publisher is actually getting subscribed to](https://nickolasfisher.com/blog/How-to-Unit-Test-that-a-Reactor-Mono-was-Actually-Subscribed-to), rather than just the method that returns the mono being called, which I would recommend anyone new to testing in reactor read and understand.
-
-

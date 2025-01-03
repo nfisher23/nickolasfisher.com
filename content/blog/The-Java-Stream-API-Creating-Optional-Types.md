@@ -1,6 +1,6 @@
 ---
 title: "The Java Stream API: Creating Optional Types"
-date: 2018-10-01T00:00:00
+date: 2018-10-21T15:22:54
 draft: false
 ---
 
@@ -13,7 +13,7 @@ types will greatly simplify code development, and prevent premature graying hair
 You can create an Optional with `Optional.of(..)`, `Optional.ofNullable(..)`, or `Optional.empty()`. Let&#39;s say we want to make a
 square root method which will ignore values less than zero. Here&#39;s how we might do it:
 
-``` java
+```java
 private Optional&lt;Double&gt; sqrt(Double num) {
     if (num == null) {
         return Optional.ofNullable(num);
@@ -28,7 +28,7 @@ private Optional&lt;Double&gt; sqrt(Double num) {
 
 We can test this method works in all three of the scenarios we care about--positive number, negative number, null--like so:
 
-``` java
+```java
 @Test
 public void optional_createPositive_works() {
     Double positive = 8.8;
@@ -57,7 +57,7 @@ To continue down this path, a really neat feature of Optional types is that you 
 optional goes empty at any point during the chain, it won&#39;t blow up. Without optional types, again, a null pointer exception will
 blow up your code. Say we wanted to add a logarithm method to our collection of computations:
 
-``` java
+```java
 private Optional&lt;Double&gt; log(Double num) {
     if (num != null &amp;&amp; num &gt; 0) {
         return Optional.of(Math.log(num));
@@ -70,7 +70,7 @@ private Optional&lt;Double&gt; log(Double num) {
 
 We could then chain calls together using the `flatMap(..)` method:
 
-``` java
+```java
 @Test
 public void optional_getsRealValue() {
     Double positive = 1.0;
@@ -84,7 +84,7 @@ public void optional_getsRealValue() {
 
 However, we can still chain together calls without a null pointer exception, even if the Optional&lt;T&gt; is already empty:
 
-``` java
+```java
 @Test
 public void optional_composingMultipleCalls() {
     Double negative = -1.0;
@@ -96,5 +96,3 @@ public void optional_composingMultipleCalls() {
 }
 
 ```
-
-

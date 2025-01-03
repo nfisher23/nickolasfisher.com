@@ -1,6 +1,6 @@
 ---
 title: "How to Setup a Reactive SQS Listener Using the AWS SDK and Spring Boot"
-date: 2020-09-01T00:00:00
+date: 2020-09-12T21:42:52
 draft: false
 ---
 
@@ -12,7 +12,7 @@ Following up on the previous post where we showed [how to send SQS messages to L
 
 Building off of the work in the last post, where we had set up an **SqsAsyncClient** as a **Bean**:
 
-``` java
+```java
 @Configuration
 public class AwsSqsConfig {
 
@@ -40,7 +40,7 @@ public class AwsSqsConfig {
 
 And where we had also set up a local SQS queue in localstack with the CLI:
 
-``` bash
+```bash
 export AWS_SECRET_ACCESS_KEY=&#34;FAKE&#34;
 export AWS_ACCESS_KEY_ID=&#34;FAKE&#34;
 export AWS_DEFAULT_REGION=us-east-1
@@ -59,7 +59,7 @@ We can implement a simple SQS poller that will:
 
 The code that can do that can look like:
 
-``` java
+```java
 @Component
 public class SQSListenerBean {
 
@@ -111,7 +111,7 @@ In this case, the actual processing of the message is just a log message printin
 
 If you start up the app, and send a sample message to that queue with:
 
-``` bash
+```bash
 export AWS_SECRET_ACCESS_KEY=&#34;FAKE&#34;
 export AWS_ACCESS_KEY_ID=&#34;FAKE&#34;
 export AWS_DEFAULT_REGION=us-east-1
@@ -123,12 +123,10 @@ aws --endpoint-url http://localhost:4566 sqs send-message --queue-url &#34;$Q_UR
 
 You will see the application print out something like:
 
-``` bash
+```bash
 INFO 17716 --- [c-response-0-21] c.n.reactivesqs.SQSListenerBean          : message body: hey there
 INFO 17716 --- [c-response-0-22] c.n.reactivesqs.SQSListenerBean          : deleted message with handle hwwmv...buncha letters...
 
 ```
 
 You could further tweak this to your heart&#39;s content.
-
-

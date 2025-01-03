@@ -1,6 +1,6 @@
 ---
 title: "Improving Java IO Performance: Reducing Method Call Overhead"
-date: 2018-11-01T00:00:00
+date: 2018-11-17T18:06:13
 draft: false
 ---
 
@@ -10,7 +10,7 @@ While you can achieve massive improvements in I/O operations via [buffering](htt
 
 To prove my point, we&#39;ll set up benchmarking via JMH like so:
 
-``` java
+```java
     public static void runBenchmark(Class clazz) throws Exception {
         Options options = new OptionsBuilder()
                 .include(clazz.getName() &#43; &#34;.*&#34;)
@@ -35,7 +35,7 @@ To prove my point, we&#39;ll set up benchmarking via JMH like so:
 
 We&#39;ll have a benchmark that uses DataInputStream.readLine(), which calls read() under the hood on each character. Even though we are buffering the data, we are still calling read() on each byte that has already been loaded into memory:
 
-``` java
+```java
     @Benchmark
     public void readEachCharacterUnderTheHood() throws Exception {
         try (FileInputStream fileInputStream = new FileInputStream(Utils.smallCsvFilePath);
@@ -54,7 +54,7 @@ We&#39;ll have a benchmark that uses DataInputStream.readLine(), which calls rea
 
 The performance of this method on my machine is:
 
-``` bash
+```bash
 Benchmark                                              Mode  Cnt  Score   Error  Units
 MethodCallOverheadTests.readEachCharacterUnderTheHood  avgt    2  1.560          ms/op
 
@@ -74,7 +74,7 @@ And:
 
 So, a benchmark that achieves the same result would look like:
 
-``` java
+```java
     @Benchmark
     public void faster_usingBufferedReader() throws Exception {
         try (FileReader fileReader = new FileReader(Utils.smallCsvFilePath);
@@ -92,7 +92,7 @@ So, a benchmark that achieves the same result would look like:
 
 When run back to back, the benchmarks on my machine look like:
 
-``` bash
+```bash
 Benchmark                                              Mode  Cnt  Score   Error  Units
 MethodCallOverheadTests.faster_usingBufferedReader     avgt    2  0.700          ms/op
 MethodCallOverheadTests.readEachCharacterUnderTheHood  avgt    2  1.560          ms/op
@@ -100,5 +100,3 @@ MethodCallOverheadTests.readEachCharacterUnderTheHood  avgt    2  1.560         
 ```
 
 Or, the BufferedReader is indeed ~2 times as fast.
-
-

@@ -147,8 +147,8 @@
 
     <div class="meta">
       
-      <time datetime="2020-11-01 00:00:00 &#43;0000 UTC" title='Sun, Nov 1, 2020, 12:00 AM UTC'>
-        01/11/2020 - Estimated reading time: 3 minutes
+      <time datetime="2020-11-07 02:08:37 &#43;0000 UTC" title='Sat, Nov 7, 2020, 2:08 AM UTC'>
+        07/11/2020 - Estimated reading time: 3 minutes
       </time>
 
        
@@ -186,7 +186,8 @@
 </span></span><span style="display:flex;"><span>        Map<span style="color:#ff79c6">&amp;</span>lt;String, AttributeValue<span style="color:#ff79c6">&amp;</span>gt; pixel2ItemAttributes <span style="color:#ff79c6">=</span> getMapWith(partitionKey, rangeKey3);
 </span></span><span style="display:flex;"><span>        pixel2ItemAttributes.<span style="color:#50fa7b">put</span>(COLOR, AttributeValue.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">s</span>(<span style="color:#ff79c6">&amp;</span>#34;Cyan<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">build</span>());
 </span></span><span style="display:flex;"><span>        pixel2ItemAttributes.<span style="color:#50fa7b">put</span>(YEAR, AttributeValue.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">n</span>(<span style="color:#ff79c6">&amp;</span>#34;2014<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">build</span>());
-</span></span><span style="display:flex;"><span>        putItem(currentTableName, pixel2ItemAttributes);    }
+</span></span><span style="display:flex;"><span>        putItem(currentTableName, pixel2ItemAttributes);
+</span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>With this in place, we can start scanning. If we include no filter, then scanning will return everything back to us. If there are so many items that they exceed certain quotas, then there will be pagination. In this case, three items isn't big enough for dynamo to bother with pagination:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// scan everything, return everything</span>

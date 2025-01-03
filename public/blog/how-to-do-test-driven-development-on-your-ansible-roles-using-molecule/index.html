@@ -148,8 +148,8 @@
 
     <div class="meta">
       
-      <time datetime="2019-03-01 00:00:00 &#43;0000 UTC" title='Fri, Mar 1, 2019, 12:00 AM UTC'>
-        01/03/2019 - Estimated reading time: 3 minutes
+      <time datetime="2019-03-03 20:18:22 &#43;0000 UTC" title='Sun, Mar 3, 2019, 8:18 PM UTC'>
+        03/03/2019 - Estimated reading time: 6 minutes
       </time>
 
        
@@ -188,7 +188,84 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>testinfra_hosts <span style="color:#ff79c6">=</span> testinfra<span style="color:#ff79c6">.</span>utils<span style="color:#ff79c6">.</span>ansible_runner<span style="color:#ff79c6">.</span>AnsibleRunner(
 </span></span><span style="display:flex;"><span>    os<span style="color:#ff79c6">.</span>environ[<span style="color:#ff79c6">&amp;</span><span style="color:#6272a4">#39;MOLECULE_INVENTORY_FILE&amp;#39;]).get_hosts(&amp;#39;all&amp;#39;)</span>
-</span></span></code></pre></div></section>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># validate java runtime</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">test_java_runtime</span>(host):
+</span></span><span style="display:flex;"><span>    cmd <span style="color:#ff79c6">=</span> host<span style="color:#ff79c6">.</span>run(<span style="color:#ff79c6">&amp;</span><span style="color:#6272a4">#34;java -version&amp;#34;)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">assert</span> cmd<span style="color:#ff79c6">.</span>rc <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">assert</span> cmd<span style="color:#ff79c6">.</span>stderr<span style="color:#ff79c6">.</span>find(<span style="color:#ff79c6">&amp;</span><span style="color:#6272a4">#34;11.0&amp;#34;)</span>
+</span></span></code></pre></div><p>You can run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule create
+</span></span></code></pre></div><p>To create the local Vagrant VM you're going to test with, and you can run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule converge
+</span></span></code></pre></div><p>To run the Ansible playbook (which right now is empty) against your target machine. After running those two commands you can successfully run your test, created above, with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule verify
+</span></span></code></pre></div><p>You should see the test fail, which is a good thing&ndash;that means you have a test that <em>means</em> something.</p>
+<p>We can now insert some valid code to just barely pass the above test. Go to your <strong>tasks/main.yml</strong> file and add the following four tasks:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: Get Java tarball
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">get_url</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">url</span>: https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: /etc/open-jdk11.tar.gz
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: make java 11 directory
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">file</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">path</span>: /usr/lib/java11
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">state</span>: directory
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: unpack tarball
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">unarchive</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">dest</span>: /usr/lib/java11
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">src</span>: /etc/open-jdk11.tar.gz
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">remote_src</span>: <span style="color:#ff79c6">yes</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: update alternatives for java
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">alternatives</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: java
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">path</span>: /usr/lib/java11/jdk-11.0.2/bin/java
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">link</span>: /usr/bin/java
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">priority</span>: <span style="color:#bd93f9">20000</span>
+</span></span></code></pre></div><p>The above tasks:</p>
+<ol>
+<li>Downloads the OpenJDK 11.0.2 version tarball for Linux, and places the downloaded tar.gz. file under /etc/</li>
+<li>Creates a directory to store the extracted java11 version</li>
+<li>Unarchives (decompresses and unpacks) the tar.gz file into a directory</li>
+<li>Uses the alternatives system to add java to a place that is already on our path, in this case /usr/bin</li>
+</ol>
+<p>You should be able to run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule converge &amp;amp;&amp;amp; molecule verify
+</span></span></code></pre></div><p>And see our one test pass.</p>
+<p>We can take a shortcut and create two tests for the next two requirements that successfully install Java on our target machine:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">test_java_compiler</span>(host):
+</span></span><span style="display:flex;"><span>    cmd <span style="color:#ff79c6">=</span> host<span style="color:#ff79c6">.</span>run(<span style="color:#ff79c6">&amp;</span><span style="color:#6272a4">#34;javac -version&amp;#34;)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">assert</span> cmd<span style="color:#ff79c6">.</span>rc <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">assert</span> cmd<span style="color:#ff79c6">.</span>stderr<span style="color:#ff79c6">.</span>find(<span style="color:#ff79c6">&amp;</span><span style="color:#6272a4">#34;11.0&amp;#34;)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">test_java_home_configured</span>(host):
+</span></span><span style="display:flex;"><span>    f <span style="color:#ff79c6">=</span> host<span style="color:#ff79c6">.</span>file(<span style="color:#ff79c6">&amp;</span><span style="color:#6272a4">#34;/etc/environment&amp;#34;)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">assert</span> f<span style="color:#ff79c6">.</span>contains(<span style="color:#ff79c6">&amp;</span><span style="color:#6272a4">#34;JAVA_HOME=/usr/lib/&amp;#34;)</span>
+</span></span></code></pre></div><p>Here, I want to validate that the java compiler is on our PATH and that its version contains 11.0. I could have been more specific here, but I want the tests to be flexible enough to allow for changes and this was the compromise that I struck. In the second test, it's my goal to ensure that the <strong>/etc/environment</strong> file, which sets environment variables for every user on our system, has the JAVA_HOME variable defined&ndash;again, it's a tradeoff between being so specific that its not flexible to change and so vague that it's meaningless, so I stuck with saying that JAVA_HOME should start with /usr/lib.</p>
+<p>We could also write a test that runs an ﻿$ echo $JAVA_HOME command and interprets the response, which is probably more robust in the long run.</p>
+<p>You should then be able to run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule converge &amp;amp;&amp;amp; molecule verify
+</span></span></code></pre></div><p>And see both tests failing. We can append the following two tasks to our <strong>tasks/main.yml</strong> file to make the tests pass:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: update alternatives for javac
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">alternatives</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: javac
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">path</span>: /usr/lib/java11/jdk-11.0.2/bin/javac
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">link</span>: /usr/bin/javac
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">priority</span>: <span style="color:#bd93f9">20000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#ff79c6">name</span>: set java home as environment variable
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">blockinfile</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">insertafter</span>: EOF
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">path</span>: /etc/environment
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">block</span>: export JAVA_HOME=/usr/lib/java11/jdk-11.0.2
+</span></span></code></pre></div><p>Now, running:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule converge &amp;amp;&amp;amp; molecule verify
+</span></span></code></pre></div><p>Should have both tests pass.</p>
+<p>Probably the most difficult part going forward will be understanding how to leverage test infra to write the appropriate tests. The best resource I've found is simply the listing of modules at <a href="https://testinfra.readthedocs.io/en/latest/modules.html,">https://testinfra.readthedocs.io/en/latest/modules.html</a>&ndash;from there I have just been tinkering with it to get used to how it all works.</p>
+<p>A big reason that we write these tests is so that we can refactor our work. I would encourage you to take the code above and modularize it&ndash;e.g. change the download url, use a register to get the tar.gz location, and reuse anything that looks duplicated. Because this is focused on introducing molecule, I'll leave you here.</p>
+</section>
 
   
     

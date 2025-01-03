@@ -1,6 +1,6 @@
 ---
 title: "Working with Nested Attributes, DynamoDB, and the Java SDK 2.0"
-date: 2020-11-01T00:00:00
+date: 2020-11-15T22:59:11
 draft: false
 ---
 
@@ -12,7 +12,7 @@ The source code that follows [can be seen on Github](https://github.com/nfisher2
 
 First let&#39;s create a table and insert some data:
 
-``` java
+```java
 
     @Test
     public void nestedAttributes() throws Exception {
@@ -52,7 +52,7 @@ Note that we omitted one set type of the three that are available, which is the 
 
 We can now get this item out of dynamo, and the access patterns should be familiar to us at this point:
 
-``` java
+```java
         GetItemRequest getItemRequest = GetItemRequest.builder()
                 .tableName(currentTableName)
                 .key(getMapWith(&#34;Motorola&#34;, &#34;G1&#34;))
@@ -76,5 +76,3 @@ We can now get this item out of dynamo, and the access patterns should be famili
 Here, we get both the list of attributes and the string set from our item, then making assertions that they all are there and correct.
 
 Remember to [check out the source code for this post](https://github.com/nfisher23/webflux-and-dynamo/blob/master/src/test/java/com/nickolasfisher/reactivedynamo/PhoneServiceTest.java#L722) on Github.
-
-

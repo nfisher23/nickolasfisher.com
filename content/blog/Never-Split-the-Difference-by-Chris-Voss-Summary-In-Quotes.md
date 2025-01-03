@@ -1,6 +1,6 @@
 ---
 title: "Never Split the Difference by Chris Voss: Summary In Quotes"
-date: 2018-10-01T00:00:00
+date: 2018-10-27T15:47:45
 draft: false
 ---
 
@@ -49,5 +49,3 @@ draft: false
 &gt; &#34;Digging into worldviews inherently implies moving beyond the negotiation table and into the life, emotional and otherwise, of your counterpart. That&#39;s where black swans live.&#34;
 
 &gt; &#34;Remember, never be so sure of what you want that you would never take something better.&#34;
-
-

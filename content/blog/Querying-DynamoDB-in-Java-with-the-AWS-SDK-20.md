@@ -1,6 +1,6 @@
 ---
 title: "Querying DynamoDB in Java with the AWS SDK 2.0"
-date: 2020-10-01T00:00:00
+date: 2020-10-18T13:38:22
 draft: false
 ---
 
@@ -14,7 +14,7 @@ We will be building off of a previous post that [set up an in memory \[embedded\
 
 We will follow the same pattern as before where we are writing an integration test to describe much of this behavior. First, let&#39;s set up some metadata and create this table:
 
-``` java
+```java
     @Test
     public void testQueries() throws Exception {
         String currentTableName = &#34;PhonesQueriesTest&#34;;
@@ -34,7 +34,7 @@ We will follow the same pattern as before where we are writing an integration te
 
 The method mentioned here to create the table looks contains code like this, and is probably only relevant for setting up tests like this \[I would recommend using something like terraform to manage dynamo tables in the cloud, rather than java code\]:
 
-``` java
+```java
     private CompletableFuture&lt;CreateTableResponse&gt; createTableAsync(String tableName) {
         return dynamoDbAsyncClient.createTable(CreateTableRequest.builder()
                 .keySchema(
@@ -68,7 +68,7 @@ The method mentioned here to create the table looks contains code like this, and
 Alright, so now we&#39;ve got our table, we&#39;re going to create three items, each with the same partition key as **Google**. The range keys will be **Pixel 1**,
 **Pixel 2**, and **Future Phone**:
 
-``` java
+```java
         // create three items
         Map&lt;String, AttributeValue&gt; pixel1ItemAttributes = getMapWith(partitionKey, rangeKey1);
         pixel1ItemAttributes.put(COLOR, AttributeValue.builder().s(&#34;Blue&#34;).build());
@@ -89,7 +89,7 @@ Alright, so now we&#39;ve got our table, we&#39;re going to create three items, 
 
 And I&#39;ll note again some helper methods outlined above:
 
-``` java
+```java
     private void putItem(String tableName, Map&lt;String, AttributeValue&gt; attributes) {
         PutItemRequest populateDataItemRequest = PutItemRequest.builder()
                 .tableName(tableName)
@@ -119,7 +119,7 @@ With this in place, let&#39;s demonstrate querying.
 
 To start with, we have to provide at least one partition key in a **Key Condition Expression**. In this case we also have a range key, so specifying just the partition key will grab all of the range keys:
 
-``` java
+```java
         // get all items associated with the &#34;Google&#34; partition key
         Condition equalsGoogleCondition = Condition.builder()
                 .comparisonOperator(ComparisonOperator.EQ)
@@ -151,7 +151,7 @@ Here, we get all of the items associated with a particular partition key, which 
 
 Let&#39;s do one more. Let&#39;s say we want to get all the models of the phones produced by Google that were of the **Pixel** family. Assuming we are versioning all the Pixel phones such that they start with the word &#34;Pixel&#34;, we can do the following:
 
-``` java
+```java
         // Get all items that start with &#34;Pixel&#34;
         Condition startsWithPixelCondition = Condition.builder()
                 .comparisonOperator(ComparisonOperator.BEGINS_WITH)
@@ -177,5 +177,3 @@ Let&#39;s do one more. Let&#39;s say we want to get all the models of the phones
 ```
 
 And with that, you should have a good starting point for experimenting more yourself. Reminder that you can [check out the source code for this post on githu](https://github.com/nfisher23/webflux-and-dynamo) b
-
-

@@ -1,6 +1,6 @@
 ---
 title: "How to Prevent DEBUG Logging by Test Containers when Running Unit Tests in Java"
-date: 2021-04-01T00:00:00
+date: 2021-04-24T20:35:47
 draft: false
 ---
 
@@ -8,7 +8,7 @@ I have been playing around with test containers lately \[ [redis test containers
 
 At least when using spring boot, the answer is that test containers uses logback by default, and you need to add a **logback-test.xml** file to your **src/test/resources** directory that looks like this:
 
-``` java
+```java
 &lt;configuration&gt;
     &lt;appender name=&#34;STDOUT&#34; class=&#34;ch.qos.logback.core.ConsoleAppender&#34;&gt;
         &lt;encoder&gt;
@@ -27,5 +27,3 @@ At least when using spring boot, the answer is that test containers uses logback
 ```
 
 This is buried in the documentation about the [recommended logback configuration for test containers](https://www.testcontainers.org/supported_docker_environment/logging_config/), though nothing about a global DEBUG level takeover if you leave it out is mentioned at least as of now.
-
-

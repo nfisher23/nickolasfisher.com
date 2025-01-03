@@ -147,8 +147,8 @@
 
     <div class="meta">
       
-      <time datetime="2020-11-01 00:00:00 &#43;0000 UTC" title='Sun, Nov 1, 2020, 12:00 AM UTC'>
-        01/11/2020 - Estimated reading time: 2 minutes
+      <time datetime="2020-11-28 20:16:05 &#43;0000 UTC" title='Sat, Nov 28, 2020, 8:16 PM UTC'>
+        28/11/2020 - Estimated reading time: 3 minutes
       </time>
 
        
@@ -201,7 +201,71 @@
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> &amp;<span style="color:#6272a4">#34;queue arn: $QUEUE_ARN&amp;#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">SUBSCRIPTION_ARN</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sns subscribe --topic-arn &amp;<span style="color:#6272a4">#34;$TOPIC_ARN&amp;#34; --protocol sqs --notification-endpoint &amp;#34;$QUEUE_ARN&amp;#34; --output text)</span>
-</span></span></code></pre></div></section>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># modify to raw message delivery true</span>
+</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sns set-subscription-attributes <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>  --subscription-arn &amp;<span style="color:#6272a4">#34;$SUBSCRIPTION_ARN&amp;#34; --attribute-name RawMessageDelivery --attribute-value true</span>
+</span></span></code></pre></div><p>This configures an SQS queue named &quot;my-queue&quot; and an SNS topic named &quot;my-topic&quot;. It then sets up a subscription for the queue on the topic with &quot;raw message delivery&quot; as true.</p>
+<p>With this in place, we can start writing code. I will again leverage work done in a previous article about <a href="https://nickolasfisher.com/blog/How-to-Setup-a-Reactive-SQS-Listener-Using-the-AWS-SDK-and-Spring-Boot">setting up a reactive SQS listener in spring boot</a>. To start with, we will add in a dependency for SNS [note that this leverages the bill of materials spec in the maven pom, which is why there is no version specified here]:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>&amp;lt;dependency&amp;gt;
+</span></span><span style="display:flex;"><span>    &amp;lt;groupId&amp;gt;software.amazon.awssdk&amp;lt;/groupId&amp;gt;
+</span></span><span style="display:flex;"><span>    &amp;lt;artifactId&amp;gt;sns&amp;lt;/artifactId&amp;gt;
+</span></span><span style="display:flex;"><span>&amp;lt;/dependency&amp;gt;
+</span></span></code></pre></div><p>This obviously imports the AWS library for SNS, which we can use to configure an sns client like so:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Configuration
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">AwsSnsConfig</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    @Bean
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> SnsAsyncClient <span style="color:#50fa7b">amazonSNSAsyncClient</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> SnsAsyncClient.<span style="color:#50fa7b">builder</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">endpointOverride</span>(URI.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:4566&amp;#34;))</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">region</span>(Region.<span style="color:#50fa7b">US_EAST_1</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">credentialsProvider</span>(StaticCredentialsProvider.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">new</span> AwsCredentials() {
+</span></span><span style="display:flex;"><span>                    @Override
+</span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">accessKeyId</span>() {
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    @Override
+</span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">secretAccessKey</span>() {
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Note that these match the access and secret key we used in the localstack initialization script. To finish this example off, we can create a <strong>PostConstruct</strong> initializing bean:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Component
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">SnsSenderBean</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> SnsAsyncClient snsAsyncClient;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// ARN&amp;#39;s are immutable. In reality, you&amp;#39;ll want to pass this in as config per environment</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String topicARN <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;arn:aws:sns:us<span style="color:#ff79c6">-</span>east<span style="color:#ff79c6">-</span>1:000000000000:my<span style="color:#ff79c6">-</span>topic<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">SnsSenderBean</span>(SnsAsyncClient snsAsyncClient) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">snsAsyncClient</span> <span style="color:#ff79c6">=</span> snsAsyncClient;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    @PostConstruct
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">sendHelloToSNS</span>() {
+</span></span><span style="display:flex;"><span>        Mono.<span style="color:#50fa7b">fromFuture</span>(() <span style="color:#ff79c6">-&amp;</span>gt; snsAsyncClient.<span style="color:#50fa7b">publish</span>(PublishRequest.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">topicArn</span>(topicARN).<span style="color:#50fa7b">message</span>(<span style="color:#ff79c6">&amp;</span>#34;message<span style="color:#ff79c6">-</span>from<span style="color:#ff79c6">-</span>sns<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">build</span>()))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">repeat</span>(3)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">subscribe</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This sends four identical messages to SNS with a body of &quot;message-from-sns&quot;. These four messages will end up in the SQS queue, forwarded by SNS.</p>
+<p>The SQS listener already configured will pick up these messages, write some logs, then delete them off the queue. My logs look like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>c.n.reactivesqs.SQSListenerBean : message body: message-from-sns
+</span></span><span style="display:flex;"><span>c.n.reactivesqs.SQSListenerBean : message body: message-from-sns
+</span></span><span style="display:flex;"><span>c.n.reactivesqs.SQSListenerBean : deleted message with handle nejjaylz...
+</span></span><span style="display:flex;"><span>c.n.reactivesqs.SQSListenerBean : deleted message with handle ggpzrb....
+</span></span><span style="display:flex;"><span>c.n.reactivesqs.SQSListenerBean : message body: message-from-sns
+</span></span><span style="display:flex;"><span>c.n.reactivesqs.SQSListenerBean : deleted message with handle mgsaut....
+</span></span><span style="display:flex;"><span>c.n.reactivesqs.SQSListenerBean : message body: message-from-sns
+</span></span><span style="display:flex;"><span>c.n.reactivesqs.SQSListenerBean : deleted message with handle aouovw....
+</span></span></code></pre></div><p>Remember to <a href="https://github.com/nfisher23/reactive-programming-webflux">check out the source code on github</a>.</p>
+</section>
 
   
     

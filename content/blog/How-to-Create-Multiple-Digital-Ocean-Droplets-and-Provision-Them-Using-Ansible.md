@@ -1,6 +1,6 @@
 ---
 title: "How to Create Multiple Digital Ocean Droplets and Provision Them Using Ansible"
-date: 2019-06-01T00:00:00
+date: 2019-06-16T17:14:49
 draft: false
 ---
 
@@ -10,14 +10,14 @@ In a previous post, we saw [how to create a digital ocean droplet and provision 
 
 If you&#39;re using Ansible &lt; 2.8, to create multiple droplets you will first have to set your digital ocean api token as an environment variable:
 
-``` bash
+```bash
 $ export DO_API_TOKEN=1234YourTokenHere4321
 
 ```
 
 We can then structure our droplet creation playbook like so:
 
-``` yaml
+```yaml
 ---
 - hosts: localhost
   connection: local
@@ -51,7 +51,7 @@ We can then structure our droplet creation playbook like so:
 
 If you&#39;re using ansible 2.8 or greater, that playbook beginning can instead look like:
 
-``` yaml
+```yaml
 ---
 - hosts: localhost
   connection: local
@@ -93,7 +93,7 @@ This will not prompt you before connecting via SSH to your newly created droplet
 To prove this out, as we did in the last post, we can provision each server with nginx and a custom index page.
 Create an **index.html.j2** Jinja2 template in the same directory as your playbook and fill it with:
 
-``` html
+```html
 &lt;h1&gt; On a digital ocean droplet now &lt;/h1&gt;
 
 &lt;p&gt; The ip address where we&#39;re at is: {{ ansible_default_ipv4.address }} &lt;/p&gt;
@@ -101,7 +101,7 @@ Create an **index.html.j2** Jinja2 template in the same directory as your playbo
 
 And round out the playbook with:
 
-``` yaml
+```yaml
 - hosts: do
   remote_user: root
   gather_facts: false
@@ -131,5 +131,3 @@ And round out the playbook with:
 ```
 
 You should now be able to navigate to your IP addresses and see the home page with the IP address displayed. Go get &#39;em, tiger.
-
-

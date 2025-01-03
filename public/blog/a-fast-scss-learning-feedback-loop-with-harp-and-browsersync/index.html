@@ -147,8 +147,8 @@
 
     <div class="meta">
       
-      <time datetime="2019-05-01 00:00:00 &#43;0000 UTC" title='Wed, May 1, 2019, 12:00 AM UTC'>
-        01/05/2019 - Estimated reading time: 3 minutes
+      <time datetime="2019-05-18 17:12:55 &#43;0000 UTC" title='Sat, May 18, 2019, 5:12 PM UTC'>
+        18/05/2019 - Estimated reading time: 3 minutes
       </time>
 
        
@@ -159,21 +159,13 @@
   
 
   <section><p>If, like me, your development career has been firmly on servers, wiring and protecting data across multiple machine and focusing on architecture, the shift to building websites that &quot;look right&quot; can sometimes be a tough transition. Like all things engineering, ensuring that you have a short feedback loop, where you can interact with the tool that you're using in a very hands on way, will be your fastest and surest way to mastery.</p>
-<p>There are two very different parts to any web application: the style of the page and the business logic of the page. Both of these parts will more or less need to know about the <em>structure</em> of the page [though limiting that from a CSS perspective is quite important as well], but the
-style and the business logic can exist in harmony and separate out their concerns. Coming from
-the back end, business logic is no problem&ndash;unit test, code, unit test, code, refactor, more
-unit tests and code. Structure isn't even a problem, because HTML is very simple. When we start
-throwing in CSS is where traditional system level developers get thrown out of their comfort
-zone.</p>
-<p>In learning <a href="https://sass-lang.com/documentation/syntax">SCSS</a>, which is a great tool
-to prevent duplication in plain-text CSS files, I found a simple sandbox setup that will help
-any developer get up and running as quickly as possible, using <a href="http://harpjs.com/">harp</a> and <a href="https://www.browsersync.io/">browsersync</a>.</p>
+<p>There are two very different parts to any web application: the style of the page and the business logic of the page. Both of these parts will more or less need to know about the <em>structure</em> of the page [though limiting that from a CSS perspective is quite important as well], but the style and the business logic can exist in harmony and separate out their concerns. Coming from the back end, business logic is no problem&ndash;unit test, code, unit test, code, refactor, more unit tests and code. Structure isn't even a problem, because HTML is very simple. When we start throwing in CSS is where traditional system level developers get thrown out of their comfort zone.</p>
+<p>In learning <a href="https://sass-lang.com/documentation/syntax">SCSS</a>, which is a great tool to prevent duplication in plain-text CSS files, I found a simple sandbox setup that will help any developer get up and running as quickly as possible, using <a href="http://harpjs.com/">harp</a> and <a href="https://www.browsersync.io/">browsersync</a>.</p>
 <h3 id="the-environment">The Environment</h3>
 <p>First, ensure that you have harp and browser sync installed globally:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ npm install -g browser-sync
 </span></span><span style="display:flex;"><span>$ npm install -g harp
-</span></span></code></pre></div><p>Note that, depending on how you installed npm, you might have to prepend either or both of the
-above commands with <strong>sudo</strong>.</p>
+</span></span></code></pre></div><p>Note that, depending on how you installed npm, you might have to prepend either or both of the above commands with <strong>sudo</strong>.</p>
 <p>Then, set up a simple project directory like so:</p>
 <pre tabindex="0"><code>index.html
 run.sh
@@ -222,9 +214,7 @@ css/
 </span></span><span style="display:flex;"><span>Harp v0.30.0 – Chloi Inc. 2012–2015
 </span></span><span style="display:flex;"><span>Your server is listening at http://localhost:9000/
 </span></span><span style="display:flex;"><span>Press Ctl&amp;<span style="color:#6272a4">#43;C to stop the server</span>
-</span></span></code></pre></div><p>By opening up <a href="http://localhost:3000,">http://localhost:3000,</a> any changes you make to
-your source files will be automatically reloaded in your browser window, enabling you to
-immediately see the style changes.</p>
+</span></span></code></pre></div><p>By opening up <a href="http://localhost:3000,">http://localhost:3000,</a> any changes you make to your source files will be automatically reloaded in your browser window, enabling you to immediately see the style changes.</p>
 <p>Go forth and conquer.</p>
 </section>
 

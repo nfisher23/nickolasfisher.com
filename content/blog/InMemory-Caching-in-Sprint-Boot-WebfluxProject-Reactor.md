@@ -1,6 +1,6 @@
 ---
 title: "In-Memory Caching in Sprint Boot Webflux/Project Reactor"
-date: 2020-10-01T00:00:00
+date: 2020-10-03T22:41:59
 draft: false
 ---
 
@@ -14,7 +14,7 @@ Caching in reactor when using a Mono as a hot source is pretty straightforward, 
 
 We&#39;re going to leverage some work done in a previous post here. Let&#39;s recall that we had a service that would retry on any timeout downstream:
 
-``` java
+```java
 @Service
 public class RetryService {
     private final WebClient serviceAWebClient;
@@ -39,7 +39,7 @@ public class RetryService {
 
 Let&#39;s say for the sake of this article that the business requirements allow us to cache a welcome message that is in English for about five minutes. There is no hard requirement on welcome messages being updated immediately. Now that we already have resilience around timeouts, let&#39;s also add a cache on a successful response by creating a decorator. Because this is a tutorial, we&#39;re going to call that decorator service **CachingService**:
 
-``` java
+```java
 @Service
 public class CachingService {
 
@@ -58,7 +58,7 @@ public class CachingService {
 
 This service currently just proxies directly to the **RetryService** and doesn&#39;t do anything remarkable. We&#39;re now going to add a test that verifies that the cache is working:
 
-``` java
+```java
 public class CachingServiceIT {
 
     @Test
@@ -90,7 +90,7 @@ This test defers to a **Supplier** to return a **Mono** on demand. Every time th
 
 One way to get this test to pass is to just call one of the **cache** methods on **Mono**. This is one of the easiest:
 
-``` java
+```java
 @Service
 public class CachingService {
 
@@ -114,7 +114,7 @@ Now the test passes, but there is a fatal flaw with this approach: **it also cac
 
 To demonstrate this in action, I&#39;ll write another test to target that:
 
-``` java
+```java
     @Test
     public void cachesSuccessOnly() {
         RetryService mockRetryService = Mockito.mock(RetryService.class);
@@ -150,7 +150,7 @@ To demonstrate this in action, I&#39;ll write another test to target that:
 
 You will see this fail, because it will cache the error and keep emitting it. To fix that, there is a golden **cache** override on our Mono that allows us to specify the duration of which each type of response is cached:
 
-``` java
+```java
 @Service
 public class CachingService {
 
@@ -176,5 +176,3 @@ public class CachingService {
 Now if we run our tests again, both of them pass. By passing in **Duration.ZERO**, we don&#39;t cache errors or empty Monos at all, only the successful one, for five minutes.
 
 Remember to checkout the [source code on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience).
-
-

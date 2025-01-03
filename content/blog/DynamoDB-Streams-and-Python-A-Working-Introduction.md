@@ -1,6 +1,6 @@
 ---
 title: "DynamoDB Streams and Python: A Working Introduction"
-date: 2020-07-01T00:00:00
+date: 2020-07-26T21:54:59
 draft: false
 ---
 
@@ -12,7 +12,7 @@ This post is basically a hands on introduction to streams, using a bit of bash a
 
 Start by setting up a local dynamo container. I&#39;m going to use docker compose \[ **docker-compose.yml**\]:
 
-``` yaml
+```yaml
 version: &#39;3.7&#39;
 services:
   dynamodb-local:
@@ -25,14 +25,14 @@ services:
 
 You can start up the container now with:
 
-``` bash
+```bash
 docker-compose up -d
 
 ```
 
 Now I&#39;m going to use the AWS CLI to set up some data, creating our familiar Phones table \[with streams enabled! Writing only the key to the stream in this case\] and inserting some also familiar data:
 
-``` bash
+```bash
 aws --endpoint-url http://localhost:8000 --region=us-west-2 dynamodb create-table \
   --billing-mode PAY_PER_REQUEST \
   --table-name Phones \
@@ -97,7 +97,7 @@ I elected to use python3 and the [AWS SDK for python](https://boto3.amazonaws.co
 
 I also just use a wrapper class around boto3 to make my life a little easier, here&#39;s the code:
 
-``` python
+```python
 import boto3
 import json
 
@@ -155,21 +155,21 @@ if __name__ == &#39;__main__&#39;:
 
 To actually run this, make sure you have boto3 installed with:
 
-``` bash
+```bash
 pip3 install boto3
 
 ```
 
 Then you should be able to run this with:
 
-``` bash
+```bash
 python3 read-stream.py
 
 ```
 
 When I run this, I see four stream records as expected, and one of them looks like this:
 
-``` json
+```json
 
 {
     &#34;awsRegion&#34;: &#34;ddblocal&#34;,
@@ -198,5 +198,3 @@ When I run this, I see four stream records as expected, and one of them looks li
 Feel free to have a look at other [DynamoDBStreams API operations](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodbstreams.html) available to you as a python developer.
 
 Finally, if you&#39;re actually going to be running this at scale, I would recommend you use an AWS Lambda triggering on a stream record or the Kinesis adapter--almost for sure you will save both time and money doing so. This was primarily meant as an exercise to understand how streams work and to enable easy local development.
-
-

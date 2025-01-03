@@ -1,6 +1,6 @@
 ---
 title: "Query a DynamoDB Global Secondary Index in Java"
-date: 2020-11-01T00:00:00
+date: 2020-11-01T22:40:46
 draft: false
 ---
 
@@ -14,7 +14,7 @@ This post will walk through some sample code in Java, using the AWS SDK 2.0, wit
 
 I will elect to create both the base table as well as the GSI at the same time for simplicity. Note that, when you&#39;re managing DynamoDB in native AWS \[i.e. not local development\], you should prefer to use something like terraform to manage tables and GSIs.
 
-``` java
+```java
     @Test
     public void globalSecondaryIndex() throws Exception {
         String currentTableName = &#34;GlobalSecondaryIndexTest&#34;;
@@ -80,7 +80,7 @@ This code is verbose for several reasons, but you can see that we&#39;re creatin
 
 Let&#39;s now set up some data to work with in our table:
 
-``` java
+```java
         String partitionKey = &#34;Google&#34;;
         String rangeKey1 = &#34;Pixel 1&#34;;
         String rangeKey2 = &#34;Future Phone&#34;;
@@ -110,7 +110,7 @@ We&#39;re reusing some code developed in a previous article to put three items i
 
 With the table/GSI created and some sample data to work with, we can now query the GSI for data:
 
-``` java
+```java
         Thread.sleep(1000); // GSI&#39;s are eventually consistent
 
         Condition equals2012Condition = Condition.builder()
@@ -145,5 +145,3 @@ With the table/GSI created and some sample data to work with, we can now query t
 The first thing we&#39;ll do is add a small sleep so that our test will consistently pass \[Global Secondary Indexes are eventually consistent\]. We then create a query that gets all items that have the hash attribute of &#34;2012&#34;. We leverage **StepVerifier** and **Mono** to wrap our async call, finally verifying that the query returns the data we expect.
 
 If you run this test locally, you should see it pass. Remember to [check out the source code on Github](https://github.com/nfisher23/webflux-and-dynamo/blob/master/src/test/java/com/nickolasfisher/reactivedynamo/PhoneServiceTest.java#L456).
-
-

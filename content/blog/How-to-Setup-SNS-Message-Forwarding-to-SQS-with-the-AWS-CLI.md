@@ -1,6 +1,6 @@
 ---
 title: "How to Setup SNS Message Forwarding to SQS with the AWS CLI"
-date: 2020-08-01T00:00:00
+date: 2020-08-15T20:42:47
 draft: false
 ---
 
@@ -12,7 +12,7 @@ Most commonly, you will want to use SNS with Amazon SQS. Multiple queues can sub
 
 I took the **docker-compose.yaml** from [the root of the localstack github repository](https://github.com/localstack/localstack/blob/master/docker-compose.yml):
 
-``` yaml
+```yaml
 version: &#39;2.1&#39;
 
 services:
@@ -39,14 +39,14 @@ services:
 
 Go ahead and copy paste that thing and run \[in the same directory\]:
 
-``` bash
+```bash
 docker-compose up -d
 
 ```
 
 We can set some dummy environment variables to make localstack and the CLI happy:
 
-``` bash
+```bash
 export AWS_DEFAULT_REGION=us-west-2export AWS_SECRET_ACCESS_KEY=&#34;FAKE&#34;
 export AWS_ACCESS_KEY_ID=&#34;FAKE&#34;
 export AWS_DEFAULT_REGION=us-east-1
@@ -55,14 +55,14 @@ export AWS_DEFAULT_REGION=us-east-1
 
 You can test that your CLI is working with something like
 
-``` bash
+```bash
 aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name &#34;test&#34;
 
 ```
 
 If all is well you&#39;ll see an output like:
 
-``` json
+```json
 {
     &#34;QueueUrls&#34;: [
         &#34;http://localhost:4566/000000000000/test&#34;
@@ -75,7 +75,7 @@ If all is well you&#39;ll see an output like:
 
 We will first need to create both the SNS topic and the SQS queue (these are both idempotent operations):
 
-``` bash
+```bash
 QUEUE_NAME=&#34;my-queue&#34;
 TOPIC_NAME=&#34;my-topic&#34;
 aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name &#34;$QUEUE_NAME&#34; --output text
@@ -85,7 +85,7 @@ aws --endpoint-url http://localhost:4566 sns create-topic --output text --name &
 
 Creating the queue will by default return the queue url, and creating the SNS topic will by default return its ARN (Amazon Resource Name). It will make our lives easier if we store those as bash variables:
 
-``` bash
+```bash
 QUEUE_URL=$(aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name &#34;$QUEUE_NAME&#34; --output text)
 TOPIC_ARN=$(aws --endpoint-url http://localhost:4566 sns create-topic --output text --name &#34;$TOPIC_NAME&#34;)
 
@@ -93,28 +93,28 @@ TOPIC_ARN=$(aws --endpoint-url http://localhost:4566 sns create-topic --output t
 
 To set up a subscription, we also are going to need to grab the SQS queue ARN. I will do that by leveraging [jq](https://stedolan.github.io/jq/manual/):
 
-``` bash
+```bash
 QUEUE_ARN=$(aws --endpoint-url http://localhost:4566 sqs get-queue-attributes --queue-url &#34;$QUEUE_URL&#34; | jq -r &#34;.Attributes.QueueArn&#34;)
 
 ```
 
 Finally, we will set up the link between the two \[and also grab the ARN of the subscription\] with:
 
-``` bash
+```bash
 SUBSCRIPTION_ARN=$(aws --endpoint-url http://localhost:4566 sns subscribe --topic-arn &#34;$TOPIC_ARN&#34; --protocol sqs --notification-endpoint &#34;$QUEUE_ARN&#34; --output text)
 
 ```
 
 At this point we should be able to see our subscription in a list with:
 
-``` bash
+```bash
 aws --endpoint-url http://localhost:4566 sns list-subscriptions
 
 ```
 
 The output from that should look something like:
 
-``` json
+```json
 {
     &#34;Subscriptions&#34;: [
         {
@@ -131,7 +131,7 @@ The output from that should look something like:
 
 And if we send a message to the SNS topic, we should be able to see a response by polling the SQS queue:
 
-``` bash
+```bash
 aws sns --endpoint-url http://localhost:4566 publish --topic-arn &#34;$TOPIC_ARN&#34; --message &#34;hello!&#34;
 aws sqs --endpoint-url http://localhost:4566 receive-message --queue-url &#34;$QUEUE_URL&#34;
 
@@ -139,7 +139,7 @@ aws sqs --endpoint-url http://localhost:4566 receive-message --queue-url &#34;$Q
 
 If you take a close look at the message as SQS receives it, you will see that the message was not delivered in its original form:
 
-``` json
+```json
 {
     &#34;Messages&#34;: [
         {
@@ -161,7 +161,7 @@ If you take a close look at the message as SQS receives it, you will see that th
 
 This is because **raw message delivery** is not **true** when you first create the subscription. You can change that with one more CLI command:
 
-``` bash
+```bash
 aws --endpoint-url http://localhost:4566 sns set-subscription-attributes \
   --subscription-arn &#34;$SUBSCRIPTION_ARN&#34; --attribute-name RawMessageDelivery --attribute-value true
 
@@ -169,7 +169,7 @@ aws --endpoint-url http://localhost:4566 sns set-subscription-attributes \
 
 Now when you ask for a message from SQS you will see it in its proper form:
 
-``` json
+```json
 {
     &#34;Messages&#34;: [
         {
@@ -190,5 +190,3 @@ Now when you ask for a message from SQS you will see it in its proper form:
 ```
 
 And you should be good to go.
-
-

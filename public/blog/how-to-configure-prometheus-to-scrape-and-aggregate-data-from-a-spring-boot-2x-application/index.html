@@ -148,8 +148,8 @@ Following up on the last post [ How to Expose Meaningful Prometheus Metrics In a
 
     <div class="meta">
       
-      <time datetime="2020-05-01 00:00:00 &#43;0000 UTC" title='Fri, May 1, 2020, 12:00 AM UTC'>
-        01/05/2020 - Estimated reading time: 3 minutes
+      <time datetime="2020-05-30 20:33:50 &#43;0000 UTC" title='Sat, May 30, 2020, 8:33 PM UTC'>
+        30/05/2020 - Estimated reading time: 4 minutes
       </time>
 
        
@@ -225,7 +225,38 @@ $ curl localhost:9000/actuator/prometheus
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">scrape_interval</span>:     15s <span style="color:#6272a4"># Set the scrape interval to every 15 seconds. Default is every 1 minute.</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">evaluation_interval</span>: 15s <span style="color:#6272a4"># Evaluate rules every 15 seconds. The default is every 1 minute.</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># scrape_timeout is set to the global default (10s).</span>
-</span></span></code></pre></div></section>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Load rules once and periodically evaluate them according to the global &amp;#39;evaluation_interval&amp;#39;.</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">rule_files</span>:
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># - &amp;#34;first_rules.yml&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># - &amp;#34;second_rules.yml&amp;#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># A scrape configuration containing exactly one endpoint to scrape:</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Here it&amp;#39;s Prometheus itself.</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">scrape_configs</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># The job name is added as a label `job=` to any timeseries scraped from this config.</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">job_name</span>: <span style="color:#ff79c6">&amp;#39;prometheus&amp;#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># metrics_path defaults to &amp;#39;/metrics&amp;#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># scheme defaults to &amp;#39;http&amp;#39;.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">static_configs</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">targets</span>: [<span style="color:#ff79c6">&amp;#39;127.0.0.1:9090&amp;#39;]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">job_name</span>: <span style="color:#ff79c6">&amp;#39;spring-actuator&amp;#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">metrics_path</span>: <span style="color:#ff79c6">&amp;#39;/actuator/prometheus&amp;#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">scrape_interval</span>: 5s
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">static_configs</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">targets</span>: [<span style="color:#ff79c6">&amp;#39;app:8080&amp;#39;]</span> <span style="color:#6272a4"># run ifconfig and get host ip</span>
+</span></span></code></pre></div><p>The really important part of this config, once again leveraging the DNS in the docker compose file, is:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>  - <span style="color:#ff79c6">job_name</span>: <span style="color:#ff79c6">&amp;#39;spring-actuator&amp;#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">metrics_path</span>: <span style="color:#ff79c6">&amp;#39;/actuator/prometheus&amp;#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">scrape_interval</span>: 5s
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">static_configs</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">targets</span>: [<span style="color:#ff79c6">&amp;#39;app:8080&amp;#39;]</span> <span style="color:#6272a4"># run ifconfig and get host ip</span>
+</span></span></code></pre></div><p>This tells prometheus to scrape our application every five seconds, and the URL to resolve to is our exposed <strong>/actuator/prometheus</strong>. To run the example <a href="https://github.com/nfisher23/prometheus-metrics-ex">provided in the source code</a>, you will have to first create and modify a file to have the right permissions, then you can start it up:</p>
+<pre tabindex="0"><code>$ mkdir graf-data &amp;amp;&amp;amp; chmod 777 graf-data
+$ docker-compose up -d
+</code></pre><p>After everything downloads and comes up properly, you can get to grafana at port 3000 or prometheus on port 9090, and you should see the data flowing from our application to make it so.</p>
+</section>
 
   
     

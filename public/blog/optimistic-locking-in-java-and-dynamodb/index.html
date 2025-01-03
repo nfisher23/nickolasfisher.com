@@ -147,8 +147,8 @@
 
     <div class="meta">
       
-      <time datetime="2020-10-01 00:00:00 &#43;0000 UTC" title='Thu, Oct 1, 2020, 12:00 AM UTC'>
-        01/10/2020 - Estimated reading time: 3 minutes
+      <time datetime="2020-10-11 20:19:42 &#43;0000 UTC" title='Sun, Oct 11, 2020, 8:19 PM UTC'>
+        11/10/2020 - Estimated reading time: 4 minutes
       </time>
 
        
@@ -265,10 +265,20 @@
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(getItemResponse <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">&amp;</span>#34;Orange<span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#50fa7b">equals</span>(getItemResponse.<span style="color:#50fa7b">item</span>().<span style="color:#50fa7b">get</span>(<span style="color:#ff79c6">&amp;</span>#34;Color<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">s</span>()))
 </span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
 </span></span></code></pre></div><p>Here, we try to overwrite the existing item we just wrote with <strong>version 0</strong>. Since the version actually in dynamo will be 1, we can make this assertion:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(Mono.<span style="color:#50fa7b">fromFuture</span>(dynamoDbAsyncClient.<span style="color:#50fa7b">putItem</span>(conditionalPutItem)))
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectErrorMatches</span>(throwable <span style="color:#ff79c6">-&amp;</span>gt; throwable <span style="color:#ff79c6">instanceof</span> ConditionalCheckFailedException)
-</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verify</span>();
-</span></span></code></pre></div><p>We then get the item in dynamo and verify that the color has not changed, it is correctly &quot;Orange&quot;:</p>
+<pre tabindex="0"><code class="language-json&gt;" data-lang="json&gt;">    &amp;#34;Company&amp;#34;: &amp;#34;Nokia&amp;#34;,
+    &amp;#34;Model&amp;#34;: &amp;#34;flip-phone-1&amp;#34;,
+    &amp;#34;Color&amp;#34;: &amp;#34;Blue&amp;#34;,
+    &amp;#34;Version&amp;#34;: 1
+}
+&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+
+&amp;lt;p&amp;gt;We also have a conditional expression checking for the version being equal to &amp;lt;strong&amp;gt;0&amp;lt;/strong&amp;gt;. Because the version in dynamo is actually &amp;lt;strong&amp;gt;1&amp;lt;/strong&amp;gt;, this conditional check fails and the record is not persisted. We verify that we first get an exception of type &amp;lt;strong&amp;gt;ConditionalCheckFailedException&amp;lt;/strong&amp;gt; with this block:&amp;lt;/p&amp;gt;
+
+&amp;lt;pre&amp;gt;&amp;lt;code class=
+        StepVerifier.create(Mono.fromFuture(dynamoDbAsyncClient.putItem(conditionalPutItem)))
+                .expectErrorMatches(throwable -&amp;gt; throwable instanceof ConditionalCheckFailedException)
+                .verify();
+</code></pre><p>We then get the item in dynamo and verify that the color has not changed, it is correctly &quot;Orange&quot;:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(Mono.<span style="color:#50fa7b">fromFuture</span>(dynamoDbAsyncClient.<span style="color:#50fa7b">getItem</span>(
 </span></span><span style="display:flex;"><span>                GetItemRequest.<span style="color:#50fa7b">builder</span>()
 </span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">tableName</span>(currentTableName)

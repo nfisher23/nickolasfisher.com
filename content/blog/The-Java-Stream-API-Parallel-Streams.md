@@ -1,6 +1,6 @@
 ---
 title: "The Java Stream API: Parallel Streams"
-date: 2018-10-01T00:00:00
+date: 2018-10-21T20:03:56
 draft: false
 ---
 
@@ -8,7 +8,7 @@ The sample code for this post can be found [on GitHub](https://github.com/nfishe
 
 Parallel Streams are simple to generate in Java. Instead of calling .stream(), you simply call parallelStream(). Here, we&#39;ll take our familiar list of names:
 
-``` java
+```java
 public static List&lt;String&gt; getListOfNames() {
     List&lt;String&gt; names = new ArrayList&lt;&gt;();
 
@@ -27,7 +27,7 @@ public static List&lt;String&gt; getListOfNames() {
 
 And count them in parallel:
 
-``` java
+```java
 @Test
 public void countingInParallel() {
     long parallelCount = names.parallelStream().filter(name -&gt; name.startsWith(&#34;J&#34;)).count();
@@ -40,7 +40,7 @@ Parallel Streams are best used for lots of data, but the same gotchas that exist
 using our [Fibonacci Stream generator](https://nickolasfisher.com/blog/The-Java-Stream-API-Generating-Fibonacci-Numbers), if we find the first
 Fibonacci number over 5000 in a synchronous manner, we can always find the same number later:
 
-``` java
+```java
 @Test
 public void fibonacci_predictableWhenSynchronous() {
     Stream&lt;Integer&gt; fibonaccis_1 = Stream.generate(new SupplyFibonacci());
@@ -61,7 +61,7 @@ public void fibonacci_predictableWhenSynchronous() {
 
 However, if we try to do the same thing in parallel, since the Fibonacci Supplier shares state, the chance of getting something deterministic isn&#39;t possible. This test passes and fails unpredictably because it manipulates the shared state (in this case of parallel, we likely wouldn&#39;t be computing Fibonacci numbers at all):
 
-``` java
+```java
 @Test
 public void badUseOfParallel_thisIsUnpredictable() {
     Stream&lt;Integer&gt; fibonaccis_1 = Stream.generate(new SupplyFibonacci());
@@ -90,7 +90,7 @@ public void badUseOfParallel_thisIsUnpredictable() {
 However, one \*cheap\* lunch is that large collections will be auto-magically broken down into smaller collections and operated on in parallel. If we have, for example,
 a list of numbers from 0 to (whatever):
 
-``` java
+```java
 public List&lt;Integer&gt; generateLargeList(int max) {
     List&lt;Integer&gt; ints = new ArrayList&lt;&gt;();
     for (int i = 0; i &lt; max; i&#43;&#43;) {
@@ -103,7 +103,7 @@ public List&lt;Integer&gt; generateLargeList(int max) {
 
 We could then filter them in parallel, and the parallel streams will retain the ordering after we are done:
 
-``` java
+```java
 @Test
 public void parallelStreams_orderedCollectionsRemainOrdered() {
     List&lt;Integer&gt; largeSequentialList = generateLargeList(100000);
@@ -124,7 +124,7 @@ public void parallelStreams_orderedCollectionsRemainOrdered() {
 Finally, there are a number of collectors that work concurrently. If you want to collect into a map concurrently, you do so with
 .groupingByConcurrent(..):
 
-``` java
+```java
 @Test
 public void parallelStreams_concurrentMaps() {
     ConcurrentMap&lt;Integer, List&lt;String&gt;&gt; mapToNamesInParallel =
@@ -141,5 +141,3 @@ public void parallelStreams_concurrentMaps() {
 }
 
 ```
-
-

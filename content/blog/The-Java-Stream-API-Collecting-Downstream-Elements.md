@@ -1,6 +1,6 @@
 ---
 title: "The Java Stream API: Collecting Downstream Elements"
-date: 2018-10-01T00:00:00
+date: 2018-10-21T16:29:32
 draft: false
 ---
 
@@ -11,7 +11,7 @@ this means that, after you group the keys of the map, you can further make chang
 
 We&#39;ll start with a SimplePair object:
 
-``` java
+```java
 public class SimplePair {
 
     private String name;
@@ -42,7 +42,7 @@ public class SimplePair {
 
 Then, if we generate a collection of SimplePairs:
 
-``` java
+```java
 public static List&lt;SimplePair&gt; generateSimplePairs(int numToGenerate) {
     List&lt;SimplePair&gt; pairs = new ArrayList&lt;&gt;();
     for (int i = 1; i &lt;= numToGenerate; i&#43;&#43;) {
@@ -59,7 +59,7 @@ public static List&lt;SimplePair&gt; generateSimplePairs(int numToGenerate) {
 
 And we add duplicate ids for the third element like:
 
-``` java
+```java
 private void addDuplicatePairs() {
     simplePairs.add(new SimplePair() {{
         setId(3);
@@ -78,7 +78,7 @@ Now our collection looks like &#34;\[(id: 1, name: pair1), (id: 2, name: pair2),
 
 Now that we have data to work with, we can get to manipulating the downstream elements, we can map based on the id to a List&lt;SimplePair&gt;, which is the default of groupingBy(..), like:
 
-``` java
+```java
 @Test
 public void groupingBy_toList() {
     addDuplicatePairs();
@@ -94,7 +94,7 @@ public void groupingBy_toList() {
 
 You can insist that it collects into a set by passing in `Collectors.toSet(..)` downstream:
 
-``` java
+```java
 @Test
 public void groupingBy_toSet() {
     addDuplicatePairs();
@@ -110,7 +110,7 @@ public void groupingBy_toSet() {
 
 You can count the number of elements in the collection downstream, and map to that, by calling `Collectors.counting()` on the downstream elements:
 
-``` java
+```java
 @Test
 public void groupingBy_count() {
     addDuplicatePairs();
@@ -128,7 +128,7 @@ public void groupingBy_count() {
 You can sum all of the values of a specific property downstream by calling `Collectors.summingInt(Class::property)`.
 Here, we sum up all the id&#39;s for the downstream elements:
 
-``` java
+```java
 @Test
 public void groupingBy_sumDownstreamElements() {
     addDuplicatePairs();
@@ -146,7 +146,7 @@ public void groupingBy_sumDownstreamElements() {
 You can get the maximum length downstream by passing in a Comparator&lt;T&gt; to `Collectors.maxBy(..)` and
 specifying the `length()` to be compared:
 
-``` java
+```java
 @Test
 public void groupingBy_getMaxDownstreamElement() {
     addDuplicatePairs();
@@ -166,7 +166,7 @@ public void groupingBy_getMaxDownstreamElement() {
 
 You can get the minimum value using the same approach but with the `Collectors.minBy(..)` method:
 
-``` java
+```java
 @Test
 public void groupingBy_getMinDownstreamElement() {
     addDuplicatePairs();
@@ -188,7 +188,7 @@ Finally, you can nest downstream elements as much as you would like. Here, we ma
 of the name field in SimplePair. This can be a little difficult to wrap your head around at first--basically, we are collecting a Map&lt;\&gt; of ids to objects, then
 we are collecting to the List into a Map&lt;&gt;, where the map is a map of the lengths of the name property (say that five times fast):
 
-``` java
+```java
 @Test
 public void groupingBy_mapsToMaps() {
     addDuplicatePairs();
@@ -212,7 +212,7 @@ This process can get pretty confusing, and it&#39;s not likely to be helpful in 
 For a slightly less obscure example, but still fairly out there, we turn to `Collectors.mapping(..)`, which collects the mapping downstream
 into a collection of your choosing. Here, we&#39;ll collect a list of length() properties in the downstream SimplePair element:
 
-``` java
+```java
 @Test
 public void groupingBy_mappingToMoreDownstreamElements() {
     addDuplicatePairs();
@@ -227,5 +227,3 @@ public void groupingBy_mappingToMoreDownstreamElements() {
 }
 
 ```
-
-

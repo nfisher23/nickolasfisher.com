@@ -1,6 +1,6 @@
 ---
 title: "How to Create a Digital Ocean Droplet using Terraform"
-date: 2020-05-01T00:00:00
+date: 2020-05-17T18:26:02
 draft: false
 ---
 
@@ -36,7 +36,7 @@ export DIGITALOCEAN_ACCESS_TOKEN=$(cat ~/.config/doctl/config.yaml |  yq r - acc
 
 If you already have a ssh key that you uploaded to digital ocean in some other way, you can import it as terraform data, so that your terraform configuration can look like this (in this case, I&#39;m using an old thinkpad retrofitted with linux, so I have an ssh key I&#39;ve named &#34;thinkpad&#34;):
 
-``` hcl
+```hcl
 provider &#34;digitalocean&#34; {
   // token automatically picked up using env variable DIGITALOCEAN_ACCESS_TOKEN
 }
@@ -69,7 +69,7 @@ output &#34;droplet_ip_address&#34; {
 
 If you want to upload your ssh key to digital ocean in this terraform configuration as well, then you can set this up as:
 
-``` yaml
+```yaml
 provider &#34;digitalocean&#34; {
   // token automatically picked up using env variable DIGITALOCEAN_ACCESS_TOKEN
 }
@@ -127,5 +127,3 @@ $ echo $IP_ADDR
 ```
 
 You should now be able to navigate on your browser to that IP address and see the canned nginx homepage.
-
-

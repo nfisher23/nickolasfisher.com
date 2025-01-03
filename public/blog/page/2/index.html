@@ -158,28 +158,148 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/hello-world-1/">Hey world 1</a>
+    <a href="http://localhost:1313/blog/using-redis-as-a-distributed-lock-with-lettuce/">Using Redis as a Distributed Lock with Lettuce</a>
   </h1>
   
   <span class="date">
-    <time datetime="2025-01-01 10:08:06 -0800 PST" title='Wed, Jan 1, 2025, 10:08 AM PST'>
-      01/01/2025
+    <time datetime="2021-05-01 00:00:00 &#43;0000 UTC" title='Sat, May 1, 2021, 12:00 AM UTC'>
+      01/05/2021
     </time>
   </span>
 
   <div class="description">
     
-      <h1 id="hey">HEY</h1>
-<p>Yeah!</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">main</span>() {
-</span></span><span style="display:flex;"><span>  System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;hello world&#34;</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div>
+      <p>The source code for this article <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
+<p>Using Redis as a best effort locking mechanism can be very useful in practice, to prevent two logical threads from clobbering each other. While redis locking is certainly not perfect, and <a href="https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html">you shouldn't use redis locking if the underlying operation can't be occasionally done twice</a>, it can still be useful for that &quot;best effort, do this once&quot; use case.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/hello-world-1/">
+    <a class="read-more" href="http://localhost:1313/blog/using-redis-as-a-distributed-lock-with-lettuce/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/a-guide-to-operating-on-multiple-sets-in-redis-with-lettuce/">A Guide to Operating on Multiple Sets in Redis with Lettuce</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
+      01/04/2021
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>In the last article, we showed how to do some of the most common single set operations against redis, this article will focus on operating on multiple sets using a lettuce client against redis. Specifically, we'll focus on subtracting, intersecting, and adding sets. The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/a-guide-to-operating-on-multiple-sets-in-redis-with-lettuce/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/a-guide-to-operating-on-sorted-sets-in-redis-with-lettuce/">A Guide to Operating on Sorted Sets in Redis with Lettuce</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
+      01/04/2021
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>Sorted Sets in redis are one of my personal favorite tools when operating at scale. As of this writing, <a href="https://redis.io/commands/#sorted_set">there are over 30 unique operations you can perform against sorted sets in redis</a>. This article will focus on some of the more common ones you're going to need to know, and it will use a reactive lettuce client to demonstrate them.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/a-guide-to-operating-on-sorted-sets-in-redis-with-lettuce/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/a-guide-to-simple-set-operations-in-redis-with-lettuce/">A Guide to Simple Set Operations in Redis with Lettuce</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
+      01/04/2021
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>There are, as of this writing, about <a href="https://redis.io/commands/#set">15 distinct operations available to someone wanting to work with sets in redis</a>. This article seeks to cover some of the more basic ones using a reactive lettuce client, and <a href="https://nickolasfisher.com/blog/A-Guide-to-Operating-on-Multiple-Sets-in-Redis-with-Lettuce">a follow up article</a> will seek to deal with explaining some of the more common operations against multiple sets, rather than a single set in this case.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/a-guide-to-simple-set-operations-in-redis-with-lettuce/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/bootstrap-a-local-sharded-redis-cluster-in-five-minutes/">Bootstrap a Local Sharded Redis Cluster in Five Minutes</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
+      01/04/2021
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>If you're interested in understanding details of how clustered redis works [that is to say, if you're more or less responsible for operationalizing it], there is an excellent <a href="https://redis.io/topics/cluster-tutorial">section in the redis documentation</a> that goes into some detail on it. I would advise everyone to read that at some point, but if you just want to get started hacking this is the TLDR; article that you're looking for. We will run through some basic commands to get up and running, and you can use this cluster to help figure out the details later on.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/bootstrap-a-local-sharded-redis-cluster-in-five-minutes/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -213,6 +333,14 @@
 
   
   <div class="flex justify-end">
+    
+      <a href="/blog/page/3/" class="pagination-button">
+        Older Posts
+        <span class="h-4 w-4 stroke-2"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+ </span>
+      </a>
     
   </div>
 </div>

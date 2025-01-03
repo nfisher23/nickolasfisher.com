@@ -158,28 +158,24 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/hello-world-3/">Hello World 3</a>
+    <a href="http://localhost:1313/blog/an-introduction-to-redis-streams-via-lettuce/">An Introduction to Redis Streams via Lettuce</a>
   </h1>
   
   <span class="date">
-    <time datetime="2025-01-01 14:08:06 -0800 PST" title='Wed, Jan 1, 2025, 2:08 PM PST'>
-      01/01/2025
+    <time datetime="2021-05-01 00:00:00 &#43;0000 UTC" title='Sat, May 1, 2021, 12:00 AM UTC'>
+      01/05/2021
     </time>
   </span>
 
   <div class="description">
     
-      <h1 id="hey">HEY</h1>
-<p>Yeah!</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">main</span>() {
-</span></span><span style="display:flex;"><span>  System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;hello world&#34;</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div>
+      <p>The source code for this article <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
+<p><a href="https://redis.io/topics/streams-intro">Redis streams</a> are an interesting data structure that act as a sort of go-between for list and pub/sub operations: It's like <a href="https://nickolasfisher.com/blog/Working-with-Lists-in-Redis-using-Lettuce-and-Webflux">a list</a> in the sense that anything pushed onto the stream is retained, it's like <a href="https://nickolasfisher.com/blog/How-to-Publish-and-Subscribe-to-Redis-Using-Lettuce">pub/sub</a> in the sense that multiple consumers can see what is happening to it. There are many other features of streams that are covered in that article, but that's at least how you can think of it at the start.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/hello-world-3/">
+    <a class="read-more" href="http://localhost:1313/blog/an-introduction-to-redis-streams-via-lettuce/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -194,37 +190,24 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/hello-world-2/">Hello World 2</a>
+    <a href="http://localhost:1313/blog/configuring-testing-and-using-circuit-breakers-on-rest-api-calls-with-resilience4j/">Configuring, Testing, and Using Circuit Breakers on Rest API calls with Resilience4j</a>
   </h1>
   
   <span class="date">
-    <time datetime="2025-01-01 13:08:06 -0800 PST" title='Wed, Jan 1, 2025, 1:08 PM PST'>
-      01/01/2025
+    <time datetime="2021-05-01 00:00:00 &#43;0000 UTC" title='Sat, May 1, 2021, 12:00 AM UTC'>
+      01/05/2021
     </time>
   </span>
 
   <div class="description">
     
-      <h1 id="hey">HEY</h1>
-<p>Yeah!</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">main</span>() {
-</span></span><span style="display:flex;"><span>  System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;hello world&#34;</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-</span></span><span style="display:flex;"><span>  fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;hello world&#34;</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">foo</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">bar</span>: value
-</span></span></code></pre></div><p>more text lorum ipsum
-more text lorum ipsum
-more text lorum ipsum
-more text lorum ipsum
-more text lorum ipsum</p>
+      <p>The source code for what follows <a href="https://github.com/nfisher23/java-failure-and-resilience">can be found on Github</a>.</p>
+<p>The circuit breaker pattern, popularized by Netflix [using Hystrix], exists for a couple of reasons, the most prominent being that it reduces load on a downstream service when it is not responding properly [presumably because it's under duress]. By wrapping operations that might fail and get overloaded in a circuit breaker, we can prematurely prevent cascading failure and stop overloading those services.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/hello-world-2/">
+    <a class="read-more" href="http://localhost:1313/blog/configuring-testing-and-using-circuit-breakers-on-rest-api-calls-with-resilience4j/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -239,28 +222,24 @@ more text lorum ipsum</p>
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/hello-world-5/">Hello World 5</a>
+    <a href="http://localhost:1313/blog/how-to-prevent-certain-exceptions-from-tripping-a-resilience4j-circuit/">How to Prevent Certain Exceptions from Tripping a Resilience4j Circuit</a>
   </h1>
   
   <span class="date">
-    <time datetime="2025-01-01 11:08:09 -0800 PST" title='Wed, Jan 1, 2025, 11:08 AM PST'>
-      01/01/2025
+    <time datetime="2021-05-01 00:00:00 &#43;0000 UTC" title='Sat, May 1, 2021, 12:00 AM UTC'>
+      01/05/2021
     </time>
   </span>
 
   <div class="description">
     
-      <h1 id="hey">HEY</h1>
-<p>Yeah!</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">main</span>() {
-</span></span><span style="display:flex;"><span>  System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;hello world&#34;</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div>
+      <p>The source code for this article <a href="https://github.com/nfisher23/java-failure-and-resilience">can be found on Github</a>.</p>
+<p>The Resilience4j circuit breaker by default considers any exception thrown inside of the <strong>Supplier</strong> as a failure. If over 50% of the calls are failures and the rolling window max size is met, then it will prevent any future calls from going through.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/hello-world-5/">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-prevent-certain-exceptions-from-tripping-a-resilience4j-circuit/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -275,28 +254,24 @@ more text lorum ipsum</p>
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/hello-world-4/">Hello World 4</a>
+    <a href="http://localhost:1313/blog/how-to-retry-api-requests-in-java-using-resilience4j/">How to Retry API Requests in Java using Resilience4j</a>
   </h1>
   
   <span class="date">
-    <time datetime="2025-01-01 11:08:08 -0800 PST" title='Wed, Jan 1, 2025, 11:08 AM PST'>
-      01/01/2025
+    <time datetime="2021-05-01 00:00:00 &#43;0000 UTC" title='Sat, May 1, 2021, 12:00 AM UTC'>
+      01/05/2021
     </time>
   </span>
 
   <div class="description">
     
-      <h1 id="hey">HEY</h1>
-<p>Yeah!</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">main</span>() {
-</span></span><span style="display:flex;"><span>  System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;hello world&#34;</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div>
+      <p>The source code for what follows <a href="https://github.com/nfisher23/java-failure-and-resilience">can be found on Github</a>.</p>
+<p>When you're working with distributed systems, it is often the case that some clones of a service running can be slow to respond, while still others are functioning perfectly normally. Therefore, when you just hit a load balancer and the load balancer chooses a backend, it can sometimes be beneficial to retry the request. Other things like periodic and small database stalls or random GC stop-the-worlds are examples where retries can smooth the experience for the client of your service.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/hello-world-4/">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-retry-api-requests-in-java-using-resilience4j/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -311,28 +286,24 @@ more text lorum ipsum</p>
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/hello-world/">Hello World</a>
+    <a href="http://localhost:1313/blog/how-to-test-latency-with-a-mock-server-in-java/">How to Test Latency with a Mock Server in Java</a>
   </h1>
   
   <span class="date">
-    <time datetime="2025-01-01 11:08:06 -0800 PST" title='Wed, Jan 1, 2025, 11:08 AM PST'>
-      01/01/2025
+    <time datetime="2021-05-01 00:00:00 &#43;0000 UTC" title='Sat, May 1, 2021, 12:00 AM UTC'>
+      01/05/2021
     </time>
   </span>
 
   <div class="description">
     
-      <h1 id="hey">HEY</h1>
-<p>Yeah!</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">main</span>() {
-</span></span><span style="display:flex;"><span>  System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;hello world&#34;</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div>
+      <p>The source code for what follows <a href="https://github.com/nfisher23/java-failure-and-resilience">can be found on Github</a>.</p>
+<p>Very often, you will want to test service api clients using a <a href="https://www.mock-server.com/">Mock Server</a> [for example, <a href="https://nickolasfisher.com/blog/How-to-use-Mock-Server-to-End-to-End-Test-Any-WebClient-Calls-in-Spring-Boot-Webflux">testing the spring webclient with mockserver</a>]. And since network latency is a fact of life, not something we can merely ignore, actually injecting some latency to simulate timeouts will give us greater confidence that our system will behave as expected.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/hello-world/">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-test-latency-with-a-mock-server-in-java/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

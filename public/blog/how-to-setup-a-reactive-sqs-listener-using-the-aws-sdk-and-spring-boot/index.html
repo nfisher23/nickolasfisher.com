@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en-US" class="scroll-smooth dark">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>How to Setup a Reactive SQS Listener Using the AWS SDK and Spring Boot</title>
+<meta
+  name="description"
+  content="The source code for this post can be found on Github.
+Following up on the previous post where we showed how to send SQS messages to Localstack using the AWS SDK for Java 2.0, we will now demonstrate how to write code that continuously polls for SQS messages, processes them, then deletes them off the queue."
+/>
+<link rel="canonical" href="http://localhost:1313/blog/how-to-setup-a-reactive-sqs-listener-using-the-aws-sdk-and-spring-boot/" />
+<link rel="robots" href="/robots.txt" />
+
+<link rel="icon" type="image/x-icon" href="/icons/favicon.ico" />
+
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });</script>
+
+<link rel="stylesheet" href="http://localhost:1313/css/app.css" /></head>
+
+  <body class="max-w-screen-md mx-auto px-2.5">
+    <div class="header">
+      <header class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 pt-16 py-12">
+   
+
+
+<div class="flex-none w-20 h-20 rounded-full overflow-hidden">
+  <a href="http://localhost:1313/">
+    <img
+      srcset="/img/profile-picture_hu4241499301404582006.jpg 80w"
+      src="/img/profile-picture.jpg"
+      width="386"
+      height="345"
+      alt="Nick Fisher&#39;s tech blog"
+    />
+  </a>
+</div>
+
+  
+  <div class="flex flex-col gap-5">
+    <a href="http://localhost:1313/">
+  <h1 id="site-title">Nick Fisher&#39;s tech blog</h1>
+</a>
+ 
+    <nav>
+  <ul>
+     
+    
+    <li>
+      <a href="/" class="">
+        Home
+      </a>
+    </li>
+    
+    <li>
+      <a href="/blog" class="">
+        Blog
+      </a>
+    </li>
+    
+    <li>
+      <a href="/about" class="">
+        About me
+      </a>
+    </li>
+    
+    <li>
+      <a href="/categories" class="">
+        Categories
+      </a>
+    </li>
+    
+    <li>
+      <a href="/tags" class="">
+        Tags
+      </a>
+    </li>
+    
+  </ul>
+</nav>
+
+  </div>
+</header>
+
+      <button class="toggle-theme" aria-label="Toggle Theme" title="Toggle Theme" onclick="toggleTheme()">
+  <span class="theme-icon light"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+</svg> </span>
+  <span class="theme-icon dark"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+</svg> </span>
+</button>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const theme = localStorage.getItem('theme');
+
+    if (!theme || theme === 'light') {
+      setTheme('light');
+    } else {
+      setTheme(theme);
+    }
+  });
+
+  function setTheme(theme) {
+    const html = document.querySelector('html');
+    localStorage.setItem('theme', theme);
+
+    if (theme === 'light') {
+      if (html.classList.contains('dark')) {
+        document.querySelector('html').classList.remove('dark');
+      }
+
+      document.querySelector('.theme-icon.light').style.display = 'none';
+      document.querySelector('.theme-icon.dark').style.display = 'block';
+    } else {
+      if (!html.classList.contains('dark')) {
+        document.querySelector('html').classList.add('dark');
+      }
+
+      document.querySelector('.theme-icon.dark').style.display = 'none';
+      document.querySelector('.theme-icon.light').style.display = 'block';
+    }
+  }
+
+  function toggleTheme() {
+    const theme = localStorage.getItem('theme');
+
+    if (theme === 'light') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+  }
+</script>
+    </div>
+  
+    <main id="content">
+
+<article class="flex flex-col gap-10">
+  <header class="flex flex-col gap-2">
+    <h2 class="title-large">How to Setup a Reactive SQS Listener Using the AWS SDK and Spring Boot</h2>
+
+    <div class="meta">
+      
+      <time datetime="2020-09-01 00:00:00 &#43;0000 UTC" title='Tue, Sep 1, 2020, 12:00 AM UTC'>
+        01/09/2020 - Estimated reading time: 2 minutes
+      </time>
+
+       
+      
+    </div>
+  </header>
+
+  
+
+  <section><p>The source code for this post <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-sqs">can be found on Github</a>.</p>
+<p>Following up on the previous post where we showed <a href="https://nickolasfisher.com/blog/How-to-Send-SQS-Messages-to-Localstack-with-the-AWS-Java-SDK-20">how to send SQS messages to Localstack using the AWS SDK for Java 2.0</a>, we will now demonstrate how to write code that continuously polls for SQS messages, processes them, then deletes them off the queue.</p>
+<h2 id="the-app">The App</h2>
+<p>Building off of the work in the last post, where we had set up an <strong>SqsAsyncClient</strong> as a <strong>Bean</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Configuration
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">AwsSqsConfig</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    @Bean
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> SqsAsyncClient <span style="color:#50fa7b">amazonSQSAsyncClient</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> SqsAsyncClient.<span style="color:#50fa7b">builder</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">endpointOverride</span>(URI.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:4566&amp;#34;))</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">region</span>(Region.<span style="color:#50fa7b">US_EAST_1</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">credentialsProvider</span>(StaticCredentialsProvider.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">new</span> AwsCredentials() {
+</span></span><span style="display:flex;"><span>                    @Override
+</span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">accessKeyId</span>() {
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    @Override
+</span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">secretAccessKey</span>() {
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>#34;FAKE<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And where we had also set up a local SQS queue in localstack with the CLI:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_SECRET_ACCESS_KEY</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_ACCESS_KEY_ID</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_DEFAULT_REGION</span><span style="color:#ff79c6">=</span>us-east-1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">QUEUE_NAME</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;my-queue&amp;#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name &amp;<span style="color:#6272a4">#34;$QUEUE_NAME&amp;#34;</span>
+</span></span></code></pre></div><p>We can implement a simple SQS poller that will:</p>
+<ul>
+<li>Use long polling, to efficiently only pull messages in a xxx second window if there are messages available to be pulled</li>
+<li>Only poll if the previous poll has completed</li>
+<li>Delete the message off the queue after processing</li>
+</ul>
+<p>The code that can do that can look like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Component
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">SQSListenerBean</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> Logger LOGGER <span style="color:#ff79c6">=</span> LoggerFactory.<span style="color:#50fa7b">getLogger</span>(SQSListenerBean.<span style="color:#50fa7b">class</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> SqsAsyncClient sqsAsyncClient;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> String queueUrl;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">SQSListenerBean</span>(SqsAsyncClient sqsAsyncClient) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">sqsAsyncClient</span> <span style="color:#ff79c6">=</span> sqsAsyncClient;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">queueUrl</span> <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">sqsAsyncClient</span>.<span style="color:#50fa7b">getQueueUrl</span>(GetQueueUrlRequest.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">queueName</span>(<span style="color:#ff79c6">&amp;</span>#34;my<span style="color:#ff79c6">-</span>queue<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">build</span>()).<span style="color:#50fa7b">get</span>().<span style="color:#50fa7b">queueUrl</span>();
+</span></span><span style="display:flex;"><span>        } <span style="color:#ff79c6">catch</span> (Exception e) {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">throw</span> <span style="color:#ff79c6">new</span> RuntimeException(e);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    @PostConstruct
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">continuousListener</span>() {
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;ReceiveMessageResponse<span style="color:#ff79c6">&amp;</span>gt; receiveMessageResponseMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">fromFuture</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                sqsAsyncClient.<span style="color:#50fa7b">receiveMessage</span>(
+</span></span><span style="display:flex;"><span>                    ReceiveMessageRequest.<span style="color:#50fa7b">builder</span>()
+</span></span><span style="display:flex;"><span>                            .<span style="color:#50fa7b">maxNumberOfMessages</span>(5)
+</span></span><span style="display:flex;"><span>                            .<span style="color:#50fa7b">queueUrl</span>(queueUrl)
+</span></span><span style="display:flex;"><span>                            .<span style="color:#50fa7b">waitTimeSeconds</span>(10)
+</span></span><span style="display:flex;"><span>                            .<span style="color:#50fa7b">visibilityTimeout</span>(30)
+</span></span><span style="display:flex;"><span>                            .<span style="color:#50fa7b">build</span>()
+</span></span><span style="display:flex;"><span>                )
+</span></span><span style="display:flex;"><span>        );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        receiveMessageResponseMono
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">repeat</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">retry</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">map</span>(ReceiveMessageResponse::messages)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">map</span>(Flux::fromIterable)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">flatMap</span>(messageFlux <span style="color:#ff79c6">-&amp;</span>gt; messageFlux)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">subscribe</span>(message <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                    LOGGER.<span style="color:#50fa7b">info</span>(<span style="color:#ff79c6">&amp;</span>#34;message body: <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; message.<span style="color:#50fa7b">body</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    sqsAsyncClient.<span style="color:#50fa7b">deleteMessage</span>(DeleteMessageRequest.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">queueUrl</span>(queueUrl).<span style="color:#50fa7b">receiptHandle</span>(message.<span style="color:#50fa7b">receiptHandle</span>()).<span style="color:#50fa7b">build</span>())
+</span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">thenAccept</span>(deleteMessageResponse <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                            LOGGER.<span style="color:#50fa7b">info</span>(<span style="color:#ff79c6">&amp;</span>#34;deleted message with handle <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; message.<span style="color:#50fa7b">receiptHandle</span>());
+</span></span><span style="display:flex;"><span>                        });
+</span></span><span style="display:flex;"><span>                });
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>In this case, the actual processing of the message is just a log message printing out the message body.</p>
+<p>If you start up the app, and send a sample message to that queue with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_SECRET_ACCESS_KEY</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_ACCESS_KEY_ID</span><span style="color:#ff79c6">=</span>&amp;<span style="color:#6272a4">#34;FAKE&amp;#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">AWS_DEFAULT_REGION</span><span style="color:#ff79c6">=</span>us-east-1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Q_URL</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>aws --endpoint-url http://localhost:4566 sqs get-queue-url --queue-name &amp;<span style="color:#6272a4">#34;my-queue&amp;#34; --output text)</span>
+</span></span><span style="display:flex;"><span>aws --endpoint-url http://localhost:4566 sqs send-message --queue-url &amp;<span style="color:#6272a4">#34;$Q_URL&amp;#34; --message-body &amp;#34;hey there&amp;#34;</span>
+</span></span></code></pre></div><p>You will see the application print out something like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>INFO <span style="color:#bd93f9">17716</span> --- <span style="color:#ff79c6">[</span>c-response-0-21<span style="color:#ff79c6">]</span> c.n.reactivesqs.SQSListenerBean          : message body: hey there
+</span></span><span style="display:flex;"><span>INFO <span style="color:#bd93f9">17716</span> --- <span style="color:#ff79c6">[</span>c-response-0-22<span style="color:#ff79c6">]</span> c.n.reactivesqs.SQSListenerBean          : deleted message with handle hwwmv...buncha letters...
+</span></span></code></pre></div><p>You could further tweak this to your heart's content.</p>
+</section>
+
+  
+    
+  
+
+    
+  
+
+
+  <footer>
+    
+  </footer>
+</article>
+
+
+    </main><footer class="pt-5 pb-10 grid gap-3 sm:grid-cols-2">
+    <div class="text-xs font-semibold text-gray-500 order-2 sm:order-1">
+  © 2018-2025 —
+  <a href="http://localhost:1313/">Nick Fisher&#39;s tech blog</a> 
+</div>
+
+    <div class="order-1 sm:order-2">
+  <ul class="flex sm:justify-end gap-5">
+    
+    
+    <li>    
+      <a href="https://www.linkedin.com/in/nick-fisher-software/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </li>
+    
+    <li>    
+      <a href="https://github.com/nfisher23" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </li>
+    
+    
+  </ul>
+</div>
+
+</footer></body>
+</html>

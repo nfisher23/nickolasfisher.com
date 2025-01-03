@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en-US" class="scroll-smooth dark">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>How to Prevent Certain Exceptions from Tripping a Resilience4j Circuit</title>
+<meta
+  name="description"
+  content="The source code for this article can be found on Github.
+The Resilience4j circuit breaker by default considers any exception thrown inside of the Supplier as a failure. If over 50% of the calls are failures and the rolling window max size is met, then it will prevent any future calls from going through."
+/>
+<link rel="canonical" href="http://localhost:1313/blog/how-to-prevent-certain-exceptions-from-tripping-a-resilience4j-circuit/" />
+<link rel="robots" href="/robots.txt" />
+
+<link rel="icon" type="image/x-icon" href="/icons/favicon.ico" />
+
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });</script>
+
+<link rel="stylesheet" href="http://localhost:1313/css/app.css" /></head>
+
+  <body class="max-w-screen-md mx-auto px-2.5">
+    <div class="header">
+      <header class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 pt-16 py-12">
+   
+
+
+<div class="flex-none w-20 h-20 rounded-full overflow-hidden">
+  <a href="http://localhost:1313/">
+    <img
+      srcset="/img/profile-picture_hu4241499301404582006.jpg 80w"
+      src="/img/profile-picture.jpg"
+      width="386"
+      height="345"
+      alt="Nick Fisher&#39;s tech blog"
+    />
+  </a>
+</div>
+
+  
+  <div class="flex flex-col gap-5">
+    <a href="http://localhost:1313/">
+  <h1 id="site-title">Nick Fisher&#39;s tech blog</h1>
+</a>
+ 
+    <nav>
+  <ul>
+     
+    
+    <li>
+      <a href="/" class="">
+        Home
+      </a>
+    </li>
+    
+    <li>
+      <a href="/blog" class="">
+        Blog
+      </a>
+    </li>
+    
+    <li>
+      <a href="/about" class="">
+        About me
+      </a>
+    </li>
+    
+    <li>
+      <a href="/categories" class="">
+        Categories
+      </a>
+    </li>
+    
+    <li>
+      <a href="/tags" class="">
+        Tags
+      </a>
+    </li>
+    
+  </ul>
+</nav>
+
+  </div>
+</header>
+
+      <button class="toggle-theme" aria-label="Toggle Theme" title="Toggle Theme" onclick="toggleTheme()">
+  <span class="theme-icon light"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+</svg> </span>
+  <span class="theme-icon dark"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+</svg> </span>
+</button>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const theme = localStorage.getItem('theme');
+
+    if (!theme || theme === 'light') {
+      setTheme('light');
+    } else {
+      setTheme(theme);
+    }
+  });
+
+  function setTheme(theme) {
+    const html = document.querySelector('html');
+    localStorage.setItem('theme', theme);
+
+    if (theme === 'light') {
+      if (html.classList.contains('dark')) {
+        document.querySelector('html').classList.remove('dark');
+      }
+
+      document.querySelector('.theme-icon.light').style.display = 'none';
+      document.querySelector('.theme-icon.dark').style.display = 'block';
+    } else {
+      if (!html.classList.contains('dark')) {
+        document.querySelector('html').classList.add('dark');
+      }
+
+      document.querySelector('.theme-icon.dark').style.display = 'none';
+      document.querySelector('.theme-icon.light').style.display = 'block';
+    }
+  }
+
+  function toggleTheme() {
+    const theme = localStorage.getItem('theme');
+
+    if (theme === 'light') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+  }
+</script>
+    </div>
+  
+    <main id="content">
+
+<article class="flex flex-col gap-10">
+  <header class="flex flex-col gap-2">
+    <h2 class="title-large">How to Prevent Certain Exceptions from Tripping a Resilience4j Circuit</h2>
+
+    <div class="meta">
+      
+      <time datetime="2021-05-01 00:00:00 &#43;0000 UTC" title='Sat, May 1, 2021, 12:00 AM UTC'>
+        01/05/2021 - Estimated reading time: 3 minutes
+      </time>
+
+       
+      
+    </div>
+  </header>
+
+  
+
+  <section><p>The source code for this article <a href="https://github.com/nfisher23/java-failure-and-resilience">can be found on Github</a>.</p>
+<p>The Resilience4j circuit breaker by default considers any exception thrown inside of the <strong>Supplier</strong> as a failure. If over 50% of the calls are failures and the rolling window max size is met, then it will prevent any future calls from going through.</p>
+<p>It's not uncommon to throw exceptions as a part of normal business logic&ndash;they might be thrown because of an <em>exceptional circumstance</em>, but that doesn't mean that there is an error or something wrong with the downstream resource you're trying to interact with. For example, Spring's <strong>RestTemplate</strong> will throw an exception on a 4xx response code, and this will by default trip the circuit and prevent future calls from going through:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">clientErrorException_stillTripsTheCircuit</span>() {
+</span></span><span style="display:flex;"><span>        HttpRequest expectedFirstRequest <span style="color:#ff79c6">=</span> HttpRequest.<span style="color:#50fa7b">request</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">when</span>(expectedFirstRequest)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">respond</span>(HttpResponse.<span style="color:#50fa7b">response</span>().<span style="color:#50fa7b">withStatusCode</span>(404));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        CircuitBreakerConfig circuitBreakerConfig <span style="color:#ff79c6">=</span> CircuitBreakerConfig
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">custom</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">slidingWindowSize</span>(10)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        CircuitBreakerRegistry circuitBreakerRegistry <span style="color:#ff79c6">=</span>
+</span></span><span style="display:flex;"><span>                CircuitBreakerRegistry.<span style="color:#50fa7b">of</span>(circuitBreakerConfig);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        CircuitBreaker callingEndpointCircuitBreaker <span style="color:#ff79c6">=</span> circuitBreakerRegistry.<span style="color:#50fa7b">circuitBreaker</span>(<span style="color:#ff79c6">&amp;</span>#34;call<span style="color:#ff79c6">-</span>endpoint<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// force the circuit to trip</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 1; i <span style="color:#ff79c6">&amp;</span>lt; 11; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>                callingEndpointCircuitBreaker.<span style="color:#50fa7b">decorateSupplier</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                        restTemplate.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;, JsonNode.<span style="color:#50fa7b">class</span>)
+</span></span><span style="display:flex;"><span>                ).<span style="color:#50fa7b">get</span>();
+</span></span><span style="display:flex;"><span>                fail(<span style="color:#ff79c6">&amp;</span>#34;we should never get here<span style="color:#ff79c6">!&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>            } <span style="color:#ff79c6">catch</span> (HttpClientErrorException e) {
+</span></span><span style="display:flex;"><span>                <span style="color:#6272a4">// expected</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// circuit is now tripped, but should it be?</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>            callingEndpointCircuitBreaker.<span style="color:#50fa7b">decorateSupplier</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                    restTemplate.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;, JsonNode.<span style="color:#50fa7b">class</span>)
+</span></span><span style="display:flex;"><span>            ).<span style="color:#50fa7b">get</span>();
+</span></span><span style="display:flex;"><span>            fail(<span style="color:#ff79c6">&amp;</span>#34;we should never get here<span style="color:#ff79c6">!&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        } <span style="color:#ff79c6">catch</span> (CallNotPermittedException callNotPermittedException)  {
+</span></span><span style="display:flex;"><span>            assertEquals(<span style="color:#ff79c6">&amp;</span>#34;call<span style="color:#ff79c6">-</span>endpoint<span style="color:#ff79c6">&amp;</span>#34;, callNotPermittedException.<span style="color:#50fa7b">getCausingCircuitBreakerName</span>());
+</span></span><span style="display:flex;"><span>            assertSame(CircuitBreaker.<span style="color:#50fa7b">State</span>.<span style="color:#50fa7b">OPEN</span>, callingEndpointCircuitBreaker.<span style="color:#50fa7b">getState</span>());
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>[Note: this code above will make more sense if you've read a <a href="https://nickolasfisher.com/blog/Configuring-Testing-and-Using-Circuit-Breakers-on-Rest-API-calls-with-Resilience4j">previous article on Resilience4j's circuit breaker</a> and downloaded the sample code from Github]</p>
+<p>If you want to not count specific types of exceptions as being errors, then the <a href="https://javadoc.io/doc/io.github.resilience4j/resilience4j-circuitbreaker/1.2.0/io/github/resilience4j/circuitbreaker/CircuitBreakerConfig.html">CircuitBreakerConfig</a> provides you with a few different options. You can either <a href="https://javadoc.io/static/io.github.resilience4j/resilience4j-circuitbreaker/1.2.0/io/github/resilience4j/circuitbreaker/CircuitBreakerConfig.Builder.html#ignoreException-java.util.function.Predicate-">ignore the exceptions you want to no longer count</a>, or you can <a href="https://javadoc.io/static/io.github.resilience4j/resilience4j-circuitbreaker/1.2.0/io/github/resilience4j/circuitbreaker/CircuitBreakerConfig.Builder.html#recordException-java.util.function.Predicate-">be explicit about the kinds of exceptions you think are valid with recordException</a>.</p>
+<p>In general I prefer to say &quot;if it's an exception, then something is most likely wrong&quot; unless it meets a specific number of things that I know are fine. So, in this example, a 404 response doesn't actually mean anything is wrong with the downstream service, and we can ignore it in the configuration like so:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        CircuitBreakerConfig circuitBreakerConfig <span style="color:#ff79c6">=</span> CircuitBreakerConfig
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">custom</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">ignoreException</span>(throwable <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">return</span> throwable <span style="color:#ff79c6">instanceof</span> HttpClientErrorException;
+</span></span><span style="display:flex;"><span>                })
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">slidingWindowSize</span>(10)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
+</span></span></code></pre></div><p>Passing in a lambda as a <strong>Predicate</strong>, we know that <strong>NotFound</strong> is a subclass of <strong>HttpClientErrorException</strong>, and in general any 4xx response code is not enough to actively trip the circuit, and we can ignore it.</p>
+<p>The full test that now proves this works is thus:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">excludingClientErrorExceptions_fromTheCount</span>() {
+</span></span><span style="display:flex;"><span>        HttpRequest expectedFirstRequest <span style="color:#ff79c6">=</span> HttpRequest.<span style="color:#50fa7b">request</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">when</span>(expectedFirstRequest)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">respond</span>(HttpResponse.<span style="color:#50fa7b">response</span>().<span style="color:#50fa7b">withStatusCode</span>(404));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        CircuitBreakerConfig circuitBreakerConfig <span style="color:#ff79c6">=</span> CircuitBreakerConfig
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">custom</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">ignoreException</span>(throwable <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">return</span> throwable <span style="color:#ff79c6">instanceof</span> HttpClientErrorException;
+</span></span><span style="display:flex;"><span>                })
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">slidingWindowSize</span>(10)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        CircuitBreakerRegistry circuitBreakerRegistry <span style="color:#ff79c6">=</span>
+</span></span><span style="display:flex;"><span>                CircuitBreakerRegistry.<span style="color:#50fa7b">of</span>(circuitBreakerConfig);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        CircuitBreaker callingEndpointCircuitBreaker <span style="color:#ff79c6">=</span> circuitBreakerRegistry.<span style="color:#50fa7b">circuitBreaker</span>(<span style="color:#ff79c6">&amp;</span>#34;call<span style="color:#ff79c6">-</span>endpoint<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// before we ignored the exception above, this would trip the circuit</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 1; i <span style="color:#ff79c6">&amp;</span>lt; 11; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>                callingEndpointCircuitBreaker.<span style="color:#50fa7b">decorateSupplier</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                        restTemplate.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;, JsonNode.<span style="color:#50fa7b">class</span>)
+</span></span><span style="display:flex;"><span>                ).<span style="color:#50fa7b">get</span>();
+</span></span><span style="display:flex;"><span>                fail(<span style="color:#ff79c6">&amp;</span>#34;we should never get here<span style="color:#ff79c6">!&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>            } <span style="color:#ff79c6">catch</span> (HttpClientErrorException e) {
+</span></span><span style="display:flex;"><span>                <span style="color:#6272a4">// expected</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// the circuit doesn&amp;#39;t trip</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>            callingEndpointCircuitBreaker.<span style="color:#50fa7b">decorateSupplier</span>(() <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                    restTemplate.<span style="color:#50fa7b">getForEntity</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>some<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;, JsonNode.<span style="color:#50fa7b">class</span>)
+</span></span><span style="display:flex;"><span>            ).<span style="color:#50fa7b">get</span>();
+</span></span><span style="display:flex;"><span>            fail(<span style="color:#ff79c6">&amp;</span>#34;we should never get here<span style="color:#ff79c6">!&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        } <span style="color:#ff79c6">catch</span> (HttpClientErrorException httpClientErrorException)  {
+</span></span><span style="display:flex;"><span>            assertEquals(HttpStatus.<span style="color:#50fa7b">NOT_FOUND</span>, httpClientErrorException.<span style="color:#50fa7b">getStatusCode</span>());
+</span></span><span style="display:flex;"><span>            assertSame(CircuitBreaker.<span style="color:#50fa7b">State</span>.<span style="color:#50fa7b">CLOSED</span>, callingEndpointCircuitBreaker.<span style="color:#50fa7b">getState</span>());
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>And with that, you should be good to go.</p>
+</section>
+
+  
+    
+  
+
+    
+  
+
+
+  <footer>
+    
+  </footer>
+</article>
+
+
+    </main><footer class="pt-5 pb-10 grid gap-3 sm:grid-cols-2">
+    <div class="text-xs font-semibold text-gray-500 order-2 sm:order-1">
+  © 2018-2025 —
+  <a href="http://localhost:1313/">Nick Fisher&#39;s tech blog</a> 
+</div>
+
+    <div class="order-1 sm:order-2">
+  <ul class="flex sm:justify-end gap-5">
+    
+    
+    <li>    
+      <a href="https://www.linkedin.com/in/nick-fisher-software/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </li>
+    
+    <li>    
+      <a href="https://github.com/nfisher23" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </li>
+    
+    
+  </ul>
+</div>
+
+</footer></body>
+</html>

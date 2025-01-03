@@ -16,13 +16,6 @@
       <description>&lt;p&gt;Foo description&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Hello</title>
-      <link>http://localhost:1313/categories/hello/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/categories/hello/</guid>
-      <description></description>
-    </item>
-    <item>
       <title>Uncategories</title>
       <link>http://localhost:1313/categories/uncategories/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

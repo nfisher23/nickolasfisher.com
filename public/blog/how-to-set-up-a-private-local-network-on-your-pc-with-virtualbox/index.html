@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en-US" class="scroll-smooth dark">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>How to Set Up A Private Local Network On Your PC With VirtualBox</title>
+<meta
+  name="description"
+  content="While you can always spin up a Digital Ocean or Linode Virtual Private Server to toy around with,
+that both costs money (pennies, at most a dollar or two, admittedly) and isn&#39;t an extremely fast feedback loop for server provisioning. What we really want, as developers, is a way to test out an idea, see its feasibility, and preferably
+tinker with that idea until it&#39;s solid."
+/>
+<link rel="canonical" href="http://localhost:1313/blog/how-to-set-up-a-private-local-network-on-your-pc-with-virtualbox/" />
+<link rel="robots" href="/robots.txt" />
+
+<link rel="icon" type="image/x-icon" href="/icons/favicon.ico" />
+
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });</script>
+
+<link rel="stylesheet" href="http://localhost:1313/css/app.css" /></head>
+
+  <body class="max-w-screen-md mx-auto px-2.5">
+    <div class="header">
+      <header class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 pt-16 py-12">
+   
+
+
+<div class="flex-none w-20 h-20 rounded-full overflow-hidden">
+  <a href="http://localhost:1313/">
+    <img
+      srcset="/img/profile-picture_hu4241499301404582006.jpg 80w"
+      src="/img/profile-picture.jpg"
+      width="386"
+      height="345"
+      alt="Nick Fisher&#39;s tech blog"
+    />
+  </a>
+</div>
+
+  
+  <div class="flex flex-col gap-5">
+    <a href="http://localhost:1313/">
+  <h1 id="site-title">Nick Fisher&#39;s tech blog</h1>
+</a>
+ 
+    <nav>
+  <ul>
+     
+    
+    <li>
+      <a href="/" class="">
+        Home
+      </a>
+    </li>
+    
+    <li>
+      <a href="/blog" class="">
+        Blog
+      </a>
+    </li>
+    
+    <li>
+      <a href="/about" class="">
+        About me
+      </a>
+    </li>
+    
+    <li>
+      <a href="/categories" class="">
+        Categories
+      </a>
+    </li>
+    
+    <li>
+      <a href="/tags" class="">
+        Tags
+      </a>
+    </li>
+    
+  </ul>
+</nav>
+
+  </div>
+</header>
+
+      <button class="toggle-theme" aria-label="Toggle Theme" title="Toggle Theme" onclick="toggleTheme()">
+  <span class="theme-icon light"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+</svg> </span>
+  <span class="theme-icon dark"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+</svg> </span>
+</button>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const theme = localStorage.getItem('theme');
+
+    if (!theme || theme === 'light') {
+      setTheme('light');
+    } else {
+      setTheme(theme);
+    }
+  });
+
+  function setTheme(theme) {
+    const html = document.querySelector('html');
+    localStorage.setItem('theme', theme);
+
+    if (theme === 'light') {
+      if (html.classList.contains('dark')) {
+        document.querySelector('html').classList.remove('dark');
+      }
+
+      document.querySelector('.theme-icon.light').style.display = 'none';
+      document.querySelector('.theme-icon.dark').style.display = 'block';
+    } else {
+      if (!html.classList.contains('dark')) {
+        document.querySelector('html').classList.add('dark');
+      }
+
+      document.querySelector('.theme-icon.dark').style.display = 'none';
+      document.querySelector('.theme-icon.light').style.display = 'block';
+    }
+  }
+
+  function toggleTheme() {
+    const theme = localStorage.getItem('theme');
+
+    if (theme === 'light') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+  }
+</script>
+    </div>
+  
+    <main id="content">
+
+<article class="flex flex-col gap-10">
+  <header class="flex flex-col gap-2">
+    <h2 class="title-large">How to Set Up A Private Local Network On Your PC With VirtualBox</h2>
+
+    <div class="meta">
+      
+      <time datetime="2018-10-01 00:00:00 &#43;0000 UTC" title='Mon, Oct 1, 2018, 12:00 AM UTC'>
+        01/10/2018 - Estimated reading time: 4 minutes
+      </time>
+
+       
+      
+    </div>
+  </header>
+
+  
+
+  <section><p>While you can always spin up a <a href="https://www.digitalocean.com/">Digital Ocean</a> or <a href="https://www.linode.com/">Linode</a> Virtual Private Server to toy around with,
+that both costs money (pennies, at most a dollar or two, admittedly) and isn't an extremely fast feedback loop for server provisioning. What we really want, as developers, is a way to test out an idea, see its feasibility, and preferably
+tinker with that idea until it's solid.</p>
+<p>The goal can be summed up with an example: say we have a chunk of distributed microservices across various machines, and to debug, to date, we have had to go onto each machine and manually inspect the logs for that particular microservice. If there are multiple microservices, we might have to look in three or four different places for log information to track down the problem. So, we say to ourselves, we want to aggregate our logs into one place to save time, monitor security abnormalities, and track down any problems before they become big problems. After researching a bit, we realize that <a href="https://www.elastic.co/products">The Elastic Stack</a> is the best option for us moving forward.</p>
+<p>The Elastic Stack has three principle components: Elasticsearch, Logstash, and Kibana (ELK). There are other things that interact with these core applications as well, and the big point to all of it is that it is distributed. Elasticsearch is a distributed data store and the microservices whose logs we want to aggregate are obviously already distributed.
+How are we going to prove that this can actually work without having multiple machines interacting with each other? Rephrased in a software developers automatic vocabulary,
+how can we <em>quickly</em> and <em>cheaply</em> prove that this will actually work? We need a place
+to toy around with these applications, and shorten our feedback loop as tightly as possible.</p>
+<p>One way, as mentioned above, was to spin up some DO or Linode VPS's and do our tinkering on there. Another option is to use <a href="https://www.virtualbox.org/">VirtualBox</a> to create local,
+virtual machines, and configure them to accept connections just like a virtual private server in the cloud would. That is the subject of this tutorial (the next step, and the subject of the next post, is to <a href="https://nickolasfisher.com/blog/How-to-Simulate-Distributed-Systems-in-the-Cloud-with-Vagrant">use Vagrant</a>. <strong>Vagrant is awesome</strong>.)</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>Download virtual box, and <a href="https://www.ubuntu.com/download/server">download the latest ubuntu server</a>. The version we'll use for this tutorial is 18.04 LTS. Then, you can follow this <a href="https://ilearnstack.com/2013/04/13/setting-ubuntu-vm-in-virtualbox/">tutorial on setting up Ubuntu Server on Virtual Box</a>.</p>
+<h3 id="how-to-talk-to-a-34guest34-virtual-machine-from-your-34host34-machine">How to talk to a &quot;guest&quot; virtual machine from your &quot;host&quot; machine</h3>
+<p>In virtual box world, your &quot;host&quot; machine is your regular operating system, which boots up when you start your computer. Any &quot;guest&quot; machine, then, is
+whatever virtual box instance you have set up. Since what we want is to be able to connect to a server using ssh, as we would in a real VM, we have to
+tinker a bit with our virtual box instance.</p>
+<p>Make sure your ubuntu VM guest machine is powered off, then go to <strong>Global Tools</strong>. Click on &quot;VirtualBox Host-Only Ethernet Adapter,
+and have the following settings configured:</p>
+<ul>
+<li>Server Address: 192.168.56.100</li>
+<li>Server Mask: 255.255.255.0</li>
+<li>Lower Address Bound: 192.168.56.101</li>
+<li>Upper Address Bound: 192.168.56.254</li>
+</ul>
+<p>Now go to your virtual machine instance, click on <strong>Network</strong>, and configure the adapters like so:</p>
+<ul>
+<li>Adapter 1: NAT, cable connected (this should already be configured)</li>
+<li>Adapter 2: Host-only Adapter, VirtualBox Host-Only Ethernet Adapter, Allow All, cable connected</li>
+</ul>
+<p>Now power up your machine and click onto it using the GUI. Type</p>
+<p><code>$ ip a</code></p>
+<p>You should see a localhost loopback instance, and two named ethernet interfaces. The named interfaces will be the NAT configuration (which lets your virtual machine
+talk to the internet) and the host-only ethernet adapter. By default, the host-only ethernet adapter will not advertise itself anywhere.</p>
+<p>For me, the NAT interface was enp0s3, and the host-only interface was named enp0s8. We will have to change the host-only interface to be a static IP address, which, for Ubuntu 18.04, is done in the
+<code>/etc/netplan/99_config.yaml</code> file. If the file doesn't exist, create it.</p>
+<p>Your configuration file should be changed to look like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">network</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">ethernets</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">enp0s3</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">addresses</span>: []
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">dhcp4</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">enp0s8</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">addresses</span>: []
+</span></span><span style="display:flex;"><span>        - <span style="color:#bd93f9">192.168.56.101</span>/24
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">version</span>: <span style="color:#bd93f9">2</span>
+</span></span></code></pre></div><p>Now, type</p>
+<p><code>$ sudo netplan apply</code></p>
+<p>And your machine is configured. You can validate that it works by connecting via SSH on your local machine:</p>
+<p><code>$ ssh your_username@192.168.56.101</code></p>
+<p>While you can do this for every VM that you want to configure, including multiple ones, I would instead recommend you move on from this exercise and shorten the feedback loop by <a href="https://nickolasfisher.com/blog/How-to-Simulate-Distributed-Systems-in-the-Cloud-with-Vagrant">setting up Vagrant to simulate a cloud-like environment</a>.</p>
+</section>
+
+  
+    
+  
+
+    
+  
+
+
+  <footer>
+    
+  </footer>
+</article>
+
+
+    </main><footer class="pt-5 pb-10 grid gap-3 sm:grid-cols-2">
+    <div class="text-xs font-semibold text-gray-500 order-2 sm:order-1">
+  © 2018-2025 —
+  <a href="http://localhost:1313/">Nick Fisher&#39;s tech blog</a> 
+</div>
+
+    <div class="order-1 sm:order-2">
+  <ul class="flex sm:justify-end gap-5">
+    
+    
+    <li>    
+      <a href="https://www.linkedin.com/in/nick-fisher-software/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </li>
+    
+    <li>    
+      <a href="https://github.com/nfisher23" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </li>
+    
+    
+  </ul>
+</div>
+
+</footer></body>
+</html>

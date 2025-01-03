@@ -158,28 +158,23 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/hello-world/">Hello World</a>
+    <a href="http://localhost:1313/blog/breaking-down-lettuce-mset-commands-in-clustered-redis/">Breaking down Lettuce MSET Commands in Clustered Redis</a>
   </h1>
   
   <span class="date">
-    <time datetime="2025-01-01 11:08:06 -0800 PST" title='Wed, Jan 1, 2025, 11:08 AM PST'>
-      01/01/2025
+    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
+      01/04/2021
     </time>
   </span>
 
   <div class="description">
     
-      <h1 id="hey">HEY</h1>
-<p>Yeah!</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">main</span>() {
-</span></span><span style="display:flex;"><span>  System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;hello world&#34;</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div>
+      <p>To follow along with this post, it would be best if you have already <a href="https://nickolasfisher.com/blog/Bootstrap-a-Local-Sharded-Redis-Cluster-in-Five-Minutes">set up your local redis cluster</a> and know how to <a href="https://nickolasfisher.com/blog/Configuring-Lettuce-to-work-with-Clustered-Redis">connect to a redis cluster and interact with it via Lettuce</a>. And the source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/hello-world/">
+    <a class="read-more" href="http://localhost:1313/blog/breaking-down-lettuce-mset-commands-in-clustered-redis/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -194,28 +189,118 @@
   
     <article class="flex flex-col gap-1">
   <h1>
-    <a href="http://localhost:1313/blog/hello-world-1/">Hey world 1</a>
+    <a href="http://localhost:1313/blog/configuring-lettucewebflux-to-work-with-clustered-redis/">Configuring Lettuce/Webflux to work with Clustered Redis</a>
   </h1>
   
   <span class="date">
-    <time datetime="2025-01-01 10:08:06 -0800 PST" title='Wed, Jan 1, 2025, 10:08 AM PST'>
-      01/01/2025
+    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
+      01/04/2021
     </time>
   </span>
 
   <div class="description">
     
-      <h1 id="hey">HEY</h1>
-<p>Yeah!</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">main</span>() {
-</span></span><span style="display:flex;"><span>  System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;hello world&#34;</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div>
+      <p>Lettuce has some pretty nice out of the box support for working with clustered redis. This combination&ndash;a reactive client and application along with clustered redis&ndash;is about as scalable, performant, and resilient as things can get in distributed systems [though there are other tradeoffs which are not the subject of this post].</p>
     
   </div>
 
   <div class="mt-2">
-    <a class="read-more" href="http://localhost:1313/blog/hello-world-1/">
+    <a class="read-more" href="http://localhost:1313/blog/configuring-lettucewebflux-to-work-with-clustered-redis/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/expiring-individual-elements-in-a-redis-set/">Expiring Individual Elements in a Redis Set</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
+      01/04/2021
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
+<p>Redis does not allow you to set the expiration on individual members in a set, it only allows you to set an expiration on the entire set itself. If you want to have a sort of expiry on individual elements in a set, this article shares a workaround to that problem that works well in practice. Because I have already written a lot of <a href="https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux">boilerplate code for testing any redis operation using lettuce</a>, I'm going to be showing you this technique using a reactive lettuce client, however the basic concept should transfer easily to any other client.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/expiring-individual-elements-in-a-redis-set/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/how-to-prevent-debug-logging-by-test-containers-when-running-unit-tests-in-java/">How to Prevent DEBUG Logging by Test Containers when Running Unit Tests in Java</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
+      01/04/2021
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>I have been playing around with test containers lately [ <a href="https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux">redis test containers for testing lettuce</a> and <a href="https://nickolasfisher.com/blog/Setup-and-Use-a-DynamoDB-Test-Container-with-the-AWS-Java-SDK-20">dynamodb test containers for testing the AWS SDK 2.0</a>, to be specific], and I found soon after using them that I was getting by default a stream of DEBUG level logs whenever I ran my test suite. This was annoying, so I went digging for a solution.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-prevent-debug-logging-by-test-containers-when-running-unit-tests-in-java/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/how-to-publish-and-subscribe-to-redis-using-lettuce/">How to Publish and Subscribe to Redis Using Lettuce</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2021-04-01 00:00:00 &#43;0000 UTC" title='Thu, Apr 1, 2021, 12:00 AM UTC'>
+      01/04/2021
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>The source code for what follows <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
+<p>Subscribing to topics in redis allows for a <em>fanout</em> behavior, where any number of subscribers can be notified of a message from a publisher.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-publish-and-subscribe-to-redis-using-lettuce/">
       Read more
       <span class="w-4 h-4 stroke-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -250,6 +335,14 @@
   
   <div class="flex justify-end">
     
+      <a href="/blog/page/4/" class="pagination-button">
+        Older Posts
+        <span class="h-4 w-4 stroke-2"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+ </span>
+      </a>
+    
   </div>
 </div>
 
@@ -267,11 +360,11 @@
     
     
     <li>    
-      <a href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a href="https://www.linkedin.com/in/nick-fisher-software/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
     </li>
     
     <li>    
-      <a href="#" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://github.com/nfisher23" target="_blank" rel="noopener noreferrer">GitHub</a>
     </li>
     
     

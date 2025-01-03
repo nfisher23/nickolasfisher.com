@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en-US" class="scroll-smooth dark">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Improving Java IO Performance: Appropriately Using Random Access Over Streams</title>
+<meta
+  name="description"
+  content="The sample code for this blog post can be found on GitHub.
+A flavor I/O performance optimization that applies specifically to the filesystem is the decision on when to use Random Access instead of something like a BufferedInputStream. Random access allows for accessing a file in a similar way as a large array of bytes stored on the filesystem. From the oracle documentation on the RandomAccessFile class:"
+/>
+<link rel="canonical" href="http://localhost:1313/blog/improving-java-io-performance-appropriately-using-random-access-over-streams/" />
+<link rel="robots" href="/robots.txt" />
+
+<link rel="icon" type="image/x-icon" href="/icons/favicon.ico" />
+
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });</script>
+
+<link rel="stylesheet" href="http://localhost:1313/css/app.css" /></head>
+
+  <body class="max-w-screen-md mx-auto px-2.5">
+    <div class="header">
+      <header class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 pt-16 py-12">
+   
+
+
+<div class="flex-none w-20 h-20 rounded-full overflow-hidden">
+  <a href="http://localhost:1313/">
+    <img
+      srcset="/img/profile-picture_hu4241499301404582006.jpg 80w"
+      src="/img/profile-picture.jpg"
+      width="386"
+      height="345"
+      alt="Nick Fisher&#39;s tech blog"
+    />
+  </a>
+</div>
+
+  
+  <div class="flex flex-col gap-5">
+    <a href="http://localhost:1313/">
+  <h1 id="site-title">Nick Fisher&#39;s tech blog</h1>
+</a>
+ 
+    <nav>
+  <ul>
+     
+    
+    <li>
+      <a href="/" class="">
+        Home
+      </a>
+    </li>
+    
+    <li>
+      <a href="/blog" class="">
+        Blog
+      </a>
+    </li>
+    
+    <li>
+      <a href="/about" class="">
+        About me
+      </a>
+    </li>
+    
+    <li>
+      <a href="/categories" class="">
+        Categories
+      </a>
+    </li>
+    
+    <li>
+      <a href="/tags" class="">
+        Tags
+      </a>
+    </li>
+    
+  </ul>
+</nav>
+
+  </div>
+</header>
+
+      <button class="toggle-theme" aria-label="Toggle Theme" title="Toggle Theme" onclick="toggleTheme()">
+  <span class="theme-icon light"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+</svg> </span>
+  <span class="theme-icon dark"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+</svg> </span>
+</button>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const theme = localStorage.getItem('theme');
+
+    if (!theme || theme === 'light') {
+      setTheme('light');
+    } else {
+      setTheme(theme);
+    }
+  });
+
+  function setTheme(theme) {
+    const html = document.querySelector('html');
+    localStorage.setItem('theme', theme);
+
+    if (theme === 'light') {
+      if (html.classList.contains('dark')) {
+        document.querySelector('html').classList.remove('dark');
+      }
+
+      document.querySelector('.theme-icon.light').style.display = 'none';
+      document.querySelector('.theme-icon.dark').style.display = 'block';
+    } else {
+      if (!html.classList.contains('dark')) {
+        document.querySelector('html').classList.add('dark');
+      }
+
+      document.querySelector('.theme-icon.dark').style.display = 'none';
+      document.querySelector('.theme-icon.light').style.display = 'block';
+    }
+  }
+
+  function toggleTheme() {
+    const theme = localStorage.getItem('theme');
+
+    if (theme === 'light') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+  }
+</script>
+    </div>
+  
+    <main id="content">
+
+<article class="flex flex-col gap-10">
+  <header class="flex flex-col gap-2">
+    <h2 class="title-large">Improving Java IO Performance: Appropriately Using Random Access Over Streams</h2>
+
+    <div class="meta">
+      
+      <time datetime="2018-11-01 00:00:00 &#43;0000 UTC" title='Thu, Nov 1, 2018, 12:00 AM UTC'>
+        01/11/2018 - Estimated reading time: 3 minutes
+      </time>
+
+       
+      
+    </div>
+  </header>
+
+  
+
+  <section><p>The sample code for this blog post can be found <a href="https://github.com/nfisher23/io-tuning">on GitHub</a>.</p>
+<p>A flavor I/O performance optimization that applies specifically to the filesystem is the decision on when to use Random Access instead of something like a BufferedInputStream. Random access allows for accessing a file in a similar way as a large array of bytes stored on the filesystem. From the <a href="https://docs.oracle.com/javase/7/docs/api/java/io/RandomAccessFile.html">oracle documentation on the RandomAccessFile class</a>:</p>
+<p>&gt; There is a kind of cursor,
+&gt; or index into the implied array, called the <em>file pointer</em>;
+&gt; input operations read bytes starting at the file pointer and advance
+&gt; the file pointer past the bytes read.</p>
+<p>Instead of reading every byte into memory, then, the cursor-ish implementation will allow us to scan to the next part of the file. In the case where we know the structure of the file and it is quite orderly (e.g. a custom database or csv file with predictable spacing), and when we want to grab specific information out of the file, this provides us with a powerful way to improve performance.</p>
+<p>Let's create a csv file with 100K lines, where each line is 0,1,2,&hellip;,8,9:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @BeforeClass
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">setupLargeCsv</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        Path pathToLargeCsv <span style="color:#ff79c6">=</span> Paths.<span style="color:#50fa7b">get</span>(Utils.<span style="color:#50fa7b">largeCsvFilePath</span>);
+</span></span><span style="display:flex;"><span>        writeCsvFile(Utils.<span style="color:#50fa7b">numberOfNewLines_inLargeCsv</span>, pathToLargeCsv);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">writeCsvFile</span>(<span style="color:#8be9fd">int</span> numOfLinesToWrite, Path filePath) <span style="color:#8be9fd;font-style:italic">throws</span> IOException {
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// run once to create the sample data we need for testing</span>
+</span></span><span style="display:flex;"><span>        String csvDataToWrite <span style="color:#ff79c6">=</span> getCsv(numberOfNewLines_inSmallCsv);
+</span></span><span style="display:flex;"><span>        Files.<span style="color:#50fa7b">write</span>(filePath, csvDataToWrite.<span style="color:#50fa7b">getBytes</span>());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> String <span style="color:#50fa7b">getCsv</span>(<span style="color:#8be9fd">int</span> numberOfLines) {
+</span></span><span style="display:flex;"><span>        StringBuilder builder <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> StringBuilder();
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; numberOfLines; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> j <span style="color:#ff79c6">=</span> 0; j <span style="color:#ff79c6">&amp;</span>lt; 10; j<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>                builder.<span style="color:#50fa7b">append</span>(Integer.<span style="color:#50fa7b">toString</span>(j)).<span style="color:#50fa7b">append</span>(<span style="color:#ff79c6">&amp;</span>#34;,<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            builder.<span style="color:#50fa7b">replace</span>(builder.<span style="color:#50fa7b">length</span>() <span style="color:#ff79c6">-</span> 1, builder.<span style="color:#50fa7b">length</span>(), <span style="color:#ff79c6">&amp;</span>#34;\n<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> builder.<span style="color:#50fa7b">toString</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>And set up our benchmark runner with JMH:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">runBenchmark</span>(Class clazz) <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        Options options <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> OptionsBuilder()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">include</span>(clazz.<span style="color:#50fa7b">getName</span>() <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#ff79c6">*&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">mode</span>(Mode.<span style="color:#50fa7b">AverageTime</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">warmupTime</span>(TimeValue.<span style="color:#50fa7b">seconds</span>(1))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">warmupIterations</span>(2)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">measurementIterations</span>(2)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">timeUnit</span>(TimeUnit.<span style="color:#50fa7b">MILLISECONDS</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">measurementTime</span>(TimeValue.<span style="color:#50fa7b">seconds</span>(1))
+</span></span><span style="display:flex;"><span>                <span style="color:#6272a4">// OS bottleneck, so we use should one</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#6272a4">// thread at a time for accurate results</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">threads</span>(1)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">forks</span>(1)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">shouldFailOnError</span>(<span style="color:#ff79c6">true</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">shouldDoGC</span>(<span style="color:#ff79c6">true</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">new</span> Runner(options).<span style="color:#50fa7b">run</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>....
+</span></span><span style="display:flex;"><span>    @Test
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">runBenchmark</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        Utils.<span style="color:#50fa7b">runBenchmark</span>(<span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">getClass</span>());
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>Let's assume we want to stop off and read each character that is 20K characters in. Because of the structure of the csv file, we know that these will all be '0'. If we want to implement that using an InputStream/BufferedInputStream we would do this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">int</span> INTERVAL <span style="color:#ff79c6">=</span> 20000;
+</span></span><span style="display:flex;"><span>    @Benchmark
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">scanningThroughWithBufferedInputStream</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">try</span> (FileInputStream fileInputStream <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> FileInputStream(Utils.<span style="color:#50fa7b">largeCsvFilePath</span>);
+</span></span><span style="display:flex;"><span>             BufferedInputStream bufferedInputStream <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> BufferedInputStream(fileInputStream)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; 10; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>                <span style="color:#8be9fd">int</span> readVal <span style="color:#ff79c6">=</span> bufferedInputStream.<span style="color:#50fa7b">read</span>();
+</span></span><span style="display:flex;"><span>                <span style="color:#8be9fd">long</span> totalSkipped <span style="color:#ff79c6">=</span> 0;
+</span></span><span style="display:flex;"><span>                totalSkipped <span style="color:#ff79c6">=</span> bufferedInputStream.<span style="color:#50fa7b">skip</span>(INTERVAL <span style="color:#ff79c6">-</span> 1);
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">while</span> (totalSkipped <span style="color:#ff79c6">!=</span> INTERVAL <span style="color:#ff79c6">-</span> 1) {
+</span></span><span style="display:flex;"><span>                    totalSkipped <span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">=</span> bufferedInputStream.<span style="color:#50fa7b">skip</span>(INTERVAL <span style="color:#ff79c6">-</span> totalSkipped <span style="color:#ff79c6">-</span> 1);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                assertEquals(<span style="color:#ff79c6">&amp;</span>#39;0<span style="color:#ff79c6">&amp;</span>#39;, readVal);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>The reason we need to keep skipping is because the bufferedInputStream.skip(..) method does not guarantee it will skip the passed in value, and instead returns the actual amount skipped.</p>
+<p>The performance of this method on my machine comes out to:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Benchmark                                                 Mode  Cnt  Score   Error  Units
+</span></span><span style="display:flex;"><span>RandomAccessTests.scanningThroughWithBufferedInputStream  avgt    <span style="color:#bd93f9">2</span>  0.038          ms/op
+</span></span></code></pre></div><p>Conversely, doing that with a RandomAccessFile would look like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Benchmark
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">seekingToPosition</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">try</span> (RandomAccessFile randomAccessFile <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> RandomAccessFile(Utils.<span style="color:#50fa7b">largeCsvFilePath</span>, <span style="color:#ff79c6">&amp;</span>#34;r<span style="color:#ff79c6">&amp;</span>#34;)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">for</span> (<span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0; i <span style="color:#ff79c6">&amp;</span>lt; 10; i<span style="color:#ff79c6">&amp;</span>#43;<span style="color:#ff79c6">&amp;</span>#43;) {
+</span></span><span style="display:flex;"><span>                randomAccessFile.<span style="color:#50fa7b">seek</span>(INTERVAL);
+</span></span><span style="display:flex;"><span>                <span style="color:#8be9fd">int</span> readValue <span style="color:#ff79c6">=</span> randomAccessFile.<span style="color:#50fa7b">read</span>();
+</span></span><span style="display:flex;"><span>                assertEquals(<span style="color:#ff79c6">&amp;</span>#39;0<span style="color:#ff79c6">&amp;</span>#39;, readValue);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>And the performance of both methods run back to back, on my machine, looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Benchmark                                                 Mode  Cnt  Score   Error  Units
+</span></span><span style="display:flex;"><span>RandomAccessTests.scanningThroughWithBufferedInputStream  avgt    <span style="color:#bd93f9">2</span>  0.038          ms/op
+</span></span><span style="display:flex;"><span>RandomAccessTests.seekingToPosition                       avgt    <span style="color:#bd93f9">2</span>  0.019          ms/op
+</span></span></code></pre></div><p>Or, by utilizing the RandomAccessFile, we have achieved approximately double the performance improvement.</p>
+</section>
+
+  
+    
+  
+
+    
+  
+
+
+  <footer>
+    
+  </footer>
+</article>
+
+
+    </main><footer class="pt-5 pb-10 grid gap-3 sm:grid-cols-2">
+    <div class="text-xs font-semibold text-gray-500 order-2 sm:order-1">
+  © 2018-2025 —
+  <a href="http://localhost:1313/">Nick Fisher&#39;s tech blog</a> 
+</div>
+
+    <div class="order-1 sm:order-2">
+  <ul class="flex sm:justify-end gap-5">
+    
+    
+    <li>    
+      <a href="https://www.linkedin.com/in/nick-fisher-software/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </li>
+    
+    <li>    
+      <a href="https://github.com/nfisher23" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </li>
+    
+    
+  </ul>
+</div>
+
+</footer></body>
+</html>

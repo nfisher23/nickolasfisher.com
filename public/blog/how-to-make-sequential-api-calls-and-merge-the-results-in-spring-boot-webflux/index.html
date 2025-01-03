@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en-US" class="scroll-smooth dark">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>How to Make Sequential API Calls and Merge the Results In Spring Boot Webflux</title>
+<meta
+  name="description"
+  content="The source code for this article can be found on Github.
+In reactive programming, it&#39;s a game of callbacks. In the vast majority of cases, you will want to defer all of your I/O operations to the library you are using [typically, netty, under the hood], and stay focused on setting up the flow so that the right functions are invoked in the right order. Sometimes you will want to make calls in parallel, sometimes you need data from a previous call or operation available in order to invoke that right function."
+/>
+<link rel="canonical" href="http://localhost:1313/blog/how-to-make-sequential-api-calls-and-merge-the-results-in-spring-boot-webflux/" />
+<link rel="robots" href="/robots.txt" />
+
+<link rel="icon" type="image/x-icon" href="/icons/favicon.ico" />
+
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });</script>
+
+<link rel="stylesheet" href="http://localhost:1313/css/app.css" /></head>
+
+  <body class="max-w-screen-md mx-auto px-2.5">
+    <div class="header">
+      <header class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 pt-16 py-12">
+   
+
+
+<div class="flex-none w-20 h-20 rounded-full overflow-hidden">
+  <a href="http://localhost:1313/">
+    <img
+      srcset="/img/profile-picture_hu4241499301404582006.jpg 80w"
+      src="/img/profile-picture.jpg"
+      width="386"
+      height="345"
+      alt="Nick Fisher&#39;s tech blog"
+    />
+  </a>
+</div>
+
+  
+  <div class="flex flex-col gap-5">
+    <a href="http://localhost:1313/">
+  <h1 id="site-title">Nick Fisher&#39;s tech blog</h1>
+</a>
+ 
+    <nav>
+  <ul>
+     
+    
+    <li>
+      <a href="/" class="">
+        Home
+      </a>
+    </li>
+    
+    <li>
+      <a href="/blog" class="">
+        Blog
+      </a>
+    </li>
+    
+    <li>
+      <a href="/about" class="">
+        About me
+      </a>
+    </li>
+    
+    <li>
+      <a href="/categories" class="">
+        Categories
+      </a>
+    </li>
+    
+    <li>
+      <a href="/tags" class="">
+        Tags
+      </a>
+    </li>
+    
+  </ul>
+</nav>
+
+  </div>
+</header>
+
+      <button class="toggle-theme" aria-label="Toggle Theme" title="Toggle Theme" onclick="toggleTheme()">
+  <span class="theme-icon light"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+</svg> </span>
+  <span class="theme-icon dark"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+</svg> </span>
+</button>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const theme = localStorage.getItem('theme');
+
+    if (!theme || theme === 'light') {
+      setTheme('light');
+    } else {
+      setTheme(theme);
+    }
+  });
+
+  function setTheme(theme) {
+    const html = document.querySelector('html');
+    localStorage.setItem('theme', theme);
+
+    if (theme === 'light') {
+      if (html.classList.contains('dark')) {
+        document.querySelector('html').classList.remove('dark');
+      }
+
+      document.querySelector('.theme-icon.light').style.display = 'none';
+      document.querySelector('.theme-icon.dark').style.display = 'block';
+    } else {
+      if (!html.classList.contains('dark')) {
+        document.querySelector('html').classList.add('dark');
+      }
+
+      document.querySelector('.theme-icon.dark').style.display = 'none';
+      document.querySelector('.theme-icon.light').style.display = 'block';
+    }
+  }
+
+  function toggleTheme() {
+    const theme = localStorage.getItem('theme');
+
+    if (theme === 'light') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+  }
+</script>
+    </div>
+  
+    <main id="content">
+
+<article class="flex flex-col gap-10">
+  <header class="flex flex-col gap-2">
+    <h2 class="title-large">How to Make Sequential API Calls and Merge the Results In Spring Boot Webflux</h2>
+
+    <div class="meta">
+      
+      <time datetime="2020-09-01 00:00:00 &#43;0000 UTC" title='Tue, Sep 1, 2020, 12:00 AM UTC'>
+        01/09/2020 - Estimated reading time: 4 minutes
+      </time>
+
+       
+      
+    </div>
+  </header>
+
+  
+
+  <section><p>The source code for this article <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience">can be found on Github</a>.</p>
+<p>In reactive programming, it's a game of callbacks. In the vast majority of cases, you will want to defer all of your I/O operations to the library you are using [typically, netty, under the hood], and stay focused on setting up the flow so that the right functions are invoked in the right order. Sometimes you will want to make calls in parallel, sometimes you need data from a previous call or operation available in order to invoke that right function.</p>
+<p>The key to coordinating operations like this is to defer to the <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html">various operations on Mono</a>, or in the streaming case, <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html">those on flux</a>. This post is focused on a very specific need:</p>
+<ol>
+<li>You make a call to get data from Service A</li>
+<li>You need the result of the call from Service A in order to make another call</li>
+<li>You want to do something with the results of 1 and 2</li>
+</ol>
+<p>In this case, we need <strong>zipWhen</strong>.</p>
+<h2 id="setup-the-app">Setup the App</h2>
+<p>You can spin up an application in the sprint boot initializr or whatever is most comfortable to you [ensure you're selecting the <strong>Spring Reactive Web</strong> option]. Since we're making a network call, we will want to start by setting up our WebClient:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Config</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    @Bean(<span style="color:#ff79c6">&amp;</span>#34;service<span style="color:#ff79c6">-</span>a<span style="color:#ff79c6">-</span>web<span style="color:#ff79c6">-</span>client<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> WebClient <span style="color:#50fa7b">serviceAWebClient</span>() {
+</span></span><span style="display:flex;"><span>        HttpClient httpClient <span style="color:#ff79c6">=</span> HttpClient.<span style="color:#50fa7b">create</span>().<span style="color:#50fa7b">tcpConfiguration</span>(tcpClient <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                tcpClient.<span style="color:#50fa7b">option</span>(ChannelOption.<span style="color:#50fa7b">CONNECT_TIMEOUT_MILLIS</span>, 1000)
+</span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">doOnConnected</span>(connection <span style="color:#ff79c6">-&amp;</span>gt; connection.<span style="color:#50fa7b">addHandlerLast</span>(<span style="color:#ff79c6">new</span> ReadTimeoutHandler(1000, TimeUnit.<span style="color:#50fa7b">MILLISECONDS</span>)))
+</span></span><span style="display:flex;"><span>        );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> WebClient.<span style="color:#50fa7b">builder</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">baseUrl</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//your-base-url.com&amp;#34;)</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">clientConnector</span>(<span style="color:#ff79c6">new</span> ReactorClientHttpConnector(httpClient))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Here I've included a connection and read timeout of 1 second just because the default is like 30 seconds which nobody in their right mind would ever want to use.</p>
+<p>Now let's set up the situation, first we will make two DTOs, expected to be received on two different calls: <strong>FirstCallDTO</strong> and <strong>SecondCallDTO</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#ff79c6">package</span> com.nickolasfisher.webflux.model;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">FirstCallDTO</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> Integer fieldFromFirstCall;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Integer <span style="color:#50fa7b">getFieldFromFirstCall</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> fieldFromFirstCall;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">setFieldFromFirstCall</span>(Integer fieldFromFirstCall) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">fieldFromFirstCall</span> <span style="color:#ff79c6">=</span> fieldFromFirstCall;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>...<span style="color:#50fa7b">in</span> another file...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">package</span> com.nickolasfisher.webflux.model;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">SecondCallDTO</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> String fieldFromSecondCall;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">getFieldFromSecondCall</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> fieldFromSecondCall;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">setFieldFromSecondCall</span>(String fieldFromSecondCall) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">fieldFromSecondCall</span> <span style="color:#ff79c6">=</span> fieldFromSecondCall;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>I'm also going to add mockserver as a test dependency and write the test first [TDD]. So you can modify your <strong>pom.xml</strong> to include:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        <span style="color:#ff79c6">&amp;</span>lt;dependency<span style="color:#ff79c6">&amp;</span>gt;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&amp;</span>lt;groupId<span style="color:#ff79c6">&amp;</span>gt;org.<span style="color:#50fa7b">mock</span><span style="color:#ff79c6">-</span>server<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">/</span>groupId<span style="color:#ff79c6">&amp;</span>gt;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&amp;</span>lt;artifactId<span style="color:#ff79c6">&amp;</span>gt;mockserver<span style="color:#ff79c6">-</span>junit<span style="color:#ff79c6">-</span>jupiter<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">/</span>artifactId<span style="color:#ff79c6">&amp;</span>gt;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&amp;</span>lt;version<span style="color:#ff79c6">&amp;</span>gt;5.<span style="color:#50fa7b">11</span>.<span style="color:#50fa7b">1</span><span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">/</span>version<span style="color:#ff79c6">&amp;</span>gt;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">/</span>dependency<span style="color:#ff79c6">&amp;</span>gt;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&amp;</span>lt;dependency<span style="color:#ff79c6">&amp;</span>gt;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&amp;</span>lt;groupId<span style="color:#ff79c6">&amp;</span>gt;org.<span style="color:#50fa7b">mock</span><span style="color:#ff79c6">-</span>server<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">/</span>groupId<span style="color:#ff79c6">&amp;</span>gt;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&amp;</span>lt;artifactId<span style="color:#ff79c6">&amp;</span>gt;mockserver<span style="color:#ff79c6">-</span>netty<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">/</span>artifactId<span style="color:#ff79c6">&amp;</span>gt;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&amp;</span>lt;version<span style="color:#ff79c6">&amp;</span>gt;5.<span style="color:#50fa7b">11</span>.<span style="color:#50fa7b">0</span><span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">/</span>version<span style="color:#ff79c6">&amp;</span>gt;
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&amp;</span>lt;scope<span style="color:#ff79c6">&amp;</span>gt;test<span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">/</span>scope<span style="color:#ff79c6">&amp;</span>gt;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">&amp;</span>lt;<span style="color:#ff79c6">/</span>dependency<span style="color:#ff79c6">&amp;</span>gt;
+</span></span></code></pre></div><p>We will create a bare bones service called <strong>CombiningCallsService</strong> to work with, starting with it empty as is the TDD way:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Service
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">CombiningCallsService</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> WebClient serviceAWebClient;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">CombiningCallsService</span>(@Qualifier(<span style="color:#ff79c6">&amp;</span>#34;service<span style="color:#ff79c6">-</span>a<span style="color:#ff79c6">-</span>web<span style="color:#ff79c6">-</span>client<span style="color:#ff79c6">&amp;</span>#34;) WebClient serviceAWebClient) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">serviceAWebClient</span> <span style="color:#ff79c6">=</span> serviceAWebClient;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;SecondCallDTO<span style="color:#ff79c6">&amp;</span>gt; sequentialCalls(Integer key) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">null</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Then we can write the test, leveraging mockserver's direct integration with junit by just using an annotation, and setting up data:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@ExtendWith(MockServerExtension.<span style="color:#50fa7b">class</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">CombiningCallsServiceIT</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> CombiningCallsService combiningCallsService;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> WebClient webClient;
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> ClientAndServer clientAndServer;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">CombiningCallsServiceIT</span>(ClientAndServer clientAndServer) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span> <span style="color:#ff79c6">=</span> clientAndServer;
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">webClient</span> <span style="color:#ff79c6">=</span> WebClient.<span style="color:#50fa7b">builder</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">baseUrl</span>(<span style="color:#ff79c6">&amp;</span>#34;http:<span style="color:#6272a4">//localhost:&amp;#34; &amp;#43; clientAndServer.getPort())</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    @BeforeEach
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">setup</span>() {
+</span></span><span style="display:flex;"><span>        combiningCallsService <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> CombiningCallsService(webClient);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    @AfterEach
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">reset</span>() {
+</span></span><span style="display:flex;"><span>        clientAndServer.<span style="color:#50fa7b">reset</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    @Test
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">callsFirstAndUsesCallToGetSecond</span>() {
+</span></span><span style="display:flex;"><span>        HttpRequest expectedFirstRequest <span style="color:#ff79c6">=</span> HttpRequest.<span style="color:#50fa7b">request</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>first<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>10<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>.<span style="color:#50fa7b">when</span>(
+</span></span><span style="display:flex;"><span>                expectedFirstRequest
+</span></span><span style="display:flex;"><span>        ).<span style="color:#50fa7b">respond</span>(
+</span></span><span style="display:flex;"><span>                HttpResponse.<span style="color:#50fa7b">response</span>()
+</span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">withBody</span>(<span style="color:#ff79c6">&amp;</span>#34;{\<span style="color:#ff79c6">&amp;</span>#34;fieldFromFirstCall\<span style="color:#ff79c6">&amp;</span>#34;: 100}<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">withContentType</span>(MediaType.<span style="color:#50fa7b">APPLICATION_JSON</span>)
+</span></span><span style="display:flex;"><span>        );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        HttpRequest expectedSecondRequest <span style="color:#ff79c6">=</span> HttpRequest.<span style="color:#50fa7b">request</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withMethod</span>(HttpMethod.<span style="color:#50fa7b">GET</span>.<span style="color:#50fa7b">name</span>())
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">withPath</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>second<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>100<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>.<span style="color:#50fa7b">when</span>(
+</span></span><span style="display:flex;"><span>                expectedSecondRequest
+</span></span><span style="display:flex;"><span>        ).<span style="color:#50fa7b">respond</span>(
+</span></span><span style="display:flex;"><span>                HttpResponse.<span style="color:#50fa7b">response</span>()
+</span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">withBody</span>(<span style="color:#ff79c6">&amp;</span>#34;{\<span style="color:#ff79c6">&amp;</span>#34;fieldFromSecondCall\<span style="color:#ff79c6">&amp;</span>#34;: \<span style="color:#ff79c6">&amp;</span>#34;hello\<span style="color:#ff79c6">&amp;</span>#34;}<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                        .<span style="color:#50fa7b">withContentType</span>(MediaType.<span style="color:#50fa7b">APPLICATION_JSON</span>)
+</span></span><span style="display:flex;"><span>        );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(<span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">combiningCallsService</span>.<span style="color:#50fa7b">sequentialCalls</span>(10))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(secondCallDTO <span style="color:#ff79c6">-&amp;</span>gt; <span style="color:#ff79c6">&amp;</span>#34;hello<span style="color:#ff79c6">&amp;</span>#34;.<span style="color:#50fa7b">equals</span>(secondCallDTO.<span style="color:#50fa7b">getFieldFromSecondCall</span>()))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>.<span style="color:#50fa7b">verify</span>(expectedFirstRequest, VerificationTimes.<span style="color:#50fa7b">once</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">clientAndServer</span>.<span style="color:#50fa7b">verify</span>(expectedSecondRequest, VerificationTimes.<span style="color:#50fa7b">once</span>());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The one test in this class with:</p>
+<ol>
+<li>Sets up two expectations on mock server: if you make a GET request to <strong>/first/endpoint/10</strong> then we will respond with a json body. If you make a GET request to <strong>/second/endpoint/100</strong> we respond with a different json body.</li>
+<li>Leverages <strong>StepVerifier</strong> to subscribe to the <strong>Mono</strong> returned from our custom service, and asserts that we will see a single result that matches the lambda passed in [&quot;hello&quot; must equal the field in the result for this test to pass]</li>
+<li>Verifies that both requests were actually made.</li>
+</ol>
+<p>If you run this test, it predictably fails. We can get it to pass by leveraging zipWhen, which will be a callback that is only invoked after the previous Mono completes, then passes in the result of that mono into the next one:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>@Service
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">CombiningCallsService</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> WebClient serviceAWebClient;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">CombiningCallsService</span>(@Qualifier(<span style="color:#ff79c6">&amp;</span>#34;service<span style="color:#ff79c6">-</span>a<span style="color:#ff79c6">-</span>web<span style="color:#ff79c6">-</span>client<span style="color:#ff79c6">&amp;</span>#34;) WebClient serviceAWebClient) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">serviceAWebClient</span> <span style="color:#ff79c6">=</span> serviceAWebClient;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;SecondCallDTO<span style="color:#ff79c6">&amp;</span>gt; sequentialCalls(Integer key) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">this</span>.<span style="color:#50fa7b">serviceAWebClient</span>.<span style="color:#50fa7b">get</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">uri</span>(uriBuilder <span style="color:#ff79c6">-&amp;</span>gt; uriBuilder.<span style="color:#50fa7b">path</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>first<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>{param}<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">build</span>(key))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">retrieve</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">bodyToMono</span>(FirstCallDTO.<span style="color:#50fa7b">class</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">zipWhen</span>(firstCallDTO <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                    serviceAWebClient.<span style="color:#50fa7b">get</span>().<span style="color:#50fa7b">uri</span>(
+</span></span><span style="display:flex;"><span>                            uriBuilder <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                                    uriBuilder.<span style="color:#50fa7b">path</span>(<span style="color:#ff79c6">&amp;</span>#34;<span style="color:#ff79c6">/</span>second<span style="color:#ff79c6">/</span>endpoint<span style="color:#ff79c6">/</span>{param}<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                                            .<span style="color:#50fa7b">build</span>(firstCallDTO.<span style="color:#50fa7b">getFieldFromFirstCall</span>()))
+</span></span><span style="display:flex;"><span>                            .<span style="color:#50fa7b">retrieve</span>()
+</span></span><span style="display:flex;"><span>                            .<span style="color:#50fa7b">bodyToMono</span>(SecondCallDTO.<span style="color:#50fa7b">class</span>),
+</span></span><span style="display:flex;"><span>                    (firstCallDTO, secondCallDTO) <span style="color:#ff79c6">-&amp;</span>gt; secondCallDTO
+</span></span><span style="display:flex;"><span>                );
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>That final lambda that just returns <strong>secondCallDTO</strong> is a resolver function. If necessary, you can do more with that by injecting your own custom code there, changing the return type, whatever.</p>
+<p>And with that you should be good to go. Reminder: <a href="https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience">this code is on github</a>.</p>
+</section>
+
+  
+    
+  
+
+    
+  
+
+
+  <footer>
+    
+  </footer>
+</article>
+
+
+    </main><footer class="pt-5 pb-10 grid gap-3 sm:grid-cols-2">
+    <div class="text-xs font-semibold text-gray-500 order-2 sm:order-1">
+  © 2018-2025 —
+  <a href="http://localhost:1313/">Nick Fisher&#39;s tech blog</a> 
+</div>
+
+    <div class="order-1 sm:order-2">
+  <ul class="flex sm:justify-end gap-5">
+    
+    
+    <li>    
+      <a href="https://www.linkedin.com/in/nick-fisher-software/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </li>
+    
+    <li>    
+      <a href="https://github.com/nfisher23" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </li>
+    
+    
+  </ul>
+</div>
+
+</footer></body>
+</html>

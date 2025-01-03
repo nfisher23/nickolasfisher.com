@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en-US" class="scroll-smooth dark">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Using Redis as a Distributed Lock with Lettuce</title>
+<meta
+  name="description"
+  content="The source code for this article can be found on Github.
+Using Redis as a best effort locking mechanism can be very useful in practice, to prevent two logical threads from clobbering each other. While redis locking is certainly not perfect, and you shouldn&#39;t use redis locking if the underlying operation can&#39;t be occasionally done twice, it can still be useful for that &quot;best effort, do this once&quot; use case."
+/>
+<link rel="canonical" href="http://localhost:1313/blog/using-redis-as-a-distributed-lock-with-lettuce/" />
+<link rel="robots" href="/robots.txt" />
+
+<link rel="icon" type="image/x-icon" href="/icons/favicon.ico" />
+
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });</script>
+
+<link rel="stylesheet" href="http://localhost:1313/css/app.css" /></head>
+
+  <body class="max-w-screen-md mx-auto px-2.5">
+    <div class="header">
+      <header class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 pt-16 py-12">
+   
+
+
+<div class="flex-none w-20 h-20 rounded-full overflow-hidden">
+  <a href="http://localhost:1313/">
+    <img
+      srcset="/img/profile-picture_hu4241499301404582006.jpg 80w"
+      src="/img/profile-picture.jpg"
+      width="386"
+      height="345"
+      alt="Nick Fisher&#39;s tech blog"
+    />
+  </a>
+</div>
+
+  
+  <div class="flex flex-col gap-5">
+    <a href="http://localhost:1313/">
+  <h1 id="site-title">Nick Fisher&#39;s tech blog</h1>
+</a>
+ 
+    <nav>
+  <ul>
+     
+    
+    <li>
+      <a href="/" class="">
+        Home
+      </a>
+    </li>
+    
+    <li>
+      <a href="/blog" class="">
+        Blog
+      </a>
+    </li>
+    
+    <li>
+      <a href="/about" class="">
+        About me
+      </a>
+    </li>
+    
+    <li>
+      <a href="/categories" class="">
+        Categories
+      </a>
+    </li>
+    
+    <li>
+      <a href="/tags" class="">
+        Tags
+      </a>
+    </li>
+    
+  </ul>
+</nav>
+
+  </div>
+</header>
+
+      <button class="toggle-theme" aria-label="Toggle Theme" title="Toggle Theme" onclick="toggleTheme()">
+  <span class="theme-icon light"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+</svg> </span>
+  <span class="theme-icon dark"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+</svg> </span>
+</button>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const theme = localStorage.getItem('theme');
+
+    if (!theme || theme === 'light') {
+      setTheme('light');
+    } else {
+      setTheme(theme);
+    }
+  });
+
+  function setTheme(theme) {
+    const html = document.querySelector('html');
+    localStorage.setItem('theme', theme);
+
+    if (theme === 'light') {
+      if (html.classList.contains('dark')) {
+        document.querySelector('html').classList.remove('dark');
+      }
+
+      document.querySelector('.theme-icon.light').style.display = 'none';
+      document.querySelector('.theme-icon.dark').style.display = 'block';
+    } else {
+      if (!html.classList.contains('dark')) {
+        document.querySelector('html').classList.add('dark');
+      }
+
+      document.querySelector('.theme-icon.dark').style.display = 'none';
+      document.querySelector('.theme-icon.light').style.display = 'block';
+    }
+  }
+
+  function toggleTheme() {
+    const theme = localStorage.getItem('theme');
+
+    if (theme === 'light') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+  }
+</script>
+    </div>
+  
+    <main id="content">
+
+<article class="flex flex-col gap-10">
+  <header class="flex flex-col gap-2">
+    <h2 class="title-large">Using Redis as a Distributed Lock with Lettuce</h2>
+
+    <div class="meta">
+      
+      <time datetime="2021-05-01 00:00:00 &#43;0000 UTC" title='Sat, May 1, 2021, 12:00 AM UTC'>
+        01/05/2021 - Estimated reading time: 4 minutes
+      </time>
+
+       
+      
+    </div>
+  </header>
+
+  
+
+  <section><p>The source code for this article <a href="https://github.com/nfisher23/reactive-programming-webflux">can be found on Github</a>.</p>
+<p>Using Redis as a best effort locking mechanism can be very useful in practice, to prevent two logical threads from clobbering each other. While redis locking is certainly not perfect, and <a href="https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html">you shouldn't use redis locking if the underlying operation can't be occasionally done twice</a>, it can still be useful for that &quot;best effort, do this once&quot; use case.</p>
+<h3 id="basic-order-of-operations">Basic Order of Operations</h3>
+<p>The non edge case scenario can look like:</p>
+<ol>
+<li>Atomically acquire a lock with a timeout</li>
+<li>Get a boolean response: Lock acquired/Lock not acquired</li>
+<li>If lock acquired, do your work</li>
+<li>If lock not acquired, do nothing</li>
+</ol>
+<p>There are some key edge cases we'll want to pay attention to, but this is the gist of it.</p>
+<h3 id="naive-implementation">Naive Implementation</h3>
+<p>Note: it will be much easier to follow along if you know <a href="https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux">how to configure embedded redis to test a reactive lettuce client</a> or <a href="https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux">how to configure a test container to test a redis client</a>.</p>
+<p>A simple implementation of our problem can look like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt; simpleDoIfLockAcquired(String lockKey, Mono<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt; thingToDo) {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> redisReactiveCommands.<span style="color:#50fa7b">setnx</span>(lockKey, <span style="color:#ff79c6">&amp;</span>#34;ACQUIRED<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">flatMap</span>(acquired <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">if</span> (acquired) {
+</span></span><span style="display:flex;"><span>                        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;lock acquired, returning mono<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> thingToDo;
+</span></span><span style="display:flex;"><span>                    } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>                        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;lock not acquired, doing nothing<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">empty</span>();
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                });
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>Here, we're using SETNX to atomically write a key with a value to redis. If the write fails, SETNX will tell us that is failed. We can pass in any operation [represented as a Mono] that we want to be performed. Here's an example using it and verifying we don't do anything twice in the normal use case:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">distributedLocking</span>() {
+</span></span><span style="display:flex;"><span>        AtomicInteger numTimesCalled <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> AtomicInteger(0);
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt; justLogItMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;not doing anything, just logging<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>            numTimesCalled.<span style="color:#50fa7b">incrementAndGet</span>();
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">empty</span>();
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(simpleDoIfLockAcquired(<span style="color:#ff79c6">&amp;</span>#34;lock<span style="color:#ff79c6">-</span>123<span style="color:#ff79c6">&amp;</span>#34;, justLogItMono))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(simpleDoIfLockAcquired(<span style="color:#ff79c6">&amp;</span>#34;lock<span style="color:#ff79c6">-</span>123<span style="color:#ff79c6">&amp;</span>#34;, justLogItMono))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(simpleDoIfLockAcquired(<span style="color:#ff79c6">&amp;</span>#34;lock<span style="color:#ff79c6">-</span>123<span style="color:#ff79c6">&amp;</span>#34;, justLogItMono))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        assertEquals(1, numTimesCalled.<span style="color:#50fa7b">get</span>());
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>This test counts the number of times our <strong>justLogItMono</strong> actually gets invoked, and because we use the same locking key every time, it only gets invoked once.</p>
+<h3 id="handling-edge-cases">Handling Edge Cases</h3>
+<p>We have a couple of problems with the above implementation, however.</p>
+<p>For one, we have no timeout on that lock&ndash;so if the underlying thing that we're doing fails unexpectedly, it never gets done. For two, we have no way of saying whether we're currently processing the underlying operation or whether we have already finished it, or processed it [which is useful if another thread comes along later, because then that thread knows to abandon the operation completely rather than wait until the lease expires]. Finally, if there are any errors when doing the underlying operation, ideally we would just release the lock right away so another thread could retry when the time comes.</p>
+<p>We can improve upon this situation with some code like the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> Mono<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt; doIfLockAcquiredAndHandleErrors(String lockKey, Mono<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt; thingToDo) {
+</span></span><span style="display:flex;"><span>        SetArgs setArgs <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> SetArgs().<span style="color:#50fa7b">nx</span>().<span style="color:#50fa7b">ex</span>(20);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> redisReactiveCommands
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">set</span>(lockKey, <span style="color:#ff79c6">&amp;</span>#34;PROCESSING<span style="color:#ff79c6">&amp;</span>#34;, setArgs)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">switchIfEmpty</span>(Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                    System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;lock not acquired, doing nothing<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">empty</span>();
+</span></span><span style="display:flex;"><span>                }))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">flatMap</span>(acquired <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">if</span> (acquired.<span style="color:#50fa7b">equals</span>(<span style="color:#ff79c6">&amp;</span>#34;OK<span style="color:#ff79c6">&amp;</span>#34;)) {
+</span></span><span style="display:flex;"><span>                        System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;lock acquired, returning mono<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">return</span> thingToDo
+</span></span><span style="display:flex;"><span>                                .<span style="color:#50fa7b">onErrorResume</span>(throwable <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                                        redisReactiveCommands
+</span></span><span style="display:flex;"><span>                                                .<span style="color:#50fa7b">del</span>(lockKey)
+</span></span><span style="display:flex;"><span>                                                .<span style="color:#50fa7b">then</span>(Mono.<span style="color:#50fa7b">error</span>(throwable))
+</span></span><span style="display:flex;"><span>                                )
+</span></span><span style="display:flex;"><span>                                .<span style="color:#50fa7b">then</span>(redisReactiveCommands.<span style="color:#50fa7b">set</span>(lockKey, <span style="color:#ff79c6">&amp;</span>#34;PROCESSED<span style="color:#ff79c6">&amp;</span>#34;, <span style="color:#ff79c6">new</span> SetArgs().<span style="color:#50fa7b">ex</span>(200)).<span style="color:#50fa7b">then</span>());
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#6272a4">// we can further improve this situation by signaling whether we&amp;#39;re PROCESSING or PROCESSED to the caller</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">error</span>(<span style="color:#ff79c6">new</span> RuntimeException(<span style="color:#ff79c6">&amp;</span>#34;whoops<span style="color:#ff79c6">!&amp;</span>#34;));
+</span></span><span style="display:flex;"><span>                });
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>This improves the situation for us and addresses some of the edge cases we need to worry about. I can write a test that uses this helper method with something like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">distributedLockingAndErrorHandling</span>() {
+</span></span><span style="display:flex;"><span>        AtomicInteger numTimesCalled <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> AtomicInteger(0);
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt; errorMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;returning an error<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>            numTimesCalled.<span style="color:#50fa7b">incrementAndGet</span>();
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">error</span>(<span style="color:#ff79c6">new</span> RuntimeException(<span style="color:#ff79c6">&amp;</span>#34;ahhhh<span style="color:#ff79c6">&amp;</span>#34;));
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Mono<span style="color:#ff79c6">&amp;</span>lt;Void<span style="color:#ff79c6">&amp;</span>gt; successMono <span style="color:#ff79c6">=</span> Mono.<span style="color:#50fa7b">defer</span>(() <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#50fa7b">out</span>.<span style="color:#50fa7b">println</span>(<span style="color:#ff79c6">&amp;</span>#34;returning success<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>            numTimesCalled.<span style="color:#50fa7b">incrementAndGet</span>();
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span> Mono.<span style="color:#50fa7b">empty</span>();
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(doIfLockAcquiredAndHandleErrors(<span style="color:#ff79c6">&amp;</span>#34;lock<span style="color:#ff79c6">-</span>123<span style="color:#ff79c6">&amp;</span>#34;, errorMono))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyError</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(doIfLockAcquiredAndHandleErrors(<span style="color:#ff79c6">&amp;</span>#34;lock<span style="color:#ff79c6">-</span>123<span style="color:#ff79c6">&amp;</span>#34;, errorMono))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyError</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(doIfLockAcquiredAndHandleErrors(<span style="color:#ff79c6">&amp;</span>#34;lock<span style="color:#ff79c6">-</span>123<span style="color:#ff79c6">&amp;</span>#34;, errorMono))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyError</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(doIfLockAcquiredAndHandleErrors(<span style="color:#ff79c6">&amp;</span>#34;lock<span style="color:#ff79c6">-</span>123<span style="color:#ff79c6">&amp;</span>#34;, successMono))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// errors should cause the lock to be released</span>
+</span></span><span style="display:flex;"><span>        assertEquals(4, numTimesCalled.<span style="color:#50fa7b">get</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// we should have finally succeeded, which means the lock is marked as processed</span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(redisReactiveCommands.<span style="color:#50fa7b">get</span>(<span style="color:#ff79c6">&amp;</span>#34;lock<span style="color:#ff79c6">-</span>123<span style="color:#ff79c6">&amp;</span>#34;))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNext</span>(<span style="color:#ff79c6">&amp;</span>#34;PROCESSED<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>Here, if we use the same lock on a <strong>Mono</strong> that is erroring out on us, we eventually succeed because our locking helper method is deleting the lock after the operation failed for us.</p>
+<p>Finally, I have arbitrarily chosen 20 seconds and 200 seconds as the timeout for the PROCESSING and PROCESSED lock states, you will want to be sure to tune this to be relevant for your application.</p>
+</section>
+
+  
+    
+  
+
+    
+  
+
+
+  <footer>
+    
+  </footer>
+</article>
+
+
+    </main><footer class="pt-5 pb-10 grid gap-3 sm:grid-cols-2">
+    <div class="text-xs font-semibold text-gray-500 order-2 sm:order-1">
+  © 2018-2025 —
+  <a href="http://localhost:1313/">Nick Fisher&#39;s tech blog</a> 
+</div>
+
+    <div class="order-1 sm:order-2">
+  <ul class="flex sm:justify-end gap-5">
+    
+    
+    <li>    
+      <a href="https://www.linkedin.com/in/nick-fisher-software/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </li>
+    
+    <li>    
+      <a href="https://github.com/nfisher23" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </li>
+    
+    
+  </ul>
+</div>
+
+</footer></body>
+</html>

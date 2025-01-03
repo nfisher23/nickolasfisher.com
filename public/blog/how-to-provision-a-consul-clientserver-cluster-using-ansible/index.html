@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en-US" class="scroll-smooth dark">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>How to Provision a Consul Client-Server Cluster using Ansible</title>
+<meta
+  name="description"
+  content="The source code for this blog post can be found on GitHub.
+Consul can run in either client or server mode. As far as Consul is concerned, the primary difference between client and server mode are that Consul Servers participate in the consensus quorum, store cluster state, and handle queries. Consul Agents are often deployed to act as middle-men between the services and the Consul Servers, which need to be highly available by design."
+/>
+<link rel="canonical" href="http://localhost:1313/blog/how-to-provision-a-consul-clientserver-cluster-using-ansible/" />
+<link rel="robots" href="/robots.txt" />
+
+<link rel="icon" type="image/x-icon" href="/icons/favicon.ico" />
+
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });</script>
+
+<link rel="stylesheet" href="http://localhost:1313/css/app.css" /></head>
+
+  <body class="max-w-screen-md mx-auto px-2.5">
+    <div class="header">
+      <header class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 pt-16 py-12">
+   
+
+
+<div class="flex-none w-20 h-20 rounded-full overflow-hidden">
+  <a href="http://localhost:1313/">
+    <img
+      srcset="/img/profile-picture_hu4241499301404582006.jpg 80w"
+      src="/img/profile-picture.jpg"
+      width="386"
+      height="345"
+      alt="Nick Fisher&#39;s tech blog"
+    />
+  </a>
+</div>
+
+  
+  <div class="flex flex-col gap-5">
+    <a href="http://localhost:1313/">
+  <h1 id="site-title">Nick Fisher&#39;s tech blog</h1>
+</a>
+ 
+    <nav>
+  <ul>
+     
+    
+    <li>
+      <a href="/" class="">
+        Home
+      </a>
+    </li>
+    
+    <li>
+      <a href="/blog" class="">
+        Blog
+      </a>
+    </li>
+    
+    <li>
+      <a href="/about" class="">
+        About me
+      </a>
+    </li>
+    
+    <li>
+      <a href="/categories" class="">
+        Categories
+      </a>
+    </li>
+    
+    <li>
+      <a href="/tags" class="">
+        Tags
+      </a>
+    </li>
+    
+  </ul>
+</nav>
+
+  </div>
+</header>
+
+      <button class="toggle-theme" aria-label="Toggle Theme" title="Toggle Theme" onclick="toggleTheme()">
+  <span class="theme-icon light"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+</svg> </span>
+  <span class="theme-icon dark"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+</svg> </span>
+</button>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const theme = localStorage.getItem('theme');
+
+    if (!theme || theme === 'light') {
+      setTheme('light');
+    } else {
+      setTheme(theme);
+    }
+  });
+
+  function setTheme(theme) {
+    const html = document.querySelector('html');
+    localStorage.setItem('theme', theme);
+
+    if (theme === 'light') {
+      if (html.classList.contains('dark')) {
+        document.querySelector('html').classList.remove('dark');
+      }
+
+      document.querySelector('.theme-icon.light').style.display = 'none';
+      document.querySelector('.theme-icon.dark').style.display = 'block';
+    } else {
+      if (!html.classList.contains('dark')) {
+        document.querySelector('html').classList.add('dark');
+      }
+
+      document.querySelector('.theme-icon.dark').style.display = 'none';
+      document.querySelector('.theme-icon.light').style.display = 'block';
+    }
+  }
+
+  function toggleTheme() {
+    const theme = localStorage.getItem('theme');
+
+    if (theme === 'light') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+  }
+</script>
+    </div>
+  
+    <main id="content">
+
+<article class="flex flex-col gap-10">
+  <header class="flex flex-col gap-2">
+    <h2 class="title-large">How to Provision a Consul Client-Server Cluster using Ansible</h2>
+
+    <div class="meta">
+      
+      <time datetime="2019-04-01 00:00:00 &#43;0000 UTC" title='Mon, Apr 1, 2019, 12:00 AM UTC'>
+        01/04/2019 - Estimated reading time: 3 minutes
+      </time>
+
+       
+      
+    </div>
+  </header>
+
+  
+
+  <section><p>The source code for this blog post can be found <a href="https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server">on GitHub</a>.</p>
+<p><a href="https://www.consul.io">Consul</a> can run in either client or server mode. As far as Consul is concerned, the primary difference between client and server mode are that Consul Servers participate in the consensus quorum, store cluster state, and handle queries. Consul Agents are often deployed to act as middle-men between the services and the Consul Servers, which need to be highly available by design.</p>
+<p>Ignoring my opinion about the architecture choices, we will expand on the last post ( <a href="https://nickolasfisher.com/blog/How-to-Provision-a-Standalone-Consul-Server-with-Ansible">How to Provision a Standalone Consul Server with Ansible</a>) and modify our ansible role to allow for agents to join the standalone consul server.</p>
+<p>Because <a href="https://unix.stackexchange.com/questions/289629/systemd-restart-always-is-not-honored">the default Restart=Always behavior of systemd isn't automatically honored</a>, and we will need for the Consul Agents to restart while they try to connect to the server (which could still be coming up), the first thing we will do is get our Consul systemd service to keep trying to restart ad infinitum. Modify our <strong>templates/consul.service.j2</strong> file to look like:</p>
+<pre tabindex="0"><code>[Unit]
+Description=solo consul server example
+
+[Service]
+WorkingDirectory={{ consul_config_dir }}
+User=root
+ExecStart={{ consul_install_dir }}/consul agent -config-dir={{ consul_config_dir }}
+Restart=Always
+StartLimitIntervalSec=0
+
+[Install]
+WantedBy=multi-user.target
+</code></pre><p>Because the Consul Client and Consul Server instances will be on different virtual machines, we will need to add one for the Consul Client in our <strong>molecule/default/molecule.yml</strong> file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">dependency</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">name</span>: galaxy
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">driver</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">name</span>: vagrant
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">provider</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: virtualbox
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">lint</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">name</span>: yamllint
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">platforms</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">name</span>: consulServer
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">box</span>: ubuntu/xenial64
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">memory</span>: <span style="color:#bd93f9">2048</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">provider_raw_config_args</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">&amp;#34;customize</span> [<span style="color:#ff79c6">&amp;#39;modifyvm&amp;#39;,</span> :id, &amp;#39;--uartmode1&amp;#39;, &amp;#39;disconnected&amp;#39;]&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">interfaces</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">auto_config</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">network_name</span>: private_network
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">ip</span>: <span style="color:#bd93f9">192.168.56.211</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">type</span>: static
+</span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">name</span>: consulClient
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">box</span>: ubuntu/xenial64
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">memory</span>: <span style="color:#bd93f9">2048</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">provider_raw_config_args</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">&amp;#34;customize</span> [<span style="color:#ff79c6">&amp;#39;modifyvm&amp;#39;,</span> :id, &amp;#39;--uartmode1&amp;#39;, &amp;#39;disconnected&amp;#39;]&amp;#34;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">interfaces</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">auto_config</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">network_name</span>: private_network
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">ip</span>: <span style="color:#bd93f9">192.168.56.212</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">type</span>: static
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">provisioner</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">name</span>: ansible
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">inventory</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">host_vars</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">consulClient</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">is_server</span>: <span style="color:#ff79c6">&amp;#34;false&amp;#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">node_name</span>: client
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">consulServer</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">is_server</span>: <span style="color:#ff79c6">&amp;#34;true&amp;#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">node_name</span>: server
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">lint</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: ansible-lint
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">scenario</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">name</span>: default
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">verifier</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">name</span>: testinfra
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">lint</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: flake8
+</span></span></code></pre></div><p>The two main things that we have done here are:</p>
+<ul>
+<li>Added a virtual machine, called consulClient﻿</li>
+<li>Set two host variables for both the consulClient and consulServer virtual machines. We will use them in our next step.</li>
+</ul>
+<p>As luck would have it, we do not need to make any changes to the tasks/main.yml file. The only thing left to make this playbook &quot;just work&quot; is to modify the <strong>templates/consul.config.j2</strong> file to look like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    &amp;#34;node_name&amp;#34;: &amp;#34;{{ node_name }}&amp;#<span style="color:#bd93f9">34</span>;,
+</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;addresses&amp;#<span style="color:#bd93f9">34</span>;: {
+</span></span><span style="display:flex;"><span>        &amp;#34;http&amp;#34;: &amp;#34;{{ ansible_facts[&amp;#39;all_ipv4_addresses&amp;#39;] | last }} <span style="color:#bd93f9">127.0</span>.<span style="color:#bd93f9">0.1</span>&amp;#<span style="color:#bd93f9">34</span>;
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;server&amp;#<span style="color:#bd93f9">34</span>;: {{ is_server }},
+</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;advertise_addr&amp;#<span style="color:#bd93f9">34</span>;: &amp;#<span style="color:#bd93f9">34</span>;{{ ansible_facts[&amp;#39;all_ipv4_addresses&amp;#39;] | last }}&amp;#<span style="color:#bd93f9">34</span>;,
+</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;client_addr&amp;#<span style="color:#bd93f9">34</span>;: &amp;#<span style="color:#bd93f9">34</span>;<span style="color:#bd93f9">127.0</span>.<span style="color:#bd93f9">0.1</span> {{ ansible_facts[&amp;#39;all_ipv4_addresses&amp;#39;] | last }}&amp;#<span style="color:#bd93f9">34</span>;,
+</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;connect&amp;#<span style="color:#bd93f9">34</span>;: {
+</span></span><span style="display:flex;"><span>        &amp;#34;enabled&amp;#34;: true
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;data_dir&amp;#<span style="color:#bd93f9">34</span>;: &amp;#<span style="color:#bd93f9">34</span>;{{ consul_data_dir }}&amp;#<span style="color:#bd93f9">34</span>;,
+</span></span><span style="display:flex;"><span>{% if is_server == &amp;#39;false&amp;#39; %}
+</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;start_join&amp;#<span style="color:#bd93f9">34</span>;: [ &amp;#<span style="color:#bd93f9">34</span>;{{ hostvars[&amp;#39;consulServer&amp;#39;][&amp;#39;ansible_all_ipv4_addresses&amp;#39;] | last }}&amp;#<span style="color:#bd93f9">34</span>;]
+</span></span><span style="display:flex;"><span>{% else %}
+</span></span><span style="display:flex;"><span>    &amp;#<span style="color:#bd93f9">34</span>;bootstrap&amp;#<span style="color:#bd93f9">34</span>;: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>{% endif %}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>If we are running in server mode, we need the up and coming standalone server to bootstrap itself, hence <strong>&quot;bootstrap&quot;: true</strong>. If, instead, we are running in client mode, we need the client to find our server to register with. Since molecule automatically adds inventory based on what is defined in the platforms section, we can reference our consul server's IP address in start_join.</p>
+<p>If you run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ molecule create &amp;amp;&amp;amp; molecule converge
+</span></span></code></pre></div><p>You should be able to hit <a href="http://192.168.56.211:8500/v1/agent/members,">http://192.168.56.211:8500/v1/agent/members</a> and see both the consul server and the consul client connected.</p>
+<p>Be sure to <a href="https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server">go get the source code</a> so you can play around with this yourself.</p>
+</section>
+
+  
+    
+  
+
+    
+  
+
+
+  <footer>
+    
+  </footer>
+</article>
+
+
+    </main><footer class="pt-5 pb-10 grid gap-3 sm:grid-cols-2">
+    <div class="text-xs font-semibold text-gray-500 order-2 sm:order-1">
+  © 2018-2025 —
+  <a href="http://localhost:1313/">Nick Fisher&#39;s tech blog</a> 
+</div>
+
+    <div class="order-1 sm:order-2">
+  <ul class="flex sm:justify-end gap-5">
+    
+    
+    <li>    
+      <a href="https://www.linkedin.com/in/nick-fisher-software/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </li>
+    
+    <li>    
+      <a href="https://github.com/nfisher23" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </li>
+    
+    
+  </ul>
+</div>
+
+</footer></body>
+</html>

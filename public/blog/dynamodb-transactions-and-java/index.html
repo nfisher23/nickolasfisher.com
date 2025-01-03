@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en-US" class="scroll-smooth dark">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DynamoDB Transactions and Java</title>
+<meta
+  name="description"
+  content="DynamoDB transactions can be used for atomic updates. Atomic updates in DynamoDB without transactions can be difficult to implement&ndash;you&#39;ll often have to manage the current state of the update yourself in something like a saga, and have business logic specific rollback procedures. Further, without a transaction manager, the data will be in an inconsistent state at some point in time while the saga is ongoing. An alternative to that is a Two Phase Commit, but that&#39;s also expensive both from the standpoint of developers making it work as well as performance [2PC typically call for a lock being held during the operation, and even then there&#39;s a possibility that the operation ends up in an inconsistent state at some point]."
+/>
+<link rel="canonical" href="http://localhost:1313/blog/dynamodb-transactions-and-java/" />
+<link rel="robots" href="/robots.txt" />
+
+<link rel="icon" type="image/x-icon" href="/icons/favicon.ico" />
+
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });</script>
+
+<link rel="stylesheet" href="http://localhost:1313/css/app.css" /></head>
+
+  <body class="max-w-screen-md mx-auto px-2.5">
+    <div class="header">
+      <header class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 pt-16 py-12">
+   
+
+
+<div class="flex-none w-20 h-20 rounded-full overflow-hidden">
+  <a href="http://localhost:1313/">
+    <img
+      srcset="/img/profile-picture_hu4241499301404582006.jpg 80w"
+      src="/img/profile-picture.jpg"
+      width="386"
+      height="345"
+      alt="Nick Fisher&#39;s tech blog"
+    />
+  </a>
+</div>
+
+  
+  <div class="flex flex-col gap-5">
+    <a href="http://localhost:1313/">
+  <h1 id="site-title">Nick Fisher&#39;s tech blog</h1>
+</a>
+ 
+    <nav>
+  <ul>
+     
+    
+    <li>
+      <a href="/" class="">
+        Home
+      </a>
+    </li>
+    
+    <li>
+      <a href="/blog" class="">
+        Blog
+      </a>
+    </li>
+    
+    <li>
+      <a href="/about" class="">
+        About me
+      </a>
+    </li>
+    
+    <li>
+      <a href="/categories" class="">
+        Categories
+      </a>
+    </li>
+    
+    <li>
+      <a href="/tags" class="">
+        Tags
+      </a>
+    </li>
+    
+  </ul>
+</nav>
+
+  </div>
+</header>
+
+      <button class="toggle-theme" aria-label="Toggle Theme" title="Toggle Theme" onclick="toggleTheme()">
+  <span class="theme-icon light"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+</svg> </span>
+  <span class="theme-icon dark"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+</svg> </span>
+</button>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const theme = localStorage.getItem('theme');
+
+    if (!theme || theme === 'light') {
+      setTheme('light');
+    } else {
+      setTheme(theme);
+    }
+  });
+
+  function setTheme(theme) {
+    const html = document.querySelector('html');
+    localStorage.setItem('theme', theme);
+
+    if (theme === 'light') {
+      if (html.classList.contains('dark')) {
+        document.querySelector('html').classList.remove('dark');
+      }
+
+      document.querySelector('.theme-icon.light').style.display = 'none';
+      document.querySelector('.theme-icon.dark').style.display = 'block';
+    } else {
+      if (!html.classList.contains('dark')) {
+        document.querySelector('html').classList.add('dark');
+      }
+
+      document.querySelector('.theme-icon.dark').style.display = 'none';
+      document.querySelector('.theme-icon.light').style.display = 'block';
+    }
+  }
+
+  function toggleTheme() {
+    const theme = localStorage.getItem('theme');
+
+    if (theme === 'light') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+  }
+</script>
+    </div>
+  
+    <main id="content">
+
+<article class="flex flex-col gap-10">
+  <header class="flex flex-col gap-2">
+    <h2 class="title-large">DynamoDB Transactions and Java</h2>
+
+    <div class="meta">
+      
+      <time datetime="2020-11-01 00:00:00 &#43;0000 UTC" title='Sun, Nov 1, 2020, 12:00 AM UTC'>
+        01/11/2020 - Estimated reading time: 4 minutes
+      </time>
+
+       
+      
+    </div>
+  </header>
+
+  
+
+  <section><p>DynamoDB transactions can be used for <em>atomic</em> updates. Atomic updates in DynamoDB without transactions can be difficult to implement&ndash;you'll often have to manage the current state of the update yourself in something like a saga, and have business logic specific rollback procedures. Further, without a transaction manager, the data will be in an inconsistent state at some point in time while the saga is ongoing. An alternative to that is a Two Phase Commit, but that's also expensive both from the standpoint of developers making it work as well as performance [2PC typically call for a lock being held during the operation, and even then there's a possibility that the operation ends up in an inconsistent state at some point].</p>
+<p>It is a claim made by AWS that transactions in DynamoDB are ACID&ndash;on this point, I'm quite skeptical. But even without full ACID compliance, just having eventual consistency managed outside the application can be extremely helpful. In this article, we will demonstrate how to interact with this feature.</p>
+<h2 id="the-code">The Code</h2>
+<p>The <a href="https://github.com/nfisher23/webflux-and-dynamo/blob/master/src/test/java/com/nickolasfisher/reactivedynamo/PhoneServiceTest.java#L767">source code for what follows can be found on Github</a>. I will leverage work done in previous articles demonstrating how to set up an embedded DynamoDB instance for integration testing, as well as some helper methods. Let's start by creating our table and inserting some sample data:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    @Test
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">transactions</span>() <span style="color:#8be9fd;font-style:italic">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        String currentTableName <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;TransactionsTest<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>        createTableAndWaitForComplete(currentTableName);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        String partitionKey <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;Google<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>        String rangeKey1 <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;Pixel 1<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>        String rangeKey2 <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">&amp;</span>#34;Future Phone<span style="color:#ff79c6">&amp;</span>#34;;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// create three items</span>
+</span></span><span style="display:flex;"><span>        Map<span style="color:#ff79c6">&amp;</span>lt;String, AttributeValue<span style="color:#ff79c6">&amp;</span>gt; pixel1ItemAttributes <span style="color:#ff79c6">=</span> getMapWith(partitionKey, rangeKey1);
+</span></span><span style="display:flex;"><span>        pixel1ItemAttributes.<span style="color:#50fa7b">put</span>(COLOR, s(<span style="color:#ff79c6">&amp;</span>#34;Blue<span style="color:#ff79c6">&amp;</span>#34;));
+</span></span><span style="display:flex;"><span>        pixel1ItemAttributes.<span style="color:#50fa7b">put</span>(YEAR, AttributeValue.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">n</span>(<span style="color:#ff79c6">&amp;</span>#34;2012<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">build</span>());
+</span></span><span style="display:flex;"><span>        putItem(currentTableName, pixel1ItemAttributes);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Map<span style="color:#ff79c6">&amp;</span>lt;String, AttributeValue<span style="color:#ff79c6">&amp;</span>gt; futurePhoneAttributes <span style="color:#ff79c6">=</span> getMapWith(partitionKey, rangeKey2);
+</span></span><span style="display:flex;"><span>        futurePhoneAttributes.<span style="color:#50fa7b">put</span>(COLOR, s(<span style="color:#ff79c6">&amp;</span>#34;Silver<span style="color:#ff79c6">&amp;</span>#34;));
+</span></span><span style="display:flex;"><span>        futurePhoneAttributes.<span style="color:#50fa7b">put</span>(YEAR, AttributeValue.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">n</span>(<span style="color:#ff79c6">&amp;</span>#34;2030<span style="color:#ff79c6">&amp;</span>#34;).<span style="color:#50fa7b">build</span>());
+</span></span><span style="display:flex;"><span>        putItem(currentTableName, futurePhoneAttributes);
+</span></span></code></pre></div><p>This code sets up a DynamoDB table with a hash key that is &quot;Company&quot; and a range key that is &quot;Model&quot;. The table name is &quot;TransactionsTest&quot;. We then insert two items, &quot;Pixel 1&quot; and &quot;Future Phone&quot;, and each item has two additional attributes which should be pretty straightforward.</p>
+<p>Now, we can demonstrate an example transaction. Let's start by updating &quot;Pixel 1&quot; to have a &quot;Color&quot; of &quot;Red&quot;&ndash;but only if the Color is currently &quot;Blue&quot;. If the color is not blue, this operation will fail:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Map<span style="color:#ff79c6">&amp;</span>lt;String, AttributeValue<span style="color:#ff79c6">&amp;</span>gt; rangeKey1Map <span style="color:#ff79c6">=</span> Map.<span style="color:#50fa7b">of</span>(
+</span></span><span style="display:flex;"><span>            COMPANY, s(partitionKey),
+</span></span><span style="display:flex;"><span>            MODEL, s(rangeKey1)
+</span></span><span style="display:flex;"><span>        );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        TransactWriteItem updateColorToRedOnlyIfColorIsAlreadyBlue <span style="color:#ff79c6">=</span> TransactWriteItem.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">update</span>(
+</span></span><span style="display:flex;"><span>            Update.<span style="color:#50fa7b">builder</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">conditionExpression</span>(COLOR <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">=</span> :color<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expressionAttributeValues</span>(
+</span></span><span style="display:flex;"><span>                    Map.<span style="color:#50fa7b">of</span>(
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>#34;:color<span style="color:#ff79c6">&amp;</span>#34;, s(<span style="color:#ff79c6">&amp;</span>#34;Blue<span style="color:#ff79c6">&amp;</span>#34;),
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>#34;:newcolor<span style="color:#ff79c6">&amp;</span>#34;, s(<span style="color:#ff79c6">&amp;</span>#34;Red<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                    )
+</span></span><span style="display:flex;"><span>                )
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">tableName</span>(currentTableName)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">key</span>(
+</span></span><span style="display:flex;"><span>                    rangeKey1Map
+</span></span><span style="display:flex;"><span>                )
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">updateExpression</span>(<span style="color:#ff79c6">&amp;</span>#34;SET <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; COLOR <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">=</span> :newcolor<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>()
+</span></span><span style="display:flex;"><span>        ).<span style="color:#50fa7b">build</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        TransactWriteItemsRequest updateColorOfItem1ToRedTransaction <span style="color:#ff79c6">=</span> TransactWriteItemsRequest.<span style="color:#50fa7b">builder</span>()
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">transactItems</span>(
+</span></span><span style="display:flex;"><span>                updateColorToRedOnlyIfColorIsAlreadyBlue
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">build</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        dynamoDbAsyncClient.<span style="color:#50fa7b">transactWriteItems</span>(updateColorOfItem1ToRedTransaction).<span style="color:#50fa7b">get</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        CompletableFuture<span style="color:#ff79c6">&amp;</span>lt;GetItemResponse<span style="color:#ff79c6">&amp;</span>gt; getRangeKey1Future <span style="color:#ff79c6">=</span> dynamoDbAsyncClient.<span style="color:#50fa7b">getItem</span>(
+</span></span><span style="display:flex;"><span>            GetItemRequest.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">key</span>(rangeKey1Map).<span style="color:#50fa7b">tableName</span>(currentTableName).<span style="color:#50fa7b">build</span>()
+</span></span><span style="display:flex;"><span>        );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(Mono.<span style="color:#50fa7b">fromFuture</span>(getRangeKey1Future))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectNextMatches</span>(getItemResponse <span style="color:#ff79c6">-&amp;</span>gt; getItemResponse.<span style="color:#50fa7b">item</span>().<span style="color:#50fa7b">get</span>(COLOR).<span style="color:#50fa7b">s</span>().<span style="color:#50fa7b">equals</span>(<span style="color:#ff79c6">&amp;</span>#34;Red<span style="color:#ff79c6">&amp;</span>#34;))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verifyComplete</span>();
+</span></span></code></pre></div><p>After executing the update in a <strong>TransactWriteItemsRequest</strong>, we then verify with a <strong>GetItemRequest</strong> that our change was made&ndash;the color at this point is &quot;Red&quot;.</p>
+<p>That isn't really too interesting at this point. If everything in a &quot;transaction&quot; were guaranteed to succeed, we might as well use a <strong>BatchWriteItemRequest</strong>. It gets more useful when we demonstrate a partial failure. Let's now change two things at once, where because of a condition check failure on one of the items, the entire operation should fail:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Map<span style="color:#ff79c6">&amp;</span>lt;String, AttributeValue<span style="color:#ff79c6">&amp;</span>gt; rangeKey2Map <span style="color:#ff79c6">=</span> Map.<span style="color:#50fa7b">of</span>(
+</span></span><span style="display:flex;"><span>            COMPANY, s(partitionKey),
+</span></span><span style="display:flex;"><span>            MODEL, s(rangeKey2)
+</span></span><span style="display:flex;"><span>        );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        TransactWriteItem updateRangeKey2ColorToOrange <span style="color:#ff79c6">=</span> TransactWriteItem.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">update</span>(
+</span></span><span style="display:flex;"><span>            Update.<span style="color:#50fa7b">builder</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expressionAttributeValues</span>(
+</span></span><span style="display:flex;"><span>                    Map.<span style="color:#50fa7b">of</span>(
+</span></span><span style="display:flex;"><span>                        <span style="color:#ff79c6">&amp;</span>#34;:newcolor<span style="color:#ff79c6">&amp;</span>#34;, s(<span style="color:#ff79c6">&amp;</span>#34;Orange<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                    )
+</span></span><span style="display:flex;"><span>                )
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">tableName</span>(currentTableName)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">key</span>(
+</span></span><span style="display:flex;"><span>                    rangeKey1Map
+</span></span><span style="display:flex;"><span>                )
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">updateExpression</span>(<span style="color:#ff79c6">&amp;</span>#34;SET <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">&amp;</span>#43; COLOR <span style="color:#ff79c6">&amp;</span>#43; <span style="color:#ff79c6">&amp;</span>#34; <span style="color:#ff79c6">=</span> :newcolor<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">build</span>()
+</span></span><span style="display:flex;"><span>        ).<span style="color:#50fa7b">build</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        TransactWriteItemsRequest multiObjectTransactionThatShouldFailEverything <span style="color:#ff79c6">=</span> TransactWriteItemsRequest.<span style="color:#50fa7b">builder</span>()
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">transactItems</span>(
+</span></span><span style="display:flex;"><span>                updateColorToRedOnlyIfColorIsAlreadyBlue,
+</span></span><span style="display:flex;"><span>                updateRangeKey2ColorToOrange
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">build</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(Mono.<span style="color:#50fa7b">fromFuture</span>(dynamoDbAsyncClient.<span style="color:#50fa7b">transactWriteItems</span>(multiObjectTransactionThatShouldFailEverything)))
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">expectErrorMatches</span>(throwable <span style="color:#ff79c6">-&amp;</span>gt; {
+</span></span><span style="display:flex;"><span>                    List<span style="color:#ff79c6">&amp;</span>lt;CancellationReason<span style="color:#ff79c6">&amp;</span>gt; cancellationReasons <span style="color:#ff79c6">=</span>
+</span></span><span style="display:flex;"><span>                            ((TransactionCanceledException) throwable).<span style="color:#50fa7b">cancellationReasons</span>();
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">return</span> cancellationReasons.<span style="color:#50fa7b">get</span>(0).<span style="color:#50fa7b">code</span>().<span style="color:#50fa7b">equals</span>(<span style="color:#ff79c6">&amp;</span>#34;ConditionalCheckFailed<span style="color:#ff79c6">&amp;</span>#34;);
+</span></span><span style="display:flex;"><span>                })
+</span></span><span style="display:flex;"><span>                .<span style="color:#50fa7b">verify</span>();
+</span></span></code></pre></div><p>We are here reusing the <strong>updateColorToRedOnlyIfColorIsAlreadyBlue</strong> transact write item, which we know will fail because the color is already Red, and then collecting it with the <strong>updateRangeKey2ColorToOrange</strong> transact write item. After submitting both as a group, we verify that the response was cancelled with an exception&ndash;the reason given is that a condition check failed.</p>
+<p>So far so good. Let's now get &quot;Future Phone&quot; out of dynamo and verify that the color is NOT orange&ndash;it should have stayed silver because it was submitted as a transaction:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        CompletableFuture<span style="color:#ff79c6">&amp;</span>lt;GetItemResponse<span style="color:#ff79c6">&amp;</span>gt; getRangeKey2Future <span style="color:#ff79c6">=</span> dynamoDbAsyncClient.<span style="color:#50fa7b">getItem</span>(
+</span></span><span style="display:flex;"><span>            GetItemRequest.<span style="color:#50fa7b">builder</span>().<span style="color:#50fa7b">key</span>(rangeKey2Map).<span style="color:#50fa7b">tableName</span>(currentTableName).<span style="color:#50fa7b">build</span>()
+</span></span><span style="display:flex;"><span>        );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// one operation (Blue -&amp;gt; Red) failed because of a condition check, therefore ALL operations fail</span>
+</span></span><span style="display:flex;"><span>        StepVerifier.<span style="color:#50fa7b">create</span>(Mono.<span style="color:#50fa7b">fromFuture</span>(getRangeKey2Future))
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">expectNextMatches</span>(getItemResponse <span style="color:#ff79c6">-&amp;</span>gt;
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">!</span>getItemResponse.<span style="color:#50fa7b">item</span>().<span style="color:#50fa7b">get</span>(COLOR).<span style="color:#50fa7b">s</span>().<span style="color:#50fa7b">equals</span>(<span style="color:#ff79c6">&amp;</span>#34;Orange<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">&amp;</span>amp;<span style="color:#ff79c6">&amp;</span>amp; getItemResponse.<span style="color:#50fa7b">item</span>().<span style="color:#50fa7b">get</span>(COLOR).<span style="color:#50fa7b">s</span>().<span style="color:#50fa7b">equals</span>(<span style="color:#ff79c6">&amp;</span>#34;Silver<span style="color:#ff79c6">&amp;</span>#34;)
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>            .<span style="color:#50fa7b">verifyComplete</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>And this also passes! Be sure to <a href="https://github.com/nfisher23/webflux-and-dynamo/blob/master/src/test/java/com/nickolasfisher/reactivedynamo/PhoneServiceTest.java#L767">check out the source code for this article on Github</a>.</p>
+</section>
+
+  
+    
+  
+
+    
+  
+
+
+  <footer>
+    
+  </footer>
+</article>
+
+
+    </main><footer class="pt-5 pb-10 grid gap-3 sm:grid-cols-2">
+    <div class="text-xs font-semibold text-gray-500 order-2 sm:order-1">
+  © 2018-2025 —
+  <a href="http://localhost:1313/">Nick Fisher&#39;s tech blog</a> 
+</div>
+
+    <div class="order-1 sm:order-2">
+  <ul class="flex sm:justify-end gap-5">
+    
+    
+    <li>    
+      <a href="https://www.linkedin.com/in/nick-fisher-software/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </li>
+    
+    <li>    
+      <a href="https://github.com/nfisher23" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </li>
+    
+    
+  </ul>
+</div>
+
+</footer></body>
+</html>

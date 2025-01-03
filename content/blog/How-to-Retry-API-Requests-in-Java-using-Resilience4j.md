@@ -2,6 +2,7 @@
 title: "How to Retry API Requests in Java using Resilience4j"
 date: 2021-05-01T18:34:59
 draft: false
+tags: [java, resilience]
 ---
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/java-failure-and-resilience).

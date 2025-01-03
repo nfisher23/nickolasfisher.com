@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ngnix on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/ngnix/</link>
+    <description>Recent content in Ngnix on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sun, 24 May 2020 20:26:02 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/ngnix/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Map Multiple Headers to the Same Variable in Nginx</title>
+      <link>http://localhost:1313/blog/how-to-map-multiple-headers-to-the-same-variable-in-nginx/</link>
+      <pubDate>Sun, 24 May 2020 20:26:02 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-map-multiple-headers-to-the-same-variable-in-nginx/</guid>
+      <description>&lt;p&gt;The &lt;a href=&#34;http://nginx.org/en/docs/http/ngx_http_map_module.html&#34;&gt;nginx map module&lt;/a&gt; is a nifty tool that allows you to programmatically change behavior based on things like http headers that come in.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How To Invalidate an Nginx Cache In a Reverse Proxy Setup With Spring MVC</title>
+      <link>http://localhost:1313/blog/how-to-invalidate-an-nginx-cache-in-a-reverse-proxy-setup-with-spring-mvc/</link>
+      <pubDate>Sat, 13 Apr 2019 16:52:53 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-invalidate-an-nginx-cache-in-a-reverse-proxy-setup-with-spring-mvc/</guid>
+      <description>&lt;p&gt;You can see the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In two previous posts, we looked at how to &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy&#34;&gt;provision a reverse proxy using nginx&lt;/a&gt; and then &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Use-Nginxs-Caching-to-Improve-Site-Responsiveness&#34;&gt;how to add caching to the nginx reverse proxy&lt;/a&gt;. The implementation we ended up with at the end of the last post was a &amp;quot;dumb&amp;quot; cache, meaning that it doesn&#39;t know when or if any data gets updated&amp;ndash;it just times out after 60 seconds and then asks for a new payload from the application it&#39;s acting as proxy for.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Use Nginx&amp;#39;s Caching to Improve Site Responsiveness</title>
+      <link>http://localhost:1313/blog/how-to-use-nginxs-caching-to-improve-site-responsiveness/</link>
+      <pubDate>Sat, 06 Apr 2019 17:14:30 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-use-nginxs-caching-to-improve-site-responsiveness/</guid>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In my last post, I provided an example for &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy&#34;&gt;how to set up an Nginx Reverse Proxy for a Spring MVC application&lt;/a&gt;. One such reason to set up a reverse proxy is to utilize caching of resources. If you have dynamically generated content that doesn&#39;t change very often, then adding caching at the site entry point can dramatically improve site responsiveness and reduce load on critical resources.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Deploy a Spring MVC Application Behind an Nginx Reverse Proxy</title>
+      <link>http://localhost:1313/blog/how-to-deploy-a-spring-mvc-application-behind-an-nginx-reverse-proxy/</link>
+      <pubDate>Sat, 06 Apr 2019 14:44:50 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-deploy-a-spring-mvc-application-behind-an-nginx-reverse-proxy/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://www.nginx.com/&#34;&gt;Nginx&lt;/a&gt; is a popular webserver, excellent at serving up static content, and commonly used as a load balancer or reverse proxy. This post will set up a basic &lt;a href=&#34;https://spring.io/projects/spring-boot&#34;&gt;Spring Boot&lt;/a&gt; MVC web application, and use Nginx as a reverse proxy. The source code can be found &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>A Simple Zero Downtime Continuous Integration Pipeline for Spring MVC</title>
+      <link>http://localhost:1313/blog/a-simple-zero-downtime-continuous-integration-pipeline-for-spring-mvc/</link>
+      <pubDate>Sun, 25 Nov 2018 15:53:22 +0000</pubDate>
+      <guid>http://localhost:1313/blog/a-simple-zero-downtime-continuous-integration-pipeline-for-spring-mvc/</guid>
+      <description>&lt;p&gt;The sample code associated with what follows can be found &lt;a href=&#34;https://github.com/nfisher23/simple-cicd-pipeline-with-spring&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;One of the biggest paradigm shifts in software engineering, since the invention of the computer and software that would run on it, was the idea of a MVR (minimum viable release) or MVP (minimum viable product). With the lack of internet access becoming the exception in developed countries, it becomes more and more powerful to put your product out there on display, and to design a way to continuously make improvements to it. In the most aggressive of circumstances, you want to be able to push something up to a source control server, then let an automated process perform the various steps required to actually deploy it in the real world. In the best case, you can achieve all of this with zero downtime&amp;ndash;basically, the users of your service are never inconvenienced by your decision to make a change. Setting up one very simple example of that is the subject of this post.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Set Up ClickOnce Continuous Deployment for WPF via Nginx</title>
+      <link>http://localhost:1313/blog/how-to-set-up-clickonce-continuous-deployment-for-wpf-via-nginx/</link>
+      <pubDate>Wed, 08 Aug 2018 00:08:00 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-set-up-clickonce-continuous-deployment-for-wpf-via-nginx/</guid>
+      <description>&lt;p&gt;I&#39;ve been working on a small wpf project on GitHub that let&#39;s you &lt;a href=&#34;https://github.com/nfisher23/SEPubViewer&#34;&gt;view SEC filings on your desktop&lt;/a&gt; in an intuitive way. Since EDGAR kind of sucks for a casual user, this is much more appealing.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

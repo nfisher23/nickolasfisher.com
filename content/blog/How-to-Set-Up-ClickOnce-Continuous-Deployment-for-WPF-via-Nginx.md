@@ -2,6 +2,7 @@
 title: "How to Set Up ClickOnce Continuous Deployment for WPF via Nginx"
 date: 2018-08-08T00:08:00
 draft: false
+tags: [c#, ngnix]
 ---
 
 I&#39;ve been working on a small wpf project on GitHub that let&#39;s you [view SEC filings on your desktop](https://github.com/nfisher23/SEPubViewer) in an intuitive way. Since EDGAR kind of sucks for a casual user, this is much more appealing.

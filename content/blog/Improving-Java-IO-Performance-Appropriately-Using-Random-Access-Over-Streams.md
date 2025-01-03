@@ -2,6 +2,7 @@
 title: "Improving Java IO Performance: Appropriately Using Random Access Over Streams"
 date: 2018-11-17T18:37:39
 draft: false
+tags: [java, i/o, performance testing, jmh]
 ---
 
 The sample code for this blog post can be found [on GitHub](https://github.com/nfisher23/io-tuning).

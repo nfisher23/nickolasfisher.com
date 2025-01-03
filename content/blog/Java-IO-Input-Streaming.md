@@ -2,6 +2,7 @@
 title: "Java IO: Input Streaming"
 date: 2018-11-03T12:00:01
 draft: false
+tags: [java, i/o]
 ---
 
 The sample code associated with this post can be found [on Github](https://github.com/nfisher23/iodemos).

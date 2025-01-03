@@ -2,6 +2,7 @@
 title: "How to Expose Meaningful Prometheus Metrics In a Spring Boot 2.x Application"
 date: 2020-05-30T19:21:40
 draft: false
+tags: [java, spring, DevOps, postgreSQL, prometheus]
 ---
 
 The source code for this post can be found [on Github](https://github.com/nfisher23/prometheus-metrics-ex).

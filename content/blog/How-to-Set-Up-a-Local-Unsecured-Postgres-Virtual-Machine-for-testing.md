@@ -2,6 +2,7 @@
 title: "How to Set Up a Local Unsecured Postgres Virtual Machine (for testing)"
 date: 2018-11-24T12:47:47
 draft: false
+tags: [vagrant, bash, DevOps, postgreSQL]
 ---
 
 The sample code for this post can be found [on GitHub](https://github.com/nfisher23/integration-testing-postgres-and-spring/tree/master/postgres-vm-sandbox).

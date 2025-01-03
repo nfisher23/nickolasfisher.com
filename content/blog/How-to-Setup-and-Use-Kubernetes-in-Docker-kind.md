@@ -2,6 +2,7 @@
 title: "How to Setup and Use Kubernetes in Docker [kind]"
 date: 2020-06-20T19:32:30
 draft: false
+tags: [DevOps, kubernetes, kind]
 ---
 
 [kind](https://kind.sigs.k8s.io/) is a tool that spins up a kubernetes cluster of arbitrary size on your local machine. It is, in my experience, more lightweight than minikube, and also allows for a multi node setup.

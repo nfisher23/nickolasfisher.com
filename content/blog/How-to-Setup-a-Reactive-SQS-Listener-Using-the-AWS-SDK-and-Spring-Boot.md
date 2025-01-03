@@ -2,6 +2,7 @@
 title: "How to Setup a Reactive SQS Listener Using the AWS SDK and Spring Boot"
 date: 2020-09-12T21:42:52
 draft: false
+tags: [java, spring, aws, webflux]
 ---
 
 The source code for this post [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-sqs).

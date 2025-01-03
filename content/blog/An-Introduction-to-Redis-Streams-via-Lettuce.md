@@ -2,6 +2,7 @@
 title: "An Introduction to Redis Streams via Lettuce"
 date: 2021-05-01T15:22:58
 draft: false
+tags: [java, reactive, lettuce, redis]
 ---
 
 The source code for this article [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).

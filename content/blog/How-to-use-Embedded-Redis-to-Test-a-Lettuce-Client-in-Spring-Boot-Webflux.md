@@ -2,6 +2,7 @@
 title: "How to use Embedded Redis to Test a Lettuce Client in Spring Boot Webflux"
 date: 2021-03-27T21:22:32
 draft: false
+tags: [java, distributed systems, spring, maven, reactive, webflux]
 ---
 
 The source code for this article [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis).

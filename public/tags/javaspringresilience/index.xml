@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javaspringresilience on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javaspringresilience/</link>
+    <description>Recent content in Javaspringresilience on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 01 May 2021 19:06:23 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javaspringresilience/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Configuring, Testing, and Using Circuit Breakers on Rest API calls with Resilience4j</title>
+      <link>http://localhost:1313/blog/configuring-testing-and-using-circuit-breakers-on-rest-api-calls-with-resilience4j/</link>
+      <pubDate>Sat, 01 May 2021 19:06:23 +0000</pubDate>
+      <guid>http://localhost:1313/blog/configuring-testing-and-using-circuit-breakers-on-rest-api-calls-with-resilience4j/</guid>
+      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/java-failure-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;The circuit breaker pattern, popularized by Netflix [using Hystrix], exists for a couple of reasons, the most prominent being that it reduces load on a downstream service when it is not responding properly [presumably because it&#39;s under duress]. By wrapping operations that might fail and get overloaded in a circuit breaker, we can prematurely prevent cascading failure and stop overloading those services.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

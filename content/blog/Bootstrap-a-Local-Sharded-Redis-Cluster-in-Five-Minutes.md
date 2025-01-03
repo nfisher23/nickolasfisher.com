@@ -2,6 +2,7 @@
 title: "Bootstrap a Local Sharded Redis Cluster in Five Minutes"
 date: 2021-04-10T18:24:12
 draft: false
+tags: []
 ---
 
 If you&#39;re interested in understanding details of how clustered redis works \[that is to say, if you&#39;re more or less responsible for operationalizing it\], there is an excellent [section in the redis documentation](https://redis.io/topics/cluster-tutorial) that goes into some detail on it. I would advise everyone to read that at some point, but if you just want to get started hacking this is the TLDR; article that you&#39;re looking for. We will run through some basic commands to get up and running, and you can use this cluster to help figure out the details later on.

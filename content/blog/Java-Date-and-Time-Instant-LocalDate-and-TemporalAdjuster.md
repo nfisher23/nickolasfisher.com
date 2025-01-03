@@ -2,6 +2,7 @@
 title: "Java Date and Time: Instant, LocalDate, and TemporalAdjuster"
 date: 2018-12-01T12:56:02
 draft: false
+tags: [java]
 ---
 
 Improvements to the Java 8 [Date and Time API](https://docs.oracle.com/javase/tutorial/datetime/iso/index.html)--in particular Instant, LocalDate/LocalDateTime, and their absolute counterpart ZonedDateTime, provide a much more intuitive and friendly way to deal with time than previous versions of Java.

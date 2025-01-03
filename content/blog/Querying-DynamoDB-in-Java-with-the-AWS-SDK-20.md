@@ -2,6 +2,7 @@
 title: "Querying DynamoDB in Java with the AWS SDK 2.0"
 date: 2020-10-18T13:38:22
 draft: false
+tags: [java, distributed systems, reactive, aws, dynamodb, webflux]
 ---
 
 Queries in DynamoDB allow you to find data. This is only an option to you if your table has a partition and sort key.

@@ -2,6 +2,7 @@
 title: "Configuring Lettuce/Webflux to work with Clustered Redis"
 date: 2021-04-10T22:27:54
 draft: false
+tags: [spring, reactive, webflux, lettuce, redis]
 ---
 
 Lettuce has some pretty nice out of the box support for working with clustered redis. This combination--a reactive client and application along with clustered redis--is about as scalable, performant, and resilient as things can get in distributed systems \[though there are other tradeoffs which are not the subject of this post\].

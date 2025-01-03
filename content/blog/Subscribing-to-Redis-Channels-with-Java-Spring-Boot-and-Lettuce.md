@@ -2,6 +2,7 @@
 title: "Subscribing to Redis Channels with Java, Spring Boot, and Lettuce"
 date: 2021-04-24T20:05:52
 draft: false
+tags: [java, spring, reactive, webflux, lettuce, redis]
 ---
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).

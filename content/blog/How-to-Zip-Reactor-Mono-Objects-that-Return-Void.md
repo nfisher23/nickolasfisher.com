@@ -2,6 +2,7 @@
 title: "How to Zip Reactor Mono Objects that Return Void"
 date: 2021-03-20T19:14:57
 draft: false
+tags: [java, concurrency, reactive, webflux]
 ---
 
 Leveraging [Mono.zip](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html#zip-java.lang.Iterable-java.util.function.Function-) appropriately will \[with the right configuration\] lead to a high amount of performance and concurrency. There is one caveat to its usage though:

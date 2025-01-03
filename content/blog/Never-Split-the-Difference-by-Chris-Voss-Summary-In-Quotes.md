@@ -2,6 +2,7 @@
 title: "Never Split the Difference by Chris Voss: Summary In Quotes"
 date: 2018-10-27T15:47:45
 draft: false
+tags: [books]
 ---
 
 [Never Split the Difference](https://www.amazon.com/Never-Split-Difference-Negotiating-Depended/dp/0062407805/ref=tmm_hrd_swatch_0?_encoding=UTF8&amp;qid=1541260114&amp;sr=8-2), by Chris Voss, is a book about how to negotiate. As opposed to theoreticians in a classroom, Chris Voss spent a great part of his life negotiating in the real world, and with the highest stakes imaginable, as an FBI hostage negotiator.

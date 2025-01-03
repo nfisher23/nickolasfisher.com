@@ -2,6 +2,7 @@
 title: "Behind The Cloud: Summary In Quotes"
 date: 2018-12-16T00:49:43
 draft: false
+tags: [books]
 ---
 
 Behind the Cloud, by Marc Benioff, is his own story about how Salesforce became one of the first software-as-a-subscription services. While it honestly sometimes felt like another marketing ploy for Salesforce, there were many nuggets of wisdom to take out of it.

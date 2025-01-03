@@ -2,6 +2,7 @@
 title: "Subscribing to Channels in Clustered Redis With Lettuce"
 date: 2021-04-25T18:43:42
 draft: false
+tags: [java, spring, webflux, lettuce, redis]
 ---
 
 We already know [how to subscribe to redis using lettuce](https://nickolasfisher.com/blog/Subscribing-to-Redis-Channels-with-Java-Spring-Boot-and-Lettuce) when it&#39;s not running in clustered mode. If it&#39;s running in clustered mode, it&#39;s not terribly different, but I did discover one thing that is interesting, which is the subject of this article.

@@ -2,6 +2,7 @@
 title: "Improving Java IO Performance: Buffering Techniques "
 date: 2018-11-10T12:45:54
 draft: false
+tags: [java, i/o, performance testing, jmh]
 ---
 
 ﻿You can view the sample code associated with this post [on GitHub](https://github.com/nfisher23/io-tuning).

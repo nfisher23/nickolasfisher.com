@@ -2,6 +2,7 @@
 title: "Query a DynamoDB Global Secondary Index in Java"
 date: 2020-11-01T22:40:46
 draft: false
+tags: [java, reactive, aws, dynamodb, webflux]
 ---
 
 A [DynamoDB Global Secondary Index](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.html) is an eventually consistent way to efficiently query for data that is not normally found without a table scan. It has [some similarities to Local Secondary Indexes, which we covered in the last post](https://nickolasfisher.com/blog/Query-a-DynamoDB-Local-Secondary-Index-with-Java), but are more flexible than them because they can be created, updated, and deleted after the base table has been created, which is not true of Local Secondary Indexes.

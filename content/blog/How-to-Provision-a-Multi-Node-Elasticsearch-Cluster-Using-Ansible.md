@@ -2,6 +2,7 @@
 title: "How to Provision a Multi Node Elasticsearch Cluster Using Ansible"
 date: 2019-03-03T23:15:27
 draft: false
+tags: [distributed systems, vagrant, ansible, the elastic stack, DevOps]
 ---
 
 You can see the sample code for this tutorial [on GitHub.](https://github.com/nfisher23/some-ansible-examples)

@@ -2,6 +2,7 @@
 title: "Breaking down Lettuce MSET Commands in Clustered Redis"
 date: 2021-04-10T23:26:07
 draft: false
+tags: [spring, reactive, webflux, lettuce, redis]
 ---
 
 To follow along with this post, it would be best if you have already [set up your local redis cluster](https://nickolasfisher.com/blog/Bootstrap-a-Local-Sharded-Redis-Cluster-in-Five-Minutes) and know how to [connect to a redis cluster and interact with it via Lettuce](https://nickolasfisher.com/blog/Configuring-Lettuce-to-work-with-Clustered-Redis). And the source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).

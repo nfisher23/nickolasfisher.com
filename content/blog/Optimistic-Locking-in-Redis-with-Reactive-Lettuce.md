@@ -2,6 +2,7 @@
 title: "Optimistic Locking in Redis with Reactive Lettuce"
 date: 2021-04-24T21:32:36
 draft: false
+tags: [java, reactive, webflux, lettuce, redis]
 ---
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).

@@ -2,6 +2,7 @@
 title: "How To Make a Basic Working Contact Form With ASP .NET Core MVC and MailKit"
 date: 2018-08-04T00:00:00
 draft: false
+tags: [c#, .NET Core MVC]
 ---
 
 Modern day website owners prefer not to leave their email address open and exploitable on the internet.

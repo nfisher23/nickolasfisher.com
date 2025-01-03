@@ -2,6 +2,7 @@
 title: "Why Redis Pub/Sub is not SQS, and Vice Versa"
 date: 2021-04-24T23:52:19
 draft: false
+tags: [aws, redis]
 ---
 
 [Redis has a pub/sub feature](https://redis.io/topics/pubsub) whereby there are publishers and subscribers, and publishers can fanout messages to subscribers. SQS \[ [amazon&#39;s simple queue service](https://aws.amazon.com/sqs/)\] has message senders and receivers. They can both be useful, but in practice they produce different results.

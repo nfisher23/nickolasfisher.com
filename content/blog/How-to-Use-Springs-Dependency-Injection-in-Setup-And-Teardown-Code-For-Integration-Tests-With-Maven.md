@@ -2,6 +2,7 @@
 title: "How to Use Spring&#39;s Dependency Injection in Setup And Teardown Code For Integration Tests With Maven"
 date: 2018-11-24T15:51:32
 draft: false
+tags: [java, spring, DevOps, maven]
 ---
 
 You can view the sample code for this repository [on GitHub](https://github.com/nfisher23/integration-testing-postgres-and-spring).

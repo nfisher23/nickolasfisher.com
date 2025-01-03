@@ -2,6 +2,7 @@
 title: "The Java Stream API: Creating Custom, Lazy, Infinite Streams"
 date: 2018-10-20T13:50:54
 draft: false
+tags: [java, java stream api]
 ---
 
 You can find the sample code from this post [on GitHub](https://github.com/nfisher23/java_stream_api_samples).

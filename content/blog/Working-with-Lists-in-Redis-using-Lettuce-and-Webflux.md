@@ -2,6 +2,7 @@
 title: "Working with Lists in Redis using Lettuce and Webflux"
 date: 2021-04-11T21:14:08
 draft: false
+tags: [distributed systems, spring, reactive, webflux, lettuce, redis]
 ---
 
 As of this writing, there are a solid [twenty or so commands you can execute against redis for the list data type](https://redis.io/commands/#list). This article will be walking through some of the more common operations you are likely to need when interacting with redis and lists using lettuce, and [the source code can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).

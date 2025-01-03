@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javadistributed Systemsspringmavenreactivewebflux on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javadistributed-systemsspringmavenreactivewebflux/</link>
+    <description>Recent content in Javadistributed Systemsspringmavenreactivewebflux on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 27 Mar 2021 21:22:32 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javadistributed-systemsspringmavenreactivewebflux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to use Embedded Redis to Test a Lettuce Client in Spring Boot Webflux</title>
+      <link>http://localhost:1313/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux/</link>
+      <pubDate>Sat, 27 Mar 2021 21:22:32 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux/</guid>
+      <description>&lt;p&gt;The source code for this article &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://github.com/lettuce-io/lettuce-core&#34;&gt;Lettuce&lt;/a&gt; is a redis client with reactive support. There is a super handy &lt;a href=&#34;https://github.com/kstyrc/embedded-redis&#34;&gt;embedded redis for java project&lt;/a&gt; out there, and this kind of integration testing inside your service is worth its weight in gold, in my humble opinion. This post will detail how to merge both of these worlds together, and set up redis integration tests when you&#39;re using a lettuce client.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

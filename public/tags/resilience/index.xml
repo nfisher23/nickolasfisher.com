@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Resilience on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/resilience/</link>
+    <description>Recent content in Resilience on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 01 May 2021 21:14:55 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/resilience/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Prevent Certain Exceptions from Tripping a Resilience4j Circuit</title>
+      <link>http://localhost:1313/blog/how-to-prevent-certain-exceptions-from-tripping-a-resilience4j-circuit/</link>
+      <pubDate>Sat, 01 May 2021 21:14:55 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-prevent-certain-exceptions-from-tripping-a-resilience4j-circuit/</guid>
+      <description>&lt;p&gt;The source code for this article &lt;a href=&#34;https://github.com/nfisher23/java-failure-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;The Resilience4j circuit breaker by default considers any exception thrown inside of the &lt;strong&gt;Supplier&lt;/strong&gt; as a failure. If over 50% of the calls are failures and the rolling window max size is met, then it will prevent any future calls from going through.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Configuring, Testing, and Using Circuit Breakers on Rest API calls with Resilience4j</title>
+      <link>http://localhost:1313/blog/configuring-testing-and-using-circuit-breakers-on-rest-api-calls-with-resilience4j/</link>
+      <pubDate>Sat, 01 May 2021 19:06:23 +0000</pubDate>
+      <guid>http://localhost:1313/blog/configuring-testing-and-using-circuit-breakers-on-rest-api-calls-with-resilience4j/</guid>
+      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/java-failure-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;The circuit breaker pattern, popularized by Netflix [using Hystrix], exists for a couple of reasons, the most prominent being that it reduces load on a downstream service when it is not responding properly [presumably because it&#39;s under duress]. By wrapping operations that might fail and get overloaded in a circuit breaker, we can prematurely prevent cascading failure and stop overloading those services.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Retry API Requests in Java using Resilience4j</title>
+      <link>http://localhost:1313/blog/how-to-retry-api-requests-in-java-using-resilience4j/</link>
+      <pubDate>Sat, 01 May 2021 18:34:59 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-retry-api-requests-in-java-using-resilience4j/</guid>
+      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/java-failure-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;When you&#39;re working with distributed systems, it is often the case that some clones of a service running can be slow to respond, while still others are functioning perfectly normally. Therefore, when you just hit a load balancer and the load balancer chooses a backend, it can sometimes be beneficial to retry the request. Other things like periodic and small database stalls or random GC stop-the-worlds are examples where retries can smooth the experience for the client of your service.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

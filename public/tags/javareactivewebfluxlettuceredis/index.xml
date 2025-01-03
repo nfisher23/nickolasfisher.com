@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javareactivewebfluxlettuceredis on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javareactivewebfluxlettuceredis/</link>
+    <description>Recent content in Javareactivewebfluxlettuceredis on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 24 Apr 2021 21:32:36 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javareactivewebfluxlettuceredis/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Optimistic Locking in Redis with Reactive Lettuce</title>
+      <link>http://localhost:1313/blog/optimistic-locking-in-redis-with-reactive-lettuce/</link>
+      <pubDate>Sat, 24 Apr 2021 21:32:36 +0000</pubDate>
+      <guid>http://localhost:1313/blog/optimistic-locking-in-redis-with-reactive-lettuce/</guid>
+      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Optimistic Locking in Redis is one of the only reasons to want to use transactions, in my opinion. You can ensure a grouping of atomic operations only occur if a watched key does not change out from underneath you. On the CLI, this might start with:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Redis Transactions, Reactive Lettuce: Buyer Beware</title>
+      <link>http://localhost:1313/blog/redis-transactions-reactive-lettuce-buyer-beware/</link>
+      <pubDate>Sat, 24 Apr 2021 20:48:04 +0000</pubDate>
+      <guid>http://localhost:1313/blog/redis-transactions-reactive-lettuce-buyer-beware/</guid>
+      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Redis Transactions do not operate exactly the way you would expect if you&#39;re coming from a relational database management system like MySQL or postrgres. It&#39;s mostly useful for optimistic locking, but honestly there are better ways to accomplish many of the things you&#39;re probably trying to, like &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Run-a-Lua-Script-against-Redis-using-Lettuce&#34;&gt;running a lua script with arguments&lt;/a&gt; [which is guaranteed to be atomic]. The &lt;a href=&#34;https://redis.io/topics/transactions&#34;&gt;documentation on transactions in redis&lt;/a&gt; describes some of the caveats, the biggest one probably being that it does not support rollbacks, only commits or discards.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Lettuce, MSETNX, and Clustered Redis</title>
+      <link>http://localhost:1313/blog/lettuce-msetnx-and-clustered-redis/</link>
+      <pubDate>Sat, 17 Apr 2021 09:35:41 +0000</pubDate>
+      <guid>http://localhost:1313/blog/lettuce-msetnx-and-clustered-redis/</guid>
+      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://redis.io/commands/msetnx&#34;&gt;MSETNX&lt;/a&gt; when you&#39;re working with a single redis primary node is simple enough to understand: it sets all of the key/value pairs, or none at all. If one of the keys already exists in the cluster, then all of them are rejected.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

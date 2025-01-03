@@ -2,6 +2,7 @@
 title: "How to Provision Multiple Logstash Hosts Using Ansible"
 date: 2019-03-06T23:33:35
 draft: false
+tags: [distributed systems, vagrant, ansible, the elastic stack, DevOps]
 ---
 
 The source code for this post can be found [on GitHub](https://github.com/nfisher23/some-ansible-examples).

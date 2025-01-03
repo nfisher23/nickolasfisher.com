@@ -2,6 +2,7 @@
 title: "A Guide to Simple Set Operations in Redis with Lettuce"
 date: 2021-04-17T08:09:37
 draft: false
+tags: [java, spring, reactive, webflux, lettuce, redis]
 ---
 
 There are, as of this writing, about [15 distinct operations available to someone wanting to work with sets in redis](https://redis.io/commands/#set). This article seeks to cover some of the more basic ones using a reactive lettuce client, and [a follow up article](https://nickolasfisher.com/blog/A-Guide-to-Operating-on-Multiple-Sets-in-Redis-with-Lettuce) will seek to deal with explaining some of the more common operations against multiple sets, rather than a single set in this case.

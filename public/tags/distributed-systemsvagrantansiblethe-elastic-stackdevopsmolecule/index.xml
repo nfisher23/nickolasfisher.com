@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Distributed Systemsvagrantansiblethe Elastic StackDevOpsmolecule on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/distributed-systemsvagrantansiblethe-elastic-stackdevopsmolecule/</link>
+    <description>Recent content in Distributed Systemsvagrantansiblethe Elastic StackDevOpsmolecule on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 16 Mar 2019 15:37:40 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/distributed-systemsvagrantansiblethe-elastic-stackdevopsmolecule/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Provision a Linux VM With Kibana Using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-provision-a-linux-vm-with-kibana-using-ansible/</link>
+      <pubDate>Sat, 16 Mar 2019 15:37:40 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-provision-a-linux-vm-with-kibana-using-ansible/</guid>
+      <description>&lt;p&gt;The corresponding source code for this post is available &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/products/kibana&#34;&gt;Kibana&lt;/a&gt; is a fancy pants web application that tries to make data in Elasticsearch user-friendly. Rounding out the previous two posts on &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible&#34;&gt;how to install an elasticsearch cluster&lt;/a&gt; and &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Install-Multiple-Logstash-Hosts-Using-Ansible&#34;&gt;how to install multiple logstash hosts&lt;/a&gt;, I will now show you how to stack kibana on top of them.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

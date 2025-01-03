@@ -2,6 +2,7 @@
 title: "A Guide to Automatic Retries in Reactor"
 date: 2020-08-16T16:22:09
 draft: false
+tags: [java, spring, reactive, testing, webflux]
 ---
 
 The source code for this post [is available on GitHub](https://github.com/nfisher23/reactive-programming-webflux).

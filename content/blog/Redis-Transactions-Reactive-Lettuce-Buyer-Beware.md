@@ -2,6 +2,7 @@
 title: "Redis Transactions, Reactive Lettuce: Buyer Beware"
 date: 2021-04-24T20:48:04
 draft: false
+tags: [java, reactive, webflux, lettuce, redis]
 ---
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).

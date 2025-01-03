@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javaspringconcurrency on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javaspringconcurrency/</link>
+    <description>Recent content in Javaspringconcurrency on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 22 Jun 2019 20:48:30 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javaspringconcurrency/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Make Concurrent Service API Calls in Java Using Spring Boot</title>
+      <link>http://localhost:1313/blog/how-to-make-concurrent-service-api-calls-in-java-using-spring-boot/</link>
+      <pubDate>Sat, 22 Jun 2019 20:48:30 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-make-concurrent-service-api-calls-in-java-using-spring-boot/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/java-concurrency-examples/tree/master&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;When you&#39;re in a microservice environment, it often makes sense to make some calls to multiple services at the same time. This allows for the time an operation needs to complete to be reduced from the &lt;em&gt;sum&lt;/em&gt; of all the time spent waiting to the &lt;em&gt;maximum&lt;/em&gt; time spent over the span of calls.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

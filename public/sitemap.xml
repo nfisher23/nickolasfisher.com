@@ -11,7 +11,19 @@
     <loc>http://localhost:1313/blog/how-to-prevent-certain-exceptions-from-tripping-a-resilience4j-circuit/</loc>
     <lastmod>2021-05-01T21:14:55+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/java/</loc>
+    <lastmod>2021-05-01T21:14:55+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/resilience/</loc>
+    <lastmod>2021-05-01T21:14:55+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2021-05-01T21:14:55+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/configuring-testing-and-using-circuit-breakers-on-rest-api-calls-with-resilience4j/</loc>
+    <lastmod>2021-05-01T19:06:23+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/spring/</loc>
     <lastmod>2021-05-01T19:06:23+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/how-to-retry-api-requests-in-java-using-resilience4j/</loc>
@@ -20,10 +32,28 @@
     <loc>http://localhost:1313/blog/how-to-test-latency-with-a-mock-server-in-java/</loc>
     <lastmod>2021-05-01T18:12:45+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/testing/</loc>
+    <lastmod>2021-05-01T18:12:45+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/an-introduction-to-redis-streams-via-lettuce/</loc>
     <lastmod>2021-05-01T15:22:58+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/lettuce/</loc>
+    <lastmod>2021-05-01T15:22:58+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/reactive/</loc>
+    <lastmod>2021-05-01T15:22:58+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/redis/</loc>
+    <lastmod>2021-05-01T15:22:58+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/distributed-systems/</loc>
+    <lastmod>2021-05-01T14:44:31+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/using-redis-as-a-distributed-lock-with-lettuce/</loc>
+    <lastmod>2021-05-01T14:44:31+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/webflux/</loc>
     <lastmod>2021-05-01T14:44:31+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/subscribing-to-channels-in-clustered-redis-with-lettuce/</loc>
@@ -31,6 +61,9 @@
   </url><url>
     <loc>http://localhost:1313/blog/pre-loading-lua-scripts-into-clustered-redis-with-lettuce/</loc>
     <lastmod>2021-04-25T17:37:07+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/aws/</loc>
+    <lastmod>2021-04-24T23:52:19+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/why-redis-pubsub-is-not-sqs-and-vice-versa/</loc>
     <lastmod>2021-04-24T23:52:19+00:00</lastmod>
@@ -92,11 +125,17 @@
     <loc>http://localhost:1313/blog/bootstrap-a-local-sharded-redis-cluster-in-five-minutes/</loc>
     <lastmod>2021-04-10T18:24:12+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/dynamodb/</loc>
+    <lastmod>2021-04-10T16:13:09+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/setup-and-use-a-dynamodb-test-container-with-the-aws-java-sdk-20/</loc>
     <lastmod>2021-04-10T16:13:09+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/how-to-configure-lettuce-to-use-redis-read-replicas-in-spring-boot-webflux/</loc>
     <lastmod>2021-03-28T19:22:27+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/devops/</loc>
+    <lastmod>2021-03-28T18:57:07+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/set-up-a-basic-leaderfollower-redis-cluster-locally-using-docker/</loc>
     <lastmod>2021-03-28T18:57:07+00:00</lastmod>
@@ -113,8 +152,14 @@
     <loc>http://localhost:1313/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux/</loc>
     <lastmod>2021-03-27T21:22:32+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/maven/</loc>
+    <lastmod>2021-03-27T21:22:32+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/making-sense-of-mono-error-handling-in-spring-boot-webfluxproject-reactor/</loc>
     <lastmod>2021-03-21T18:27:16+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/concurrency/</loc>
+    <lastmod>2021-03-20T19:14:57+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/how-to-zip-reactor-mono-objects-that-return-void/</loc>
     <lastmod>2021-03-20T19:14:57+00:00</lastmod>
@@ -124,6 +169,9 @@
   </url><url>
     <loc>http://localhost:1313/blog/how-to-use-caffeine-caches-effectively-in-spring-boot-webflux/</loc>
     <lastmod>2021-03-13T21:36:45+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/aws-lambda/</loc>
+    <lastmod>2021-02-07T19:47:50+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/setting-up-a-python-lambda-to-trigger-on-dynamodb-streams-via-the-aws-cli/</loc>
     <lastmod>2021-02-07T19:47:50+00:00</lastmod>
@@ -203,6 +251,9 @@
     <loc>http://localhost:1313/blog/openapi-and-spring-boot-webflux-a-working-introduction/</loc>
     <lastmod>2020-08-01T23:59:33+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/bash/</loc>
+    <lastmod>2020-08-01T20:46:28+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/how-to-use-optimistic-locking-in-dynamodb-via-the-aws-cli/</loc>
     <lastmod>2020-08-01T20:46:28+00:00</lastmod>
   </url><url>
@@ -227,10 +278,19 @@
     <loc>http://localhost:1313/blog/an-example-upgrade-and-rollback-of-a-deployment-image-in-kubernetes/</loc>
     <lastmod>2020-06-20T22:47:02+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/kind/</loc>
+    <lastmod>2020-06-20T22:47:02+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/kubernetes/</loc>
+    <lastmod>2020-06-20T22:47:02+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/how-to-setup-and-use-kubernetes-in-docker-kind/</loc>
     <lastmod>2020-06-20T19:32:30+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/how-to-configure-rest-assured-to-record-the-latency-of-every-request-in-a-custom-way/</loc>
+    <lastmod>2020-06-13T21:06:52+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/rest-assured/</loc>
     <lastmod>2020-06-13T21:06:52+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/the-hystrix-parameters-you-actually-need-to-tune-in-spring-boot/</loc>
@@ -239,16 +299,34 @@
     <loc>http://localhost:1313/blog/how-to-configure-prometheus-to-scrape-and-aggregate-data-from-a-spring-boot-2x-application/</loc>
     <lastmod>2020-05-30T20:33:50+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/prometheus/</loc>
+    <lastmod>2020-05-30T20:33:50+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/how-to-expose-meaningful-prometheus-metrics-in-a-spring-boot-2x-application/</loc>
+    <lastmod>2020-05-30T19:21:40+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/postgresql/</loc>
     <lastmod>2020-05-30T19:21:40+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/how-to-map-multiple-headers-to-the-same-variable-in-nginx/</loc>
     <lastmod>2020-05-24T20:26:02+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/ngnix/</loc>
+    <lastmod>2020-05-24T20:26:02+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/a-concise-guide-to-using-jasypt-in-spring-boot-for-configuration-encryption/</loc>
     <lastmod>2020-05-23T01:58:12+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/security/</loc>
+    <lastmod>2020-05-23T01:58:12+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/digital-ocean/</loc>
+    <lastmod>2020-05-17T21:58:17+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/how-to-create-a-kubernetes-cluster-on-digital-ocean-using-terraform/</loc>
+    <lastmod>2020-05-17T21:58:17+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/terraform/</loc>
     <lastmod>2020-05-17T21:58:17+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/how-to-create-a-digital-ocean-droplet-using-terraform/</loc>
@@ -266,13 +344,25 @@
     <loc>http://localhost:1313/blog/how-to-authenticate-against-a-spring-boot-service-using-jwt/</loc>
     <lastmod>2019-06-22T20:29:27+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/ansible/</loc>
+    <lastmod>2019-06-16T17:14:49+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/how-to-create-multiple-digital-ocean-droplets-and-provision-them-using-ansible/</loc>
     <lastmod>2019-06-16T17:14:49+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/how-to-create-a-digital-ocean-droplet-and-provision-it-using-ansible/</loc>
     <lastmod>2019-06-15T20:40:48+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/consul/</loc>
+    <lastmod>2019-05-25T22:18:42+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/how-to-run-a-script-on-cluster-state-change-using-consul-watch/</loc>
+    <lastmod>2019-05-25T22:18:42+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/molecule/</loc>
+    <lastmod>2019-05-25T22:18:42+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/vagrant/</loc>
     <lastmod>2019-05-25T22:18:42+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/how-to-register-a-spring-boot-service-to-a-consul-cluster/</loc>
@@ -281,7 +371,13 @@
     <loc>http://localhost:1313/blog/how-to-selectively-allow-cross-origin-resource-sharing-in-spring-boot/</loc>
     <lastmod>2019-05-18T19:12:46+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/webdev/</loc>
+    <lastmod>2019-05-18T19:12:46+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/a-fast-scss-learning-feedback-loop-with-harp-and-browsersync/</loc>
+    <lastmod>2019-05-18T17:12:55+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/scss/</loc>
     <lastmod>2019-05-18T17:12:55+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/how-to-provision-a-consul-clientserver-cluster-using-ansible/</loc>
@@ -299,6 +395,9 @@
     <loc>http://localhost:1313/blog/how-to-create-an-embedded-postgresql-database-with-spring-boot/</loc>
     <lastmod>2019-04-20T15:28:25+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/aspect-oriented-programming/</loc>
+    <lastmod>2019-04-13T16:52:53+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/how-to-invalidate-an-nginx-cache-in-a-reverse-proxy-setup-with-spring-mvc/</loc>
     <lastmod>2019-04-13T16:52:53+00:00</lastmod>
   </url><url>
@@ -309,6 +408,9 @@
     <lastmod>2019-04-06T14:44:50+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/how-to-upgrade-kibana-using-ansible/</loc>
+    <lastmod>2019-03-23T21:14:22+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/the-elastic-stack/</loc>
     <lastmod>2019-03-23T21:14:22+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/how-to-do-a-rolling-upgrade-of-multiple-logstash-instances-using-ansible/</loc>
@@ -336,6 +438,9 @@
     <lastmod>2019-02-09T15:44:26+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/antifragile-by-nassim-nicholas-taleb-summary-in-quotes/</loc>
+    <lastmod>2018-12-16T08:06:43+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/books/</loc>
     <lastmod>2018-12-16T08:06:43+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/next-by-michael-lewis-summary-in-quotes/</loc>
@@ -374,7 +479,19 @@
     <loc>http://localhost:1313/blog/how-to-dynamically-deserialize-json-in-java-with-jackson/</loc>
     <lastmod>2018-11-18T12:45:53+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/json/</loc>
+    <lastmod>2018-11-18T12:45:53+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/i/o/</loc>
+    <lastmod>2018-11-17T19:16:28+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/improving-java-io-performance-caching-data-when-appropriate/</loc>
+    <lastmod>2018-11-17T19:16:28+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/jmh/</loc>
+    <lastmod>2018-11-17T19:16:28+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/performance-testing/</loc>
     <lastmod>2018-11-17T19:16:28+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/improving-java-io-performance-does-compression-actually-help/</loc>
@@ -396,6 +513,9 @@
     <lastmod>2018-11-10T12:28:58+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/java-io-creating-and-traversing-files-and-directories/</loc>
+    <lastmod>2018-11-03T14:36:55+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/java-stream-api/</loc>
     <lastmod>2018-11-03T14:36:55+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/java-io-paths-and-files/</loc>
@@ -464,11 +584,17 @@
     <loc>http://localhost:1313/blog/the-java-stream-apiintroduction-filter-map-and-count/</loc>
     <lastmod>2018-10-20T12:00:18+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/c%23/</loc>
+    <lastmod>2018-08-08T00:08:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/blog/how-to-set-up-clickonce-continuous-deployment-for-wpf-via-nginx/</loc>
     <lastmod>2018-08-08T00:08:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/how-to-configure-visual-studio-to-implement-the-yarn-package-manager/</loc>
     <lastmod>2018-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/.net-core-mvc/</loc>
+    <lastmod>2018-08-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/blog/how-to-make-a-basic-working-contact-form-with-asp-net-core-mvc-and-mailkit/</loc>
     <lastmod>2018-08-04T00:00:00+00:00</lastmod>
@@ -476,8 +602,6 @@
     <loc>http://localhost:1313/categories/</loc>
   </url><url>
     <loc>http://localhost:1313/categories/foo/</loc>
-  </url><url>
-    <loc>http://localhost:1313/tags/</loc>
   </url><url>
     <loc>http://localhost:1313/categories/uncategories/</loc>
   </url>

@@ -2,6 +2,7 @@
 title: "The Java Stream API: How to Work With Optional Types"
 date: 2018-10-20T21:59:38
 draft: false
+tags: [java, java stream api]
 ---
 
 You can find the sample code associated with this post [on GitHub](https://github.com/nfisher23/java_stream_api_samples).

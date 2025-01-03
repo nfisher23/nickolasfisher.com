@@ -2,6 +2,7 @@
 title: "How to Provision a Consul Client-Server Cluster using Ansible"
 date: 2019-04-27T21:15:18
 draft: false
+tags: [distributed systems, vagrant, ansible, DevOps, molecule, consul]
 ---
 
 The source code for this blog post can be found [on GitHub](https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server).

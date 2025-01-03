@@ -2,6 +2,7 @@
 title: "How to do a Rolling Upgrade of an Elasticsearch Cluster Using Ansible"
 date: 2019-03-16T23:17:03
 draft: false
+tags: [distributed systems, vagrant, ansible, DevOps]
 ---
 
 You can see the source code for this blog post [on GitHub](https://github.com/nfisher23/some-ansible-examples).

@@ -2,6 +2,7 @@
 title: "Lettuce, MSETNX, and Clustered Redis"
 date: 2021-04-17T09:35:41
 draft: false
+tags: [java, reactive, webflux, lettuce, redis]
 ---
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).

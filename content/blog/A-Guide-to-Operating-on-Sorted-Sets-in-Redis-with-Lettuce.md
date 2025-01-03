@@ -2,6 +2,7 @@
 title: "A Guide to Operating on Sorted Sets in Redis with Lettuce"
 date: 2021-04-17T08:15:31
 draft: false
+tags: [java, spring, webflux, lettuce, redis]
 ---
 
 Sorted Sets in redis are one of my personal favorite tools when operating at scale. As of this writing, [there are over 30 unique operations you can perform against sorted sets in redis](https://redis.io/commands/#sorted_set). This article will focus on some of the more common ones you&#39;re going to need to know, and it will use a reactive lettuce client to demonstrate them.

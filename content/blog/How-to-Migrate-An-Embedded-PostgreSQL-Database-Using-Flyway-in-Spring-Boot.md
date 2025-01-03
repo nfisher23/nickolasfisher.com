@@ -2,6 +2,7 @@
 title: "How to Migrate An Embedded PostgreSQL Database Using Flyway in Spring Boot"
 date: 2019-04-20T16:00:34
 draft: false
+tags: [java, spring, DevOps, postgreSQL]
 ---
 
 The source code for this post can be found [on GitHub](https://github.com/nfisher23/postgres-flyway-example).

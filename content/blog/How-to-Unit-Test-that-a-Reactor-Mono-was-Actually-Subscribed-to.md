@@ -2,6 +2,7 @@
 title: "How to Unit Test that a Reactor Mono was Actually Subscribed to"
 date: 2021-03-13T22:35:48
 draft: false
+tags: [java, reactive, webflux]
 ---
 
 There&#39;s a very insidious bug that can happen when you&#39;re writing reactive code, and it basically comes down to whether an underlying **Mono** in a chain of operations was actually **subscribed to**, rather than merely observing a method invocation. I&#39;ll demonstrate with an example.

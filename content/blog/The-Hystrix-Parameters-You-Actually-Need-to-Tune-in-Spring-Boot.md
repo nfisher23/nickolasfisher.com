@@ -2,6 +2,7 @@
 title: "The Hystrix Parameters You Actually Need to Tune in Spring Boot"
 date: 2020-06-13T17:53:33
 draft: false
+tags: [java, spring]
 ---
 
 There is some \[hacky\] code for this post [on Github](https://github.com/nfisher23/hystrix-playground).

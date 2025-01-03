@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javaspringsecurity on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javaspringsecurity/</link>
+    <description>Recent content in Javaspringsecurity on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 22 Jun 2019 20:29:27 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javaspringsecurity/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Authenticate Against a Spring Boot Service Using JWT</title>
+      <link>http://localhost:1313/blog/how-to-authenticate-against-a-spring-boot-service-using-jwt/</link>
+      <pubDate>Sat, 22 Jun 2019 20:29:27 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-authenticate-against-a-spring-boot-service-using-jwt/</guid>
+      <description>&lt;p&gt;havent written it&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

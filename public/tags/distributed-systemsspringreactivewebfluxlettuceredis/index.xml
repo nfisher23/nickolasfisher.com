@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Distributed Systemsspringreactivewebfluxlettuceredis on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/distributed-systemsspringreactivewebfluxlettuceredis/</link>
+    <description>Recent content in Distributed Systemsspringreactivewebfluxlettuceredis on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sun, 11 Apr 2021 21:14:08 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/distributed-systemsspringreactivewebfluxlettuceredis/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Working with Lists in Redis using Lettuce and Webflux</title>
+      <link>http://localhost:1313/blog/working-with-lists-in-redis-using-lettuce-and-webflux/</link>
+      <pubDate>Sun, 11 Apr 2021 21:14:08 +0000</pubDate>
+      <guid>http://localhost:1313/blog/working-with-lists-in-redis-using-lettuce-and-webflux/</guid>
+      <description>&lt;p&gt;As of this writing, there are a solid &lt;a href=&#34;https://redis.io/commands/#list&#34;&gt;twenty or so commands you can execute against redis for the list data type&lt;/a&gt;. This article will be walking through some of the more common operations you are likely to need when interacting with redis and lists using lettuce, and &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;the source code can be found on Github&lt;/a&gt;.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

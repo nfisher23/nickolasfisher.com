@@ -2,6 +2,7 @@
 title: "The Difference Between a Reactive Non-Blocking Model and Classic Asynchronous Code"
 date: 2019-07-06T15:10:01
 draft: false
+tags: [java, spring, concurrency, reactive]
 ---
 
 Reactive Programming is a very different way of thinking about doing work in a microservices environment. Anyone who has worked with a GUI, dating back to even to windows forms, is familiar with the event based model, but what does that mean when there is unpredictable latency involved? How does handing off to a thread to make a remote call differ from this new &#34;reactive web&#34;?

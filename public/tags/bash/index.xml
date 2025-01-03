@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Bash on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/bash/</link>
+    <description>Recent content in Bash on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 01 Aug 2020 20:46:28 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/bash/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to use Optimistic Locking in DynamoDB via the AWS CLI</title>
+      <link>http://localhost:1313/blog/how-to-use-optimistic-locking-in-dynamodb-via-the-aws-cli/</link>
+      <pubDate>Sat, 01 Aug 2020 20:46:28 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-use-optimistic-locking-in-dynamodb-via-the-aws-cli/</guid>
+      <description>&lt;p&gt;Optimistic Locking is a form of concurrency control that basically aims to prevent two different threads from accidentally overwriting data that another thread has already written. I covered &lt;a href=&#34;https://nickolasfisher.com/blog/Optimistic-Locking-in-MySQLExplain-Like-Im-Five&#34;&gt;optimistic locking in MySQL&lt;/a&gt; in a previous blog post, which may or may not be easier to understand based on your background.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Create a Digital Ocean Droplet using Terraform</title>
+      <link>http://localhost:1313/blog/how-to-create-a-digital-ocean-droplet-using-terraform/</link>
+      <pubDate>Sun, 17 May 2020 18:26:02 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-create-a-digital-ocean-droplet-using-terraform/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/digitalocean-terraform-examples&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Terraform lets you define your infrastructure, e.g. a virtual machine, in code. Used properly, this saves you a lot of time, makes infra easier to manage, and will generally limit your ability to do something dumb, like delete or modify something your infrastructure is dependent on.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>A Simple Zero Downtime Continuous Integration Pipeline for Spring MVC</title>
+      <link>http://localhost:1313/blog/a-simple-zero-downtime-continuous-integration-pipeline-for-spring-mvc/</link>
+      <pubDate>Sun, 25 Nov 2018 15:53:22 +0000</pubDate>
+      <guid>http://localhost:1313/blog/a-simple-zero-downtime-continuous-integration-pipeline-for-spring-mvc/</guid>
+      <description>&lt;p&gt;The sample code associated with what follows can be found &lt;a href=&#34;https://github.com/nfisher23/simple-cicd-pipeline-with-spring&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;One of the biggest paradigm shifts in software engineering, since the invention of the computer and software that would run on it, was the idea of a MVR (minimum viable release) or MVP (minimum viable product). With the lack of internet access becoming the exception in developed countries, it becomes more and more powerful to put your product out there on display, and to design a way to continuously make improvements to it. In the most aggressive of circumstances, you want to be able to push something up to a source control server, then let an automated process perform the various steps required to actually deploy it in the real world. In the best case, you can achieve all of this with zero downtime&amp;ndash;basically, the users of your service are never inconvenienced by your decision to make a change. Setting up one very simple example of that is the subject of this post.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Set Up a Local Unsecured Postgres Virtual Machine (for testing)</title>
+      <link>http://localhost:1313/blog/how-to-set-up-a-local-unsecured-postgres-virtual-machine-for-testing/</link>
+      <pubDate>Sat, 24 Nov 2018 12:47:47 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-set-up-a-local-unsecured-postgres-virtual-machine-for-testing/</guid>
+      <description>&lt;p&gt;The sample code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/integration-testing-postgres-and-spring/tree/master/postgres-vm-sandbox&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;While we can always install &lt;a href=&#34;https://www.postgresql.org/&#34;&gt;PostgreSQL&lt;/a&gt; on our host machine, it&#39;s a much cleaner solution to create something like a local virtual machine with &lt;a href=&#34;https://www.vagrantup.com/&#34;&gt;Vagrant&lt;/a&gt; or a container using &lt;a href=&#34;https://www.docker.com/&#34;&gt;Docker.&lt;/a&gt; That way, any changes we make to the database and then forget about are not around as soon as we destroy either the container or the virtual machine. It is one more way to tighten that feedback loop we need as developers.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>A VagrantFile for Elasticsearch, Logstash, and Kibana (On Three Different Servers)</title>
+      <link>http://localhost:1313/blog/a-vagrantfile-for-elasticsearch-logstash-and-kibana-on-three-different-servers/</link>
+      <pubDate>Sun, 18 Nov 2018 13:42:46 +0000</pubDate>
+      <guid>http://localhost:1313/blog/a-vagrantfile-for-elasticsearch-logstash-and-kibana-on-three-different-servers/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/&#34;&gt;Elasticsearch, Logstash, and Kibana&lt;/a&gt;, commonly referred to as ELK or the Elastic Stack, is a set of tools that can, well do a lot of things. It is most famous for its logging and analytics capabilities.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Provision a Linux Server With Any Version of Java via a Bash Script</title>
+      <link>http://localhost:1313/blog/how-to-provision-a-linux-server-with-any-version-of-java-via-a-bash-script/</link>
+      <pubDate>Sun, 28 Oct 2018 14:29:38 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-provision-a-linux-server-with-any-version-of-java-via-a-bash-script/</guid>
+      <description>&lt;p&gt;While we would all like to be up to date, sometimes legacy systems handcuff us into using an older version of software. Java is no exception, and in some cases we&#xA;have to resort to using, say, Java 8, instead of the latest version with all of the security updates that we need.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

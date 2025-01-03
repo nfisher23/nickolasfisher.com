@@ -2,6 +2,7 @@
 title: "How to Provision a Linux Server With Any Version of Java via a Bash Script"
 date: 2018-10-28T14:29:38
 draft: false
+tags: [java, distributed systems, bash, DevOps]
 ---
 
 While we would all like to be up to date, sometimes legacy systems handcuff us into using an older version of software. Java is no exception, and in some cases we

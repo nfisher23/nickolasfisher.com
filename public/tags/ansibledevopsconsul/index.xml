@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AnsibleDevOpsconsul on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/ansibledevopsconsul/</link>
+    <description>Recent content in AnsibleDevOpsconsul on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 27 Apr 2019 19:49:14 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/ansibledevopsconsul/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Provision a Standalone Consul Server with Ansible</title>
+      <link>http://localhost:1313/blog/how-to-provision-a-standalone-consul-server-with-ansible/</link>
+      <pubDate>Sat, 27 Apr 2019 19:49:14 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-provision-a-standalone-consul-server-with-ansible/</guid>
+      <description>&lt;p&gt;You can find the source code for this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.consul.io/&#34;&gt;Consul&lt;/a&gt; is a distributed service discovery engine. It&#39;s primary purpose is to track and manage services that interact with it&amp;ndash;usually via an HTTP API. It monitors the health of services in near real time, providing a more robust way of routing services to healthy and responsive nodes.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

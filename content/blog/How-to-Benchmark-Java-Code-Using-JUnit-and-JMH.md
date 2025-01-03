@@ -2,6 +2,7 @@
 title: "How to Benchmark Java Code Using JUnit and JMH"
 date: 2018-11-10T12:28:58
 draft: false
+tags: [java, performance testing, jmh]
 ---
 
 You can view the sample code associated with this post [on GitHub](https://github.com/nfisher23/jmh-junit-intro).

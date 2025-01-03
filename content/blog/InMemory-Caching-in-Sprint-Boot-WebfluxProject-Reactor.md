@@ -2,6 +2,7 @@
 title: "In-Memory Caching in Sprint Boot Webflux/Project Reactor"
 date: 2020-10-03T22:41:59
 draft: false
+tags: [java, spring, reactive, webflux]
 ---
 
 Sample code for this article [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience).

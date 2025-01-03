@@ -2,6 +2,7 @@
 title: "Basic Python Lambda Function Uploads using the AWS CLI"
 date: 2021-02-06T21:07:12
 draft: false
+tags: [DevOps, aws, aws-lambda]
 ---
 
 AWS Lambda functions were the first &#34;serverless&#34; way to run code. Of course, there are still servers, but the point is that you can nearly forget about managing those servers and all of that is owned by AWS.

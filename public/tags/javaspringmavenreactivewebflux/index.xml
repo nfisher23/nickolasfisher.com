@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javaspringmavenreactivewebflux on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javaspringmavenreactivewebflux/</link>
+    <description>Recent content in Javaspringmavenreactivewebflux on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 01 Aug 2020 23:59:33 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javaspringmavenreactivewebflux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>OpenAPI and Spring Boot Webflux: A Working Introduction</title>
+      <link>http://localhost:1313/blog/openapi-and-spring-boot-webflux-a-working-introduction/</link>
+      <pubDate>Sat, 01 Aug 2020 23:59:33 +0000</pubDate>
+      <guid>http://localhost:1313/blog/openapi-and-spring-boot-webflux-a-working-introduction/</guid>
+      <description>&lt;p&gt;The &lt;a href=&#34;http://spec.openapis.org/oas/v3.0.3&#34;&gt;OpenAPI Specification&lt;/a&gt; is an &amp;quot;industry standard&amp;quot; way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code&amp;ndash;better yet, displayed while the app is running.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

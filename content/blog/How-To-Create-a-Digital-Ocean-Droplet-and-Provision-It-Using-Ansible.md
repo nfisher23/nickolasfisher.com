@@ -2,6 +2,7 @@
 title: "How To Create a Digital Ocean Droplet and Provision It Using Ansible"
 date: 2019-06-15T20:40:48
 draft: false
+tags: [distributed systems, ansible, DevOps, digital ocean]
 ---
 
 Ansible allows you to provision servers in an idempotent fashion. It lets you see the state of your VM configuration as it resides in code, which is light years better than the sysadmin ways of yesterday.

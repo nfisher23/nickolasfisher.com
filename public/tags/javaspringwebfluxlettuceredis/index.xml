@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javaspringwebfluxlettuceredis on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javaspringwebfluxlettuceredis/</link>
+    <description>Recent content in Javaspringwebfluxlettuceredis on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sun, 25 Apr 2021 18:43:42 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javaspringwebfluxlettuceredis/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Subscribing to Channels in Clustered Redis With Lettuce</title>
+      <link>http://localhost:1313/blog/subscribing-to-channels-in-clustered-redis-with-lettuce/</link>
+      <pubDate>Sun, 25 Apr 2021 18:43:42 +0000</pubDate>
+      <guid>http://localhost:1313/blog/subscribing-to-channels-in-clustered-redis-with-lettuce/</guid>
+      <description>&lt;p&gt;We already know &lt;a href=&#34;https://nickolasfisher.com/blog/Subscribing-to-Redis-Channels-with-Java-Spring-Boot-and-Lettuce&#34;&gt;how to subscribe to redis using lettuce&lt;/a&gt; when it&#39;s not running in clustered mode. If it&#39;s running in clustered mode, it&#39;s not terribly different, but I did discover one thing that is interesting, which is the subject of this article.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Run a Lua Script against Redis using Lettuce</title>
+      <link>http://localhost:1313/blog/how-to-run-a-lua-script-against-redis-using-lettuce/</link>
+      <pubDate>Sat, 24 Apr 2021 16:55:51 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-run-a-lua-script-against-redis-using-lettuce/</guid>
+      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Running a lua script against redis is done using &lt;a href=&#34;https://redis.io/commands/eval&#34;&gt;EVAL&lt;/a&gt;. The primary benefit of using a lua script is that the entire script is guaranteed to be run at once, and nothing else will interfere with it [it&#39;s atomic]. This allows for operating on multiple keys, or check-then-set type operations on the same key.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>A Guide to Operating on Sorted Sets in Redis with Lettuce</title>
+      <link>http://localhost:1313/blog/a-guide-to-operating-on-sorted-sets-in-redis-with-lettuce/</link>
+      <pubDate>Sat, 17 Apr 2021 08:15:31 +0000</pubDate>
+      <guid>http://localhost:1313/blog/a-guide-to-operating-on-sorted-sets-in-redis-with-lettuce/</guid>
+      <description>&lt;p&gt;Sorted Sets in redis are one of my personal favorite tools when operating at scale. As of this writing, &lt;a href=&#34;https://redis.io/commands/#sorted_set&#34;&gt;there are over 30 unique operations you can perform against sorted sets in redis&lt;/a&gt;. This article will focus on some of the more common ones you&#39;re going to need to know, and it will use a reactive lettuce client to demonstrate them.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Configure Lettuce to connect to a local Redis Instance with Webflux</title>
+      <link>http://localhost:1313/blog/how-to-configure-lettuce-to-connect-to-a-local-redis-instance-with-webflux/</link>
+      <pubDate>Sun, 28 Mar 2021 17:49:16 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-configure-lettuce-to-connect-to-a-local-redis-instance-with-webflux/</guid>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In a previous post, we detailed &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux&#34;&gt;how to write integration tests for lettuce clients in spring boot webflux&lt;/a&gt; using a redis test container. That&#39;s fine and well when you&#39;re just writing code for a quick feedback loop, but is useless when it comes to running the application in real life. This post will start up redis locally and then explain how to best connect to it using lettuce in webflux.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

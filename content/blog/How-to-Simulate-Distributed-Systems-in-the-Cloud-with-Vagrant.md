@@ -2,6 +2,7 @@
 title: "How to Simulate Distributed Systems in the Cloud with Vagrant"
 date: 2018-10-28T14:28:13
 draft: false
+tags: [distributed systems, vagrant, DevOps]
 ---
 
 In our last post on [simulating a cloud environment on your local machine](https://nickolasfisher.com/blog/How-to-Set-Up-A-Private-Local-Network-On-Your-PC-With-VirtualBox),

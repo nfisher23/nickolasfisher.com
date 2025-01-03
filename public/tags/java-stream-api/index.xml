@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Java Stream Api on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/java-stream-api/</link>
+    <description>Recent content in Java Stream Api on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 03 Nov 2018 14:36:55 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/java-stream-api/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java IO: Creating and Traversing Files And Directories</title>
+      <link>http://localhost:1313/blog/java-io-creating-and-traversing-files-and-directories/</link>
+      <pubDate>Sat, 03 Nov 2018 14:36:55 +0000</pubDate>
+      <guid>http://localhost:1313/blog/java-io-creating-and-traversing-files-and-directories/</guid>
+      <description>&lt;p&gt;You can view the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/iodemos&#34;&gt;on Github&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;Using the static methods in the &lt;code&gt;Files&lt;/code&gt; class, a member of the &lt;code&gt;java.nio.file&lt;/code&gt; package, we can manipulate the file system reasonably easily.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Java IO: Paths and Files</title>
+      <link>http://localhost:1313/blog/java-io-paths-and-files/</link>
+      <pubDate>Sat, 03 Nov 2018 13:18:09 +0000</pubDate>
+      <guid>http://localhost:1313/blog/java-io-paths-and-files/</guid>
+      <description>&lt;p&gt;The sample code for this repository can be found &lt;a href=&#34;https://github.com/nfisher23/iodemos&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;System paths and file manipulation, usually within the java.nio package, in Java allow you to forgo some of the details related to streaming of files&amp;ndash;which, while they offer low level details and optimization opportunities, typically take longer to develop and get right.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Java Stream API: Parallel Streams</title>
+      <link>http://localhost:1313/blog/the-java-stream-api-parallel-streams/</link>
+      <pubDate>Sun, 21 Oct 2018 20:03:56 +0000</pubDate>
+      <guid>http://localhost:1313/blog/the-java-stream-api-parallel-streams/</guid>
+      <description>&lt;p&gt;The sample code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Parallel Streams are simple to generate in Java. Instead of calling .stream(), you simply call parallelStream(). Here, we&#39;ll take our familiar list of names:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Java Stream API: Primitive Streams</title>
+      <link>http://localhost:1313/blog/the-java-stream-api-primitive-streams/</link>
+      <pubDate>Sun, 21 Oct 2018 19:49:49 +0000</pubDate>
+      <guid>http://localhost:1313/blog/the-java-stream-api-primitive-streams/</guid>
+      <description>&lt;p&gt;The sample code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;While Streams in Java would typically be used on POJO or POJO-like data structures, Java also lets us deal directly with primitive type streams.&#xA;Thanks to Java&#39;s type erasure, something like Stream&amp;lt;int&amp;gt; would not work, as the type argument must be an Object.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Java Stream API: Reduction Operations</title>
+      <link>http://localhost:1313/blog/the-java-stream-api-reduction-operations/</link>
+      <pubDate>Sun, 21 Oct 2018 19:38:40 +0000</pubDate>
+      <guid>http://localhost:1313/blog/the-java-stream-api-reduction-operations/</guid>
+      <description>&lt;p&gt;The sample code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Reduction operations are a way to consolidate collections into one simple result.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Java Stream API: Collecting Downstream Elements</title>
+      <link>http://localhost:1313/blog/the-java-stream-api-collecting-downstream-elements/</link>
+      <pubDate>Sun, 21 Oct 2018 16:29:32 +0000</pubDate>
+      <guid>http://localhost:1313/blog/the-java-stream-api-collecting-downstream-elements/</guid>
+      <description>&lt;p&gt;You can view the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;One interesting feature of collecting streams using the &lt;code&gt;Collectors.groupingBy(..)&lt;/code&gt; method is the ability to manipulate &lt;em&gt;downstream&lt;/em&gt; elements. Basically,&#xA;this means that, after you group the keys of the map, you can further make changes to the collection that the map is pointing to. By default, it collects to a list.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Java Stream API: Collecting Into Maps</title>
+      <link>http://localhost:1313/blog/the-java-stream-api-collecting-into-maps/</link>
+      <pubDate>Sun, 21 Oct 2018 16:07:06 +0000</pubDate>
+      <guid>http://localhost:1313/blog/the-java-stream-api-collecting-into-maps/</guid>
+      <description>&lt;p&gt;You can view the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Taking a stream of POJOs and transforming it into a map is one of the more common uses of Streams.&#xA;There are a few built in ways to get what you want. The simplest way to map one field to another in a POJO is by&#xA;using the &lt;code&gt;.toMap(..)&lt;/code&gt; method.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Java Stream API: An Introduction to Collecting Results</title>
+      <link>http://localhost:1313/blog/the-java-stream-api-an-introduction-to-collecting-results/</link>
+      <pubDate>Sun, 21 Oct 2018 15:46:38 +0000</pubDate>
+      <guid>http://localhost:1313/blog/the-java-stream-api-an-introduction-to-collecting-results/</guid>
+      <description>&lt;p&gt;You can view the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Calling &lt;code&gt;collect(..)&lt;/code&gt; on a stream terminates a stream into a collection. We&#39;ve already seen that calling collect(Collectors.toList()) moves your stream into&#xA;a List&amp;lt;T&amp;gt;, but you can also collect into a set. If we take our familiar collection of names in a String collection:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Java Stream API: Creating Optional Types</title>
+      <link>http://localhost:1313/blog/the-java-stream-api-creating-optional-types/</link>
+      <pubDate>Sun, 21 Oct 2018 15:22:54 +0000</pubDate>
+      <guid>http://localhost:1313/blog/the-java-stream-api-creating-optional-types/</guid>
+      <description>&lt;p&gt;You can view the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;While Optionals are often used in conjunction with the Java Stream API, you can also create your own.&#xA;Now, why would you want to do that? Simply put, null pointer exceptions are not a fun time, and embracing optional&#xA;types will greatly simplify code development, and prevent premature graying hair.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Java Stream API: How to Work With Optional Types</title>
+      <link>http://localhost:1313/blog/the-java-stream-api-how-to-work-with-optional-types/</link>
+      <pubDate>Sat, 20 Oct 2018 21:59:38 +0000</pubDate>
+      <guid>http://localhost:1313/blog/the-java-stream-api-how-to-work-with-optional-types/</guid>
+      <description>&lt;p&gt;You can find the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;If Java programmers had a generic Facebook page, they would collectively have an &amp;quot;it&#39;s complicated&amp;quot; relationship with the null value.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Java Stream API: Concatenating, Sorting, and Flat-Mapping</title>
+      <link>http://localhost:1313/blog/the-java-stream-api-concatenating-sorting-and-flatmapping/</link>
+      <pubDate>Sat, 20 Oct 2018 21:32:57 +0000</pubDate>
+      <guid>http://localhost:1313/blog/the-java-stream-api-concatenating-sorting-and-flatmapping/</guid>
+      <description>&lt;p&gt;The sample code associated with this post can be found &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Sometimes, we will have two different streams of data that we want to aggregate into one stream to analyze. In that case, we can use the &lt;code&gt;Stream.concat(..)&lt;/code&gt; method. Here, if we take our list of names from before:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Java Stream API: Generating Fibonacci Numbers</title>
+      <link>http://localhost:1313/blog/the-java-stream-api-generating-fibonacci-numbers/</link>
+      <pubDate>Sat, 20 Oct 2018 21:13:49 +0000</pubDate>
+      <guid>http://localhost:1313/blog/the-java-stream-api-generating-fibonacci-numbers/</guid>
+      <description>&lt;p&gt;You can find the sample code for this post &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;From the knowledge gained via &lt;a href=&#34;https://nickolasfisher.com/blog/The-Java-Stream-API-Creating-Custom-Lazy-Infinite-Streams&#34;&gt;creating custom Java Stream objects&lt;/a&gt;, we can start&#xA;to have a little bit of fun with this. The fibonacci number sequence starts with [0, 1], and adds each of the previous two elements to create the next element in the sequence.&#xA;This looks like [0, 1, 1, 2, 3, 5, 8, 13, 21&amp;hellip;], and goes on &amp;quot;forever.&amp;quot; We can thus create a template that computes all Fibonacci numbers by implementing a Supplier&amp;lt;T&amp;gt;. like so:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Java Stream API: Creating Custom, Lazy, Infinite Streams</title>
+      <link>http://localhost:1313/blog/the-java-stream-api-creating-custom-lazy-infinite-streams/</link>
+      <pubDate>Sat, 20 Oct 2018 13:50:54 +0000</pubDate>
+      <guid>http://localhost:1313/blog/the-java-stream-api-creating-custom-lazy-infinite-streams/</guid>
+      <description>&lt;p&gt;You can find the sample code from this post &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;There are a few built in ways to create your own custom streams. While many collections offer a direct &lt;code&gt;.stream()&lt;/code&gt; method,&#xA;you can also use &lt;code&gt;Stream.of(..)&lt;/code&gt; to just make one in place:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Java Stream API--Introduction: Filter, Map, and Count</title>
+      <link>http://localhost:1313/blog/the-java-stream-apiintroduction-filter-map-and-count/</link>
+      <pubDate>Sat, 20 Oct 2018 12:00:18 +0000</pubDate>
+      <guid>http://localhost:1313/blog/the-java-stream-apiintroduction-filter-map-and-count/</guid>
+      <description>&lt;p&gt;The sample code provided with this series on the Java Stream API can be retrieved &lt;a href=&#34;https://github.com/nfisher23/java_stream_api_samples/tree/master&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

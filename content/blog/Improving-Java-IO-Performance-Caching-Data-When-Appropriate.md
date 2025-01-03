@@ -2,6 +2,7 @@
 title: "Improving Java IO Performance: Caching Data, When Appropriate"
 date: 2018-11-17T19:16:28
 draft: false
+tags: [java, i/o, performance testing, jmh]
 ---
 
 The sample code for this post can be found [on GitHub](https://github.com/nfisher23/io-tuning).

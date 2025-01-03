@@ -2,6 +2,7 @@
 title: "DynamoDB and Duplicate Keys in Global Secondary Indexes"
 date: 2020-11-01T23:27:39
 draft: false
+tags: [java, aws, dynamodb, webflux]
 ---
 
 If there&#39;s something in the documentation about what the behavior of a DynamoDB Global Secondary Index is when there are duplicate keys in the index, it isn&#39;t easy to find. I tested this empirically with an embedded DynamoDB mock for java and will quickly share my findings here with you.

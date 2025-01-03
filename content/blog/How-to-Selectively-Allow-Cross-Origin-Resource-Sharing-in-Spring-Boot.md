@@ -2,6 +2,7 @@
 title: "How to Selectively Allow Cross Origin Resource Sharing in Spring Boot"
 date: 2019-05-18T19:12:46
 draft: false
+tags: [java, spring, webdev]
 ---
 
 A single page application (SPA) architecture usually involves an end user getting a smattering of javascript files when he/she makes a request to a URL endpoint. After the javascript files load and start executing code, they usually make AJAX calls to interact with the back end from that point onwards. This pairs nicely with a microservice architecture based on REST over HTTP, since the front end SPA can effectively act as a client to any microservice that it needs information from.

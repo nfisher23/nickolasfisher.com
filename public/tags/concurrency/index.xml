@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Concurrency on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/concurrency/</link>
+    <description>Recent content in Concurrency on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 20 Mar 2021 19:14:57 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/concurrency/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Zip Reactor Mono Objects that Return Void</title>
+      <link>http://localhost:1313/blog/how-to-zip-reactor-mono-objects-that-return-void/</link>
+      <pubDate>Sat, 20 Mar 2021 19:14:57 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-zip-reactor-mono-objects-that-return-void/</guid>
+      <description>&lt;p&gt;Leveraging &lt;a href=&#34;https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html#zip-java.lang.Iterable-java.util.function.Function-&#34;&gt;Mono.zip&lt;/a&gt; appropriately will [with the right configuration] lead to a high amount of performance and concurrency. There is one caveat to its usage though:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Difference Between a Reactive Non-Blocking Model and Classic Asynchronous Code</title>
+      <link>http://localhost:1313/blog/the-difference-between-a-reactive-nonblocking-model-and-classic-asynchronous-code/</link>
+      <pubDate>Sat, 06 Jul 2019 15:10:01 +0000</pubDate>
+      <guid>http://localhost:1313/blog/the-difference-between-a-reactive-nonblocking-model-and-classic-asynchronous-code/</guid>
+      <description>&lt;p&gt;Reactive Programming is a very different way of thinking about doing work in a microservices environment. Anyone who has worked with a GUI, dating back to even to windows forms, is familiar with the event based model, but what does that mean when there is unpredictable latency involved? How does handing off to a thread to make a remote call differ from this new &amp;quot;reactive web&amp;quot;?&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Configure Reactive Netty in Spring Boot, in Depth</title>
+      <link>http://localhost:1313/blog/how-to-configure-reactive-netty-in-spring-boot-in-depth/</link>
+      <pubDate>Sat, 06 Jul 2019 14:30:43 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-configure-reactive-netty-in-spring-boot-in-depth/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html&#34;&gt;Spring Boot&#39;s WebFlux programming model&lt;/a&gt; is pretty neat, but there isn&#39;t a lot by way of explaining how to best leverage it to get the results you need. I wrote this blog post after tinkering with the configuration of Reactor Netty on Spring Boot.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Make Concurrent Service API Calls in Java Using Spring Boot</title>
+      <link>http://localhost:1313/blog/how-to-make-concurrent-service-api-calls-in-java-using-spring-boot/</link>
+      <pubDate>Sat, 22 Jun 2019 20:48:30 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-make-concurrent-service-api-calls-in-java-using-spring-boot/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/java-concurrency-examples/tree/master&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;When you&#39;re in a microservice environment, it often makes sense to make some calls to multiple services at the same time. This allows for the time an operation needs to complete to be reduced from the &lt;em&gt;sum&lt;/em&gt; of all the time spent waiting to the &lt;em&gt;maximum&lt;/em&gt; time spent over the span of calls.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

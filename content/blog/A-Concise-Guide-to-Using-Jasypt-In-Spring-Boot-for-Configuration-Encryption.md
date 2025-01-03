@@ -2,6 +2,7 @@
 title: "A Concise Guide to Using Jasypt In Spring Boot for Configuration Encryption"
 date: 2020-05-23T01:58:12
 draft: false
+tags: [java, security]
 ---
 
 [Jasypt](http://www.jasypt.org/) is a simple encryption library. You can use it to encrypt anything, but one good use case is just encrypting your application configuration directly in your config file, so that if someone obtained access to your source control directory or had a copy of your source code, they would not also have access to any of your secrets.

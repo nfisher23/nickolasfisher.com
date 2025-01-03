@@ -2,6 +2,7 @@
 title: "Scanning a DynamoDB table in Java with the AWS SDK 2.0"
 date: 2020-11-07T02:08:37
 draft: false
+tags: [java, aws, dynamodb]
 ---
 
 [Scanning in DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html) is exactly what it sounds like: loop through every single record in a table, optionally filtering for items with a certain condition when dynamo returns them to you. In general, you _shouldn&#39;t do this_. DynamoDB is designed to store and manage a very large amount of data. Scanning through a large amount of data is very expensive, even in a distributed world. In the best case, you&#39;ll be waiting a long time to see results. In the worst case, you might see service outages as you burn through your RCUs.

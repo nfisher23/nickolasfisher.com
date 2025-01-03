@@ -2,6 +2,7 @@
 title: "How to Dynamically Deserialize JSON In Java With Jackson"
 date: 2018-11-18T12:45:53
 draft: false
+tags: [java, json]
 ---
 
 You can find the sample code associated with this blog post [on GitHub](https://github.com/nfisher23/json-with-jackson-tricks).

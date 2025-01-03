@@ -2,6 +2,7 @@
 title: "How to use Optimistic Locking in DynamoDB via the AWS CLI"
 date: 2020-08-01T20:46:28
 draft: false
+tags: [bash, DevOps, aws, dynamodb]
 ---
 
 Optimistic Locking is a form of concurrency control that basically aims to prevent two different threads from accidentally overwriting data that another thread has already written. I covered [optimistic locking in MySQL](https://nickolasfisher.com/blog/Optimistic-Locking-in-MySQLExplain-Like-Im-Five) in a previous blog post, which may or may not be easier to understand based on your background.

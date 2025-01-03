@@ -2,6 +2,7 @@
 title: "How to Configure Prometheus to Scrape and Aggregate Data From a Spring Boot 2.x Application"
 date: 2020-05-30T20:33:50
 draft: false
+tags: [java, spring, DevOps, maven, prometheus]
 ---
 
 You can see the source code for this post [on Github](https://github.com/nfisher23/prometheus-metrics-ex).

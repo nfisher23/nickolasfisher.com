@@ -2,6 +2,7 @@
 title: "How to Make Parallel API calls in Spring Boot Webflux"
 date: 2020-09-19T16:03:01
 draft: false
+tags: [java, spring, reactive, webflux]
 ---
 
 The source code for this post [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience).

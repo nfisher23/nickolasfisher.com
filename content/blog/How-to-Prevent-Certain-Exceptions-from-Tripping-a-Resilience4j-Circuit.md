@@ -2,6 +2,7 @@
 title: "How to Prevent Certain Exceptions from Tripping a Resilience4j Circuit"
 date: 2021-05-01T21:14:55
 draft: false
+tags: [java, resilience]
 ---
 
 The source code for this article [can be found on Github](https://github.com/nfisher23/java-failure-and-resilience).

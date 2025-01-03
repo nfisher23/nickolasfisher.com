@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javaawsdynamodb on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javaawsdynamodb/</link>
+    <description>Recent content in Javaawsdynamodb on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 10 Apr 2021 16:13:09 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javaawsdynamodb/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Setup and Use a DynamoDB Test Container with the AWS Java SDK 2.0</title>
+      <link>http://localhost:1313/blog/setup-and-use-a-dynamodb-test-container-with-the-aws-java-sdk-20/</link>
+      <pubDate>Sat, 10 Apr 2021 16:13:09 +0000</pubDate>
+      <guid>http://localhost:1313/blog/setup-and-use-a-dynamodb-test-container-with-the-aws-java-sdk-20/</guid>
+      <description>&lt;p&gt;The source code for this article &lt;a href=&#34;https://github.com/nfisher23/webflux-and-dynamo&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Using &lt;a href=&#34;https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing&#34;&gt;embedded dynamodb for testing&lt;/a&gt; is, in my experience, kind of flakey and unpredictable. Because of the weird way it pulls in SQLite on a per operating system basis, it can sometimes work locally and not work on the build server. Sometimes it&#39;s just not working for some unexplained reason and wiping the directory that the code is in and re-cloning fixes it. Not a fun time.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Scanning a DynamoDB table in Java with the AWS SDK 2.0</title>
+      <link>http://localhost:1313/blog/scanning-a-dynamodb-table-in-java-with-the-aws-sdk-20/</link>
+      <pubDate>Sat, 07 Nov 2020 02:08:37 +0000</pubDate>
+      <guid>http://localhost:1313/blog/scanning-a-dynamodb-table-in-java-with-the-aws-sdk-20/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html&#34;&gt;Scanning in DynamoDB&lt;/a&gt; is exactly what it sounds like: loop through every single record in a table, optionally filtering for items with a certain condition when dynamo returns them to you. In general, you &lt;em&gt;shouldn&#39;t do this&lt;/em&gt;. DynamoDB is designed to store and manage a very large amount of data. Scanning through a large amount of data is very expensive, even in a distributed world. In the best case, you&#39;ll be waiting a long time to see results. In the worst case, you might see service outages as you burn through your RCUs.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -2,6 +2,7 @@
 title: "DynamoDB Transactions and Java"
 date: 2020-11-28T20:57:47
 draft: false
+tags: [java, reactive, aws, dynamodb]
 ---
 
 DynamoDB transactions can be used for _atomic_ updates. Atomic updates in DynamoDB without transactions can be difficult to implement--you&#39;ll often have to manage the current state of the update yourself in something like a saga, and have business logic specific rollback procedures. Further, without a transaction manager, the data will be in an inconsistent state at some point in time while the saga is ongoing. An alternative to that is a Two Phase Commit, but that&#39;s also expensive both from the standpoint of developers making it work as well as performance \[2PC typically call for a lock being held during the operation, and even then there&#39;s a possibility that the operation ends up in an inconsistent state at some point\].

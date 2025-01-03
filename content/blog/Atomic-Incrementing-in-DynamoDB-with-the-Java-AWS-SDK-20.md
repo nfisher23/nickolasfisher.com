@@ -2,6 +2,7 @@
 title: "Atomic Incrementing in DynamoDB with the Java AWS SDK 2.0"
 date: 2021-03-28T02:00:30
 draft: false
+tags: [java, reactive, dynamodb]
 ---
 
 The source code for this post [can be found on Github](https://github.com/nfisher23/webflux-and-dynamo).

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>JavangnixvagrantansiblespringDevOpsmaven on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javangnixvagrantansiblespringdevopsmaven/</link>
+    <description>Recent content in JavangnixvagrantansiblespringDevOpsmaven on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 06 Apr 2019 17:14:30 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javangnixvagrantansiblespringdevopsmaven/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Use Nginx&amp;#39;s Caching to Improve Site Responsiveness</title>
+      <link>http://localhost:1313/blog/how-to-use-nginxs-caching-to-improve-site-responsiveness/</link>
+      <pubDate>Sat, 06 Apr 2019 17:14:30 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-use-nginxs-caching-to-improve-site-responsiveness/</guid>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In my last post, I provided an example for &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy&#34;&gt;how to set up an Nginx Reverse Proxy for a Spring MVC application&lt;/a&gt;. One such reason to set up a reverse proxy is to utilize caching of resources. If you have dynamically generated content that doesn&#39;t change very often, then adding caching at the site entry point can dramatically improve site responsiveness and reduce load on critical resources.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Deploy a Spring MVC Application Behind an Nginx Reverse Proxy</title>
+      <link>http://localhost:1313/blog/how-to-deploy-a-spring-mvc-application-behind-an-nginx-reverse-proxy/</link>
+      <pubDate>Sat, 06 Apr 2019 14:44:50 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-deploy-a-spring-mvc-application-behind-an-nginx-reverse-proxy/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://www.nginx.com/&#34;&gt;Nginx&lt;/a&gt; is a popular webserver, excellent at serving up static content, and commonly used as a load balancer or reverse proxy. This post will set up a basic &lt;a href=&#34;https://spring.io/projects/spring-boot&#34;&gt;Spring Boot&lt;/a&gt; MVC web application, and use Nginx as a reverse proxy. The source code can be found &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

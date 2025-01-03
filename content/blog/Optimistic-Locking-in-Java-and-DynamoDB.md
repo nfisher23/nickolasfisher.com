@@ -2,6 +2,7 @@
 title: "Optimistic Locking in Java and DynamoDB"
 date: 2020-10-11T20:19:42
 draft: false
+tags: [java, reactive, aws, dynamodb]
 ---
 
 I&#39;ve previously written about using [conditional expressions to achieve optimistic locking in DynamoDB](https://nickolasfisher.com/blog/How-to-use-Optimistic-Locking-in-DynamoDB-via-the-AWS-CLI), that example used the command line. I will now demonstrate how to do the same thing in java code, leveraging the AWS SDK 2.0 \[with full reactive support\].

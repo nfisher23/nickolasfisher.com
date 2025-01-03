@@ -2,6 +2,7 @@
 title: "How to Make Concurrent Service API Calls in Java Using Spring Boot"
 date: 2019-06-22T20:48:30
 draft: false
+tags: [java, spring, concurrency]
 ---
 
 The source code for this post can be found [on GitHub](https://github.com/nfisher23/java-concurrency-examples/tree/master).

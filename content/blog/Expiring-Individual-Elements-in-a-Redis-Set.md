@@ -2,6 +2,7 @@
 title: "Expiring Individual Elements in a Redis Set"
 date: 2021-04-18T20:13:11
 draft: false
+tags: [java, reactive, lettuce, redis]
 ---
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).

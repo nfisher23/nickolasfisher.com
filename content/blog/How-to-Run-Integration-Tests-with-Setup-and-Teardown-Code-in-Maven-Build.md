@@ -2,6 +2,7 @@
 title: "How to Run Integration Tests with Setup and Teardown Code in Maven Build"
 date: 2018-11-24T14:49:09
 draft: false
+tags: [java, DevOps, maven]
 ---
 
 The sample code for this post can be found [on GitHub](https://github.com/nfisher23/integration-testing-postgres-and-spring).

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javaspringtestingwebfluxlettuceredis on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javaspringtestingwebfluxlettuceredis/</link>
+    <description>Recent content in Javaspringtestingwebfluxlettuceredis on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 27 Mar 2021 23:52:07 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javaspringtestingwebfluxlettuceredis/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to use a Redis Test Container with Lettuce/Spring Boot Webflux</title>
+      <link>http://localhost:1313/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux/</link>
+      <pubDate>Sat, 27 Mar 2021 23:52:07 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux/</guid>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Another way to write integration tests for code that verifies your interactions with redis actually make sense is to use a &lt;a href=&#34;https://www.testcontainers.org/&#34;&gt;test container&lt;/a&gt;. This framework assumes you have docker up and running, but if you do it will pull a specified container image [typically you&#39;ll just use docker hub, though it&#39;s important to note that they rate limit you, so don&#39;t go overboard], then you can interact with that container in your integration tests.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

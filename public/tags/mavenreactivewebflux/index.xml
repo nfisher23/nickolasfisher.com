@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mavenreactivewebflux on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/mavenreactivewebflux/</link>
+    <description>Recent content in Mavenreactivewebflux on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 13 Mar 2021 21:36:45 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/mavenreactivewebflux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to use Caffeine Caches Effectively in Spring Boot Webflux</title>
+      <link>http://localhost:1313/blog/how-to-use-caffeine-caches-effectively-in-spring-boot-webflux/</link>
+      <pubDate>Sat, 13 Mar 2021 21:36:45 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-use-caffeine-caches-effectively-in-spring-boot-webflux/</guid>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;When someone talks about a caffeine cache, they are talking about &lt;a href=&#34;https://github.com/ben-manes/caffeine&#34;&gt;Ben Manes caching library&lt;/a&gt;, which is a high performance, in memory cache written for java. If you&#39;re using reactive streams, you can&#39;t reliably use a LoadingCache because it&#39;s blocking by default. Thankfully, tapping into a couple of basic features of reactive streams and caffeine can get us there.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

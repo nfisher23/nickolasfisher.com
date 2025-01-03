@@ -2,6 +2,7 @@
 title: "A VagrantFile for Elasticsearch, Logstash, and Kibana (On Three Different Servers)"
 date: 2018-11-18T13:42:46
 draft: false
+tags: [distributed systems, vagrant, bash, the elastic stack, DevOps]
 ---
 
 [Elasticsearch, Logstash, and Kibana](https://www.elastic.co/), commonly referred to as ELK or the Elastic Stack, is a set of tools that can, well do a lot of things. It is most famous for its logging and analytics capabilities.

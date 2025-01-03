@@ -2,6 +2,7 @@
 title: "The Java Stream API: Collecting Downstream Elements"
 date: 2018-10-21T16:29:32
 draft: false
+tags: [java, java stream api]
 ---
 
 You can view the sample code associated with this post [on GitHub](https://github.com/nfisher23/java_stream_api_samples).

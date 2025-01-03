@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>VagrantbashDevOpspostgreSQL on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/vagrantbashdevopspostgresql/</link>
+    <description>Recent content in VagrantbashDevOpspostgreSQL on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 24 Nov 2018 12:47:47 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/vagrantbashdevopspostgresql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Set Up a Local Unsecured Postgres Virtual Machine (for testing)</title>
+      <link>http://localhost:1313/blog/how-to-set-up-a-local-unsecured-postgres-virtual-machine-for-testing/</link>
+      <pubDate>Sat, 24 Nov 2018 12:47:47 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-set-up-a-local-unsecured-postgres-virtual-machine-for-testing/</guid>
+      <description>&lt;p&gt;The sample code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/integration-testing-postgres-and-spring/tree/master/postgres-vm-sandbox&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;While we can always install &lt;a href=&#34;https://www.postgresql.org/&#34;&gt;PostgreSQL&lt;/a&gt; on our host machine, it&#39;s a much cleaner solution to create something like a local virtual machine with &lt;a href=&#34;https://www.vagrantup.com/&#34;&gt;Vagrant&lt;/a&gt; or a container using &lt;a href=&#34;https://www.docker.com/&#34;&gt;Docker.&lt;/a&gt; That way, any changes we make to the database and then forget about are not around as soon as we destroy either the container or the virtual machine. It is one more way to tighten that feedback loop we need as developers.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

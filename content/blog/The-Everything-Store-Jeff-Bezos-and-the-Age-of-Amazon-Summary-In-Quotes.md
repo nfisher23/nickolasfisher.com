@@ -2,6 +2,7 @@
 title: "The Everything Store, Jeff Bezos and the Age of Amazon: Summary In Quotes"
 date: 2018-10-28T18:05:38
 draft: false
+tags: [books]
 ---
 
 [The Everything Store](https://www.amazon.com/Everything-Store-Jeff-Bezos-Amazon/dp/0316219282/ref=tmm_pap_swatch_0?_encoding=UTF8&amp;qid=1541261148&amp;sr=8-1-spons), by Brad Stone, is a critical and beginning-to-end (well, middle, since they still labor on) look at how Amazon came to be. Unlike many books about technology founders, Stone does not descend into &#34;hero worship,&#34; and instead tries to stick to cold, hard facts.

@@ -2,6 +2,7 @@
 title: "Improving Java IO Performance: Formatting Costs"
 date: 2018-11-17T18:27:31
 draft: false
+tags: [java, i/o, performance testing, jmh]
 ---
 
 The sample code associated with this blog post can be found [on GitHub](https://github.com/nfisher23/io-tuning).

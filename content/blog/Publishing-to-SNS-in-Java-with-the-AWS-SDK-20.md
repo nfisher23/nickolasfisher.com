@@ -2,6 +2,7 @@
 title: "Publishing to SNS in Java with the AWS SDK 2.0"
 date: 2020-11-28T20:16:05
 draft: false
+tags: [java, spring, reactive, aws, webflux]
 ---
 
 SNS is a medium to broadcast messages to multiple subscribers. A common use case is to have multiple SQS queues subscribing to the same SNS topic--this way, the _publishing_ application only needs to focus on events that are specific to its business use case, and _subscribing_ applications can configure an SQS queue and consume the event independently of other services. This helps organizations scale and significantly reduces the need to communicate between teams--each team can focus on its contract and business use case.

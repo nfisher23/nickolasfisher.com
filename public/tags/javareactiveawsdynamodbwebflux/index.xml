@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javareactiveawsdynamodbwebflux on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javareactiveawsdynamodbwebflux/</link>
+    <description>Recent content in Javareactiveawsdynamodbwebflux on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sun, 01 Nov 2020 22:40:46 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javareactiveawsdynamodbwebflux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Query a DynamoDB Global Secondary Index in Java</title>
+      <link>http://localhost:1313/blog/query-a-dynamodb-global-secondary-index-in-java/</link>
+      <pubDate>Sun, 01 Nov 2020 22:40:46 +0000</pubDate>
+      <guid>http://localhost:1313/blog/query-a-dynamodb-global-secondary-index-in-java/</guid>
+      <description>&lt;p&gt;A &lt;a href=&#34;https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.html&#34;&gt;DynamoDB Global Secondary Index&lt;/a&gt; is an eventually consistent way to efficiently query for data that is not normally found without a table scan. It has &lt;a href=&#34;https://nickolasfisher.com/blog/Query-a-DynamoDB-Local-Secondary-Index-with-Java&#34;&gt;some similarities to Local Secondary Indexes, which we covered in the last post&lt;/a&gt;, but are more flexible than them because they can be created, updated, and deleted after the base table has been created, which is not true of Local Secondary Indexes.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Configuring an In Memory DynamoDB instance with Java for Integration Testing</title>
+      <link>http://localhost:1313/blog/configuring-an-in-memory-dynamodb-instance-with-java-for-integration-testing/</link>
+      <pubDate>Sat, 10 Oct 2020 00:02:25 +0000</pubDate>
+      <guid>http://localhost:1313/blog/configuring-an-in-memory-dynamodb-instance-with-java-for-integration-testing/</guid>
+      <description>&lt;p&gt;While using the AWS SDK 2.0, which has support for reactive programming, it became clear that there was no straightforward support for an embedded dynamo db instance for testing. I spent a fair amount of time figuring it out by starting with &lt;a href=&#34;https://github.com/aws/aws-sdk-java-v2/blob/93269d4c0416d0f72e086774265847d6af0d54ec/services-custom/dynamodb-enhanced/src/test/java/software/amazon/awssdk/extensions/dynamodb/mappingclient/functionaltests/LocalDynamoDb.java&#34;&gt;this github link&lt;/a&gt; and ultimately adapting it to my own needs.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

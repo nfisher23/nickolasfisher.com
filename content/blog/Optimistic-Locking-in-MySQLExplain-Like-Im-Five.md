@@ -2,6 +2,7 @@
 title: "Optimistic Locking in MySQL--Explain Like I&#39;m Five"
 date: 2020-07-26T00:00:56
 draft: false
+tags: []
 ---
 
 Optimistic Locking is a compromise to improve performance. If processors were infinitely fast, we wouldn&#39;t need it and it would add unnecessary complexity. But, well, they aren&#39;t.

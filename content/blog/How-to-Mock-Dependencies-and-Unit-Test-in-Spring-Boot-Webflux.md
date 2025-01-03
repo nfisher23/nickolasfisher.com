@@ -2,6 +2,7 @@
 title: "How to Mock Dependencies and Unit Test in Spring Boot Webflux"
 date: 2020-08-08T22:14:53
 draft: false
+tags: [java, spring, reactive, webflux]
 ---
 
 The source code for this post can be found [on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing).

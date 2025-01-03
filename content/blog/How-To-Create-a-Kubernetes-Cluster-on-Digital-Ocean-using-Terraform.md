@@ -2,6 +2,7 @@
 title: "How To Create a Kubernetes Cluster on Digital Ocean using Terraform"
 date: 2020-05-17T21:58:17
 draft: false
+tags: [DevOps, digital ocean, terraform, kubernetes]
 ---
 
 The source code for this post can be found [on Github](https://github.com/nfisher23/digitalocean-terraform-examples/tree/master/kubernetes).

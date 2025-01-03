@@ -2,6 +2,7 @@
 title: "OpenAPI and Spring Boot Webflux: A Working Introduction"
 date: 2020-08-01T23:59:33
 draft: false
+tags: [java, spring, maven, reactive, webflux]
 ---
 
 The [OpenAPI Specification](http://spec.openapis.org/oas/v3.0.3) is an &#34;industry standard&#34; way of declaring the API interface. As REST APIs using JSON have dominated the way we move data around in most organizations and on the internet, particularly in service oriented architectures, and as documentation at almost every company has been written once, read a couple of times, then lost to the wind, smart people have figured out that they can put the documentation for their services living with the code--better yet, displayed while the app is running.

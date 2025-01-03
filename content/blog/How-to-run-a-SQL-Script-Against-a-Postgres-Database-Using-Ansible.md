@@ -2,6 +2,7 @@
 title: "How to run a SQL Script Against a Postgres Database Using Ansible"
 date: 2019-02-09T15:44:26
 draft: false
+tags: [ansible, DevOps, postgreSQL]
 ---
 
 The source code for this post can be found [on GitHub](https://github.com/nfisher23/run-sql-ansible-postgres).

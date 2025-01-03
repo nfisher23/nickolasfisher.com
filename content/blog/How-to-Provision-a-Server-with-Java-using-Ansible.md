@@ -2,6 +2,7 @@
 title: "How to Provision a Server with Java using Ansible"
 date: 2018-11-18T17:15:01
 draft: false
+tags: [java, ansible, DevOps]
 ---
 
 In my post about [how to provision any version of Java using a bash script](https://nickolasfisher.com/blog/How-to-Provision-a-Linux-Server-With-Any-Version-of-Java-via-a-Bash-Script), we saw that:

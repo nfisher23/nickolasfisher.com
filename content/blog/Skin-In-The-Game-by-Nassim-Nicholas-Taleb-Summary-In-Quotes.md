@@ -2,6 +2,7 @@
 title: "Skin In The Game by Nassim Nicholas Taleb: Summary In Quotes"
 date: 2018-10-27T15:34:27
 draft: false
+tags: [books]
 ---
 
 The topic of this summary in quotes is [Skin In the Game](https://www.amazon.com/Skin-Game-Hidden-Asymmetries-Daily/dp/042528462X). The book&#39;s central argument is that people who don&#39;t participate in both the downside and upside of something don&#39;t know what they are talking about. Simply put, if you haven&#39;t been chastised for failure in the real world and promoted for excellence in that same real world, then you will fail to actually know how the real world works.

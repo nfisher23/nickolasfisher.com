@@ -2,6 +2,7 @@
 title: "How to Configure Rest Assured to Record the Latency of Every Request In a Custom Way"
 date: 2020-06-13T21:06:52
 draft: false
+tags: [java, maven, testing, rest assured]
 ---
 
 Sample code associated with this post can be found [on Github](https://github.com/nfisher23/examples-testing-stuff).

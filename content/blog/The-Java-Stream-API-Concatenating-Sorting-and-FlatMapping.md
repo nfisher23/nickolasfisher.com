@@ -2,6 +2,7 @@
 title: "The Java Stream API: Concatenating, Sorting, and Flat-Mapping"
 date: 2018-10-20T21:32:57
 draft: false
+tags: [java, java stream api]
 ---
 
 The sample code associated with this post can be found [on GitHub](https://github.com/nfisher23/java_stream_api_samples).

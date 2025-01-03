@@ -2,6 +2,7 @@
 title: "How to Configure Reactive Netty in Spring Boot, in Depth"
 date: 2019-07-06T14:30:43
 draft: false
+tags: [java, spring, concurrency, reactive]
 ---
 
 [Spring Boot&#39;s WebFlux programming model](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html) is pretty neat, but there isn&#39;t a lot by way of explaining how to best leverage it to get the results you need. I wrote this blog post after tinkering with the configuration of Reactor Netty on Spring Boot.

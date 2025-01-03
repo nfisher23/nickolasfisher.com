@@ -2,6 +2,7 @@
 title: "A Guide to Operating on Multiple Sets in Redis with Lettuce"
 date: 2021-04-17T08:12:31
 draft: false
+tags: [java, spring, reactive, webflux, lettuce, redis]
 ---
 
 In the last article, we showed how to do some of the most common single set operations against redis, this article will focus on operating on multiple sets using a lettuce client against redis. Specifically, we&#39;ll focus on subtracting, intersecting, and adding sets. The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).

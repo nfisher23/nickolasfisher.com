@@ -2,6 +2,7 @@
 title: "Working with Redis Hashes using Lettuce And Webflux"
 date: 2021-04-11T22:26:29
 draft: false
+tags: [java, spring, reactive, webflux, lettuce, redis]
 ---
 
 There are about [15 or so commands you can execute against redis for hash types](https://redis.io/commands/#hash) as of this writing. This article will demonstrate some of the more common operations you&#39;re likely to need when using lettuce as your client.

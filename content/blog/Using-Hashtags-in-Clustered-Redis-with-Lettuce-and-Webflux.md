@@ -2,6 +2,7 @@
 title: "Using Hashtags in Clustered Redis with Lettuce and Webflux"
 date: 2021-04-11T16:12:09
 draft: false
+tags: [java, distributed systems, spring, reactive, webflux, lettuce, redis]
 ---
 
 In clustered redis, any non hash tagged key can be sent unpredictably \[well, actually predictably, if you know the formula\] to any given primary node in the cluster. The very basic way it works is:

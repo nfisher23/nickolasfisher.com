@@ -2,6 +2,7 @@
 title: "Setting up a Python Lambda to Trigger on DynamoDB Streams via the AWS CLI"
 date: 2021-02-07T19:47:50
 draft: false
+tags: [DevOps, aws, dynamodb, aws-lambda]
 ---
 
 DynamoDB streams record information about what has changed in a DynamoDB table, and AWS lambdas are ways to run code without managing servers yourself. DynamoDB streams also have an integration with AWS Lambdas so that any change to a DynamoDB table can be processed by an AWS Lambda--still without worrying about keeping your servers up or maintaining them. That is the subject of this post.

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Distributed SystemsvagrantansibleDevOps on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/distributed-systemsvagrantansibledevops/</link>
+    <description>Recent content in Distributed SystemsvagrantansibleDevOps on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 16 Mar 2019 23:17:03 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/distributed-systemsvagrantansibledevops/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to do a Rolling Upgrade of an Elasticsearch Cluster Using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-do-a-rolling-upgrade-of-an-elasticsearch-cluster-using-ansible/</link>
+      <pubDate>Sat, 16 Mar 2019 23:17:03 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-do-a-rolling-upgrade-of-an-elasticsearch-cluster-using-ansible/</guid>
+      <description>&lt;p&gt;You can see the source code for this blog post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In a previous post, we saw &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible&#34;&gt;how to provision a multi-node elasticsearch cluster using ansible&lt;/a&gt;. The problem with that post is that, by the time I was done writing it, &lt;em&gt;Elastic had already come out with a new version of elasticsearch&lt;/em&gt;. I&#39;m being mildly facetious, but not really. They release new versions very quickly, even by the standards of modern software engineering.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

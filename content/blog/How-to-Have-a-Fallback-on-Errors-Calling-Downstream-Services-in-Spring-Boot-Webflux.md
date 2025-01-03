@@ -2,6 +2,7 @@
 title: "How to Have a Fallback on Errors Calling Downstream Services in Spring Boot Webflux"
 date: 2020-09-26T16:04:14
 draft: false
+tags: [java, spring, reactive, webflux]
 ---
 
 The source code for this post is [available on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience).

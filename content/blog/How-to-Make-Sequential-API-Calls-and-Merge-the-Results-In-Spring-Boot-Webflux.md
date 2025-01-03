@@ -2,6 +2,7 @@
 title: "How to Make Sequential API Calls and Merge the Results In Spring Boot Webflux"
 date: 2020-09-19T16:01:14
 draft: false
+tags: [java, spring, reactive, webflux]
 ---
 
 The source code for this article [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience).

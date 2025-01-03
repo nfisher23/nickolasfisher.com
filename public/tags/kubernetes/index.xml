@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kubernetes on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/kubernetes/</link>
+    <description>Recent content in Kubernetes on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 20 Jun 2020 22:47:02 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>An Example Upgrade and Rollback of a Deployment image in Kubernetes</title>
+      <link>http://localhost:1313/blog/an-example-upgrade-and-rollback-of-a-deployment-image-in-kubernetes/</link>
+      <pubDate>Sat, 20 Jun 2020 22:47:02 +0000</pubDate>
+      <guid>http://localhost:1313/blog/an-example-upgrade-and-rollback-of-a-deployment-image-in-kubernetes/</guid>
+      <description>&lt;p&gt;In this article, I&#39;m going to show you how to bootstrap a local kubernetes cluster with a custom image, debug it, deploy a new image, then rollback to the old image.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Setup and Use Kubernetes in Docker [kind]</title>
+      <link>http://localhost:1313/blog/how-to-setup-and-use-kubernetes-in-docker-kind/</link>
+      <pubDate>Sat, 20 Jun 2020 19:32:30 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-setup-and-use-kubernetes-in-docker-kind/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://kind.sigs.k8s.io/&#34;&gt;kind&lt;/a&gt; is a tool that spins up a kubernetes cluster of arbitrary size on your local machine. It is, in my experience, more lightweight than minikube, and also allows for a multi node setup.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How To Create a Kubernetes Cluster on Digital Ocean using Terraform</title>
+      <link>http://localhost:1313/blog/how-to-create-a-kubernetes-cluster-on-digital-ocean-using-terraform/</link>
+      <pubDate>Sun, 17 May 2020 21:58:17 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-create-a-kubernetes-cluster-on-digital-ocean-using-terraform/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/digitalocean-terraform-examples/tree/master/kubernetes&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Kubernetes has democratized the cloud more than any piece of software before or since. What used to be proprietary APIs by AWS, Azure, or GCP for things like auto scaling groups, load balancers, or virtual machines is now abstracted away behind never ending yaml configuration. Combine this wonderful abstraction with the pricing model of &lt;a href=&#34;https://www.digitalocean.com/&#34;&gt;Digital Ocean&lt;/a&gt; and you&#39;ve got all the makings of a developer party.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

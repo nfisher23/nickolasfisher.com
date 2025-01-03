@@ -2,6 +2,7 @@
 title: "The Java Stream API: Parallel Streams"
 date: 2018-10-21T20:03:56
 draft: false
+tags: [java, java stream api]
 ---
 
 The sample code for this post can be found [on GitHub](https://github.com/nfisher23/java_stream_api_samples).

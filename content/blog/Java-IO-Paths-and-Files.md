@@ -2,6 +2,7 @@
 title: "Java IO: Paths and Files"
 date: 2018-11-03T13:18:09
 draft: false
+tags: [java, java stream api, i/o]
 ---
 
 The sample code for this repository can be found [on Github](https://github.com/nfisher23/iodemos).

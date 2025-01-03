@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javadistributed SystemsbashDevOps on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javadistributed-systemsbashdevops/</link>
+    <description>Recent content in Javadistributed SystemsbashDevOps on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sun, 28 Oct 2018 14:29:38 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javadistributed-systemsbashdevops/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Provision a Linux Server With Any Version of Java via a Bash Script</title>
+      <link>http://localhost:1313/blog/how-to-provision-a-linux-server-with-any-version-of-java-via-a-bash-script/</link>
+      <pubDate>Sun, 28 Oct 2018 14:29:38 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-provision-a-linux-server-with-any-version-of-java-via-a-bash-script/</guid>
+      <description>&lt;p&gt;While we would all like to be up to date, sometimes legacy systems handcuff us into using an older version of software. Java is no exception, and in some cases we&#xA;have to resort to using, say, Java 8, instead of the latest version with all of the security updates that we need.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

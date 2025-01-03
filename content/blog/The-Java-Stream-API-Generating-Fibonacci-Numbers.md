@@ -2,6 +2,7 @@
 title: "The Java Stream API: Generating Fibonacci Numbers"
 date: 2018-10-20T21:13:49
 draft: false
+tags: [java, java stream api]
 ---
 
 You can find the sample code for this post [on GitHub](https://github.com/nfisher23/java_stream_api_samples).

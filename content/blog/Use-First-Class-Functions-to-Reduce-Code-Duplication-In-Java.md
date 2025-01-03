@@ -2,6 +2,7 @@
 title: "Use First Class Functions to Reduce Code Duplication In Java"
 date: 2018-11-24T19:03:21
 draft: false
+tags: [java]
 ---
 
 Often when we program, we find ourselves creating patterns, usually in the form of boilerplate code, that seem to always do the same thing. For example, let&#39;s say you have some logging logic that is non-trivial, and you want to make extra sure you don&#39;t blow up your main application while it&#39;s running, so you surround it with a try/catch block:

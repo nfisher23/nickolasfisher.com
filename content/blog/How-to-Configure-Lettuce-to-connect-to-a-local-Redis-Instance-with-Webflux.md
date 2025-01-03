@@ -2,6 +2,7 @@
 title: "How to Configure Lettuce to connect to a local Redis Instance with Webflux"
 date: 2021-03-28T17:49:16
 draft: false
+tags: [java, spring, webflux, lettuce, redis]
 ---
 
 The source code for this post [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis).

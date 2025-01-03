@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Json on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/json/</link>
+    <description>Recent content in Json on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sun, 18 Nov 2018 12:45:53 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/json/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Dynamically Deserialize JSON In Java With Jackson</title>
+      <link>http://localhost:1313/blog/how-to-dynamically-deserialize-json-in-java-with-jackson/</link>
+      <pubDate>Sun, 18 Nov 2018 12:45:53 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-dynamically-deserialize-json-in-java-with-jackson/</guid>
+      <description>&lt;p&gt;You can find the sample code associated with this blog post &lt;a href=&#34;https://github.com/nfisher23/json-with-jackson-tricks&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://github.com/FasterXML/jackson&#34;&gt;Jackson&lt;/a&gt; is a data processor in Java, known particularly well for its ability to deal with JSON payloads.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

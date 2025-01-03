@@ -2,6 +2,7 @@
 title: "Next, by Michael Lewis: Summary In Quotes"
 date: 2018-12-16T05:57:32
 draft: false
+tags: [books]
 ---
 
 Next, by Michael Lewis, is probably my least favorite book my him. Regardless, I&#39;m convinced that he&#39;s in his own league, so Next is still an excellent book.

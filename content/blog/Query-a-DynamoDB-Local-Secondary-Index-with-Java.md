@@ -2,6 +2,7 @@
 title: "Query a DynamoDB Local Secondary Index with Java"
 date: 2020-10-31T22:49:54
 draft: false
+tags: [java, distributed systems, aws, dynamodb, webflux]
 ---
 
 DynamoDB&#39;s Local Secondary Indexes allow for more query flexibility than a traditional partition and range key combination. They are also the only index in DynamoDB where a strongly consistent read can be requested \[global secondary indexes, the other index that dynamo supports, can at best be eventually consistent\]. I will walk through an example for how to use local secondary indexes in dynamo using the AWS SDK 2.0 for Java, which has full reactive support, in this post.

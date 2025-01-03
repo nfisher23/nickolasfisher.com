@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javajava Stream Apii/O on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javajava-stream-apii/o/</link>
+    <description>Recent content in Javajava Stream Apii/O on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 03 Nov 2018 14:36:55 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javajava-stream-apii/o/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java IO: Creating and Traversing Files And Directories</title>
+      <link>http://localhost:1313/blog/java-io-creating-and-traversing-files-and-directories/</link>
+      <pubDate>Sat, 03 Nov 2018 14:36:55 +0000</pubDate>
+      <guid>http://localhost:1313/blog/java-io-creating-and-traversing-files-and-directories/</guid>
+      <description>&lt;p&gt;You can view the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/iodemos&#34;&gt;on Github&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;Using the static methods in the &lt;code&gt;Files&lt;/code&gt; class, a member of the &lt;code&gt;java.nio.file&lt;/code&gt; package, we can manipulate the file system reasonably easily.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Java IO: Paths and Files</title>
+      <link>http://localhost:1313/blog/java-io-paths-and-files/</link>
+      <pubDate>Sat, 03 Nov 2018 13:18:09 +0000</pubDate>
+      <guid>http://localhost:1313/blog/java-io-paths-and-files/</guid>
+      <description>&lt;p&gt;The sample code for this repository can be found &lt;a href=&#34;https://github.com/nfisher23/iodemos&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;System paths and file manipulation, usually within the java.nio package, in Java allow you to forgo some of the details related to streaming of files&amp;ndash;which, while they offer low level details and optimization opportunities, typically take longer to develop and get right.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

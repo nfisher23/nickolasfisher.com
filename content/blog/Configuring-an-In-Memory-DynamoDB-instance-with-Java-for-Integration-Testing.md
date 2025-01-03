@@ -2,6 +2,7 @@
 title: "Configuring an In Memory DynamoDB instance with Java for Integration Testing"
 date: 2020-10-10T00:02:25
 draft: false
+tags: [java, reactive, aws, dynamodb, webflux]
 ---
 
 While using the AWS SDK 2.0, which has support for reactive programming, it became clear that there was no straightforward support for an embedded dynamo db instance for testing. I spent a fair amount of time figuring it out by starting with [this github link](https://github.com/aws/aws-sdk-java-v2/blob/93269d4c0416d0f72e086774265847d6af0d54ec/services-custom/dynamodb-enhanced/src/test/java/software/amazon/awssdk/extensions/dynamodb/mappingclient/functionaltests/LocalDynamoDb.java) and ultimately adapting it to my own needs.

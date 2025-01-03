@@ -2,6 +2,7 @@
 title: "Improving Java IO Performance: Reducing Method Call Overhead"
 date: 2018-11-17T18:06:13
 draft: false
+tags: [java, i/o, performance testing, jmh]
 ---
 
 You can view the sample code associated with this blog post [on GitHub.](https://github.com/nfisher23/io-tuning)

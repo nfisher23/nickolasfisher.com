@@ -2,6 +2,7 @@
 title: "How to Create a Digital Ocean Droplet using Terraform"
 date: 2020-05-17T18:26:02
 draft: false
+tags: [bash, DevOps, digital ocean, terraform]
 ---
 
 The source code for this post can be found [on Github](https://github.com/nfisher23/digitalocean-terraform-examples).

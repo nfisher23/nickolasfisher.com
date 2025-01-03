@@ -2,6 +2,7 @@
 title: "How to Use Spring&#39;s Aspect Oriented Programming to log all Public Methods"
 date: 2018-11-18T14:40:55
 draft: false
+tags: [java, aspect oriented programming, spring]
 ---
 
 The sample code for this post can be found [on GitHub](https://github.com/nfisher23/spring-aop-universal-public-logger).

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javaspringreactivewebflux on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javaspringreactivewebflux/</link>
+    <description>Recent content in Javaspringreactivewebflux on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sun, 21 Mar 2021 18:27:16 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javaspringreactivewebflux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Making Sense of Mono Error Handling in Spring Boot Webflux/Project Reactor</title>
+      <link>http://localhost:1313/blog/making-sense-of-mono-error-handling-in-spring-boot-webfluxproject-reactor/</link>
+      <pubDate>Sun, 21 Mar 2021 18:27:16 +0000</pubDate>
+      <guid>http://localhost:1313/blog/making-sense-of-mono-error-handling-in-spring-boot-webfluxproject-reactor/</guid>
+      <description>&lt;p&gt;A Reactor &lt;a href=&#34;https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html&#34;&gt;Mono&lt;/a&gt; comes with a lot of methods that allow you to do things when errors occur:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>In-Memory Caching in Sprint Boot Webflux/Project Reactor</title>
+      <link>http://localhost:1313/blog/inmemory-caching-in-sprint-boot-webfluxproject-reactor/</link>
+      <pubDate>Sat, 03 Oct 2020 22:41:59 +0000</pubDate>
+      <guid>http://localhost:1313/blog/inmemory-caching-in-sprint-boot-webfluxproject-reactor/</guid>
+      <description>&lt;p&gt;Sample code for this article &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In memory caching can significantly improve performance in a microservices environment, usually because of the tail latency involved in calling downstream services. Caching can also &lt;em&gt;help&lt;/em&gt; with resilience, though the extent to which that matters will depend on how you&#39;re actually leveraging that caching. There are two flavors of caching that you&#39;re like to want to use, the first is using the Mono as a hot source [which is demonstrated here], and the second would be when you want to &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-use-Caffeine-Caches-Effectively-in-Spring-Boot-Webflux&#34;&gt;selectively cache individual key/value pairs&lt;/a&gt;.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Automatically Retry on a Webclient Timeout in Spring Boot Webflux</title>
+      <link>http://localhost:1313/blog/how-to-automatically-retry-on-a-webclient-timeout-in-spring-boot-webflux/</link>
+      <pubDate>Sat, 03 Oct 2020 16:09:51 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-automatically-retry-on-a-webclient-timeout-in-spring-boot-webflux/</guid>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Intermittent network flapping, or any one downstream host of several clones responding slowly, is a not uncommon thing that happens in a microservices architecture, especially if you&#39;re using java applications, where the JIT compiler can often make initial requests slower than they ought to be.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Have a Fallback on Errors Calling Downstream Services in Spring Boot Webflux</title>
+      <link>http://localhost:1313/blog/how-to-have-a-fallback-on-errors-calling-downstream-services-in-spring-boot-webflux/</link>
+      <pubDate>Sat, 26 Sep 2020 16:04:14 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-have-a-fallback-on-errors-calling-downstream-services-in-spring-boot-webflux/</guid>
+      <description>&lt;p&gt;The source code for this post is &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience&#34;&gt;available on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Things break. When you start adding more and more microservices, things will break a lot more. This post is about how to provide a degraded experience to your users when things break.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Make Parallel API calls in Spring Boot Webflux</title>
+      <link>http://localhost:1313/blog/how-to-make-parallel-api-calls-in-spring-boot-webflux/</link>
+      <pubDate>Sat, 19 Sep 2020 16:03:01 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-make-parallel-api-calls-in-spring-boot-webflux/</guid>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Following up on the last post, which was making sequential calls to downstream services, sometimes you are in a position where you can make calls in parallel and merge the results. In this case, we want to use &lt;strong&gt;zip&lt;/strong&gt;.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Make Sequential API Calls and Merge the Results In Spring Boot Webflux</title>
+      <link>http://localhost:1313/blog/how-to-make-sequential-api-calls-and-merge-the-results-in-spring-boot-webflux/</link>
+      <pubDate>Sat, 19 Sep 2020 16:01:14 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-make-sequential-api-calls-and-merge-the-results-in-spring-boot-webflux/</guid>
+      <description>&lt;p&gt;The source code for this article &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In reactive programming, it&#39;s a game of callbacks. In the vast majority of cases, you will want to defer all of your I/O operations to the library you are using [typically, netty, under the hood], and stay focused on setting up the flow so that the right functions are invoked in the right order. Sometimes you will want to make calls in parallel, sometimes you need data from a previous call or operation available in order to invoke that right function.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Mock Dependencies and Unit Test in Spring Boot Webflux</title>
+      <link>http://localhost:1313/blog/how-to-mock-dependencies-and-unit-test-in-spring-boot-webflux/</link>
+      <pubDate>Sat, 08 Aug 2020 22:14:53 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-mock-dependencies-and-unit-test-in-spring-boot-webflux/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;The most straightforward way to write unit tests in spring boot webflux is to leverage &lt;a href=&#34;https://projectreactor.io/docs/test/release/api/reactor/test/StepVerifier.html&#34;&gt;project reactor&#39;s StepVerifier&lt;/a&gt;. StepVerifier allows you to pull each item in a &lt;strong&gt;Flux&lt;/strong&gt; or the only potential item in a &lt;strong&gt;Mono&lt;/strong&gt; and make assertions about each item as it&#39;s pulled through the chain, or make assertions about certain errors that should be thrown in the process. I&#39;m going to quickly walk you through an example integrating mockito with it and webflux.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Forward Request Headers to Downstream Services in Spring Boot Webflux</title>
+      <link>http://localhost:1313/blog/how-to-forward-request-headers-to-downstream-services-in-spring-boot-webflux/</link>
+      <pubDate>Sun, 19 Jul 2020 19:39:10 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-forward-request-headers-to-downstream-services-in-spring-boot-webflux/</guid>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/context-api&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;When you make the switch to a reactive codebase, &lt;a href=&#34;https://docs.oracle.com/javase/7/docs/api/java/lang/ThreadLocal.html&#34;&gt;ThreadLocal&lt;/a&gt; becomes effectively off limits to you, because you aren&#39;t guaranteed that the thread that starts the request processing remains the same, even if it&#39;s the same HTTP request. This has caused pain in many places: the original implementation of spring security, for example, relied very heavily on ThreadLocal variables to store state that happened in the start of the request, and then reuse the information stored in those variables later on to make access control decisions. &lt;a href=&#34;https://netflixtechblog.com/zuul-2-the-netflix-journey-to-asynchronous-non-blocking-systems-45947377fb5c&#34;&gt;Neflix spoke of their pain migrating to a reactive stack&lt;/a&gt;, when they had relied so heavily on ThreadLocal variables in most of their shared libraries.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

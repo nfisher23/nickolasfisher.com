@@ -2,6 +2,7 @@
 title: "How to Send SQS Messages to Localstack with the AWS Java SDK 2.0"
 date: 2020-09-12T20:54:13
 draft: false
+tags: [java, reactive, aws, webflux]
 ---
 
 The source code for this post [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux/blob/master/README.md).

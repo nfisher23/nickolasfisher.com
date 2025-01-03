@@ -2,6 +2,7 @@
 title: "How to Run a Lua Script against Redis using Lettuce"
 date: 2021-04-24T16:55:51
 draft: false
+tags: [java, spring, webflux, lettuce, redis]
 ---
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).

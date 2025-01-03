@@ -2,6 +2,7 @@
 title: "How to Use Nginx&#39;s Caching to Improve Site Responsiveness"
 date: 2019-04-06T17:14:30
 draft: false
+tags: [java, ngnix, vagrant, ansible, spring, DevOps, maven]
 ---
 
 The source code for this post [can be found on Github](https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx).

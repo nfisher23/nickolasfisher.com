@@ -6,19 +6,41 @@ Disallow: /
 
 Disallow: /blog/how-to-prevent-certain-exceptions-from-tripping-a-resilience4j-circuit/
 
+Disallow: /tags/java/
+
+Disallow: /tags/resilience/
+
+Disallow: /tags/
+
 Disallow: /blog/configuring-testing-and-using-circuit-breakers-on-rest-api-calls-with-resilience4j/
+
+Disallow: /tags/spring/
 
 Disallow: /blog/how-to-retry-api-requests-in-java-using-resilience4j/
 
 Disallow: /blog/how-to-test-latency-with-a-mock-server-in-java/
 
+Disallow: /tags/testing/
+
 Disallow: /blog/an-introduction-to-redis-streams-via-lettuce/
 
+Disallow: /tags/lettuce/
+
+Disallow: /tags/reactive/
+
+Disallow: /tags/redis/
+
+Disallow: /tags/distributed-systems/
+
 Disallow: /blog/using-redis-as-a-distributed-lock-with-lettuce/
+
+Disallow: /tags/webflux/
 
 Disallow: /blog/subscribing-to-channels-in-clustered-redis-with-lettuce/
 
 Disallow: /blog/pre-loading-lua-scripts-into-clustered-redis-with-lettuce/
+
+Disallow: /tags/aws/
 
 Disallow: /blog/why-redis-pubsub-is-not-sqs-and-vice-versa/
 
@@ -60,9 +82,13 @@ Disallow: /blog/configuring-lettucewebflux-to-work-with-clustered-redis/
 
 Disallow: /blog/bootstrap-a-local-sharded-redis-cluster-in-five-minutes/
 
+Disallow: /tags/dynamodb/
+
 Disallow: /blog/setup-and-use-a-dynamodb-test-container-with-the-aws-java-sdk-20/
 
 Disallow: /blog/how-to-configure-lettuce-to-use-redis-read-replicas-in-spring-boot-webflux/
+
+Disallow: /tags/devops/
 
 Disallow: /blog/set-up-a-basic-leaderfollower-redis-cluster-locally-using-docker/
 
@@ -74,13 +100,19 @@ Disallow: /blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflu
 
 Disallow: /blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux/
 
+Disallow: /tags/maven/
+
 Disallow: /blog/making-sense-of-mono-error-handling-in-spring-boot-webfluxproject-reactor/
+
+Disallow: /tags/concurrency/
 
 Disallow: /blog/how-to-zip-reactor-mono-objects-that-return-void/
 
 Disallow: /blog/how-to-unit-test-that-a-reactor-mono-was-actually-subscribed-to/
 
 Disallow: /blog/how-to-use-caffeine-caches-effectively-in-spring-boot-webflux/
+
+Disallow: /tags/aws-lambda/
 
 Disallow: /blog/setting-up-a-python-lambda-to-trigger-on-dynamodb-streams-via-the-aws-cli/
 
@@ -134,6 +166,8 @@ Disallow: /blog/how-to-mock-dependencies-and-unit-test-in-spring-boot-webflux/
 
 Disallow: /blog/openapi-and-spring-boot-webflux-a-working-introduction/
 
+Disallow: /tags/bash/
+
 Disallow: /blog/how-to-use-optimistic-locking-in-dynamodb-via-the-aws-cli/
 
 Disallow: /blog/dynamodb-streams-and-python-a-working-introduction/
@@ -150,21 +184,39 @@ Disallow: /blog/dynamodb-basics-a-hands-on-tutorial/
 
 Disallow: /blog/an-example-upgrade-and-rollback-of-a-deployment-image-in-kubernetes/
 
+Disallow: /tags/kind/
+
+Disallow: /tags/kubernetes/
+
 Disallow: /blog/how-to-setup-and-use-kubernetes-in-docker-kind/
 
 Disallow: /blog/how-to-configure-rest-assured-to-record-the-latency-of-every-request-in-a-custom-way/
+
+Disallow: /tags/rest-assured/
 
 Disallow: /blog/the-hystrix-parameters-you-actually-need-to-tune-in-spring-boot/
 
 Disallow: /blog/how-to-configure-prometheus-to-scrape-and-aggregate-data-from-a-spring-boot-2x-application/
 
+Disallow: /tags/prometheus/
+
 Disallow: /blog/how-to-expose-meaningful-prometheus-metrics-in-a-spring-boot-2x-application/
+
+Disallow: /tags/postgresql/
 
 Disallow: /blog/how-to-map-multiple-headers-to-the-same-variable-in-nginx/
 
+Disallow: /tags/ngnix/
+
 Disallow: /blog/a-concise-guide-to-using-jasypt-in-spring-boot-for-configuration-encryption/
 
+Disallow: /tags/security/
+
+Disallow: /tags/digital-ocean/
+
 Disallow: /blog/how-to-create-a-kubernetes-cluster-on-digital-ocean-using-terraform/
+
+Disallow: /tags/terraform/
 
 Disallow: /blog/how-to-create-a-digital-ocean-droplet-using-terraform/
 
@@ -176,17 +228,29 @@ Disallow: /blog/how-to-make-concurrent-service-api-calls-in-java-using-spring-bo
 
 Disallow: /blog/how-to-authenticate-against-a-spring-boot-service-using-jwt/
 
+Disallow: /tags/ansible/
+
 Disallow: /blog/how-to-create-multiple-digital-ocean-droplets-and-provision-them-using-ansible/
 
 Disallow: /blog/how-to-create-a-digital-ocean-droplet-and-provision-it-using-ansible/
 
+Disallow: /tags/consul/
+
 Disallow: /blog/how-to-run-a-script-on-cluster-state-change-using-consul-watch/
+
+Disallow: /tags/molecule/
+
+Disallow: /tags/vagrant/
 
 Disallow: /blog/how-to-register-a-spring-boot-service-to-a-consul-cluster/
 
 Disallow: /blog/how-to-selectively-allow-cross-origin-resource-sharing-in-spring-boot/
 
+Disallow: /tags/webdev/
+
 Disallow: /blog/a-fast-scss-learning-feedback-loop-with-harp-and-browsersync/
+
+Disallow: /tags/scss/
 
 Disallow: /blog/how-to-provision-a-consul-clientserver-cluster-using-ansible/
 
@@ -198,6 +262,8 @@ Disallow: /blog/how-to-migrate-an-embedded-postgresql-database-using-flyway-in-s
 
 Disallow: /blog/how-to-create-an-embedded-postgresql-database-with-spring-boot/
 
+Disallow: /tags/aspect-oriented-programming/
+
 Disallow: /blog/how-to-invalidate-an-nginx-cache-in-a-reverse-proxy-setup-with-spring-mvc/
 
 Disallow: /blog/how-to-use-nginxs-caching-to-improve-site-responsiveness/
@@ -205,6 +271,8 @@ Disallow: /blog/how-to-use-nginxs-caching-to-improve-site-responsiveness/
 Disallow: /blog/how-to-deploy-a-spring-mvc-application-behind-an-nginx-reverse-proxy/
 
 Disallow: /blog/how-to-upgrade-kibana-using-ansible/
+
+Disallow: /tags/the-elastic-stack/
 
 Disallow: /blog/how-to-do-a-rolling-upgrade-of-multiple-logstash-instances-using-ansible/
 
@@ -223,6 +291,8 @@ Disallow: /blog/exploring-lombok-how-to-use-builder-accessors-and-wither-for-poj
 Disallow: /blog/how-to-run-a-sql-script-against-a-postgres-database-using-ansible/
 
 Disallow: /blog/antifragile-by-nassim-nicholas-taleb-summary-in-quotes/
+
+Disallow: /tags/books/
 
 Disallow: /blog/next-by-michael-lewis-summary-in-quotes/
 
@@ -248,7 +318,15 @@ Disallow: /blog/a-vagrantfile-for-elasticsearch-logstash-and-kibana-on-three-dif
 
 Disallow: /blog/how-to-dynamically-deserialize-json-in-java-with-jackson/
 
+Disallow: /tags/json/
+
+Disallow: /tags/i/o/
+
 Disallow: /blog/improving-java-io-performance-caching-data-when-appropriate/
+
+Disallow: /tags/jmh/
+
+Disallow: /tags/performance-testing/
 
 Disallow: /blog/improving-java-io-performance-does-compression-actually-help/
 
@@ -263,6 +341,8 @@ Disallow: /blog/improving-java-io-performance-buffering-techniques/
 Disallow: /blog/how-to-benchmark-java-code-using-junit-and-jmh/
 
 Disallow: /blog/java-io-creating-and-traversing-files-and-directories/
+
+Disallow: /tags/java-stream-api/
 
 Disallow: /blog/java-io-paths-and-files/
 
@@ -308,16 +388,18 @@ Disallow: /blog/the-java-stream-api-creating-custom-lazy-infinite-streams/
 
 Disallow: /blog/the-java-stream-apiintroduction-filter-map-and-count/
 
+Disallow: /tags/c%23/
+
 Disallow: /blog/how-to-set-up-clickonce-continuous-deployment-for-wpf-via-nginx/
 
 Disallow: /blog/how-to-configure-visual-studio-to-implement-the-yarn-package-manager/
+
+Disallow: /tags/.net-core-mvc/
 
 Disallow: /blog/how-to-make-a-basic-working-contact-form-with-asp-net-core-mvc-and-mailkit/
 
 Disallow: /categories/
 
 Disallow: /categories/foo/
-
-Disallow: /tags/
 
 Disallow: /categories/uncategories/

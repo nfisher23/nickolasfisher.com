@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javaspringreactiveawswebflux on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javaspringreactiveawswebflux/</link>
+    <description>Recent content in Javaspringreactiveawswebflux on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 28 Nov 2020 20:16:05 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javaspringreactiveawswebflux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Publishing to SNS in Java with the AWS SDK 2.0</title>
+      <link>http://localhost:1313/blog/publishing-to-sns-in-java-with-the-aws-sdk-20/</link>
+      <pubDate>Sat, 28 Nov 2020 20:16:05 +0000</pubDate>
+      <guid>http://localhost:1313/blog/publishing-to-sns-in-java-with-the-aws-sdk-20/</guid>
+      <description>&lt;p&gt;SNS is a medium to broadcast messages to multiple subscribers. A common use case is to have multiple SQS queues subscribing to the same SNS topic&amp;ndash;this way, the &lt;em&gt;publishing&lt;/em&gt; application only needs to focus on events that are specific to its business use case, and &lt;em&gt;subscribing&lt;/em&gt; applications can configure an SQS queue and consume the event independently of other services. This helps organizations scale and significantly reduces the need to communicate between teams&amp;ndash;each team can focus on its contract and business use case.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Testing on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/testing/</link>
+    <description>Recent content in Testing on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 01 May 2021 18:12:45 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/testing/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Test Latency with a Mock Server in Java</title>
+      <link>http://localhost:1313/blog/how-to-test-latency-with-a-mock-server-in-java/</link>
+      <pubDate>Sat, 01 May 2021 18:12:45 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-test-latency-with-a-mock-server-in-java/</guid>
+      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/java-failure-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Very often, you will want to test service api clients using a &lt;a href=&#34;https://www.mock-server.com/&#34;&gt;Mock Server&lt;/a&gt; [for example, &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-use-Mock-Server-to-End-to-End-Test-Any-WebClient-Calls-in-Spring-Boot-Webflux&#34;&gt;testing the spring webclient with mockserver&lt;/a&gt;]. And since network latency is a fact of life, not something we can merely ignore, actually injecting some latency to simulate timeouts will give us greater confidence that our system will behave as expected.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Prevent DEBUG Logging by Test Containers when Running Unit Tests in Java</title>
+      <link>http://localhost:1313/blog/how-to-prevent-debug-logging-by-test-containers-when-running-unit-tests-in-java/</link>
+      <pubDate>Sat, 24 Apr 2021 20:35:47 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-prevent-debug-logging-by-test-containers-when-running-unit-tests-in-java/</guid>
+      <description>&lt;p&gt;I have been playing around with test containers lately [ &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux&#34;&gt;redis test containers for testing lettuce&lt;/a&gt; and &lt;a href=&#34;https://nickolasfisher.com/blog/Setup-and-Use-a-DynamoDB-Test-Container-with-the-AWS-Java-SDK-20&#34;&gt;dynamodb test containers for testing the AWS SDK 2.0&lt;/a&gt;, to be specific], and I found soon after using them that I was getting by default a stream of DEBUG level logs whenever I ran my test suite. This was annoying, so I went digging for a solution.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to use a Redis Test Container with Lettuce/Spring Boot Webflux</title>
+      <link>http://localhost:1313/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux/</link>
+      <pubDate>Sat, 27 Mar 2021 23:52:07 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux/</guid>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Another way to write integration tests for code that verifies your interactions with redis actually make sense is to use a &lt;a href=&#34;https://www.testcontainers.org/&#34;&gt;test container&lt;/a&gt;. This framework assumes you have docker up and running, but if you do it will pull a specified container image [typically you&#39;ll just use docker hub, though it&#39;s important to note that they rate limit you, so don&#39;t go overboard], then you can interact with that container in your integration tests.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>A Guide to Automatic Retries in Reactor</title>
+      <link>http://localhost:1313/blog/a-guide-to-automatic-retries-in-reactor/</link>
+      <pubDate>Sun, 16 Aug 2020 16:22:09 +0000</pubDate>
+      <guid>http://localhost:1313/blog/a-guide-to-automatic-retries-in-reactor/</guid>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux&#34;&gt;is available on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;One of the nice things about a reactive programming model is there is a significantly lower risk of doomsday when things start getting latent all at once. You don&#39;t have threads upstream blocking and waiting for a response, therefore they won&#39;t all seize up and stop serving requests [or they won&#39;t short circuit if you&#39;re using a resiliency library like hystrix].&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to use Mock Server to End to End Test Any WebClient Calls in Spring Boot Webflux</title>
+      <link>http://localhost:1313/blog/how-to-use-mock-server-to-end-to-end-test-any-webclient-calls-in-spring-boot-webflux/</link>
+      <pubDate>Sat, 08 Aug 2020 22:44:14 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-use-mock-server-to-end-to-end-test-any-webclient-calls-in-spring-boot-webflux/</guid>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.mock-server.com&#34;&gt;Mock Server&lt;/a&gt; is a really simple and straightforward way to actually let your application make downstream calls and intercept them. That level of abstraction is really nice to have, and gives at least me much more confidence that my code is actually working in a microservices environment.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Configure Rest Assured to Record the Latency of Every Request In a Custom Way</title>
+      <link>http://localhost:1313/blog/how-to-configure-rest-assured-to-record-the-latency-of-every-request-in-a-custom-way/</link>
+      <pubDate>Sat, 13 Jun 2020 21:06:52 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-configure-rest-assured-to-record-the-latency-of-every-request-in-a-custom-way/</guid>
+      <description>&lt;p&gt;Sample code associated with this post can be found &lt;a href=&#34;https://github.com/nfisher23/examples-testing-stuff&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://github.com/rest-assured/rest-assured/wiki/Usage&#34;&gt;Rest Assured&lt;/a&gt; is a library that makes it easy to write api based automated tests in java. Recently I needed to find a way to record the latency of each request as well as some metadata about it [request path, method, things of that nature]. I found a nice way to do this with &lt;a href=&#34;https://github.com/rest-assured/rest-assured/wiki/Usage#filters&#34;&gt;rest assured filters&lt;/a&gt;, and I&#39;m going to share that with you in this article.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

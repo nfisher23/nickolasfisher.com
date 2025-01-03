@@ -2,6 +2,7 @@
 title: "How to Setup SNS Message Forwarding to SQS with the AWS CLI"
 date: 2020-08-15T20:42:47
 draft: false
+tags: [distributed systems, DevOps, aws]
 ---
 
 [Amazon SNS](https://docs.aws.amazon.com/sns/latest/dg/welcome.html) is AWS&#39;s solution to pub/sub. In a large, distributed system, decoupling _events_ from services that _need to act on those events_ allows for teams that own different services to better work in parallel, and also prevents the need for coordinating code deploys to deliver new features. If a services is already publishing a generic event, other services can hook into that event and act on them without needing anything but a bit of infrastructure.

@@ -2,6 +2,7 @@
 title: "DynamoDB Streams and Python: A Working Introduction"
 date: 2020-07-26T21:54:59
 draft: false
+tags: [distributed systems, DevOps, aws, dynamodb]
 ---
 
 DynamoDB Streams is AWS&#39;s home grown [Change Data Capture \[CDC\]](https://en.wikipedia.org/wiki/Change_data_capture) mechanism, which allows the consumer of the stream to see records probably in approximately the order they were created \[it&#39;s basically impossible, at scale, to guarantee that all records across all partitions will somehow stream the data in exactly the same order that it was written\]. This is a pretty fantastic feature because it allows us to reliably do _---something---_ after we add new data, update existing data, or delete existing data. As long as all the stream records are read and processed, we can ensure at least once processing on data changes and then go sleep soundly at night knowing that there is one less edge case in our application. Combine that with the natural scale that DynamoDB provides via its leaderless architecture and you can build this thing once and probably never have to worry about it handling more load ever again.

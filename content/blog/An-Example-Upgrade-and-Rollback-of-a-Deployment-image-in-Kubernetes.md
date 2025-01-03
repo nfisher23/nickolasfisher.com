@@ -2,6 +2,7 @@
 title: "An Example Upgrade and Rollback of a Deployment image in Kubernetes"
 date: 2020-06-20T22:47:02
 draft: false
+tags: [java, spring, DevOps, kubernetes, kind]
 ---
 
 In this article, I&#39;m going to show you how to bootstrap a local kubernetes cluster with a custom image, debug it, deploy a new image, then rollback to the old image.

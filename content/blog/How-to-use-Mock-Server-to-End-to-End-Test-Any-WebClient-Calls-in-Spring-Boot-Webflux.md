@@ -2,6 +2,7 @@
 title: "How to use Mock Server to End to End Test Any WebClient Calls in Spring Boot Webflux"
 date: 2020-08-08T22:44:14
 draft: false
+tags: [java, spring, reactive, testing, webflux]
 ---
 
 The source code for this post [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing).

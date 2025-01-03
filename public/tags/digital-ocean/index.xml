@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Digital Ocean on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/digital-ocean/</link>
+    <description>Recent content in Digital Ocean on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sun, 17 May 2020 21:58:17 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/digital-ocean/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How To Create a Kubernetes Cluster on Digital Ocean using Terraform</title>
+      <link>http://localhost:1313/blog/how-to-create-a-kubernetes-cluster-on-digital-ocean-using-terraform/</link>
+      <pubDate>Sun, 17 May 2020 21:58:17 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-create-a-kubernetes-cluster-on-digital-ocean-using-terraform/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/digitalocean-terraform-examples/tree/master/kubernetes&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Kubernetes has democratized the cloud more than any piece of software before or since. What used to be proprietary APIs by AWS, Azure, or GCP for things like auto scaling groups, load balancers, or virtual machines is now abstracted away behind never ending yaml configuration. Combine this wonderful abstraction with the pricing model of &lt;a href=&#34;https://www.digitalocean.com/&#34;&gt;Digital Ocean&lt;/a&gt; and you&#39;ve got all the makings of a developer party.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Create a Digital Ocean Droplet using Terraform</title>
+      <link>http://localhost:1313/blog/how-to-create-a-digital-ocean-droplet-using-terraform/</link>
+      <pubDate>Sun, 17 May 2020 18:26:02 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-create-a-digital-ocean-droplet-using-terraform/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/digitalocean-terraform-examples&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Terraform lets you define your infrastructure, e.g. a virtual machine, in code. Used properly, this saves you a lot of time, makes infra easier to manage, and will generally limit your ability to do something dumb, like delete or modify something your infrastructure is dependent on.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Create Multiple Digital Ocean Droplets and Provision Them Using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-create-multiple-digital-ocean-droplets-and-provision-them-using-ansible/</link>
+      <pubDate>Sun, 16 Jun 2019 17:14:49 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-create-multiple-digital-ocean-droplets-and-provision-them-using-ansible/</guid>
+      <description>&lt;p&gt;In a previous post, we saw &lt;a href=&#34;https://nickolasfisher.com/blog/How-To-Create-a-Digital-Ocean-Droplet-and-Provision-It-Using-Ansible&#34;&gt;how to create a digital ocean droplet and provision it with Ansible&lt;/a&gt;. Creating multiple droplets is very similar, you mostly just have to pay attention to the response object that you get back, which is different in the single vs. the many case.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How To Create a Digital Ocean Droplet and Provision It Using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-create-a-digital-ocean-droplet-and-provision-it-using-ansible/</link>
+      <pubDate>Sat, 15 Jun 2019 20:40:48 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-create-a-digital-ocean-droplet-and-provision-it-using-ansible/</guid>
+      <description>&lt;p&gt;Ansible allows you to provision servers in an idempotent fashion. It lets you see the state of your VM configuration as it resides in code, which is light years better than the sysadmin ways of yesterday.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

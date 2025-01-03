@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DevOps on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/devops/</link>
+    <description>Recent content in DevOps on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sun, 28 Mar 2021 18:57:07 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/devops/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Set up a Basic Leader/Follower Redis Cluster Locally using Docker</title>
+      <link>http://localhost:1313/blog/set-up-a-basic-leaderfollower-redis-cluster-locally-using-docker/</link>
+      <pubDate>Sun, 28 Mar 2021 18:57:07 +0000</pubDate>
+      <guid>http://localhost:1313/blog/set-up-a-basic-leaderfollower-redis-cluster-locally-using-docker/</guid>
+      <description>&lt;p&gt;In general, you will want to keep your development environment and your higher environments as similar as makes sense [times it doesn&#39;t make sense: when it costs too much], to catch bugs early and often. Here, we&#39;ll quickly run through how to set up a leader/follower topology for redis using docker/docker-compose on your local machine.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Setting up a Python Lambda to Trigger on DynamoDB Streams via the AWS CLI</title>
+      <link>http://localhost:1313/blog/setting-up-a-python-lambda-to-trigger-on-dynamodb-streams-via-the-aws-cli/</link>
+      <pubDate>Sun, 07 Feb 2021 19:47:50 +0000</pubDate>
+      <guid>http://localhost:1313/blog/setting-up-a-python-lambda-to-trigger-on-dynamodb-streams-via-the-aws-cli/</guid>
+      <description>&lt;p&gt;DynamoDB streams record information about what has changed in a DynamoDB table, and AWS lambdas are ways to run code without managing servers yourself. DynamoDB streams also have an integration with AWS Lambdas so that any change to a DynamoDB table can be processed by an AWS Lambda&amp;ndash;still without worrying about keeping your servers up or maintaining them. That is the subject of this post.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Basic Python Lambda Function Uploads using the AWS CLI</title>
+      <link>http://localhost:1313/blog/basic-python-lambda-function-uploads-using-the-aws-cli/</link>
+      <pubDate>Sat, 06 Feb 2021 21:07:12 +0000</pubDate>
+      <guid>http://localhost:1313/blog/basic-python-lambda-function-uploads-using-the-aws-cli/</guid>
+      <description>&lt;p&gt;AWS Lambda functions were the first &amp;quot;serverless&amp;quot; way to run code. Of course, there are still servers, but the point is that you can nearly forget about managing those servers and all of that is owned by AWS.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Setup SNS Message Forwarding to SQS with the AWS CLI</title>
+      <link>http://localhost:1313/blog/how-to-setup-sns-message-forwarding-to-sqs-with-the-aws-cli/</link>
+      <pubDate>Sat, 15 Aug 2020 20:42:47 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-setup-sns-message-forwarding-to-sqs-with-the-aws-cli/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://docs.aws.amazon.com/sns/latest/dg/welcome.html&#34;&gt;Amazon SNS&lt;/a&gt; is AWS&#39;s solution to pub/sub. In a large, distributed system, decoupling &lt;em&gt;events&lt;/em&gt; from services that &lt;em&gt;need to act on those events&lt;/em&gt; allows for teams that own different services to better work in parallel, and also prevents the need for coordinating code deploys to deliver new features. If a services is already publishing a generic event, other services can hook into that event and act on them without needing anything but a bit of infrastructure.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to use Optimistic Locking in DynamoDB via the AWS CLI</title>
+      <link>http://localhost:1313/blog/how-to-use-optimistic-locking-in-dynamodb-via-the-aws-cli/</link>
+      <pubDate>Sat, 01 Aug 2020 20:46:28 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-use-optimistic-locking-in-dynamodb-via-the-aws-cli/</guid>
+      <description>&lt;p&gt;Optimistic Locking is a form of concurrency control that basically aims to prevent two different threads from accidentally overwriting data that another thread has already written. I covered &lt;a href=&#34;https://nickolasfisher.com/blog/Optimistic-Locking-in-MySQLExplain-Like-Im-Five&#34;&gt;optimistic locking in MySQL&lt;/a&gt; in a previous blog post, which may or may not be easier to understand based on your background.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>DynamoDB Streams and Python: A Working Introduction</title>
+      <link>http://localhost:1313/blog/dynamodb-streams-and-python-a-working-introduction/</link>
+      <pubDate>Sun, 26 Jul 2020 21:54:59 +0000</pubDate>
+      <guid>http://localhost:1313/blog/dynamodb-streams-and-python-a-working-introduction/</guid>
+      <description>&lt;p&gt;DynamoDB Streams is AWS&#39;s home grown &lt;a href=&#34;https://en.wikipedia.org/wiki/Change_data_capture&#34;&gt;Change Data Capture [CDC]&lt;/a&gt; mechanism, which allows the consumer of the stream to see records probably in approximately the order they were created [it&#39;s basically impossible, at scale, to guarantee that all records across all partitions will somehow stream the data in exactly the same order that it was written]. This is a pretty fantastic feature because it allows us to reliably do &lt;em&gt;&amp;mdash;something&amp;mdash;&lt;/em&gt; after we add new data, update existing data, or delete existing data. As long as all the stream records are read and processed, we can ensure at least once processing on data changes and then go sleep soundly at night knowing that there is one less edge case in our application. Combine that with the natural scale that DynamoDB provides via its leaderless architecture and you can build this thing once and probably never have to worry about it handling more load ever again.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>DynamoDB Basics: A Hands On Tutorial</title>
+      <link>http://localhost:1313/blog/dynamodb-basics-a-hands-on-tutorial/</link>
+      <pubDate>Sun, 12 Jul 2020 18:36:05 +0000</pubDate>
+      <guid>http://localhost:1313/blog/dynamodb-basics-a-hands-on-tutorial/</guid>
+      <description>&lt;p&gt;DynamoDB is a fully managed distributed datastore that does a great job of alleviating the operational overhead of building very scalable systems.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>An Example Upgrade and Rollback of a Deployment image in Kubernetes</title>
+      <link>http://localhost:1313/blog/an-example-upgrade-and-rollback-of-a-deployment-image-in-kubernetes/</link>
+      <pubDate>Sat, 20 Jun 2020 22:47:02 +0000</pubDate>
+      <guid>http://localhost:1313/blog/an-example-upgrade-and-rollback-of-a-deployment-image-in-kubernetes/</guid>
+      <description>&lt;p&gt;In this article, I&#39;m going to show you how to bootstrap a local kubernetes cluster with a custom image, debug it, deploy a new image, then rollback to the old image.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Setup and Use Kubernetes in Docker [kind]</title>
+      <link>http://localhost:1313/blog/how-to-setup-and-use-kubernetes-in-docker-kind/</link>
+      <pubDate>Sat, 20 Jun 2020 19:32:30 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-setup-and-use-kubernetes-in-docker-kind/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://kind.sigs.k8s.io/&#34;&gt;kind&lt;/a&gt; is a tool that spins up a kubernetes cluster of arbitrary size on your local machine. It is, in my experience, more lightweight than minikube, and also allows for a multi node setup.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Configure Prometheus to Scrape and Aggregate Data From a Spring Boot 2.x Application</title>
+      <link>http://localhost:1313/blog/how-to-configure-prometheus-to-scrape-and-aggregate-data-from-a-spring-boot-2x-application/</link>
+      <pubDate>Sat, 30 May 2020 20:33:50 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-configure-prometheus-to-scrape-and-aggregate-data-from-a-spring-boot-2x-application/</guid>
+      <description>&lt;p&gt;You can see the source code for this post &lt;a href=&#34;https://github.com/nfisher23/prometheus-metrics-ex&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Following up on the last post [ &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Expose-Meaningful-Prometheus-Metrics-In-a-Spring-Boot-2x-Application&#34;&gt;How to Expose Meaningful Prometheus Metrics In a Spring Boot 2.x Application&lt;/a&gt;], if we have metrics exposed but they don&#39;t go anywhere, are there metrics exposed at all?&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Expose Meaningful Prometheus Metrics In a Spring Boot 2.x Application</title>
+      <link>http://localhost:1313/blog/how-to-expose-meaningful-prometheus-metrics-in-a-spring-boot-2x-application/</link>
+      <pubDate>Sat, 30 May 2020 19:21:40 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-expose-meaningful-prometheus-metrics-in-a-spring-boot-2x-application/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/prometheus-metrics-ex&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://prometheus.io/&#34;&gt;Prometheus&lt;/a&gt; is a metrics aggregator with its own presumed format. The basic idea is to have the application gather a set of custom metrics, then periodically collect (or &amp;quot;scrape&amp;quot;) the metrics and send them off to a prometheus server. This server will store the data in its database, and you can thus view the evolution of your application&#39;s metrics over time.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Map Multiple Headers to the Same Variable in Nginx</title>
+      <link>http://localhost:1313/blog/how-to-map-multiple-headers-to-the-same-variable-in-nginx/</link>
+      <pubDate>Sun, 24 May 2020 20:26:02 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-map-multiple-headers-to-the-same-variable-in-nginx/</guid>
+      <description>&lt;p&gt;The &lt;a href=&#34;http://nginx.org/en/docs/http/ngx_http_map_module.html&#34;&gt;nginx map module&lt;/a&gt; is a nifty tool that allows you to programmatically change behavior based on things like http headers that come in.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How To Create a Kubernetes Cluster on Digital Ocean using Terraform</title>
+      <link>http://localhost:1313/blog/how-to-create-a-kubernetes-cluster-on-digital-ocean-using-terraform/</link>
+      <pubDate>Sun, 17 May 2020 21:58:17 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-create-a-kubernetes-cluster-on-digital-ocean-using-terraform/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/digitalocean-terraform-examples/tree/master/kubernetes&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Kubernetes has democratized the cloud more than any piece of software before or since. What used to be proprietary APIs by AWS, Azure, or GCP for things like auto scaling groups, load balancers, or virtual machines is now abstracted away behind never ending yaml configuration. Combine this wonderful abstraction with the pricing model of &lt;a href=&#34;https://www.digitalocean.com/&#34;&gt;Digital Ocean&lt;/a&gt; and you&#39;ve got all the makings of a developer party.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Create a Digital Ocean Droplet using Terraform</title>
+      <link>http://localhost:1313/blog/how-to-create-a-digital-ocean-droplet-using-terraform/</link>
+      <pubDate>Sun, 17 May 2020 18:26:02 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-create-a-digital-ocean-droplet-using-terraform/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/digitalocean-terraform-examples&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Terraform lets you define your infrastructure, e.g. a virtual machine, in code. Used properly, this saves you a lot of time, makes infra easier to manage, and will generally limit your ability to do something dumb, like delete or modify something your infrastructure is dependent on.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Create Multiple Digital Ocean Droplets and Provision Them Using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-create-multiple-digital-ocean-droplets-and-provision-them-using-ansible/</link>
+      <pubDate>Sun, 16 Jun 2019 17:14:49 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-create-multiple-digital-ocean-droplets-and-provision-them-using-ansible/</guid>
+      <description>&lt;p&gt;In a previous post, we saw &lt;a href=&#34;https://nickolasfisher.com/blog/How-To-Create-a-Digital-Ocean-Droplet-and-Provision-It-Using-Ansible&#34;&gt;how to create a digital ocean droplet and provision it with Ansible&lt;/a&gt;. Creating multiple droplets is very similar, you mostly just have to pay attention to the response object that you get back, which is different in the single vs. the many case.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How To Create a Digital Ocean Droplet and Provision It Using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-create-a-digital-ocean-droplet-and-provision-it-using-ansible/</link>
+      <pubDate>Sat, 15 Jun 2019 20:40:48 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-create-a-digital-ocean-droplet-and-provision-it-using-ansible/</guid>
+      <description>&lt;p&gt;Ansible allows you to provision servers in an idempotent fashion. It lets you see the state of your VM configuration as it resides in code, which is light years better than the sysadmin ways of yesterday.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Run a Script on Cluster State Change Using Consul Watch</title>
+      <link>http://localhost:1313/blog/how-to-run-a-script-on-cluster-state-change-using-consul-watch/</link>
+      <pubDate>Sat, 25 May 2019 22:18:42 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-run-a-script-on-cluster-state-change-using-consul-watch/</guid>
+      <description>&lt;p&gt;You can see the sample code for this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.consul.io/docs/agent/watches.html&#34;&gt;Consul Watches&lt;/a&gt; offer a way to hook into changes to the Consul cluster state at runtime.The specific type of changes we will be looking at hooking into in this post are &lt;a href=&#34;https://www.consul.io/docs/agent/watches.html#type-checks&#34;&gt;checks&lt;/a&gt;. Whenever a node or service comes online and registers to Consul, whenever an existing node or service leaves Consul, or whenever an existing node or service becomes unresponsive, Consul will emit a check event. This check event can invoke a process to monitor the health of our services, alerting human being that action might soon be necessary.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Provision a Consul Client-Server Cluster using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-provision-a-consul-clientserver-cluster-using-ansible/</link>
+      <pubDate>Sat, 27 Apr 2019 21:15:18 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-provision-a-consul-clientserver-cluster-using-ansible/</guid>
+      <description>&lt;p&gt;The source code for this blog post can be found &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.consul.io&#34;&gt;Consul&lt;/a&gt; can run in either client or server mode. As far as Consul is concerned, the primary difference between client and server mode are that Consul Servers participate in the consensus quorum, store cluster state, and handle queries. Consul Agents are often deployed to act as middle-men between the services and the Consul Servers, which need to be highly available by design.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Provision a Standalone Consul Server with Ansible</title>
+      <link>http://localhost:1313/blog/how-to-provision-a-standalone-consul-server-with-ansible/</link>
+      <pubDate>Sat, 27 Apr 2019 19:49:14 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-provision-a-standalone-consul-server-with-ansible/</guid>
+      <description>&lt;p&gt;You can find the source code for this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.consul.io/&#34;&gt;Consul&lt;/a&gt; is a distributed service discovery engine. It&#39;s primary purpose is to track and manage services that interact with it&amp;ndash;usually via an HTTP API. It monitors the health of services in near real time, providing a more robust way of routing services to healthy and responsive nodes.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Migrate a Real PostgreSQL Database Using Flyway with Spring Boot</title>
+      <link>http://localhost:1313/blog/how-to-migrate-a-real-postgresql-database-using-flyway-with-spring-boot/</link>
+      <pubDate>Sat, 20 Apr 2019 16:37:18 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-migrate-a-real-postgresql-database-using-flyway-with-spring-boot/</guid>
+      <description>&lt;p&gt;You can see the source code for this post &lt;a href=&#34;https://github.com/nfisher23/postgres-flyway-example&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;We spent the last post figuring out &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Migrate-An-Embedded-PostgreSQL-Database-Using-Flyway-in-Spring-Boot&#34;&gt;how to migrate an embedded PostgreSQL database using Spring&lt;/a&gt;, while trying to side-step the extra magic that comes along with the framework. Here, we are going to build on that work to migrate a real PostgreSQL instance, which we will build in a local Vagrant Virtual Machine.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Migrate An Embedded PostgreSQL Database Using Flyway in Spring Boot</title>
+      <link>http://localhost:1313/blog/how-to-migrate-an-embedded-postgresql-database-using-flyway-in-spring-boot/</link>
+      <pubDate>Sat, 20 Apr 2019 16:00:34 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-migrate-an-embedded-postgresql-database-using-flyway-in-spring-boot/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/postgres-flyway-example&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://flywaydb.org/&#34;&gt;Flyway&lt;/a&gt; is a database migration tool. &lt;em&gt;Migrating&lt;/em&gt; a database generally means that you are making a change to the way the database currently structures its data. It could also mean you are adding stuff like custom stored procedures or indexes to help speed up queries. Either way, migrating databases is easily the most difficult part of any deployment strategy&amp;ndash;Flyway makes this process as painless as possible because it will, by default, &lt;em&gt;only run migration scripts that haven&#39;t yet run&lt;/em&gt;.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Create an Embedded PostgreSQL Database With Spring Boot</title>
+      <link>http://localhost:1313/blog/how-to-create-an-embedded-postgresql-database-with-spring-boot/</link>
+      <pubDate>Sat, 20 Apr 2019 15:28:25 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-create-an-embedded-postgresql-database-with-spring-boot/</guid>
+      <description>&lt;p&gt;You can see the sample code for this post &lt;a href=&#34;https://github.com/nfisher23/postgres-flyway-example&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.postgresql.org/&#34;&gt;PostgreSQL&lt;/a&gt; is still my favorite database, and if a project I&#39;m working on makes sense as a relational database model, it&#39;s always what I reach for.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How To Invalidate an Nginx Cache In a Reverse Proxy Setup With Spring MVC</title>
+      <link>http://localhost:1313/blog/how-to-invalidate-an-nginx-cache-in-a-reverse-proxy-setup-with-spring-mvc/</link>
+      <pubDate>Sat, 13 Apr 2019 16:52:53 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-invalidate-an-nginx-cache-in-a-reverse-proxy-setup-with-spring-mvc/</guid>
+      <description>&lt;p&gt;You can see the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In two previous posts, we looked at how to &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy&#34;&gt;provision a reverse proxy using nginx&lt;/a&gt; and then &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Use-Nginxs-Caching-to-Improve-Site-Responsiveness&#34;&gt;how to add caching to the nginx reverse proxy&lt;/a&gt;. The implementation we ended up with at the end of the last post was a &amp;quot;dumb&amp;quot; cache, meaning that it doesn&#39;t know when or if any data gets updated&amp;ndash;it just times out after 60 seconds and then asks for a new payload from the application it&#39;s acting as proxy for.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Use Nginx&amp;#39;s Caching to Improve Site Responsiveness</title>
+      <link>http://localhost:1313/blog/how-to-use-nginxs-caching-to-improve-site-responsiveness/</link>
+      <pubDate>Sat, 06 Apr 2019 17:14:30 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-use-nginxs-caching-to-improve-site-responsiveness/</guid>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In my last post, I provided an example for &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy&#34;&gt;how to set up an Nginx Reverse Proxy for a Spring MVC application&lt;/a&gt;. One such reason to set up a reverse proxy is to utilize caching of resources. If you have dynamically generated content that doesn&#39;t change very often, then adding caching at the site entry point can dramatically improve site responsiveness and reduce load on critical resources.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Deploy a Spring MVC Application Behind an Nginx Reverse Proxy</title>
+      <link>http://localhost:1313/blog/how-to-deploy-a-spring-mvc-application-behind-an-nginx-reverse-proxy/</link>
+      <pubDate>Sat, 06 Apr 2019 14:44:50 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-deploy-a-spring-mvc-application-behind-an-nginx-reverse-proxy/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://www.nginx.com/&#34;&gt;Nginx&lt;/a&gt; is a popular webserver, excellent at serving up static content, and commonly used as a load balancer or reverse proxy. This post will set up a basic &lt;a href=&#34;https://spring.io/projects/spring-boot&#34;&gt;Spring Boot&lt;/a&gt; MVC web application, and use Nginx as a reverse proxy. The source code can be found &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How To Upgrade Kibana using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-upgrade-kibana-using-ansible/</link>
+      <pubDate>Sat, 23 Mar 2019 21:14:22 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-upgrade-kibana-using-ansible/</guid>
+      <description>&lt;p&gt;You can view the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In a previous post on &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Provision-a-Linux-VM-With-Kibana-Using-Ansible&#34;&gt;Provisioning a Server with Kibana&lt;/a&gt;, we saw that it&#39;s very straightforward to get kibana on a box.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to do a Rolling Upgrade of Multiple Logstash Instances Using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-do-a-rolling-upgrade-of-multiple-logstash-instances-using-ansible/</link>
+      <pubDate>Sun, 17 Mar 2019 23:27:43 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-do-a-rolling-upgrade-of-multiple-logstash-instances-using-ansible/</guid>
+      <description>&lt;p&gt;You can see the source code for this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In a previous post on &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Provision-Multiple-Logstash-Hosts-Using-Ansible&#34;&gt;How to Provision Multiple Logstash Hosts Using Ansible&lt;/a&gt;, we saw that provisioning logstash is pretty straightforward. However, what do we do with it after it&#39;s been out there transforming messages this entire time? Given that elastic comes out with a new version of Logstash every fifteen or twenty minutes, a wise person would look to automate the upgrade process as soon as possible.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to do a Rolling Upgrade of an Elasticsearch Cluster Using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-do-a-rolling-upgrade-of-an-elasticsearch-cluster-using-ansible/</link>
+      <pubDate>Sat, 16 Mar 2019 23:17:03 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-do-a-rolling-upgrade-of-an-elasticsearch-cluster-using-ansible/</guid>
+      <description>&lt;p&gt;You can see the source code for this blog post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In a previous post, we saw &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible&#34;&gt;how to provision a multi-node elasticsearch cluster using ansible&lt;/a&gt;. The problem with that post is that, by the time I was done writing it, &lt;em&gt;Elastic had already come out with a new version of elasticsearch&lt;/em&gt;. I&#39;m being mildly facetious, but not really. They release new versions very quickly, even by the standards of modern software engineering.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Provision a Linux VM With Kibana Using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-provision-a-linux-vm-with-kibana-using-ansible/</link>
+      <pubDate>Sat, 16 Mar 2019 15:37:40 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-provision-a-linux-vm-with-kibana-using-ansible/</guid>
+      <description>&lt;p&gt;The corresponding source code for this post is available &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/products/kibana&#34;&gt;Kibana&lt;/a&gt; is a fancy pants web application that tries to make data in Elasticsearch user-friendly. Rounding out the previous two posts on &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible&#34;&gt;how to install an elasticsearch cluster&lt;/a&gt; and &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Install-Multiple-Logstash-Hosts-Using-Ansible&#34;&gt;how to install multiple logstash hosts&lt;/a&gt;, I will now show you how to stack kibana on top of them.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Provision Multiple Logstash Hosts Using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-provision-multiple-logstash-hosts-using-ansible/</link>
+      <pubDate>Wed, 06 Mar 2019 23:33:35 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-provision-multiple-logstash-hosts-using-ansible/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/products/logstash&#34;&gt;Logstash&lt;/a&gt; primarily exists to extract useful information out of plain-text logs. Most applications have custom logs which are in whatever format the person writing them thought would look reasonable&amp;hellip;usually to a human, and not to a machine. While countless future developer hours would be preserved if everything were just in JSON, that is sadly not even remotely the case, and in particular it&#39;s not the case for log files. Logstash aims to be the intermediary between the various log formats and Elasticsearch, which is the document database provided by Elastic as well.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Provision a Multi Node Elasticsearch Cluster Using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-provision-a-multi-node-elasticsearch-cluster-using-ansible/</link>
+      <pubDate>Sun, 03 Mar 2019 23:15:27 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-provision-a-multi-node-elasticsearch-cluster-using-ansible/</guid>
+      <description>&lt;p&gt;You can see the sample code for this tutorial &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples&#34;&gt;on GitHub.&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/products/elasticsearch&#34;&gt;Elasticsearch&lt;/a&gt; is a distributed, NoSQL, document database, built on top of Lucene. There are so many things I could say about Elasticsearch, but instead I&#39;ll focus on how to install a simple 3-node cluster with an Ansible role. The following example will not have any security baked into it, so it&#39;s really just a starting point to get you up and running.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to do Test Driven Development on Your Ansible Roles Using Molecule</title>
+      <link>http://localhost:1313/blog/how-to-do-test-driven-development-on-your-ansible-roles-using-molecule/</link>
+      <pubDate>Sun, 03 Mar 2019 20:18:22 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-do-test-driven-development-on-your-ansible-roles-using-molecule/</guid>
+      <description>&lt;p&gt;You can see the sample code for this tutorial &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples&#34;&gt;on GitHub.&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;﻿ &lt;a href=&#34;https://molecule.readthedocs.io/en/latest/&#34;&gt;Molecule&lt;/a&gt; is primarily a way to manage the testing of infrastructure automation code. At its core, it wraps around various providers like Vagrant, Docker, or VMWare, and provides relatively simple integration with testing providers, notably &lt;a href=&#34;https://testinfra.readthedocs.io/en/latest/&#34;&gt;TestInfra&lt;/a&gt;. Molecule is a great tool, but in my opinion there are not enough resources, by way of examples, to provide an adequate getting started guide. This post is meant to help fill that void.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to run a SQL Script Against a Postgres Database Using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-run-a-sql-script-against-a-postgres-database-using-ansible/</link>
+      <pubDate>Sat, 09 Feb 2019 15:44:26 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-run-a-sql-script-against-a-postgres-database-using-ansible/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/run-sql-ansible-postgres&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Managing a live database, and in particular dealing with database migrations without allowing for any downtime in your application, is typically the most challenging part of any automated deployment strategy. Services can be spun up and down with impunity because their state at the beginning and at the end are exactly the same, but databases store data&amp;ndash;their state is always changing.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>A Simple Zero Downtime Continuous Integration Pipeline for Spring MVC</title>
+      <link>http://localhost:1313/blog/a-simple-zero-downtime-continuous-integration-pipeline-for-spring-mvc/</link>
+      <pubDate>Sun, 25 Nov 2018 15:53:22 +0000</pubDate>
+      <guid>http://localhost:1313/blog/a-simple-zero-downtime-continuous-integration-pipeline-for-spring-mvc/</guid>
+      <description>&lt;p&gt;The sample code associated with what follows can be found &lt;a href=&#34;https://github.com/nfisher23/simple-cicd-pipeline-with-spring&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;One of the biggest paradigm shifts in software engineering, since the invention of the computer and software that would run on it, was the idea of a MVR (minimum viable release) or MVP (minimum viable product). With the lack of internet access becoming the exception in developed countries, it becomes more and more powerful to put your product out there on display, and to design a way to continuously make improvements to it. In the most aggressive of circumstances, you want to be able to push something up to a source control server, then let an automated process perform the various steps required to actually deploy it in the real world. In the best case, you can achieve all of this with zero downtime&amp;ndash;basically, the users of your service are never inconvenienced by your decision to make a change. Setting up one very simple example of that is the subject of this post.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Use Spring&amp;#39;s Dependency Injection in Setup And Teardown Code For Integration Tests With Maven</title>
+      <link>http://localhost:1313/blog/how-to-use-springs-dependency-injection-in-setup-and-teardown-code-for-integration-tests-with-maven/</link>
+      <pubDate>Sat, 24 Nov 2018 15:51:32 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-use-springs-dependency-injection-in-setup-and-teardown-code-for-integration-tests-with-maven/</guid>
+      <description>&lt;p&gt;You can view the sample code for this repository &lt;a href=&#34;https://github.com/nfisher23/integration-testing-postgres-and-spring&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In our last post on &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Run-Integration-Tests-with-Setup-and-Teardown-Code-in-Maven-Build&#34;&gt;Using Maven to Setup and Teardown Integration Tests&lt;/a&gt;, we saw how to run Java code before and after our integration tests to setup and teardown any data that our tests depended on. What if we are using Spring, and we want to use our ApplicationContext, and its dependency injection/property injection features? After all, we would be testing the configuration for our specific application more than anything else, so we should be certain to use it in our setup and teardown code.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Run Integration Tests with Setup and Teardown Code in Maven Build</title>
+      <link>http://localhost:1313/blog/how-to-run-integration-tests-with-setup-and-teardown-code-in-maven-build/</link>
+      <pubDate>Sat, 24 Nov 2018 14:49:09 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-run-integration-tests-with-setup-and-teardown-code-in-maven-build/</guid>
+      <description>&lt;p&gt;The sample code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/integration-testing-postgres-and-spring&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Unit testing with Maven is built in, and is the preferred way of validating code is performing correctly. However, sometimes you need integration testing, and most non-trivial applications built in the 21st century are reliant on network connections and databases&amp;ndash;that is, things which are inherently third party to your application. If you don&#39;t adequately take that to account in your CI/CD pipeline, you might end up discovering that something very bad has happened after damage has already been done.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Set Up a Local Unsecured Postgres Virtual Machine (for testing)</title>
+      <link>http://localhost:1313/blog/how-to-set-up-a-local-unsecured-postgres-virtual-machine-for-testing/</link>
+      <pubDate>Sat, 24 Nov 2018 12:47:47 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-set-up-a-local-unsecured-postgres-virtual-machine-for-testing/</guid>
+      <description>&lt;p&gt;The sample code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/integration-testing-postgres-and-spring/tree/master/postgres-vm-sandbox&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;While we can always install &lt;a href=&#34;https://www.postgresql.org/&#34;&gt;PostgreSQL&lt;/a&gt; on our host machine, it&#39;s a much cleaner solution to create something like a local virtual machine with &lt;a href=&#34;https://www.vagrantup.com/&#34;&gt;Vagrant&lt;/a&gt; or a container using &lt;a href=&#34;https://www.docker.com/&#34;&gt;Docker.&lt;/a&gt; That way, any changes we make to the database and then forget about are not around as soon as we destroy either the container or the virtual machine. It is one more way to tighten that feedback loop we need as developers.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Provision a Server with Java using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-provision-a-server-with-java-using-ansible/</link>
+      <pubDate>Sun, 18 Nov 2018 17:15:01 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-provision-a-server-with-java-using-ansible/</guid>
+      <description>&lt;p&gt;In my post about &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Provision-a-Linux-Server-With-Any-Version-of-Java-via-a-Bash-Script&#34;&gt;how to provision any version of Java using a bash script&lt;/a&gt;, we saw that:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>A VagrantFile for Elasticsearch, Logstash, and Kibana (On Three Different Servers)</title>
+      <link>http://localhost:1313/blog/a-vagrantfile-for-elasticsearch-logstash-and-kibana-on-three-different-servers/</link>
+      <pubDate>Sun, 18 Nov 2018 13:42:46 +0000</pubDate>
+      <guid>http://localhost:1313/blog/a-vagrantfile-for-elasticsearch-logstash-and-kibana-on-three-different-servers/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://www.elastic.co/&#34;&gt;Elasticsearch, Logstash, and Kibana&lt;/a&gt;, commonly referred to as ELK or the Elastic Stack, is a set of tools that can, well do a lot of things. It is most famous for its logging and analytics capabilities.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Provision a Linux Server With Any Version of Java via a Bash Script</title>
+      <link>http://localhost:1313/blog/how-to-provision-a-linux-server-with-any-version-of-java-via-a-bash-script/</link>
+      <pubDate>Sun, 28 Oct 2018 14:29:38 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-provision-a-linux-server-with-any-version-of-java-via-a-bash-script/</guid>
+      <description>&lt;p&gt;While we would all like to be up to date, sometimes legacy systems handcuff us into using an older version of software. Java is no exception, and in some cases we&#xA;have to resort to using, say, Java 8, instead of the latest version with all of the security updates that we need.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Simulate Distributed Systems in the Cloud with Vagrant</title>
+      <link>http://localhost:1313/blog/how-to-simulate-distributed-systems-in-the-cloud-with-vagrant/</link>
+      <pubDate>Sun, 28 Oct 2018 14:28:13 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-simulate-distributed-systems-in-the-cloud-with-vagrant/</guid>
+      <description>&lt;p&gt;In our last post on &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Set-Up-A-Private-Local-Network-On-Your-PC-With-VirtualBox&#34;&gt;simulating a cloud environment on your local machine&lt;/a&gt;,&#xA;we saw that we could use virtual box to create a virtual machine that could both talk to your local computer, with its own IP address, and to the internet.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -2,6 +2,7 @@
 title: "Setup and Use a DynamoDB Test Container with the AWS Java SDK 2.0"
 date: 2021-04-10T16:13:09
 draft: false
+tags: [java, aws, dynamodb]
 ---
 
 The source code for this article [can be found on Github](https://github.com/nfisher23/webflux-and-dynamo).

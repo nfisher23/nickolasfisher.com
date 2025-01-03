@@ -2,6 +2,7 @@
 title: "How to Test Latency with a Mock Server in Java"
 date: 2021-05-01T18:12:45
 draft: false
+tags: [java, spring, testing]
 ---
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/java-failure-and-resilience).

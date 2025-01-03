@@ -2,6 +2,7 @@
 title: "A Simple Zero Downtime Continuous Integration Pipeline for Spring MVC"
 date: 2018-11-25T15:53:22
 draft: false
+tags: [java, ngnix, distributed systems, vagrant, bash, ansible, DevOps, maven]
 ---
 
 The sample code associated with what follows can be found [on GitHub](https://github.com/nfisher23/simple-cicd-pipeline-with-spring).

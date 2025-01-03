@@ -2,6 +2,7 @@
 title: "How to Deploy a Spring MVC Application Behind an Nginx Reverse Proxy"
 date: 2019-04-06T14:44:50
 draft: false
+tags: [java, ngnix, vagrant, ansible, spring, DevOps, maven]
 ---
 
 [Nginx](https://www.nginx.com/) is a popular webserver, excellent at serving up static content, and commonly used as a load balancer or reverse proxy. This post will set up a basic [Spring Boot](https://spring.io/projects/spring-boot) MVC web application, and use Nginx as a reverse proxy. The source code can be found [on GitHub](https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx).

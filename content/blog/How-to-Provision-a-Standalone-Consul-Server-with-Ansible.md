@@ -2,6 +2,7 @@
 title: "How to Provision a Standalone Consul Server with Ansible"
 date: 2019-04-27T19:49:14
 draft: false
+tags: [ansible, DevOps, consul]
 ---
 
 You can find the source code for this post [on GitHub](https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server).

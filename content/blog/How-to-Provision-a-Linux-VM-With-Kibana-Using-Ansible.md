@@ -2,6 +2,7 @@
 title: "How to Provision a Linux VM With Kibana Using Ansible"
 date: 2019-03-16T15:37:40
 draft: false
+tags: [distributed systems, vagrant, ansible, the elastic stack, DevOps, molecule]
 ---
 
 The corresponding source code for this post is available [on GitHub](https://github.com/nfisher23/some-ansible-examples).

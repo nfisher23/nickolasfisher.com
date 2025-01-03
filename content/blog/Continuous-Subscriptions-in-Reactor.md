@@ -2,6 +2,7 @@
 title: "Continuous Subscriptions in Reactor"
 date: 2020-09-12T17:14:10
 draft: false
+tags: [java, reactive]
 ---
 
 There are use cases for wanting to immediately subscribe to a **Flux** or a **Mono** immediately after the subscription has completed. The most obvious use case is if your application needs to continuously poll for values.

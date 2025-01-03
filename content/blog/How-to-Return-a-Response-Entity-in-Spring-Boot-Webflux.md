@@ -2,6 +2,7 @@
 title: "How to Return a Response Entity in Spring Boot Webflux"
 date: 2020-07-19T16:07:33
 draft: false
+tags: [java, spring, reactive, aws, dynamodb, webflux]
 ---
 
 In my last post on [getting started with spring boot webflux and AWS DynamoDB](https://nickolasfisher.com/blog/DynamoDB-and-Spring-Boot-Webflux-A-Working-Introduction), I mentioned that it wasn&#39;t immediately obvious to find a way to customize the response code in a spring boot **RestController**, so I opted to use handlers instead.

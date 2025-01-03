@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javareactivedynamodb on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javareactivedynamodb/</link>
+    <description>Recent content in Javareactivedynamodb on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sun, 28 Mar 2021 02:00:30 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javareactivedynamodb/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Atomic Incrementing in DynamoDB with the Java AWS SDK 2.0</title>
+      <link>http://localhost:1313/blog/atomic-incrementing-in-dynamodb-with-the-java-aws-sdk-20/</link>
+      <pubDate>Sun, 28 Mar 2021 02:00:30 +0000</pubDate>
+      <guid>http://localhost:1313/blog/atomic-incrementing-in-dynamodb-with-the-java-aws-sdk-20/</guid>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/webflux-and-dynamo&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;When you update an item in DynamoDB, you can optionally update the item in place. That is, instead of &lt;strong&gt;read-increment-write&lt;/strong&gt;, you can just issue a command that says &lt;strong&gt;increment this value in place&lt;/strong&gt;. This behavior is detailed in the &lt;a href=&#34;https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html#WorkingWithItems.AtomicCounters&#34;&gt;AWS documentation&lt;/a&gt;, and I will provide an example for how to do so with the Java AWS SDK 2.0, which has full reactive support.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

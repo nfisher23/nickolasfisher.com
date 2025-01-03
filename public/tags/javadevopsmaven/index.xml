@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>JavaDevOpsmaven on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javadevopsmaven/</link>
+    <description>Recent content in JavaDevOpsmaven on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 24 Nov 2018 14:49:09 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javadevopsmaven/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Run Integration Tests with Setup and Teardown Code in Maven Build</title>
+      <link>http://localhost:1313/blog/how-to-run-integration-tests-with-setup-and-teardown-code-in-maven-build/</link>
+      <pubDate>Sat, 24 Nov 2018 14:49:09 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-run-integration-tests-with-setup-and-teardown-code-in-maven-build/</guid>
+      <description>&lt;p&gt;The sample code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/integration-testing-postgres-and-spring&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Unit testing with Maven is built in, and is the preferred way of validating code is performing correctly. However, sometimes you need integration testing, and most non-trivial applications built in the 21st century are reliant on network connections and databases&amp;ndash;that is, things which are inherently third party to your application. If you don&#39;t adequately take that to account in your CI/CD pipeline, you might end up discovering that something very bad has happened after damage has already been done.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

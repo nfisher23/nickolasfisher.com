@@ -2,6 +2,7 @@
 title: "How to Configure Visual Studio to Implement the Yarn Package Manager"
 date: 2018-08-08T00:00:00
 draft: false
+tags: [c#]
 ---
 
 The old recommended way of getting packages like bootstrap and jquery easily into

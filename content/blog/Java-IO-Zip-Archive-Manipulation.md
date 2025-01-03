@@ -2,6 +2,7 @@
 title: "Java IO: Zip Archive Manipulation"
 date: 2018-11-03T12:27:15
 draft: false
+tags: [java, i/o]
 ---
 
 The sample code associated with this post can be found [on Github](https://github.com/nfisher23/iodemos).

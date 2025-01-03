@@ -2,6 +2,7 @@
 title: "DynamoDB Basics: A Hands On Tutorial"
 date: 2020-07-12T18:36:05
 draft: false
+tags: [distributed systems, DevOps, aws, dynamodb]
 ---
 
 DynamoDB is a fully managed distributed datastore that does a great job of alleviating the operational overhead of building very scalable systems.

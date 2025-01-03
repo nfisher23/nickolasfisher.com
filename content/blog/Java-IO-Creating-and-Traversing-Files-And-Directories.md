@@ -2,6 +2,7 @@
 title: "Java IO: Creating and Traversing Files And Directories"
 date: 2018-11-03T14:36:55
 draft: false
+tags: [java, java stream api, i/o]
 ---
 
 You can view the sample code associated with this post [on Github](https://github.com/nfisher23/iodemos)

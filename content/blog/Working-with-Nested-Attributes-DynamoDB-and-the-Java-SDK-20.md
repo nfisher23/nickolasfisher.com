@@ -2,6 +2,7 @@
 title: "Working with Nested Attributes, DynamoDB, and the Java SDK 2.0"
 date: 2020-11-15T22:59:11
 draft: false
+tags: [java, distributed systems, aws, dynamodb]
 ---
 
 [Nested attributes in DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.Attributes.html) are a way to group data within an item together. The attributes are said to be nested if they are embedded within another attribute.

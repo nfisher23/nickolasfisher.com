@@ -2,6 +2,7 @@
 title: "DynamoDB and Spring Boot Webflux - A Working Introduction"
 date: 2020-07-18T23:07:05
 draft: false
+tags: [java, spring, aws, dynamodb, webflux]
 ---
 
 The source code for this post [can be found on Github](https://github.com/nfisher23/webflux-and-dynamo).

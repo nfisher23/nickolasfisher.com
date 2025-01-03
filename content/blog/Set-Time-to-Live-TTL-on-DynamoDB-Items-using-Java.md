@@ -2,6 +2,7 @@
 title: "Set Time to Live [TTL] on DynamoDB Items using Java"
 date: 2020-10-18T13:43:39
 draft: false
+tags: [java, distributed systems, aws, dynamodb, webflux]
 ---
 
 In this post, we&#39;ll demonstrate how [expiring items in DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html) works in java, using the AWS SDK 2.0&#43;, which has full reactive support.

@@ -2,6 +2,7 @@
 title: "How to do Test Driven Development on Your Ansible Roles Using Molecule"
 date: 2019-03-03T20:18:22
 draft: false
+tags: [vagrant, ansible, DevOps, molecule]
 ---
 
 You can see the sample code for this tutorial [on GitHub.](https://github.com/nfisher23/some-ansible-examples)

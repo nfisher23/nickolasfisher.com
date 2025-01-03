@@ -2,6 +2,7 @@
 title: "The Java Stream API--Introduction: Filter, Map, and Count"
 date: 2018-10-20T12:00:18
 draft: false
+tags: [java, java stream api]
 ---
 
 The sample code provided with this series on the Java Stream API can be retrieved [on GitHub](https://github.com/nfisher23/java_stream_api_samples/tree/master).

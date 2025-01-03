@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javadistributed Systemsspringreactivewebfluxlettuceredis on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javadistributed-systemsspringreactivewebfluxlettuceredis/</link>
+    <description>Recent content in Javadistributed Systemsspringreactivewebfluxlettuceredis on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sun, 11 Apr 2021 16:12:09 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javadistributed-systemsspringreactivewebfluxlettuceredis/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Using Hashtags in Clustered Redis with Lettuce and Webflux</title>
+      <link>http://localhost:1313/blog/using-hashtags-in-clustered-redis-with-lettuce-and-webflux/</link>
+      <pubDate>Sun, 11 Apr 2021 16:12:09 +0000</pubDate>
+      <guid>http://localhost:1313/blog/using-hashtags-in-clustered-redis-with-lettuce-and-webflux/</guid>
+      <description>&lt;p&gt;In clustered redis, any non hash tagged key can be sent unpredictably [well, actually predictably, if you know the formula] to any given primary node in the cluster. The very basic way it works is:&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

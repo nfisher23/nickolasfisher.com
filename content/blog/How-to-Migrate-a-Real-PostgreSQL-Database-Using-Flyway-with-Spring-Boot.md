@@ -2,6 +2,7 @@
 title: "How to Migrate a Real PostgreSQL Database Using Flyway with Spring Boot"
 date: 2019-04-20T16:37:18
 draft: false
+tags: [java, distributed systems, vagrant, spring, DevOps, postgreSQL]
 ---
 
 You can see the source code for this post [on GitHub](https://github.com/nfisher23/postgres-flyway-example).

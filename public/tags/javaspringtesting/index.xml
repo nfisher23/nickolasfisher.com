@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javaspringtesting on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javaspringtesting/</link>
+    <description>Recent content in Javaspringtesting on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 01 May 2021 18:12:45 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javaspringtesting/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Test Latency with a Mock Server in Java</title>
+      <link>http://localhost:1313/blog/how-to-test-latency-with-a-mock-server-in-java/</link>
+      <pubDate>Sat, 01 May 2021 18:12:45 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-test-latency-with-a-mock-server-in-java/</guid>
+      <description>&lt;p&gt;The source code for what follows &lt;a href=&#34;https://github.com/nfisher23/java-failure-and-resilience&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Very often, you will want to test service api clients using a &lt;a href=&#34;https://www.mock-server.com/&#34;&gt;Mock Server&lt;/a&gt; [for example, &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-use-Mock-Server-to-End-to-End-Test-Any-WebClient-Calls-in-Spring-Boot-Webflux&#34;&gt;testing the spring webclient with mockserver&lt;/a&gt;]. And since network latency is a fact of life, not something we can merely ignore, actually injecting some latency to simulate timeouts will give us greater confidence that our system will behave as expected.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Prevent DEBUG Logging by Test Containers when Running Unit Tests in Java</title>
+      <link>http://localhost:1313/blog/how-to-prevent-debug-logging-by-test-containers-when-running-unit-tests-in-java/</link>
+      <pubDate>Sat, 24 Apr 2021 20:35:47 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-prevent-debug-logging-by-test-containers-when-running-unit-tests-in-java/</guid>
+      <description>&lt;p&gt;I have been playing around with test containers lately [ &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux&#34;&gt;redis test containers for testing lettuce&lt;/a&gt; and &lt;a href=&#34;https://nickolasfisher.com/blog/Setup-and-Use-a-DynamoDB-Test-Container-with-the-AWS-Java-SDK-20&#34;&gt;dynamodb test containers for testing the AWS SDK 2.0&lt;/a&gt;, to be specific], and I found soon after using them that I was getting by default a stream of DEBUG level logs whenever I ran my test suite. This was annoying, so I went digging for a solution.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

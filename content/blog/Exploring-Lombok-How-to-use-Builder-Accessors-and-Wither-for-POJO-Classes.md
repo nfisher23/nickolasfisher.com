@@ -2,6 +2,7 @@
 title: "Exploring Lombok: How to use @Builder, @Accessors, and @Wither for POJO Classes"
 date: 2019-02-09T15:50:55
 draft: false
+tags: [java]
 ---
 
 [Lombok](https://projectlombok.org/) manipulates the output java bytecode .class files, and inserts boilerplate code that java developers are very familiar with repeating themselves on.

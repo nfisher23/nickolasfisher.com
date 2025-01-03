@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Vagrantansiblethe Elastic StackDevOpsmolecule on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/vagrantansiblethe-elastic-stackdevopsmolecule/</link>
+    <description>Recent content in Vagrantansiblethe Elastic StackDevOpsmolecule on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 23 Mar 2019 21:14:22 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/vagrantansiblethe-elastic-stackdevopsmolecule/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How To Upgrade Kibana using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-upgrade-kibana-using-ansible/</link>
+      <pubDate>Sat, 23 Mar 2019 21:14:22 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-upgrade-kibana-using-ansible/</guid>
+      <description>&lt;p&gt;You can view the sample code associated with this post &lt;a href=&#34;https://github.com/nfisher23/some-ansible-examples&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In a previous post on &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Provision-a-Linux-VM-With-Kibana-Using-Ansible&#34;&gt;Provisioning a Server with Kibana&lt;/a&gt;, we saw that it&#39;s very straightforward to get kibana on a box.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

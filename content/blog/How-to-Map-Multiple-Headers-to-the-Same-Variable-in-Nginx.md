@@ -2,6 +2,7 @@
 title: "How to Map Multiple Headers to the Same Variable in Nginx"
 date: 2020-05-24T20:26:02
 draft: false
+tags: [ngnix, DevOps]
 ---
 
 The [nginx map module](http://nginx.org/en/docs/http/ngx_http_map_module.html) is a nifty tool that allows you to programmatically change behavior based on things like http headers that come in.

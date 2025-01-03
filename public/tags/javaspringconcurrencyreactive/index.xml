@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javaspringconcurrencyreactive on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javaspringconcurrencyreactive/</link>
+    <description>Recent content in Javaspringconcurrencyreactive on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 06 Jul 2019 15:10:01 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javaspringconcurrencyreactive/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The Difference Between a Reactive Non-Blocking Model and Classic Asynchronous Code</title>
+      <link>http://localhost:1313/blog/the-difference-between-a-reactive-nonblocking-model-and-classic-asynchronous-code/</link>
+      <pubDate>Sat, 06 Jul 2019 15:10:01 +0000</pubDate>
+      <guid>http://localhost:1313/blog/the-difference-between-a-reactive-nonblocking-model-and-classic-asynchronous-code/</guid>
+      <description>&lt;p&gt;Reactive Programming is a very different way of thinking about doing work in a microservices environment. Anyone who has worked with a GUI, dating back to even to windows forms, is familiar with the event based model, but what does that mean when there is unpredictable latency involved? How does handing off to a thread to make a remote call differ from this new &amp;quot;reactive web&amp;quot;?&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Configure Reactive Netty in Spring Boot, in Depth</title>
+      <link>http://localhost:1313/blog/how-to-configure-reactive-netty-in-spring-boot-in-depth/</link>
+      <pubDate>Sat, 06 Jul 2019 14:30:43 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-configure-reactive-netty-in-spring-boot-in-depth/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html&#34;&gt;Spring Boot&#39;s WebFlux programming model&lt;/a&gt; is pretty neat, but there isn&#39;t a lot by way of explaining how to best leverage it to get the results you need. I wrote this blog post after tinkering with the configuration of Reactor Netty on Spring Boot.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

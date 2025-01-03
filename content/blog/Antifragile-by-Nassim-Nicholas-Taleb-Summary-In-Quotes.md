@@ -2,6 +2,7 @@
 title: "Antifragile, by Nassim Nicholas Taleb: Summary In Quotes"
 date: 2018-12-16T08:06:43
 draft: false
+tags: [books]
 ---
 
 Antifragile, by Nassim Nicholas Taleb, presents a truly unique viewpoint about the world. While there are many things here that are far fetched, there is far more that is very sound in its analysis. Even if you disagree with everything in it, this book&#39;s usefulness, in the form of working theories about how to survive in the world, will prove itself very apparent.

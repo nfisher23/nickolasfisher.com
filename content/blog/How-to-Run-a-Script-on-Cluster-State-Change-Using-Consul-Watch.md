@@ -2,6 +2,7 @@
 title: "How to Run a Script on Cluster State Change Using Consul Watch"
 date: 2019-05-25T22:18:42
 draft: false
+tags: [vagrant, ansible, DevOps, molecule, consul]
 ---
 
 You can see the sample code for this post [on Github](https://github.com/nfisher23/some-ansible-examples/tree/master/consul-server).

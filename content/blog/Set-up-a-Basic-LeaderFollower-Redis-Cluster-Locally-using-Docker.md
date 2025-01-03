@@ -2,6 +2,7 @@
 title: "Set up a Basic Leader/Follower Redis Cluster Locally using Docker"
 date: 2021-03-28T18:57:07
 draft: false
+tags: [DevOps, redis]
 ---
 
 In general, you will want to keep your development environment and your higher environments as similar as makes sense \[times it doesn&#39;t make sense: when it costs too much\], to catch bugs early and often. Here, we&#39;ll quickly run through how to set up a leader/follower topology for redis using docker/docker-compose on your local machine.

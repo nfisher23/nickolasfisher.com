@@ -2,6 +2,7 @@
 title: "Pre Loading Lua Scripts into Clustered Redis with Lettuce"
 date: 2021-04-25T17:37:07
 draft: false
+tags: [java, distributed systems, reactive, webflux, lettuce, redis]
 ---
 
 The source code for what follows [can be found on github](https://github.com/nfisher23/reactive-programming-webflux).

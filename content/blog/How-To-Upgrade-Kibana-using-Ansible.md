@@ -2,6 +2,7 @@
 title: "How To Upgrade Kibana using Ansible"
 date: 2019-03-23T21:14:22
 draft: false
+tags: [vagrant, ansible, the elastic stack, DevOps, molecule]
 ---
 
 You can view the sample code associated with this post [on GitHub](https://github.com/nfisher23/some-ansible-examples).

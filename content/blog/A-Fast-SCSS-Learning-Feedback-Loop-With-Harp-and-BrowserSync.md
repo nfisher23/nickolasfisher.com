@@ -2,6 +2,7 @@
 title: "A Fast SCSS Learning Feedback Loop With Harp and BrowserSync"
 date: 2019-05-18T17:12:55
 draft: false
+tags: [webdev, scss]
 ---
 
 If, like me, your development career has been firmly on servers, wiring and protecting data across multiple machine and focusing on architecture, the shift to building websites that &#34;look right&#34; can sometimes be a tough transition. Like all things engineering, ensuring that you have a short feedback loop, where you can interact with the tool that you&#39;re using in a very hands on way, will be your fastest and surest way to mastery.

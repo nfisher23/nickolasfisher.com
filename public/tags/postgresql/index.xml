@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>PostgreSQL on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/postgresql/</link>
+    <description>Recent content in PostgreSQL on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 30 May 2020 19:21:40 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/postgresql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Expose Meaningful Prometheus Metrics In a Spring Boot 2.x Application</title>
+      <link>http://localhost:1313/blog/how-to-expose-meaningful-prometheus-metrics-in-a-spring-boot-2x-application/</link>
+      <pubDate>Sat, 30 May 2020 19:21:40 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-expose-meaningful-prometheus-metrics-in-a-spring-boot-2x-application/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/prometheus-metrics-ex&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://prometheus.io/&#34;&gt;Prometheus&lt;/a&gt; is a metrics aggregator with its own presumed format. The basic idea is to have the application gather a set of custom metrics, then periodically collect (or &amp;quot;scrape&amp;quot;) the metrics and send them off to a prometheus server. This server will store the data in its database, and you can thus view the evolution of your application&#39;s metrics over time.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Migrate a Real PostgreSQL Database Using Flyway with Spring Boot</title>
+      <link>http://localhost:1313/blog/how-to-migrate-a-real-postgresql-database-using-flyway-with-spring-boot/</link>
+      <pubDate>Sat, 20 Apr 2019 16:37:18 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-migrate-a-real-postgresql-database-using-flyway-with-spring-boot/</guid>
+      <description>&lt;p&gt;You can see the source code for this post &lt;a href=&#34;https://github.com/nfisher23/postgres-flyway-example&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;We spent the last post figuring out &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Migrate-An-Embedded-PostgreSQL-Database-Using-Flyway-in-Spring-Boot&#34;&gt;how to migrate an embedded PostgreSQL database using Spring&lt;/a&gt;, while trying to side-step the extra magic that comes along with the framework. Here, we are going to build on that work to migrate a real PostgreSQL instance, which we will build in a local Vagrant Virtual Machine.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Migrate An Embedded PostgreSQL Database Using Flyway in Spring Boot</title>
+      <link>http://localhost:1313/blog/how-to-migrate-an-embedded-postgresql-database-using-flyway-in-spring-boot/</link>
+      <pubDate>Sat, 20 Apr 2019 16:00:34 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-migrate-an-embedded-postgresql-database-using-flyway-in-spring-boot/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/postgres-flyway-example&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://flywaydb.org/&#34;&gt;Flyway&lt;/a&gt; is a database migration tool. &lt;em&gt;Migrating&lt;/em&gt; a database generally means that you are making a change to the way the database currently structures its data. It could also mean you are adding stuff like custom stored procedures or indexes to help speed up queries. Either way, migrating databases is easily the most difficult part of any deployment strategy&amp;ndash;Flyway makes this process as painless as possible because it will, by default, &lt;em&gt;only run migration scripts that haven&#39;t yet run&lt;/em&gt;.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Create an Embedded PostgreSQL Database With Spring Boot</title>
+      <link>http://localhost:1313/blog/how-to-create-an-embedded-postgresql-database-with-spring-boot/</link>
+      <pubDate>Sat, 20 Apr 2019 15:28:25 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-create-an-embedded-postgresql-database-with-spring-boot/</guid>
+      <description>&lt;p&gt;You can see the sample code for this post &lt;a href=&#34;https://github.com/nfisher23/postgres-flyway-example&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.postgresql.org/&#34;&gt;PostgreSQL&lt;/a&gt; is still my favorite database, and if a project I&#39;m working on makes sense as a relational database model, it&#39;s always what I reach for.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to run a SQL Script Against a Postgres Database Using Ansible</title>
+      <link>http://localhost:1313/blog/how-to-run-a-sql-script-against-a-postgres-database-using-ansible/</link>
+      <pubDate>Sat, 09 Feb 2019 15:44:26 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-run-a-sql-script-against-a-postgres-database-using-ansible/</guid>
+      <description>&lt;p&gt;The source code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/run-sql-ansible-postgres&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Managing a live database, and in particular dealing with database migrations without allowing for any downtime in your application, is typically the most challenging part of any automated deployment strategy. Services can be spun up and down with impunity because their state at the beginning and at the end are exactly the same, but databases store data&amp;ndash;their state is always changing.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to Set Up a Local Unsecured Postgres Virtual Machine (for testing)</title>
+      <link>http://localhost:1313/blog/how-to-set-up-a-local-unsecured-postgres-virtual-machine-for-testing/</link>
+      <pubDate>Sat, 24 Nov 2018 12:47:47 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-set-up-a-local-unsecured-postgres-virtual-machine-for-testing/</guid>
+      <description>&lt;p&gt;The sample code for this post can be found &lt;a href=&#34;https://github.com/nfisher23/integration-testing-postgres-and-spring/tree/master/postgres-vm-sandbox&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;While we can always install &lt;a href=&#34;https://www.postgresql.org/&#34;&gt;PostgreSQL&lt;/a&gt; on our host machine, it&#39;s a much cleaner solution to create something like a local virtual machine with &lt;a href=&#34;https://www.vagrantup.com/&#34;&gt;Vagrant&lt;/a&gt; or a container using &lt;a href=&#34;https://www.docker.com/&#34;&gt;Docker.&lt;/a&gt; That way, any changes we make to the database and then forget about are not around as soon as we destroy either the container or the virtual machine. It is one more way to tighten that feedback loop we need as developers.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

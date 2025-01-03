@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javaspringawswebflux on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javaspringawswebflux/</link>
+    <description>Recent content in Javaspringawswebflux on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 12 Sep 2020 21:42:52 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javaspringawswebflux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Setup a Reactive SQS Listener Using the AWS SDK and Spring Boot</title>
+      <link>http://localhost:1313/blog/how-to-setup-a-reactive-sqs-listener-using-the-aws-sdk-and-spring-boot/</link>
+      <pubDate>Sat, 12 Sep 2020 21:42:52 +0000</pubDate>
+      <guid>http://localhost:1313/blog/how-to-setup-a-reactive-sqs-listener-using-the-aws-sdk-and-spring-boot/</guid>
+      <description>&lt;p&gt;The source code for this post &lt;a href=&#34;https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-sqs&#34;&gt;can be found on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Following up on the previous post where we showed &lt;a href=&#34;https://nickolasfisher.com/blog/How-to-Send-SQS-Messages-to-Localstack-with-the-AWS-Java-SDK-20&#34;&gt;how to send SQS messages to Localstack using the AWS SDK for Java 2.0&lt;/a&gt;, we will now demonstrate how to write code that continuously polls for SQS messages, processes them, then deletes them off the queue.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

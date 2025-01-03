@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en-US" class="scroll-smooth dark">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ansible</title>
+<meta
+  name="description"
+  content=""
+/>
+<link rel="canonical" href="http://localhost:1313/tags/ansible/" />
+<link rel="robots" href="/robots.txt" />
+
+<link rel="icon" type="image/x-icon" href="/icons/favicon.ico" />
+
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });</script>
+
+<link rel="stylesheet" href="http://localhost:1313/css/app.css" /></head>
+
+  <body class="max-w-screen-md mx-auto px-2.5">
+    <div class="header">
+      <header class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 pt-16 py-12">
+   
+
+
+<div class="flex-none w-20 h-20 rounded-full overflow-hidden">
+  <a href="http://localhost:1313/">
+    <img
+      srcset="/img/profile-picture_hu4241499301404582006.jpg 80w"
+      src="/img/profile-picture.jpg"
+      width="386"
+      height="345"
+      alt="Nick Fisher&#39;s tech blog"
+    />
+  </a>
+</div>
+
+  
+  <div class="flex flex-col gap-5">
+    <a href="http://localhost:1313/">
+  <h1 id="site-title">Nick Fisher&#39;s tech blog</h1>
+</a>
+ 
+    <nav>
+  <ul>
+     
+    
+    <li>
+      <a href="/" class="">
+        Home
+      </a>
+    </li>
+    
+    <li>
+      <a href="/blog" class="">
+        Blog
+      </a>
+    </li>
+    
+    <li>
+      <a href="/about" class="">
+        About me
+      </a>
+    </li>
+    
+    <li>
+      <a href="/categories" class="">
+        Categories
+      </a>
+    </li>
+    
+    <li>
+      <a href="/tags" class="">
+        Tags
+      </a>
+    </li>
+    
+  </ul>
+</nav>
+
+  </div>
+</header>
+
+      <button class="toggle-theme" aria-label="Toggle Theme" title="Toggle Theme" onclick="toggleTheme()">
+  <span class="theme-icon light"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+</svg> </span>
+  <span class="theme-icon dark"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+</svg> </span>
+</button>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const theme = localStorage.getItem('theme');
+
+    if (!theme || theme === 'light') {
+      setTheme('light');
+    } else {
+      setTheme(theme);
+    }
+  });
+
+  function setTheme(theme) {
+    const html = document.querySelector('html');
+    localStorage.setItem('theme', theme);
+
+    if (theme === 'light') {
+      if (html.classList.contains('dark')) {
+        document.querySelector('html').classList.remove('dark');
+      }
+
+      document.querySelector('.theme-icon.light').style.display = 'none';
+      document.querySelector('.theme-icon.dark').style.display = 'block';
+    } else {
+      if (!html.classList.contains('dark')) {
+        document.querySelector('html').classList.add('dark');
+      }
+
+      document.querySelector('.theme-icon.dark').style.display = 'none';
+      document.querySelector('.theme-icon.light').style.display = 'block';
+    }
+  }
+
+  function toggleTheme() {
+    const theme = localStorage.getItem('theme');
+
+    if (theme === 'light') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+  }
+</script>
+    </div>
+  
+    <main id="content">
+
+
+
+
+<div class="flex flex-col gap-1">
+  <h1 class="text-2xl font-extrabold">
+    
+      Ansible
+      
+    </h1>
+  
+  
+</div>
+
+<section class="flex flex-col gap-10">
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/how-to-invalidate-an-nginx-cache-in-a-reverse-proxy-setup-with-spring-mvc/">How To Invalidate an Nginx Cache In a Reverse Proxy Setup With Spring MVC</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2019-04-13 16:52:53 &#43;0000 UTC" title='Sat, Apr 13, 2019, 4:52 PM UTC'>
+      13/04/2019
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>You can see the sample code associated with this post <a href="https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx">on Github</a>.</p>
+<p>In two previous posts, we looked at how to <a href="https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy">provision a reverse proxy using nginx</a> and then <a href="https://nickolasfisher.com/blog/How-to-Use-Nginxs-Caching-to-Improve-Site-Responsiveness">how to add caching to the nginx reverse proxy</a>. The implementation we ended up with at the end of the last post was a &quot;dumb&quot; cache, meaning that it doesn't know when or if any data gets updated&ndash;it just times out after 60 seconds and then asks for a new payload from the application it's acting as proxy for.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-invalidate-an-nginx-cache-in-a-reverse-proxy-setup-with-spring-mvc/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/how-to-use-nginxs-caching-to-improve-site-responsiveness/">How to Use Nginx&amp;#39;s Caching to Improve Site Responsiveness</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2019-04-06 17:14:30 &#43;0000 UTC" title='Sat, Apr 6, 2019, 5:14 PM UTC'>
+      06/04/2019
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>The source code for this post <a href="https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx">can be found on Github</a>.</p>
+<p>In my last post, I provided an example for <a href="https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy">how to set up an Nginx Reverse Proxy for a Spring MVC application</a>. One such reason to set up a reverse proxy is to utilize caching of resources. If you have dynamically generated content that doesn't change very often, then adding caching at the site entry point can dramatically improve site responsiveness and reduce load on critical resources.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-use-nginxs-caching-to-improve-site-responsiveness/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/how-to-deploy-a-spring-mvc-application-behind-an-nginx-reverse-proxy/">How to Deploy a Spring MVC Application Behind an Nginx Reverse Proxy</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2019-04-06 14:44:50 &#43;0000 UTC" title='Sat, Apr 6, 2019, 2:44 PM UTC'>
+      06/04/2019
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p><a href="https://www.nginx.com/">Nginx</a> is a popular webserver, excellent at serving up static content, and commonly used as a load balancer or reverse proxy. This post will set up a basic <a href="https://spring.io/projects/spring-boot">Spring Boot</a> MVC web application, and use Nginx as a reverse proxy. The source code can be found <a href="https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx">on GitHub</a>.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-deploy-a-spring-mvc-application-behind-an-nginx-reverse-proxy/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/how-to-upgrade-kibana-using-ansible/">How To Upgrade Kibana using Ansible</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2019-03-23 21:14:22 &#43;0000 UTC" title='Sat, Mar 23, 2019, 9:14 PM UTC'>
+      23/03/2019
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>You can view the sample code associated with this post <a href="https://github.com/nfisher23/some-ansible-examples">on GitHub</a>.</p>
+<p>In a previous post on <a href="https://nickolasfisher.com/blog/How-to-Provision-a-Linux-VM-With-Kibana-Using-Ansible">Provisioning a Server with Kibana</a>, we saw that it's very straightforward to get kibana on a box.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-upgrade-kibana-using-ansible/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+    <article class="flex flex-col gap-1">
+  <h1>
+    <a href="http://localhost:1313/blog/how-to-do-a-rolling-upgrade-of-multiple-logstash-instances-using-ansible/">How to do a Rolling Upgrade of Multiple Logstash Instances Using Ansible</a>
+  </h1>
+  
+  <span class="date">
+    <time datetime="2019-03-17 23:27:43 &#43;0000 UTC" title='Sun, Mar 17, 2019, 11:27 PM UTC'>
+      17/03/2019
+    </time>
+  </span>
+
+  <div class="description">
+    
+      <p>You can see the source code for this post <a href="https://github.com/nfisher23/some-ansible-examples">on GitHub</a>.</p>
+<p>In a previous post on <a href="https://nickolasfisher.com/blog/How-to-Provision-Multiple-Logstash-Hosts-Using-Ansible">How to Provision Multiple Logstash Hosts Using Ansible</a>, we saw that provisioning logstash is pretty straightforward. However, what do we do with it after it's been out there transforming messages this entire time? Given that elastic comes out with a new version of Logstash every fifteen or twenty minutes, a wise person would look to automate the upgrade process as soon as possible.</p>
+    
+  </div>
+
+  <div class="mt-2">
+    <a class="read-more" href="http://localhost:1313/blog/how-to-do-a-rolling-upgrade-of-multiple-logstash-instances-using-ansible/">
+      Read more
+      <span class="w-4 h-4 stroke-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+
+      </span>
+    </a>
+  </div>
+</article>
+
+  
+</section>
+
+
+  
+
+<div class="pb-10 grid grid-cols-2 font-semibold">
+  
+  <div>
+    
+      <a href="/tags/ansible/" class="pagination-button">
+        <span class="h-4 w-4 stroke-2"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+</svg>
+ </span>
+        Newer Posts
+      </a>
+    
+  </div>
+
+  
+  <div class="flex justify-end">
+    
+      <a href="/tags/ansible/page/3/" class="pagination-button">
+        Older Posts
+        <span class="h-4 w-4 stroke-2"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+</svg>
+ </span>
+      </a>
+    
+  </div>
+</div>
+
+
+
+
+    </main><footer class="pt-5 pb-10 grid gap-3 sm:grid-cols-2">
+    <div class="text-xs font-semibold text-gray-500 order-2 sm:order-1">
+  © 2018-2025 —
+  <a href="http://localhost:1313/">Nick Fisher&#39;s tech blog</a> 
+</div>
+
+    <div class="order-1 sm:order-2">
+  <ul class="flex sm:justify-end gap-5">
+    
+    
+    <li>    
+      <a href="https://www.linkedin.com/in/nick-fisher-software/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </li>
+    
+    <li>    
+      <a href="https://github.com/nfisher23" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </li>
+    
+    
+  </ul>
+</div>
+
+</footer></body>
+</html>

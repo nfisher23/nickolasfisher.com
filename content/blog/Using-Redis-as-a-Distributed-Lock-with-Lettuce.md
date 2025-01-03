@@ -2,6 +2,7 @@
 title: "Using Redis as a Distributed Lock with Lettuce"
 date: 2021-05-01T14:44:31
 draft: false
+tags: [java, distributed systems, reactive, webflux, lettuce, redis]
 ---
 
 The source code for this article [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Awsredis on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/awsredis/</link>
+    <description>Recent content in Awsredis on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 24 Apr 2021 23:52:19 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/awsredis/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Why Redis Pub/Sub is not SQS, and Vice Versa</title>
+      <link>http://localhost:1313/blog/why-redis-pubsub-is-not-sqs-and-vice-versa/</link>
+      <pubDate>Sat, 24 Apr 2021 23:52:19 +0000</pubDate>
+      <guid>http://localhost:1313/blog/why-redis-pubsub-is-not-sqs-and-vice-versa/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://redis.io/topics/pubsub&#34;&gt;Redis has a pub/sub feature&lt;/a&gt; whereby there are publishers and subscribers, and publishers can fanout messages to subscribers. SQS [ &lt;a href=&#34;https://aws.amazon.com/sqs/&#34;&gt;amazon&#39;s simple queue service&lt;/a&gt;] has message senders and receivers. They can both be useful, but in practice they produce different results.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

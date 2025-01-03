@@ -2,6 +2,7 @@
 title: "How to Create an Embedded PostgreSQL Database With Spring Boot"
 date: 2019-04-20T15:28:25
 draft: false
+tags: [java, spring, DevOps, postgreSQL]
 ---
 
 You can see the sample code for this post [on GitHub](https://github.com/nfisher23/postgres-flyway-example).

@@ -2,6 +2,7 @@
 title: "Working with String Types in Redis using Lettuce and Webflux"
 date: 2021-04-11T19:01:16
 draft: false
+tags: [spring, reactive, webflux, lettuce, redis]
 ---
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).

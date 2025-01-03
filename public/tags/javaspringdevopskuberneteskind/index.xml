@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>JavaspringDevOpskuberneteskind on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javaspringdevopskuberneteskind/</link>
+    <description>Recent content in JavaspringDevOpskuberneteskind on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 20 Jun 2020 22:47:02 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javaspringdevopskuberneteskind/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>An Example Upgrade and Rollback of a Deployment image in Kubernetes</title>
+      <link>http://localhost:1313/blog/an-example-upgrade-and-rollback-of-a-deployment-image-in-kubernetes/</link>
+      <pubDate>Sat, 20 Jun 2020 22:47:02 +0000</pubDate>
+      <guid>http://localhost:1313/blog/an-example-upgrade-and-rollback-of-a-deployment-image-in-kubernetes/</guid>
+      <description>&lt;p&gt;In this article, I&#39;m going to show you how to bootstrap a local kubernetes cluster with a custom image, debug it, deploy a new image, then rollback to the old image.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

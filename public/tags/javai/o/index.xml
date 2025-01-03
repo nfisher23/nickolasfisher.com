@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javai/O on Nick Fisher&#39;s tech blog</title>
+    <link>http://localhost:1313/tags/javai/o/</link>
+    <description>Recent content in Javai/O on Nick Fisher&#39;s tech blog</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <copyright>2018-{year}</copyright>
+    <lastBuildDate>Sat, 03 Nov 2018 12:27:15 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javai/o/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java IO: Zip Archive Manipulation</title>
+      <link>http://localhost:1313/blog/java-io-zip-archive-manipulation/</link>
+      <pubDate>Sat, 03 Nov 2018 12:27:15 +0000</pubDate>
+      <guid>http://localhost:1313/blog/java-io-zip-archive-manipulation/</guid>
+      <description>&lt;p&gt;The sample code associated with this post can be found &lt;a href=&#34;https://github.com/nfisher23/iodemos&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;A &lt;a href=&#34;https://en.wikipedia.org/wiki/Zip_(file_format)&#34;&gt;ZIP file format&lt;/a&gt; is a compressed, lossless archive of files of files and/or directories. While the content being compressed will matter as to the algorithm&#39;s effectiveness, it is a common way to transfer files among peers, particularly on many windows machines.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Java IO: Input Streaming</title>
+      <link>http://localhost:1313/blog/java-io-input-streaming/</link>
+      <pubDate>Sat, 03 Nov 2018 12:00:01 +0000</pubDate>
+      <guid>http://localhost:1313/blog/java-io-input-streaming/</guid>
+      <description>&lt;p&gt;The sample code associated with this post can be found &lt;a href=&#34;https://github.com/nfisher23/iodemos&#34;&gt;on Github&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In Java, the input and output stream abstraction can be used with file systems or across networks. While a lot of these abstractions have been abstracted even further&#xA;away with modern libraries and tools (via servlets, for example), understanding the basics makes solving things like performance issues a little easier to wrap your head around.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

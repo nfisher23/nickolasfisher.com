@@ -2,6 +2,7 @@
 title: "How to use a Redis Test Container with Lettuce/Spring Boot Webflux"
 date: 2021-03-27T23:52:07
 draft: false
+tags: [java, spring, testing, webflux, lettuce, redis]
 ---
 
 The source code for this post [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis).

@@ -2,6 +2,7 @@
 title: "How To Invalidate an Nginx Cache In a Reverse Proxy Setup With Spring MVC"
 date: 2019-04-13T16:52:53
 draft: false
+tags: [java, ngnix, aspect oriented programming, ansible, spring, DevOps]
 ---
 
 You can see the sample code associated with this post [on Github](https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx).

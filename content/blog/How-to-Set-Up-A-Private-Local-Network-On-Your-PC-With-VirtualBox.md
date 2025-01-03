@@ -2,6 +2,7 @@
 title: "How to Set Up A Private Local Network On Your PC With VirtualBox"
 date: 2018-10-28T14:27:31
 draft: false
+tags: [distributed systems]
 ---
 
 While you can always spin up a [Digital Ocean](https://www.digitalocean.com/) or [Linode](https://www.linode.com/) Virtual Private Server to toy around with,

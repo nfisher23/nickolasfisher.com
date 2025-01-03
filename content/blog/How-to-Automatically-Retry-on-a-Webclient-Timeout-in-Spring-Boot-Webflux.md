@@ -2,6 +2,7 @@
 title: "How to Automatically Retry on a Webclient Timeout in Spring Boot Webflux"
 date: 2020-10-03T16:09:51
 draft: false
+tags: [java, spring, reactive, webflux]
 ---
 
 The source code for this post [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience).

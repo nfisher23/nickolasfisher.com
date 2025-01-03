@@ -2,6 +2,7 @@
 title: "Making Sense of Mono Error Handling in Spring Boot Webflux/Project Reactor"
 date: 2021-03-21T18:27:16
 draft: false
+tags: [java, spring, reactive, webflux]
 ---
 
 A Reactor [Mono](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html) comes with a lot of methods that allow you to do things when errors occur:

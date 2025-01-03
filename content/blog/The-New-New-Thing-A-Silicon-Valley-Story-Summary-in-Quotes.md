@@ -2,6 +2,7 @@
 title: "The New New Thing, A Silicon Valley Story: Summary in Quotes"
 date: 2018-10-27T15:58:30
 draft: false
+tags: [books]
 ---
 
 [The New New Thing](https://www.amazon.com/New-Thing-Silicon-Valley-Story/dp/0393347818/ref=tmm_pap_swatch_0?_encoding=UTF8&amp;qid=1541260718&amp;sr=8-1), by Michael Lewis, is a pseudo biography of Jim Clark, meant to be introspective of the modern day tech industry. While it was written nearly twenty years ago, much of the culture that was unearthed in the 1990s still remains in Silicon Valley, and the attitude of a man who founded three separate billion dollar companies is something to pay very close attention to.

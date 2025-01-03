@@ -2,6 +2,7 @@
 title: "The Java Stream API: Reduction Operations"
 date: 2018-10-21T19:38:40
 draft: false
+tags: [java, java stream api]
 ---
 
 The sample code for this post can be found [on GitHub](https://github.com/nfisher23/java_stream_api_samples).

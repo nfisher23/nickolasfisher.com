@@ -40,8 +40,6 @@ jobs:
           && sudo dpkg -i ${{ runner.temp }}/hugo.deb
       - name: Install Dart Sass
         run: sudo snap install dart-sass
-      - name: install postcss
-        run: npm install postcss postcss-cli autoprefixer tailwindcss
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -52,6 +50,8 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Install Node.js dependencies
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
+      - name: install postcss
+        run: npm install postcss postcss-cli autoprefixer tailwindcss
       - name: Build with Hugo
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache

@@ -57,9 +57,9 @@ So that's what it looks like on the CLI, what does optimistic locking look like 
 
 ### Optimistic Locking with Reactive Lettuce
 
-As I droned on about my last article on [transactions in redis using lettuce](https://nickolasfisher.com/blog/Redis-Transactions-Reactive-Lettuce-Buyer-Beware), you have to be very careful using any of what follows, but if you're sure you want to try it here it goes.
+As I droned on about my last article on [transactions in redis using lettuce](https://nickolasfisher.com/blog/redis-transactions-reactive-lettuce-buyer-beware), you have to be very careful using any of what follows, but if you're sure you want to try it here it goes.
 
-To really appreciate what follows, you will want to read that last post, and probably make sure you have something like [a redis test container set up for lettuce](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux). We will want to start by creating two connections, then we can start a transaction using one of them:
+To really appreciate what follows, you will want to read that last post, and probably make sure you have something like [a redis test container set up for lettuce](https://nickolasfisher.com/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux). We will want to start by creating two connections, then we can start a transaction using one of them:
 
 ```java
     @Test

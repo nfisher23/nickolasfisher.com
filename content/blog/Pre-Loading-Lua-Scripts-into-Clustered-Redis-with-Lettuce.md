@@ -7,11 +7,11 @@ tags: [java, distributed systems, reactive, webflux, lettuce, redis]
 
 The source code for what follows [can be found on github](https://github.com/nfisher23/reactive-programming-webflux).
 
-In a previous article, we showed how to [efficiently execute a lua script in redis using lettuce](https://nickolasfisher.com/blog/Pre-Loading-a-Lua-Script-into-Redis-With-Lettuce). To really scale our caching solution horizontally \[and elegantly deal with many scaling headaches\], we will also want to make sure we can execute our lua scripts against clustered redis, which as we'll see here is pretty straightforward.
+In a previous article, we showed how to [efficiently execute a lua script in redis using lettuce](https://nickolasfisher.com/blog/pre-loading-a-lua-script-into-redis-with-lettuce). To really scale our caching solution horizontally \[and elegantly deal with many scaling headaches\], we will also want to make sure we can execute our lua scripts against clustered redis, which as we'll see here is pretty straightforward.
 
 ### SCRIPT LOAD has to be run against every Node
 
-If you have your [local clustered redis solution up and running](https://nickolasfisher.com/blog/Bootstrap-a-Local-Sharded-Redis-Cluster-in-Five-Minutes), we can poke around with the cli a bit \[note: this assumes your local cluster has three primary nodes with ports 30001-30003\]:
+If you have your [local clustered redis solution up and running](https://nickolasfisher.com/blog/bootstrap-a-local-sharded-redis-cluster-in-five-minutes), we can poke around with the cli a bit \[note: this assumes your local cluster has three primary nodes with ports 30001-30003\]:
 
 ```bash
 ➜  ~ redis-cli -p 30001 -c script load "return redis.call('set',KEYS[1],ARGV[1],'ex',ARGV[2])"

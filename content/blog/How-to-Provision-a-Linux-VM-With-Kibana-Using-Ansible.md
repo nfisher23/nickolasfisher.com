@@ -7,7 +7,7 @@ tags: [distributed systems, vagrant, ansible, the elastic stack, DevOps, molecul
 
 The corresponding source code for this post is available [on GitHub](https://github.com/nfisher23/some-ansible-examples).
 
-[Kibana](https://www.elastic.co/products/kibana) is a fancy pants web application that tries to make data in Elasticsearch user-friendly. Rounding out the previous two posts on [how to install an elasticsearch cluster](https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible) and [how to install multiple logstash hosts](https://nickolasfisher.com/blog/How-to-Install-Multiple-Logstash-Hosts-Using-Ansible), I will now show you how to stack kibana on top of them.
+[Kibana](https://www.elastic.co/products/kibana) is a fancy pants web application that tries to make data in Elasticsearch user-friendly. Rounding out the previous two posts on [how to install an elasticsearch cluster](https://nickolasfisher.com/blog/how-to-provision-a-multi-node-elasticsearch-cluster-using-ansible) and [how to install multiple logstash hosts](https://nickolasfisher.com/blog/how-to-install-multiple-logstash-hosts-using-ansible), I will now show you how to stack kibana on top of them.
 
 ### Create the Ansible Role
 

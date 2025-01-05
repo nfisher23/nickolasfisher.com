@@ -5,7 +5,7 @@ draft: false
 tags: [java, reactive, aws, dynamodb]
 ---
 
-I've previously written about using [conditional expressions to achieve optimistic locking in DynamoDB](https://nickolasfisher.com/blog/How-to-use-Optimistic-Locking-in-DynamoDB-via-the-AWS-CLI), that example used the command line. I will now demonstrate how to do the same thing in java code, leveraging the AWS SDK 2.0 \[with full reactive support\].
+I've previously written about using [conditional expressions to achieve optimistic locking in DynamoDB](https://nickolasfisher.com/blog/how-to-use-optimistic-locking-in-dynamodb-via-the-aws-cli), that example used the command line. I will now demonstrate how to do the same thing in java code, leveraging the AWS SDK 2.0 \[with full reactive support\].
 
 The source code for this post [can be found on Github](https://github.com/nfisher23/webflux-and-dynamo), I set up an in memory DynamoDB instance, which isn't really the subject of this tutorial but made it very easy to test.
 

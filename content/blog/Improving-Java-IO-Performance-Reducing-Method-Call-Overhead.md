@@ -7,7 +7,7 @@ tags: [java, i/o, performance testing, jmh]
 
 You can view the sample code associated with this blog post [on GitHub.](https://github.com/nfisher23/io-tuning)
 
-While you can achieve massive improvements in I/O operations via [buffering](https://nickolasfisher.com/blog/Improving-Java-IO-Performance-Buffering-Techniques), another key part of tuning java code in general, which is applicable to I/O bound operations, is method call overhead. Methods that are unnecessarily called repeatedly can bog down operations.
+While you can achieve massive improvements in I/O operations via [buffering](https://nickolasfisher.com/blog/improving-java-io-performance-buffering-techniques), another key part of tuning java code in general, which is applicable to I/O bound operations, is method call overhead. Methods that are unnecessarily called repeatedly can bog down operations.
 
 To prove my point, we'll set up benchmarking via JMH like so:
 

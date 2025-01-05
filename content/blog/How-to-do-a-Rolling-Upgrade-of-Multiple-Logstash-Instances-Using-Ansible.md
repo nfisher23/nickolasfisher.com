@@ -7,7 +7,7 @@ tags: [distributed systems, vagrant, ansible, the elastic stack, DevOps]
 
 You can see the source code for this post [on GitHub](https://github.com/nfisher23/some-ansible-examples).
 
-In a previous post on [How to Provision Multiple Logstash Hosts Using Ansible](https://nickolasfisher.com/blog/How-to-Provision-Multiple-Logstash-Hosts-Using-Ansible), we saw that provisioning logstash is pretty straightforward. However, what do we do with it after it's been out there transforming messages this entire time? Given that elastic comes out with a new version of Logstash every fifteen or twenty minutes, a wise person would look to automate the upgrade process as soon as possible.
+In a previous post on [How to Provision Multiple Logstash Hosts Using Ansible](https://nickolasfisher.com/blog/how-to-provision-multiple-logstash-hosts-using-ansible), we saw that provisioning logstash is pretty straightforward. However, what do we do with it after it's been out there transforming messages this entire time? Given that elastic comes out with a new version of Logstash every fifteen or twenty minutes, a wise person would look to automate the upgrade process as soon as possible.
 
 This post will examine an in place upgrade of logstash.
 

@@ -7,7 +7,7 @@ tags: [java, spring, aws, webflux]
 
 The source code for this post [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-sqs).
 
-Following up on the previous post where we showed [how to send SQS messages to Localstack using the AWS SDK for Java 2.0](https://nickolasfisher.com/blog/How-to-Send-SQS-Messages-to-Localstack-with-the-AWS-Java-SDK-20), we will now demonstrate how to write code that continuously polls for SQS messages, processes them, then deletes them off the queue.
+Following up on the previous post where we showed [how to send SQS messages to Localstack using the AWS SDK for Java 2.0](https://nickolasfisher.com/blog/how-to-send-sqs-messages-to-localstack-with-the-aws-java-sdk-20), we will now demonstrate how to write code that continuously polls for SQS messages, processes them, then deletes them off the queue.
 
 ## The App
 

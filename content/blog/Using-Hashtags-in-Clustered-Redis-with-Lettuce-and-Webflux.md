@@ -12,7 +12,7 @@ In clustered redis, any non hash tagged key can be sent unpredictably \[well, ac
 - Use that number to send it to the node responsible for it
 
 
-Given that the lettuce client can automatically handle many cross-slot commands on your behalf \[for example, [automatically sending chunked MSET commands to the correct node](https://nickolasfisher.com/blog/Breaking-down-Lettuce-MSET-Commands-in-Clustered-Redis)\], it's usually preferable to just define your key and let the lettuce client take care of it. However, if you find that you want to ensure a group of keys all end up on the same node, you have to use hash tags. To demonstrate, let's build off of some previous code that [configures lettuce to communicate to clustered redis](https://nickolasfisher.com/blog/Configuring-Lettuce-to-work-with-Clustered-Redis). We can run this code to demonstrate that the little formula to get a key's hash slot is indeed different depending on the key used:
+Given that the lettuce client can automatically handle many cross-slot commands on your behalf \[for example, [automatically sending chunked MSET commands to the correct node](https://nickolasfisher.com/blog/breaking-down-lettuce-mset-commands-in-clustered-redis)\], it's usually preferable to just define your key and let the lettuce client take care of it. However, if you find that you want to ensure a group of keys all end up on the same node, you have to use hash tags. To demonstrate, let's build off of some previous code that [configures lettuce to communicate to clustered redis](https://nickolasfisher.com/blog/configuring-lettuce-to-work-with-clustered-redis). We can run this code to demonstrate that the little formula to get a key's hash slot is indeed different depending on the key used:
 
 ```java
 @Service

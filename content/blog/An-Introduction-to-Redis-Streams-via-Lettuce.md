@@ -7,7 +7,7 @@ tags: [java, reactive, lettuce, redis]
 
 The source code for this article [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).
 
-[Redis streams](https://redis.io/topics/streams-intro) are an interesting data structure that act as a sort of go-between for list and pub/sub operations: It's like [a list](https://nickolasfisher.com/blog/Working-with-Lists-in-Redis-using-Lettuce-and-Webflux) in the sense that anything pushed onto the stream is retained, it's like [pub/sub](https://nickolasfisher.com/blog/How-to-Publish-and-Subscribe-to-Redis-Using-Lettuce) in the sense that multiple consumers can see what is happening to it. There are many other features of streams that are covered in that article, but that's at least how you can think of it at the start.
+[Redis streams](https://redis.io/topics/streams-intro) are an interesting data structure that act as a sort of go-between for list and pub/sub operations: It's like [a list](https://nickolasfisher.com/blog/working-with-lists-in-redis-using-lettuce-and-webflux) in the sense that anything pushed onto the stream is retained, it's like [pub/sub](https://nickolasfisher.com/blog/how-to-publish-and-subscribe-to-redis-using-lettuce) in the sense that multiple consumers can see what is happening to it. There are many other features of streams that are covered in that article, but that's at least how you can think of it at the start.
 
 Lettuce provides operators that largely line up with what you'd get using the CLI, but here we'll provide a concrete example to eliminate any ambiguity.
 
@@ -32,7 +32,7 @@ $ redis-cli
 
 We add a stream record and let the stream auto assign an ID \[1620487924103-0\] by specifying the " **\***" character. We verify the length of the newly created stream is one, then we look at the item we added.
 
-We can do this in java with lettuce \[note: you will probably want to know [how to set up embedded redis to test a lettuce client](https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux) to have this make more sense\] like so:
+We can do this in java with lettuce \[note: you will probably want to know [how to set up embedded redis to test a lettuce client](https://nickolasfisher.com/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux) to have this make more sense\] like so:
 
 ```java
     @Test

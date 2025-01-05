@@ -9,7 +9,7 @@ Lettuce has some pretty nice out of the box support for working with clustered r
 
 Demonstrating some basic configuration to make these two systems play nice will be the subject of this post.
 
-To follow along here, you're going to want to make sure you have [set up a locally running sharded redis cluster](https://nickolasfisher.com/blog/Bootstrap-a-Local-Sharded-Redis-Cluster-in-Five-Minutes). With that in place, steps to get lettuce working against it in a pretty seamless way are as follows.
+To follow along here, you're going to want to make sure you have [set up a locally running sharded redis cluster](https://nickolasfisher.com/blog/bootstrap-a-local-sharded-redis-cluster-in-five-minutes). With that in place, steps to get lettuce working against it in a pretty seamless way are as follows.
 
 First, add lettuce to your **pom.xml**:
 

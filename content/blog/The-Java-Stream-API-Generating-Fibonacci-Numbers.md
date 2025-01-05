@@ -7,7 +7,7 @@ tags: [java, java stream api]
 
 You can find the sample code for this post [on GitHub](https://github.com/nfisher23/java_stream_api_samples).
 
-From the knowledge gained via [creating custom Java Stream objects](https://nickolasfisher.com/blog/The-Java-Stream-API-Creating-Custom-Lazy-Infinite-Streams), we can start
+From the knowledge gained via [creating custom Java Stream objects](https://nickolasfisher.com/blog/the-java-stream-api-creating-custom-lazy-infinite-streams), we can start
 to have a little bit of fun with this. The fibonacci number sequence starts with \[0, 1\], and adds each of the previous two elements to create the next element in the sequence.
 This looks like \[0, 1, 1, 2, 3, 5, 8, 13, 21...\], and goes on "forever." We can thus create a template that computes all Fibonacci numbers by implementing a Supplier<T>. like so:
 

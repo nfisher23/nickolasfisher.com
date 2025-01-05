@@ -11,7 +11,7 @@ The circuit breaker pattern, popularized by Netflix \[using Hystrix\], exists fo
 
 ### Testing the Circuit Breaker
 
-To start with, we will want to build off of a previous article that demonstrates how to [setup a Mock Server instance for testing](https://nickolasfisher.com/blog/How-to-Test-Latency-with-a-Mock-Server-in-Java). If you're using JUnit5, we can start like so:
+To start with, we will want to build off of a previous article that demonstrates how to [setup a Mock Server instance for testing](https://nickolasfisher.com/blog/how-to-test-latency-with-a-mock-server-in-java). If you're using JUnit5, we can start like so:
 
 ```java
 @ExtendWith(MockServerExtension.class)

@@ -11,7 +11,7 @@ This post will demonstrate a couple different ways to get querying to work in ja
 
 ## Setting up the data
 
-We will be building off of a previous post that [set up an in memory \[embedded\] dynamo instance](https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing) to save us time and energy. In that post, if you recall, we had a **hash key named "Company" and a range key named "Phones"**, which presumably is to store a catalog of different companies that manufacture different phones.
+We will be building off of a previous post that [set up an in memory \[embedded\] dynamo instance](https://nickolasfisher.com/blog/configuring-an-in-memory-dynamodb-instance-with-java-for-integration-testing) to save us time and energy. In that post, if you recall, we had a **hash key named "Company" and a range key named "Phones"**, which presumably is to store a catalog of different companies that manufacture different phones.
 
 We will follow the same pattern as before where we are writing an integration test to describe much of this behavior. First, let's set up some metadata and create this table:
 

@@ -13,7 +13,7 @@ There are a few different ways to [run MockServer with junit](https://www.mock-s
 
 ## The Service, Using WebClient
 
-I'm going to reuse code from my last blog post on [mocking dependencies and unit testing in webflux](https://nickolasfisher.com/blog/How-to-Mock-Dependencies-and-Unit-Test-in-Spring-Boot-Webflux). If you recall, we had a really simple service with basically no logic:
+I'm going to reuse code from my last blog post on [mocking dependencies and unit testing in webflux](https://nickolasfisher.com/blog/how-to-mock-dependencies-and-unit-test-in-spring-boot-webflux). If you recall, we had a really simple service with basically no logic:
 
 ```java
 package com.nickolasfisher.testing.service;

@@ -11,7 +11,7 @@ This article will show how to publish to an SNS topic with java, using the AWS S
 
 ## Setup Infra
 
-To start with, I'll leverage a previous article written which [sets up a subscription for an SQS queue on an SNS topic](https://nickolasfisher.com/blog/How-to-Setup-SNS-Message-Forwarding-to-SQS-with-the-AWS-CLI). There, we had a **docker-compose.yaml** file like:
+To start with, I'll leverage a previous article written which [sets up a subscription for an SQS queue on an SNS topic](https://nickolasfisher.com/blog/how-to-setup-sns-message-forwarding-to-sqs-with-the-aws-cli). There, we had a **docker-compose.yaml** file like:
 
 ```yaml
 version: '2.1'
@@ -67,7 +67,7 @@ aws --endpoint-url http://localhost:4566 sns set-subscription-attributes \
 
 This configures an SQS queue named "my-queue" and an SNS topic named "my-topic". It then sets up a subscription for the queue on the topic with "raw message delivery" as true.
 
-With this in place, we can start writing code. I will again leverage work done in a previous article about [setting up a reactive SQS listener in spring boot](https://nickolasfisher.com/blog/How-to-Setup-a-Reactive-SQS-Listener-Using-the-AWS-SDK-and-Spring-Boot). To start with, we will add in a dependency for SNS \[note that this leverages the bill of materials spec in the maven pom, which is why there is no version specified here\]:
+With this in place, we can start writing code. I will again leverage work done in a previous article about [setting up a reactive SQS listener in spring boot](https://nickolasfisher.com/blog/how-to-setup-a-reactive-sqs-listener-using-the-aws-sdk-and-spring-boot). To start with, we will add in a dependency for SNS \[note that this leverages the bill of materials spec in the maven pom, which is why there is no version specified here\]:
 
 ```xml
 <dependency>

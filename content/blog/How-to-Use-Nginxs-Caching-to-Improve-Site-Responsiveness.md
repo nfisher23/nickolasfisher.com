@@ -7,7 +7,7 @@ tags: [java, ngnix, vagrant, ansible, spring, DevOps, maven]
 
 The source code for this post [can be found on Github](https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx).
 
-In my last post, I provided an example for [how to set up an Nginx Reverse Proxy for a Spring MVC application](https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy). One such reason to set up a reverse proxy is to utilize caching of resources. If you have dynamically generated content that doesn't change very often, then adding caching at the site entry point can dramatically improve site responsiveness and reduce load on critical resources.
+In my last post, I provided an example for [how to set up an Nginx Reverse Proxy for a Spring MVC application](https://nickolasfisher.com/blog/how-to-deploy-a-spring-mvc-application-behind-an-nginx-reverse-proxy). One such reason to set up a reverse proxy is to utilize caching of resources. If you have dynamically generated content that doesn't change very often, then adding caching at the site entry point can dramatically improve site responsiveness and reduce load on critical resources.
 
 You will want to be sure to have a good background in setting up a reverse proxy with nginx to get the most out of this post, and I will be building on the work that was done in the last post.
 

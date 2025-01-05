@@ -5,9 +5,9 @@ draft: false
 tags: [java, spring, reactive, webflux, lettuce, redis]
 ---
 
-There are, as of this writing, about [15 distinct operations available to someone wanting to work with sets in redis](https://redis.io/commands/#set). This article seeks to cover some of the more basic ones using a reactive lettuce client, and [a follow up article](https://nickolasfisher.com/blog/A-Guide-to-Operating-on-Multiple-Sets-in-Redis-with-Lettuce) will seek to deal with explaining some of the more common operations against multiple sets, rather than a single set in this case.
+There are, as of this writing, about [15 distinct operations available to someone wanting to work with sets in redis](https://redis.io/commands/#set). This article seeks to cover some of the more basic ones using a reactive lettuce client, and [a follow up article](https://nickolasfisher.com/blog/a-guide-to-operating-on-multiple-sets-in-redis-with-lettuce) will seek to deal with explaining some of the more common operations against multiple sets, rather than a single set in this case.
 
-To start with, you'll want to make sure that you have either [setup a redis test container for a lettuce client](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux) or [setup embedded redis for a lettuce client](https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux), which will make this article much easier to follow along with. The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).
+To start with, you'll want to make sure that you have either [setup a redis test container for a lettuce client](https://nickolasfisher.com/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux) or [setup embedded redis for a lettuce client](https://nickolasfisher.com/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux), which will make this article much easier to follow along with. The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).
 
 ### sadd, smembers, srem
 

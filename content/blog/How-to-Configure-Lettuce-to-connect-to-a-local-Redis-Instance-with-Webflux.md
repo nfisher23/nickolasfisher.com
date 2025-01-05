@@ -7,7 +7,7 @@ tags: [java, spring, webflux, lettuce, redis]
 
 The source code for this post [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/reactive-redis).
 
-In a previous post, we detailed [how to write integration tests for lettuce clients in spring boot webflux](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux) using a redis test container. That's fine and well when you're just writing code for a quick feedback loop, but is useless when it comes to running the application in real life. This post will start up redis locally and then explain how to best connect to it using lettuce in webflux.
+In a previous post, we detailed [how to write integration tests for lettuce clients in spring boot webflux](https://nickolasfisher.com/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux) using a redis test container. That's fine and well when you're just writing code for a quick feedback loop, but is useless when it comes to running the application in real life. This post will start up redis locally and then explain how to best connect to it using lettuce in webflux.
 
 We will build off of code from that previous blog post. If you'll recall, we had a service like so:
 

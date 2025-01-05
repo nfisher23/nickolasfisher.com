@@ -13,7 +13,7 @@ Depending on the request that you're making, it can often be retried effectively
 
 ### The App
 
-I'm going to build off of some work in [a previous blog post about fallbacks](https://nickolasfisher.com/blog/How-to-Have-a-Fallback-on-Errors-Calling-Downstream-Services-in-Spring-Boot-Webflux). You'll recall that we had setup a WebClient like so:
+I'm going to build off of some work in [a previous blog post about fallbacks](https://nickolasfisher.com/blog/how-to-have-a-fallback-on-errors-calling-downstream-services-in-spring-boot-webflux). You'll recall that we had setup a WebClient like so:
 
 ```java
 @Configuration

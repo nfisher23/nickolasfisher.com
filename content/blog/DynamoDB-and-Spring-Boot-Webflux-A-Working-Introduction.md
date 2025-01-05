@@ -94,7 +94,7 @@ If you go to [the sprint boot initializr](https://start.spring.io/) and create a
 
 The two important dependencies here are v2 of the AWS SDK and spring webflux.
 
-You will want to set up your local DynamoDB environment, you can refer to [a previous post I created on that subject to help you out there](https://nickolasfisher.com/blog/DynamoDB-Basics-A-Hands-On-Tutorial), and we can then configure our AWS SDK to point to that for the purposes of this tutorial:
+You will want to set up your local DynamoDB environment, you can refer to [a previous post I created on that subject to help you out there](https://nickolasfisher.com/blog/dynamodb-basics-a-hands-on-tutorial), and we can then configure our AWS SDK to point to that for the purposes of this tutorial:
 
 ```java
 @Configuration
@@ -158,7 +158,7 @@ public class Phone {
 
 ```
 
-I elected to use handlers rather than using the more familiar Spring Boot annotations. The biggest issue I had was that I could not find a clean way to customize the response code \[Edit: I figured it out like twenty minutes after I wrote this, [here's the follow up blog post](https://nickolasfisher.com/blog/How-to-Return-a-Response-Entity-in-Spring-Boot-Webflux)\]. Here is some code that creates (PUTs) a new item and also allows you to read an item by the company and model name:
+I elected to use handlers rather than using the more familiar Spring Boot annotations. The biggest issue I had was that I could not find a clean way to customize the response code \[Edit: I figured it out like twenty minutes after I wrote this, [here's the follow up blog post](https://nickolasfisher.com/blog/how-to-return-a-response-entity-in-spring-boot-webflux)\]. Here is some code that creates (PUTs) a new item and also allows you to read an item by the company and model name:
 
 ```java
 @Component

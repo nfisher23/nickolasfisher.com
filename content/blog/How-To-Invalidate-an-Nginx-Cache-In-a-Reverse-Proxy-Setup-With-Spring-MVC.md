@@ -7,7 +7,7 @@ tags: [java, ngnix, aspect oriented programming, ansible, spring, DevOps]
 
 You can see the sample code associated with this post [on Github](https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx).
 
-In two previous posts, we looked at how to [provision a reverse proxy using nginx](https://nickolasfisher.com/blog/How-to-Deploy-a-Spring-MVC-Application-Behind-an-Nginx-Reverse-Proxy) and then [how to add caching to the nginx reverse proxy](https://nickolasfisher.com/blog/How-to-Use-Nginxs-Caching-to-Improve-Site-Responsiveness). The implementation we ended up with at the end of the last post was a "dumb" cache, meaning that it doesn't know when or if any data gets updated--it just times out after 60 seconds and then asks for a new payload from the application it's acting as proxy for.
+In two previous posts, we looked at how to [provision a reverse proxy using nginx](https://nickolasfisher.com/blog/how-to-deploy-a-spring-mvc-application-behind-an-nginx-reverse-proxy) and then [how to add caching to the nginx reverse proxy](https://nickolasfisher.com/blog/how-to-use-nginxs-caching-to-improve-site-responsiveness). The implementation we ended up with at the end of the last post was a "dumb" cache, meaning that it doesn't know when or if any data gets updated--it just times out after 60 seconds and then asks for a new payload from the application it's acting as proxy for.
 
 In this post, I'll demonstrate a simple way to invalidate the cache under predefined conditions using Spring Boot. This will allow us to programmatically and selectively notify Nginx to request a new payload. This way, users will get a fast page-load time combined with up-to-date information, depending on the use case.
 

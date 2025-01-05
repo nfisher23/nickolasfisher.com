@@ -9,7 +9,7 @@ The source code for this post can be found [on GitHub](https://github.com/nfishe
 
 [Logstash](https://www.elastic.co/products/logstash) primarily exists to extract useful information out of plain-text logs. Most applications have custom logs which are in whatever format the person writing them thought would look reasonable...usually to a human, and not to a machine. While countless future developer hours would be preserved if everything were just in JSON, that is sadly not even remotely the case, and in particular it's not the case for log files. Logstash aims to be the intermediary between the various log formats and Elasticsearch, which is the document database provided by Elastic as well.
 
-This post will focus on writing an ansible playbook to provision two logstash hosts, each of which will receive logs from a beats input and forward the output to an elasticsearch cluster. See a previous post on [how to provision an elasticsearch cluster using ansible](https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible).
+This post will focus on writing an ansible playbook to provision two logstash hosts, each of which will receive logs from a beats input and forward the output to an elasticsearch cluster. See a previous post on [how to provision an elasticsearch cluster using ansible](https://nickolasfisher.com/blog/how-to-provision-a-multi-node-elasticsearch-cluster-using-ansible).
 
 ### Create the Ansible Role
 
@@ -66,7 +66,7 @@ logstash_deb_file: logstash-6.4.0.deb
 
 ```
 
-Because I want this to be compatible with the post on [installing a multi-node elasticsearch cluster,](https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible) I'm electing to use logstash version 6.4.0.
+Because I want this to be compatible with the post on [installing a multi-node elasticsearch cluster,](https://nickolasfisher.com/blog/how-to-provision-a-multi-node-elasticsearch-cluster-using-ansible) I'm electing to use logstash version 6.4.0.
 
 We can setup our **tasks/main.yml** file to perform the necessary steps in an idempotent way. These are pretty straightforward:
 

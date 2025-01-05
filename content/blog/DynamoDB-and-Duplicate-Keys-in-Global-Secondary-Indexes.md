@@ -15,7 +15,7 @@ If there are duplicate keys, they _do not overwrite each other_. They are both p
 
 ## Actual Example Demonstrating It
 
-The [boilerplate code for setting up an embedded DynamoDB instance for java integration testing](https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing) was covered in a previous post and I won't belabor that here. I'll just jump into the test case.
+The [boilerplate code for setting up an embedded DynamoDB instance for java integration testing](https://nickolasfisher.com/blog/configuring-an-in-memory-dynamodb-instance-with-java-for-integration-testing) was covered in a previous post and I won't belabor that here. I'll just jump into the test case.
 
 First, we have to set up our table to work with. This table will have:
 

@@ -7,7 +7,7 @@ tags: [distributed systems, vagrant, ansible, DevOps]
 
 You can see the source code for this blog post [on GitHub](https://github.com/nfisher23/some-ansible-examples).
 
-In a previous post, we saw [how to provision a multi-node elasticsearch cluster using ansible](https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible). The problem with that post is that, by the time I was done writing it, _Elastic had already come out with a new version of elasticsearch_. I'm being mildly facetious, but not really. They release new versions very quickly, even by the standards of modern software engineering.
+In a previous post, we saw [how to provision a multi-node elasticsearch cluster using ansible](https://nickolasfisher.com/blog/how-to-provision-a-multi-node-elasticsearch-cluster-using-ansible). The problem with that post is that, by the time I was done writing it, _Elastic had already come out with a new version of elasticsearch_. I'm being mildly facetious, but not really. They release new versions very quickly, even by the standards of modern software engineering.
 
 It would be wise, therefore, to think about upgrading from the very beginning. The recommended way to upgrade versions of elasticsearch from 5.6 onwards is a [rolling upgrade](https://www.elastic.co/guide/en/elasticsearch/reference/current/rolling-upgrades.html). As you can see from that article, upgrading (even in place) elasticsearch is not trivial by any stretch of the imagination.
 

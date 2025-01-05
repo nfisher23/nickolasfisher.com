@@ -5,7 +5,7 @@ draft: false
 tags: [spring, reactive, webflux, lettuce, redis]
 ---
 
-To follow along with this post, it would be best if you have already [set up your local redis cluster](https://nickolasfisher.com/blog/Bootstrap-a-Local-Sharded-Redis-Cluster-in-Five-Minutes) and know how to [connect to a redis cluster and interact with it via Lettuce](https://nickolasfisher.com/blog/Configuring-Lettuce-to-work-with-Clustered-Redis). And the source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).
+To follow along with this post, it would be best if you have already [set up your local redis cluster](https://nickolasfisher.com/blog/bootstrap-a-local-sharded-redis-cluster-in-five-minutes) and know how to [connect to a redis cluster and interact with it via Lettuce](https://nickolasfisher.com/blog/configuring-lettuce-to-work-with-clustered-redis). And the source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).
 
 If you are interacting with clustered redis, and you issue an MSET or MGET command directly against a node without a hash tag, you are very likely going to get rejected from the redis node that you're interacting with unless you get lucky and the hash slot that the keys go into just happen to all go into that single redis node. For example \[assuming you have clustered redis running locally, and one port is 30001\]:
 

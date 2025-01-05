@@ -13,7 +13,7 @@ To properly work along with the following example, you'll need ansible and proba
 
 ### Initializing an Ansible Role
 
-I'm electing to use [Molecule](https://nickolasfisher.com/blog/How-to-do-Test-Driven-Development-on-Your-Ansible-Roles-Using-Molecule) to initialize an ansible role for me, and vagrant as the VM provider:
+I'm electing to use [Molecule](https://nickolasfisher.com/blog/how-to-do-test-driven-development-on-your-ansible-roles-using-molecule) to initialize an ansible role for me, and vagrant as the VM provider:
 
 ```bash
 $ molecule init role -d vagrant -r install-elasticsearch-cluster

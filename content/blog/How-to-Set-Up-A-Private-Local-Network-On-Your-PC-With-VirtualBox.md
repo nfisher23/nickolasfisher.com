@@ -17,7 +17,7 @@ how can we _quickly_ and _cheaply_ prove that this will actually work? We need a
 to toy around with these applications, and shorten our feedback loop as tightly as possible.
 
 One way, as mentioned above, was to spin up some DO or Linode VPS's and do our tinkering on there. Another option is to use [VirtualBox](https://www.virtualbox.org/) to create local,
-virtual machines, and configure them to accept connections just like a virtual private server in the cloud would. That is the subject of this tutorial (the next step, and the subject of the next post, is to [use Vagrant](https://nickolasfisher.com/blog/How-to-Simulate-Distributed-Systems-in-the-Cloud-with-Vagrant). **Vagrant is awesome**.)
+virtual machines, and configure them to accept connections just like a virtual private server in the cloud would. That is the subject of this tutorial (the next step, and the subject of the next post, is to [use Vagrant](https://nickolasfisher.com/blog/how-to-simulate-distributed-systems-in-the-cloud-with-vagrant). **Vagrant is awesome**.)
 
 ### Prerequisites
 
@@ -75,4 +75,4 @@ And your machine is configured. You can validate that it works by connecting via
 
 `$ ssh your_username@192.168.56.101`
 
-While you can do this for every VM that you want to configure, including multiple ones, I would instead recommend you move on from this exercise and shorten the feedback loop by [setting up Vagrant to simulate a cloud-like environment](https://nickolasfisher.com/blog/How-to-Simulate-Distributed-Systems-in-the-Cloud-with-Vagrant).
+While you can do this for every VM that you want to configure, including multiple ones, I would instead recommend you move on from this exercise and shorten the feedback loop by [setting up Vagrant to simulate a cloud-like environment](https://nickolasfisher.com/blog/how-to-simulate-distributed-systems-in-the-cloud-with-vagrant).

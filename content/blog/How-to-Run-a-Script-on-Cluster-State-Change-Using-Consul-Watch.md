@@ -15,7 +15,7 @@ That reason is why I prefer the script approach, and I'll show you how to accomp
 
 ### Deploy a Local Cluster
 
-In a previous post, I showed you [how to provision a Consul client-server cluster using Ansible](https://nickolasfisher.com/blog/How-to-Provision-a-Consul-ClientServer-Cluster-using-Ansible). Starting from that point on, we can make some sensible modifications to POC this functionality.
+In a previous post, I showed you [how to provision a Consul client-server cluster using Ansible](https://nickolasfisher.com/blog/how-to-provision-a-consul-clientserver-cluster-using-ansible). Starting from that point on, we can make some sensible modifications to POC this functionality.
 
 First, we'll need a basic script to invoke. Create a **files/watch\_script.py** script and fill it with:
 
@@ -91,4 +91,4 @@ If you run:
 $ molecule create &amp;&amp; molecule converge
 ```
 
-At this point, you will see the cluster come up. To prove that the file gets created and populated by our script, you can either restart one of the Consul Agents, or refer to a previous post on [registering a simple java service to a consul cluster](https://nickolasfisher.com/blog/How-to-Register-a-Spring-Boot-Service-to-a-Consul-Cluster). Either one will demo the functionality provided.
+At this point, you will see the cluster come up. To prove that the file gets created and populated by our script, you can either restart one of the Consul Agents, or refer to a previous post on [registering a simple java service to a consul cluster](https://nickolasfisher.com/blog/how-to-register-a-spring-boot-service-to-a-consul-cluster). Either one will demo the functionality provided.

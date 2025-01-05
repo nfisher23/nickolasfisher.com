@@ -84,7 +84,7 @@ put_dynamo_local "$GOOGL_MEAN"
 
 ```
 
-At this point, we have four items in our table and the data setup is complete. You can refer to [a previous post on introducing DynamoDB](https://nickolasfisher.com/blog/DynamoDB-Basics-A-Hands-On-Tutorial) that goes into a bit more detail on how that code works if that helps you along.
+At this point, we have four items in our table and the data setup is complete. You can refer to [a previous post on introducing DynamoDB](https://nickolasfisher.com/blog/dynamodb-basics-a-hands-on-tutorial) that goes into a bit more detail on how that code works if that helps you along.
 
 ## A Python Script to Process It
 

@@ -13,7 +13,7 @@ This article will walk you through some of the more common commands and how to u
 
 ### Setting up the Test Suite
 
-We're going to build off of previous work where we [set up a redis test container to test lettuce](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux), and assuming you have cloned that project and are following along with the right dependencies, I will make a new test class that for now just creates the test container, configured a redis client against that container, and flushes \[removes in redis lingo\] all the data from redis after each test method runs:
+We're going to build off of previous work where we [set up a redis test container to test lettuce](https://nickolasfisher.com/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux), and assuming you have cloned that project and are following along with the right dependencies, I will make a new test class that for now just creates the test container, configured a redis client against that container, and flushes \[removes in redis lingo\] all the data from redis after each test method runs:
 
 ```java
 @Testcontainers

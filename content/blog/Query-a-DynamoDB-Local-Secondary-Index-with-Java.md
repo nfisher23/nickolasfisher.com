@@ -13,7 +13,7 @@ The source code for this post [can be found on Github](https://github.com/nfishe
 
 A very important constraint of local secondary indexes is that you must create one **at table creation time**. You cannot modify an existing table to have a local secondary index, unlike traditional RDBMS systems.
 
-We're going to be building off of previous posts where we have worked with DynamoDB, notably one where we showed [how to configure an embedded DynamoDB instance for integration testing](https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing). I won't repeat the boilerplate code that was demonstrated there, and instead dive into this specific problem.
+We're going to be building off of previous posts where we have worked with DynamoDB, notably one where we showed [how to configure an embedded DynamoDB instance for integration testing](https://nickolasfisher.com/blog/configuring-an-in-memory-dynamodb-instance-with-java-for-integration-testing). I won't repeat the boilerplate code that was demonstrated there, and instead dive into this specific problem.
 
 Since we have to define the index at table creation time, here is some java code to set up a table for us \[note: in a production or production-like environment, I would strongly recommend you use something like terraform to manage table creation/modification\]
 
@@ -83,7 +83,7 @@ After specifying what we want the index to look like, we include that specificat
 
 ## Setup data
 
-Now we'll put some data into our newly created table. This follows the pattern/ [reuses code from some previous posts](https://nickolasfisher.com/blog/Querying-DynamoDB-in-Java-with-the-AWS-SDK-20) and I won't belabor it here:
+Now we'll put some data into our newly created table. This follows the pattern/ [reuses code from some previous posts](https://nickolasfisher.com/blog/querying-dynamodb-in-java-with-the-aws-sdk-20) and I won't belabor it here:
 
 ```java
         String partitionKey = "Google";

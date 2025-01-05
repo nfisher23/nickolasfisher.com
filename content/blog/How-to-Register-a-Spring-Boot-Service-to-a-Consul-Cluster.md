@@ -5,7 +5,7 @@ draft: false
 tags: [java, distributed systems, spring, consul]
 ---
 
-In a previous post, we saw [how to provision a simple consul client/server cluster using Ansible](https://nickolasfisher.com/blog/How-to-Provision-a-Consul-ClientServer-Cluster-using-Ansible). We will now look at interacting with that cluster by showing how to register a spring boot application to it, using [spring cloud consul](https://cloud.spring.io/spring-cloud-consul/spring-cloud-consul.html).
+In a previous post, we saw [how to provision a simple consul client/server cluster using Ansible](https://nickolasfisher.com/blog/how-to-provision-a-consul-clientserver-cluster-using-ansible). We will now look at interacting with that cluster by showing how to register a spring boot application to it, using [spring cloud consul](https://cloud.spring.io/spring-cloud-consul/spring-cloud-consul.html).
 
 First, pull up the [spring boot initializer](https://start.spring.io/). Select web and spring cloud, then download and unpack the project. Your pom.xml should look something like this:
 

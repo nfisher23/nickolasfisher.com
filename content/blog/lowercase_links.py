@@ -6,8 +6,10 @@ def lowercase_links_in_file(file_path):
     with open(file_path, "r", encoding="utf-8") as file:
         content = file.read()
 
-    # Regular expression to find URLs
-    url_pattern = re.compile(r"https?://[^\s\)]+", re.IGNORECASE)
+    # Regular expression to find URLs with the domain containing "nickolasfisher"
+    url_pattern = re.compile(
+        r"https?://(?:www\.)?nickolasfisher\.com[^\s\)]+", re.IGNORECASE
+    )
 
     # Function to lowercase matched URLs
     def lowercase_url(match):
@@ -31,6 +33,6 @@ def process_directory(directory):
 
 
 if __name__ == "__main__":
-    # Replace 'your_directory_path' with the path to your directory containing .md files
+    # Set the directory path to the current directory
     directory_path = "./"
     process_directory(directory_path)

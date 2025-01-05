@@ -7,11 +7,11 @@ tags: [java, reactive, lettuce, redis]
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).
 
-Redis does not allow you to set the expiration on individual members in a set, it only allows you to set an expiration on the entire set itself. If you want to have a sort of expiry on individual elements in a set, this article shares a workaround to that problem that works well in practice. Because I have already written a lot of [boilerplate code for testing any redis operation using lettuce](https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux), I'm going to be showing you this technique using a reactive lettuce client, however the basic concept should transfer easily to any other client.
+Redis does not allow you to set the expiration on individual members in a set, it only allows you to set an expiration on the entire set itself. If you want to have a sort of expiry on individual elements in a set, this article shares a workaround to that problem that works well in practice. Because I have already written a lot of [boilerplate code for testing any redis operation using lettuce](https://nickolasfisher.com/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux), I'm going to be showing you this technique using a reactive lettuce client, however the basic concept should transfer easily to any other client.
 
 ### Use A Sorted Set
 
-To start with, instead of using a vanilla set, we're going to use a sorted set where the score of each element is the current epoch timestamp, represented in this example using the number of milliseconds since epoch \[here's [an introduction to sorted sets in redis using lettuce](https://nickolasfisher.com/blog/A-Guide-to-Operating-on-Sorted-Sets-in-Redis-with-Lettuce) for those not sure how to follow along just yet\].
+To start with, instead of using a vanilla set, we're going to use a sorted set where the score of each element is the current epoch timestamp, represented in this example using the number of milliseconds since epoch \[here's [an introduction to sorted sets in redis using lettuce](https://nickolasfisher.com/blog/a-guide-to-operating-on-sorted-sets-in-redis-with-lettuce) for those not sure how to follow along just yet\].
 
 So let's add three entries in our sorted set, sleeping for 100 milliseconds in between adding each one, and every time we add an element we specify the **score** as the current number of milliseconds since epoch:
 

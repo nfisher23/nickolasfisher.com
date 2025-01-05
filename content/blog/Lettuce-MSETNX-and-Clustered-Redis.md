@@ -11,7 +11,7 @@ The source code for what follows [can be found on Github](https://github.com/nfi
 
 With clustered redis, you have more than one node taking writes, and the client is cluster-aware--so if some of the keys are set on one node and some of the keys aren't set on another node, what happens if you try to run **MSETNX**? This post, at least using the lettuce client for clustered redis, finds out.
 
-To start with, ensure you have [set up your locally running redis cluster](https://nickolasfisher.com/blog/Bootstrap-a-Local-Sharded-Redis-Cluster-in-Five-Minutes) and have [configured lettuce to connect to clustered redis](https://nickolasfisher.com/blog/Configuring-LettuceWebflux-to-work-with-Clustered-Redis). With that in place, we can add some code that runs mset nx on a distributed number of keys:
+To start with, ensure you have [set up your locally running redis cluster](https://nickolasfisher.com/blog/bootstrap-a-local-sharded-redis-cluster-in-five-minutes) and have [configured lettuce to connect to clustered redis](https://nickolasfisher.com/blog/configuring-lettucewebflux-to-work-with-clustered-redis). With that in place, we can add some code that runs mset nx on a distributed number of keys:
 
 ```java
     private void msetNxDifferentHashSlots() {
@@ -97,7 +97,7 @@ port (therefore node): 30003
 
 ```
 
-So what gives? Well, similar to the [behavior of MSET in the lettuce client in clustered redis](https://nickolasfisher.com/blog/Breaking-down-Lettuce-MSET-Commands-in-Clustered-Redis), lettuce is calculating the hash slot of each key and sending it to the appropriate node. It's actually sending a **msetnx** command to each node for _each individual hash slot_, not necessarily range of hash slots. If we force the keys to have the same hash slot, we can see behavior that is consistent with the documentation:
+So what gives? Well, similar to the [behavior of MSET in the lettuce client in clustered redis](https://nickolasfisher.com/blog/breaking-down-lettuce-mset-commands-in-clustered-redis), lettuce is calculating the hash slot of each key and sending it to the appropriate node. It's actually sending a **msetnx** command to each node for _each individual hash slot_, not necessarily range of hash slots. If we force the keys to have the same hash slot, we can see behavior that is consistent with the documentation:
 
 ```java
     private void msetNxSameHashSlots() {

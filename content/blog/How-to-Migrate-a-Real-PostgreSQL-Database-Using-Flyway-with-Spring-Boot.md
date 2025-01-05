@@ -7,7 +7,7 @@ tags: [java, distributed systems, vagrant, spring, DevOps, postgreSQL]
 
 You can see the source code for this post [on GitHub](https://github.com/nfisher23/postgres-flyway-example).
 
-We spent the last post figuring out [how to migrate an embedded PostgreSQL database using Spring](https://nickolasfisher.com/blog/How-to-Migrate-An-Embedded-PostgreSQL-Database-Using-Flyway-in-Spring-Boot), while trying to side-step the extra magic that comes along with the framework. Here, we are going to build on that work to migrate a real PostgreSQL instance, which we will build in a local Vagrant Virtual Machine.
+We spent the last post figuring out [how to migrate an embedded PostgreSQL database using Spring](https://nickolasfisher.com/blog/how-to-migrate-an-embedded-postgresql-database-using-flyway-in-spring-boot), while trying to side-step the extra magic that comes along with the framework. Here, we are going to build on that work to migrate a real PostgreSQL instance, which we will build in a local Vagrant Virtual Machine.
 
 To do this in a maintainable way, we will want to leverage [Spring Profiles](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html) to allow us to retain local development as an option and switch to another setup relatively quickly. We will change our **application.yml** file to look like:
 

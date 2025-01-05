@@ -22,7 +22,7 @@ There are some key edge cases we'll want to pay attention to, but this is the gi
 
 ### Naive Implementation
 
-Note: it will be much easier to follow along if you know [how to configure embedded redis to test a reactive lettuce client](https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux) or [how to configure a test container to test a redis client](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux).
+Note: it will be much easier to follow along if you know [how to configure embedded redis to test a reactive lettuce client](https://nickolasfisher.com/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux) or [how to configure a test container to test a redis client](https://nickolasfisher.com/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux).
 
 A simple implementation of our problem can look like this:
 

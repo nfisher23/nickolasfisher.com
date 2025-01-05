@@ -11,7 +11,7 @@ Another way to write integration tests for code that verifies your interactions 
 
 Here, we'll use a redis test container to write an integration test for some redis code in spring boot webflux, using lettuce as the underlying redis client driver.
 
-Let's start by leveraging code written from a previous post where we [use embedded redis to write integration tests for lettuce](https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux) instead of a container. The key piece of code is the actual data class which looks like this:
+Let's start by leveraging code written from a previous post where we [use embedded redis to write integration tests for lettuce](https://nickolasfisher.com/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux) instead of a container. The key piece of code is the actual data class which looks like this:
 
 ```java
 public class RedisDataService {

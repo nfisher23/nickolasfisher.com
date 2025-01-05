@@ -7,9 +7,9 @@ tags: [java, spring, DevOps, maven]
 
 You can view the sample code for this repository [on GitHub](https://github.com/nfisher23/integration-testing-postgres-and-spring).
 
-In our last post on [Using Maven to Setup and Teardown Integration Tests](https://nickolasfisher.com/blog/How-to-Run-Integration-Tests-with-Setup-and-Teardown-Code-in-Maven-Build), we saw how to run Java code before and after our integration tests to setup and teardown any data that our tests depended on. What if we are using Spring, and we want to use our ApplicationContext, and its dependency injection/property injection features? After all, we would be testing the configuration for our specific application more than anything else, so we should be certain to use it in our setup and teardown code.
+In our last post on [Using Maven to Setup and Teardown Integration Tests](https://nickolasfisher.com/blog/how-to-run-integration-tests-with-setup-and-teardown-code-in-maven-build), we saw how to run Java code before and after our integration tests to setup and teardown any data that our tests depended on. What if we are using Spring, and we want to use our ApplicationContext, and its dependency injection/property injection features? After all, we would be testing the configuration for our specific application more than anything else, so we should be certain to use it in our setup and teardown code.
 
-To demonstrate, refer to my post on [setting up an unsecured local postgreSQL VM for testing purposes](https://nickolasfisher.com/blog/How-to-Set-Up-a-Local-Unsecured-Postgres-Virtual-Machine-for-testing). Assuming you have this vagrant VM up and running, we can create a simple bean for our data source and a JdbcTemplate like so:
+To demonstrate, refer to my post on [setting up an unsecured local postgreSQL VM for testing purposes](https://nickolasfisher.com/blog/how-to-set-up-a-local-unsecured-postgres-virtual-machine-for-testing). Assuming you have this vagrant VM up and running, we can create a simple bean for our data source and a JdbcTemplate like so:
 
 ```java
 @Configuration

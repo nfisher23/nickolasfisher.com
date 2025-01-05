@@ -5,7 +5,7 @@ draft: false
 tags: [java, spring, testing]
 ---
 
-I have been playing around with test containers lately \[ [redis test containers for testing lettuce](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux) and [dynamodb test containers for testing the AWS SDK 2.0](https://nickolasfisher.com/blog/Setup-and-Use-a-DynamoDB-Test-Container-with-the-AWS-Java-SDK-20), to be specific\], and I found soon after using them that I was getting by default a stream of DEBUG level logs whenever I ran my test suite. This was annoying, so I went digging for a solution.
+I have been playing around with test containers lately \[ [redis test containers for testing lettuce](https://nickolasfisher.com/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux) and [dynamodb test containers for testing the AWS SDK 2.0](https://nickolasfisher.com/blog/setup-and-use-a-dynamodb-test-container-with-the-aws-java-sdk-20), to be specific\], and I found soon after using them that I was getting by default a stream of DEBUG level logs whenever I ran my test suite. This was annoying, so I went digging for a solution.
 
 At least when using spring boot, the answer is that test containers uses logback by default, and you need to add a **logback-test.xml** file to your **src/test/resources** directory that looks like this:
 

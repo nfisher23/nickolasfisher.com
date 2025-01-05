@@ -7,11 +7,11 @@ tags: [java, spring, reactive, webflux, lettuce, redis]
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).
 
-Pub/Sub in redis allows a publisher to send things to subscribers without knowing who is actually subscribed. In a previous post, we covered [a simple unit test for publishing and subscribing to lettuce](https://nickolasfisher.com/blog/How-to-Publish-and-Subscribe-to-Redis-Using-Lettuce), but if you want to have a subscription initialized on application startup, and respond to events, we'll have to do a bit more, which I'll demonstrate here.
+Pub/Sub in redis allows a publisher to send things to subscribers without knowing who is actually subscribed. In a previous post, we covered [a simple unit test for publishing and subscribing to lettuce](https://nickolasfisher.com/blog/how-to-publish-and-subscribe-to-redis-using-lettuce), but if you want to have a subscription initialized on application startup, and respond to events, we'll have to do a bit more, which I'll demonstrate here.
 
 ### Subscribing on Application Startup
 
-We will want to make sure we have [the right configuration to connect to redis using lettuce](https://nickolasfisher.com/blog/How-to-Configure-Lettuce-to-connect-to-a-local-Redis-Instance-with-Webflux) with something like:
+We will want to make sure we have [the right configuration to connect to redis using lettuce](https://nickolasfisher.com/blog/how-to-configure-lettuce-to-connect-to-a-local-redis-instance-with-webflux) with something like:
 
 ```java
 @Configuration

@@ -5,7 +5,7 @@ draft: false
 tags: [java, ansible, DevOps]
 ---
 
-In my post about [how to provision any version of Java using a bash script](https://nickolasfisher.com/blog/How-to-Provision-a-Linux-Server-With-Any-Version-of-Java-via-a-Bash-Script), we saw that:
+In my post about [how to provision any version of Java using a bash script](https://nickolasfisher.com/blog/how-to-provision-a-linux-server-with-any-version-of-java-via-a-bash-script), we saw that:
 
 ```bash
 #!/bin/bash

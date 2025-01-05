@@ -97,7 +97,7 @@ public void bufferingData_ex() throws Exception {
 
 ```
 
-[Buffering is usually much faster](https://nickolasfisher.com/blog/Improving-Java-IO-Performance-Buffering-Techniques) than requesting all data a byte at a time. The default buffer size is 8192 bytes--this number should be changed if you have a reasonable idea as to the size of the file and how much of the file you actually need to process. [Tweak and tinker with benchmarks](https://nickolasfisher.com/blog/Improving-Java-IO-Performance-Buffering-Techniques) liberally if performance is important.
+[Buffering is usually much faster](https://nickolasfisher.com/blog/improving-java-io-performance-buffering-techniques) than requesting all data a byte at a time. The default buffer size is 8192 bytes--this number should be changed if you have a reasonable idea as to the size of the file and how much of the file you actually need to process. [Tweak and tinker with benchmarks](https://nickolasfisher.com/blog/improving-java-io-performance-buffering-techniques) liberally if performance is important.
 
 Finally, sometimes we want to "peek" the next byte into memory, which we can't do with a normal InputStream. We can move forward and backward with a I/O stream using the `PushbackInputStream`:
 

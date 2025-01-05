@@ -7,7 +7,7 @@ tags: [java, distributed systems, aws, dynamodb]
 
 [Nested attributes in DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.Attributes.html) are a way to group data within an item together. The attributes are said to be nested if they are embedded within another attribute.
 
-Building off a previous post where we [set up an embedded DynamoDB instance in a java test suite](https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing), I'll provide here some examples for working with nested attributes.
+Building off a previous post where we [set up an embedded DynamoDB instance in a java test suite](https://nickolasfisher.com/blog/configuring-an-in-memory-dynamodb-instance-with-java-for-integration-testing), I'll provide here some examples for working with nested attributes.
 
 The source code that follows [can be seen on Github](https://github.com/nfisher23/webflux-and-dynamo/blob/master/src/test/java/com/nickolasfisher/reactivedynamo/PhoneServiceTest.java#L722).
 

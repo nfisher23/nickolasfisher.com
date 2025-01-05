@@ -7,7 +7,7 @@ tags: [distributed systems, spring, reactive, webflux, lettuce, redis]
 
 As of this writing, there are a solid [twenty or so commands you can execute against redis for the list data type](https://redis.io/commands/#list). This article will be walking through some of the more common operations you are likely to need when interacting with redis and lists using lettuce, and [the source code can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).
 
-Building off of a previous post where we [set up a redis test container for testing lettuce](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux), we can take that setup and teardown code and make it a base abstract class for reuse:
+Building off of a previous post where we [set up a redis test container for testing lettuce](https://nickolasfisher.com/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux), we can take that setup and teardown code and make it a base abstract class for reuse:
 
 ```java
 @Testcontainers

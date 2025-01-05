@@ -9,7 +9,7 @@ The source code for this blog post can be found [on GitHub](https://github.com/n
 
 [Consul](https://www.consul.io) can run in either client or server mode. As far as Consul is concerned, the primary difference between client and server mode are that Consul Servers participate in the consensus quorum, store cluster state, and handle queries. Consul Agents are often deployed to act as middle-men between the services and the Consul Servers, which need to be highly available by design.
 
-Ignoring my opinion about the architecture choices, we will expand on the last post ( [How to Provision a Standalone Consul Server with Ansible](https://nickolasfisher.com/blog/How-to-Provision-a-Standalone-Consul-Server-with-Ansible)) and modify our ansible role to allow for agents to join the standalone consul server.
+Ignoring my opinion about the architecture choices, we will expand on the last post ( [How to Provision a Standalone Consul Server with Ansible](https://nickolasfisher.com/blog/how-to-provision-a-standalone-consul-server-with-ansible)) and modify our ansible role to allow for agents to join the standalone consul server.
 
 Because [the default Restart=Always behavior of systemd isn't automatically honored](https://unix.stackexchange.com/questions/289629/systemd-restart-always-is-not-honored), and we will need for the Consul Agents to restart while they try to connect to the server (which could still be coming up), the first thing we will do is get our Consul systemd service to keep trying to restart ad infinitum. Modify our **templates/consul.service.j2** file to look like:
 

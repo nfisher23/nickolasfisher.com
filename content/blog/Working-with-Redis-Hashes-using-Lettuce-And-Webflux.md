@@ -7,7 +7,7 @@ tags: [java, spring, reactive, webflux, lettuce, redis]
 
 There are about [15 or so commands you can execute against redis for hash types](https://redis.io/commands/#hash) as of this writing. This article will demonstrate some of the more common operations you're likely to need when using lettuce as your client.
 
-To start with, you're going to want to make sure you have either an [embedded redis instance configured with lettuce](https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux) or a [redis test container configured for lettuce](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux), which will make what follows much more straightforward to grok. And the source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).
+To start with, you're going to want to make sure you have either an [embedded redis instance configured with lettuce](https://nickolasfisher.com/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux) or a [redis test container configured for lettuce](https://nickolasfisher.com/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux), which will make what follows much more straightforward to grok. And the source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).
 
 Hashes in redis are basically just objects. There's a key to get to the object, then buried within that initial key are a bunch of other keys that point to values. Another way to think of hashes are a key that points to a bunch of key/value pairs, all of which are string values.
 
@@ -46,7 +46,7 @@ public class HashesTest extends BaseSetupAndTeardownRedis {
 
 ```
 
-Note that the **BaseSetupAndTeardownRedis** abstract base class does what it says it does: sets up redis and tears it down when we're done. For details on how that works, you can refer to the related post about [working with list data types in redis using lettuce](https://nickolasfisher.com/blog/Working-with-Lists-in-Redis-using-Lettuce-and-Webflux).
+Note that the **BaseSetupAndTeardownRedis** abstract base class does what it says it does: sets up redis and tears it down when we're done. For details on how that works, you can refer to the related post about [working with list data types in redis using lettuce](https://nickolasfisher.com/blog/working-with-lists-in-redis-using-lettuce-and-webflux).
 
 The above example shows that we can set key/value pairs inside of our key. In this case we set three values, we then use a method that enumerates all the key/value pairs inside of our previously defined hash set and asserts that they were set up correctly.
 

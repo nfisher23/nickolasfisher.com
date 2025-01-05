@@ -7,7 +7,7 @@ tags: [java, spring, reactive, webflux]
 
 Sample code for this article [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience).
 
-In memory caching can significantly improve performance in a microservices environment, usually because of the tail latency involved in calling downstream services. Caching can also _help_ with resilience, though the extent to which that matters will depend on how you're actually leveraging that caching. There are two flavors of caching that you're like to want to use, the first is using the Mono as a hot source \[which is demonstrated here\], and the second would be when you want to [selectively cache individual key/value pairs](https://nickolasfisher.com/blog/How-to-use-Caffeine-Caches-Effectively-in-Spring-Boot-Webflux).
+In memory caching can significantly improve performance in a microservices environment, usually because of the tail latency involved in calling downstream services. Caching can also _help_ with resilience, though the extent to which that matters will depend on how you're actually leveraging that caching. There are two flavors of caching that you're like to want to use, the first is using the Mono as a hot source \[which is demonstrated here\], and the second would be when you want to [selectively cache individual key/value pairs](https://nickolasfisher.com/blog/how-to-use-caffeine-caches-effectively-in-spring-boot-webflux).
 
 Caching in reactor when using a Mono as a hot source is pretty straightforward, but there is one gotcha. I will demonstrate how to cache, and also how to write automated tests for that caching behavior, in this post.
 

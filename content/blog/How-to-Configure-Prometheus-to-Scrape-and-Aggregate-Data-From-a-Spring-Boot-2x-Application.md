@@ -7,7 +7,7 @@ tags: [java, spring, DevOps, maven, prometheus]
 
 You can see the source code for this post [on Github](https://github.com/nfisher23/prometheus-metrics-ex).
 
-Following up on the last post \[ [How to Expose Meaningful Prometheus Metrics In a Spring Boot 2.x Application](https://nickolasfisher.com/blog/How-to-Expose-Meaningful-Prometheus-Metrics-In-a-Spring-Boot-2x-Application)\], if we have metrics exposed but they don't go anywhere, are there metrics exposed at all?
+Following up on the last post \[ [How to Expose Meaningful Prometheus Metrics In a Spring Boot 2.x Application](https://nickolasfisher.com/blog/how-to-expose-meaningful-prometheus-metrics-in-a-spring-boot-2x-application)\], if we have metrics exposed but they don't go anywhere, are there metrics exposed at all?
 
 Yes, there are metrics exposed, they're just not very useful. What we really want is to aggregate them and ship them to a data store so that we can view their evolution over time.
 

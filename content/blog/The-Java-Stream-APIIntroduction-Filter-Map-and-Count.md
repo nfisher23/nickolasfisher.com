@@ -106,7 +106,7 @@ public void parallelCount() {
 
 ```
 
-When it comes to parallel streams, a good rule of thumb is to make sure that whatever you're doing doesn't manipulate a shared state. I will cover parallel streams in detail in a [different post](https://nickolasfisher.com/blog/The-Java-Stream-API-Parallel-Streams).
+When it comes to parallel streams, a good rule of thumb is to make sure that whatever you're doing doesn't manipulate a shared state. I will cover parallel streams in detail in a [different post](https://nickolasfisher.com/blog/the-java-stream-api-parallel-streams).
 
 Finally, a often used method on streams is the `map(..)` method. `map(..)` allows you to take an object and manipulate it for downstream usage. Here, we will add the string " Smith" to every name, so our collection
 will look like "John Smith", "Jacob Smith", "Jerry Smith", etc:

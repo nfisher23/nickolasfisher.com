@@ -9,7 +9,7 @@ The source code for this post [can be found on Github](https://github.com/nfishe
 
 When you update an item in DynamoDB, you can optionally update the item in place. That is, instead of **read-increment-write**, you can just issue a command that says **increment this value in place**. This behavior is detailed in the [AWS documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html#WorkingWithItems.AtomicCounters), and I will provide an example for how to do so with the Java AWS SDK 2.0, which has full reactive support.
 
-We will start by building off work done on a previous post where we [set up an embedded DynamoDB instance and integrated it with the AWS SDK 2.0](https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing). With that in place, we can create a test table and add an item to work with \[we obviously will need an item to increment in order to prove this out\]:
+We will start by building off work done on a previous post where we [set up an embedded DynamoDB instance and integrated it with the AWS SDK 2.0](https://nickolasfisher.com/blog/configuring-an-in-memory-dynamodb-instance-with-java-for-integration-testing). With that in place, we can create a test table and add an item to work with \[we obviously will need an item to increment in order to prove this out\]:
 
 ```java
     @Test

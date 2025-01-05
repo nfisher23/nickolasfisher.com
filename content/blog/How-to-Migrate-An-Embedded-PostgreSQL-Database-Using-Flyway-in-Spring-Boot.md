@@ -9,7 +9,7 @@ The source code for this post can be found [on GitHub](https://github.com/nfishe
 
 [Flyway](https://flywaydb.org/) is a database migration tool. _Migrating_ a database generally means that you are making a change to the way the database currently structures its data. It could also mean you are adding stuff like custom stored procedures or indexes to help speed up queries. Either way, migrating databases is easily the most difficult part of any deployment strategy--Flyway makes this process as painless as possible because it will, by default, _only run migration scripts that haven't yet run_.
 
-If you're also using an [Embedded PostgreSQL database](https://nickolasfisher.com/blog/How-to-Create-an-Embedded-PostgreSQL-Database-With-Spring-Boot) to handle database parity between environments, you will then have a much, much higher level of confidence that your changes will not blow everything up, as well as your embedded database precisely representing the data in the production database. This is a huge win for productivity and for reducing errors.
+If you're also using an [Embedded PostgreSQL database](https://nickolasfisher.com/blog/how-to-create-an-embedded-postgresql-database-with-spring-boot) to handle database parity between environments, you will then have a much, much higher level of confidence that your changes will not blow everything up, as well as your embedded database precisely representing the data in the production database. This is a huge win for productivity and for reducing errors.
 
 The first thing that we will need to do is add the flyway dependency which, if you're using Maven, is:
 

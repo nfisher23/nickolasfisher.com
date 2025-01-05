@@ -5,7 +5,7 @@ draft: false
 tags: [distributed systems, vagrant, DevOps]
 ---
 
-In our last post on [simulating a cloud environment on your local machine](https://nickolasfisher.com/blog/How-to-Set-Up-A-Private-Local-Network-On-Your-PC-With-VirtualBox),
+In our last post on [simulating a cloud environment on your local machine](https://nickolasfisher.com/blog/how-to-set-up-a-private-local-network-on-your-pc-with-virtualbox),
 we saw that we could use virtual box to create a virtual machine that could both talk to your local computer, with its own IP address, and to the internet.
 
 There is a better way than manually configuring each server you want to spin up, however, and that better way is called [Vagrant](https://www.vagrantup.com/). **Vagrant is awesome**.

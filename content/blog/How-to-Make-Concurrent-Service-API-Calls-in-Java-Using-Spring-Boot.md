@@ -17,7 +17,7 @@ For example, let's say you make three calls in one service, and let's further sa
 
 Then, if you do not make those calls concurrently, then you will have to wait 500 + 700 + 300 = 1500ms. If, however, you make all three at the same time and wait for them to complete before returning, you will only incur the cost of waiting for the longest service. In this case, that is Call #2, and means you will have to wait a total of 700ms.
 
-To demo one way to accomplish this in Spring Boot, we'll start by creating a service that simulates a long running process. We've done something similar to this in the post on [caching in Nginx](https://nickolasfisher.com/blog/How-to-Use-Nginxs-Caching-to-Improve-Site-Responsiveness). Go to the [spring initializr](https://start.spring.io/) and select the "Web" dependency. In the resulting file, change the server port to be on 9000 by modifying the **application.properties**:
+To demo one way to accomplish this in Spring Boot, we'll start by creating a service that simulates a long running process. We've done something similar to this in the post on [caching in Nginx](https://nickolasfisher.com/blog/how-to-use-nginxs-caching-to-improve-site-responsiveness). Go to the [spring initializr](https://start.spring.io/) and select the "Web" dependency. In the resulting file, change the server port to be on 9000 by modifying the **application.properties**:
 
 ```
 server.port=9000

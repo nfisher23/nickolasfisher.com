@@ -7,7 +7,7 @@ tags: [java, aws, dynamodb]
 
 The source code for this article [can be found on Github](https://github.com/nfisher23/webflux-and-dynamo).
 
-Using [embedded dynamodb for testing](https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing) is, in my experience, kind of flakey and unpredictable. Because of the weird way it pulls in SQLite on a per operating system basis, it can sometimes work locally and not work on the build server. Sometimes it's just not working for some unexplained reason and wiping the directory that the code is in and re-cloning fixes it. Not a fun time.
+Using [embedded dynamodb for testing](https://nickolasfisher.com/blog/configuring-an-in-memory-dynamodb-instance-with-java-for-integration-testing) is, in my experience, kind of flakey and unpredictable. Because of the weird way it pulls in SQLite on a per operating system basis, it can sometimes work locally and not work on the build server. Sometimes it's just not working for some unexplained reason and wiping the directory that the code is in and re-cloning fixes it. Not a fun time.
 
 Enter [test containers](https://www.testcontainers.org/). The drawback of test containers is that you need a docker daemon running wherever you're building your app, but outside of that they work very well. And because docker was built specifically to handle the portability issues involved with supporting different OS flavors and versions, anytime you need a mock service or a real service it will work much more predictably. This article will walk you through how to setup a dynamodb test container and use it in java.
 
@@ -61,7 +61,7 @@ public class DynamoTestContainerTest {
 
 ```
 
-If you're not using junit 5, you will basically need to start the container yourself with a **@BeforeEach** annotation. That is relatively straightforward and there's a similar example \[using a different container image, but everything else is the same\] in a previous article on [a redis test container for lettuce](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux).
+If you're not using junit 5, you will basically need to start the container yourself with a **@BeforeEach** annotation. That is relatively straightforward and there's a similar example \[using a different container image, but everything else is the same\] in a previous article on [a redis test container for lettuce](https://nickolasfisher.com/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux).
 
 With this in place, we have our container running and we can create a client ready to use it. I'll do a bad thing and copy-paste some code from the other test class to prove it will actually work once we use it. Here's the full example:
 

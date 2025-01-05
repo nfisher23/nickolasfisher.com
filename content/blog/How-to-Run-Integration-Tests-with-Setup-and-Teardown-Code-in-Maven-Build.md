@@ -179,4 +179,4 @@ Finally, we can update our pom file to include the exec-maven-plugin referenced 
 
 [Go get the source code](https://github.com/nfisher23/integration-testing-postgres-and-spring) and checkout the correct commit (991015831dd71bae58c8a045ffe76c390e9f2bf8) to see this in action.
 
-Finally, if you're using Spring, there is a way to [use Spring's ApplicationContext in your setup and teardown code](https://nickolasfisher.com/blog/How-to-Use-Springs-Dependency-Injection-in-Setup-And-Teardown-Code-For-Integration-Tests-With-Maven), which is a much more maintable way to ensure everything fits correctly together.
+Finally, if you're using Spring, there is a way to [use Spring's ApplicationContext in your setup and teardown code](https://nickolasfisher.com/blog/how-to-use-springs-dependency-injection-in-setup-and-teardown-code-for-integration-tests-with-maven), which is a much more maintable way to ensure everything fits correctly together.

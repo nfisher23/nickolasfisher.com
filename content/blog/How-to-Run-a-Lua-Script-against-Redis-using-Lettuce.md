@@ -31,7 +31,7 @@ OK
 
 ### Lua Scripting with Lettuce
 
-For a fast feedback loop, you can refer to either using [embedded redis to test lettuce](https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux) or [using a redis test container to test lettuce](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux) as a starting point. Once we have that, testing the same lua script with lettuce can look something like this:
+For a fast feedback loop, you can refer to either using [embedded redis to test lettuce](https://nickolasfisher.com/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux) or [using a redis test container to test lettuce](https://nickolasfisher.com/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux) as a starting point. Once we have that, testing the same lua script with lettuce can look something like this:
 
 ```java
     public static final String SAMPLE_LUA_SCRIPT = "return redis.call('set',KEYS[1],ARGV[1],'ex',ARGV[2])";
@@ -63,4 +63,4 @@ For a fast feedback loop, you can refer to either using [embedded redis to test 
 
 This code uses the same lua script that we used in the cli in the example before this to redis along with arguments. The third argument in our **eval** command is the keys, the fourth are arbitrary arguments
 
-This should get you started, and from here I would recommend you read through the [eval section in the redis docs](https://redis.io/commands/eval) as well as read my next post about [speeding up lua script execution by loading](https://nickolasfisher.com/blog/Pre-Loading-a-Lua-Script-into-Redis-With-Lettuce) the script into the redis cache and referencing it, rather than re-sending it over the wire each time.
+This should get you started, and from here I would recommend you read through the [eval section in the redis docs](https://redis.io/commands/eval) as well as read my next post about [speeding up lua script execution by loading](https://nickolasfisher.com/blog/pre-loading-a-lua-script-into-redis-with-lettuce) the script into the redis cache and referencing it, rather than re-sending it over the wire each time.

@@ -7,11 +7,11 @@ tags: [java, reactive, webflux, lettuce, redis]
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).
 
-Redis Transactions do not operate exactly the way you would expect if you're coming from a relational database management system like MySQL or postrgres. It's mostly useful for optimistic locking, but honestly there are better ways to accomplish many of the things you're probably trying to, like [running a lua script with arguments](https://nickolasfisher.com/blog/How-to-Run-a-Lua-Script-against-Redis-using-Lettuce) \[which is guaranteed to be atomic\]. The [documentation on transactions in redis](https://redis.io/topics/transactions) describes some of the caveats, the biggest one probably being that it does not support rollbacks, only commits or discards.
+Redis Transactions do not operate exactly the way you would expect if you're coming from a relational database management system like MySQL or postrgres. It's mostly useful for optimistic locking, but honestly there are better ways to accomplish many of the things you're probably trying to, like [running a lua script with arguments](https://nickolasfisher.com/blog/how-to-run-a-lua-script-against-redis-using-lettuce) \[which is guaranteed to be atomic\]. The [documentation on transactions in redis](https://redis.io/topics/transactions) describes some of the caveats, the biggest one probably being that it does not support rollbacks, only commits or discards.
 
 In general, I think there are better ways to do things in redis \[especially if you're using the reactive lettuce client, as we will see\] but presumably you have a use case for it which is why you're here.
 
-It will be easier to follow along with what follows if you have either [set up embedded redis for lettuce testing](https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux) or [set up a test container for lettuce testing](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux).
+It will be easier to follow along with what follows if you have either [set up embedded redis for lettuce testing](https://nickolasfisher.com/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux) or [set up a test container for lettuce testing](https://nickolasfisher.com/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux).
 
 ### Transactions and Lettuce
 

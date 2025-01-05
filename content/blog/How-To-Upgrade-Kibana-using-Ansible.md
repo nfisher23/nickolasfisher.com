@@ -7,9 +7,9 @@ tags: [vagrant, ansible, the elastic stack, DevOps, molecule]
 
 You can view the sample code associated with this post [on GitHub](https://github.com/nfisher23/some-ansible-examples).
 
-In a previous post on [Provisioning a Server with Kibana](https://nickolasfisher.com/blog/How-to-Provision-a-Linux-VM-With-Kibana-Using-Ansible), we saw that it's very straightforward to get kibana on a box.
+In a previous post on [Provisioning a Server with Kibana](https://nickolasfisher.com/blog/how-to-provision-a-linux-vm-with-kibana-using-ansible), we saw that it's very straightforward to get kibana on a box.
 
-Upgrading Kibana is also very straightforward (and nowhere near as complicated as [upgrading elasticsearch](https://nickolasfisher.com/blog/How-to-do-a-Rolling-Upgrade-of-an-Elasticsearch-Cluster-Using-Ansible)). That will be the subject of this post.
+Upgrading Kibana is also very straightforward (and nowhere near as complicated as [upgrading elasticsearch](https://nickolasfisher.com/blog/how-to-do-a-rolling-upgrade-of-an-elasticsearch-cluster-using-ansible)). That will be the subject of this post.
 
 First, initialize the ansible role using molecule, with vagrant as the VM provider:
 
@@ -51,7 +51,7 @@ And see kibana come up at 192.168.56.121:5601.
 
 ### Upgrading
 
-We can now begin the upgrade process. We will follow a similar pattern to [upgrading logstash](https://nickolasfisher.com/blog/How-to-do-a-Rolling-Upgrade-of-Multiple-Logstash-Instances-Using-Ansible) and [upgrading elasticsearch](https://nickolasfisher.com/blog/How-to-do-a-Rolling-Upgrade-of-an-Elasticsearch-Cluster-Using-Ansible) by adding another collection of tasks to perform the upgrade when we see fit. Change your **tasks/main.yml** file to look like:
+We can now begin the upgrade process. We will follow a similar pattern to [upgrading logstash](https://nickolasfisher.com/blog/how-to-do-a-rolling-upgrade-of-multiple-logstash-instances-using-ansible) and [upgrading elasticsearch](https://nickolasfisher.com/blog/how-to-do-a-rolling-upgrade-of-an-elasticsearch-cluster-using-ansible) by adding another collection of tasks to perform the upgrade when we see fit. Change your **tasks/main.yml** file to look like:
 
 ```yaml
 ---

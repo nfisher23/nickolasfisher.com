@@ -9,7 +9,7 @@ The source code for this post [can be found on Github](https://github.com/nfishe
 
 When someone talks about a caffeine cache, they are talking about [Ben Manes caching library](https://github.com/ben-manes/caffeine), which is a high performance, in memory cache written for java. If you're using reactive streams, you can't reliably use a LoadingCache because it's blocking by default. Thankfully, tapping into a couple of basic features of reactive streams and caffeine can get us there.
 
-I'm going to build off of some sample code in a previous blog post about a more primitive form of [caching in webflux](https://nickolasfisher.com/blog/InMemory-Caching-in-Sprint-Boot-WebfluxProject-Reactor), if you recall we had a **RetryService** that made a downstream network call like so:
+I'm going to build off of some sample code in a previous blog post about a more primitive form of [caching in webflux](https://nickolasfisher.com/blog/inmemory-caching-in-sprint-boot-webfluxproject-reactor), if you recall we had a **RetryService** that made a downstream network call like so:
 
 ```java
 @Service

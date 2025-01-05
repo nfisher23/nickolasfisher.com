@@ -9,7 +9,7 @@ The source code for this post is [available on Github](https://github.com/nfishe
 
 Things break. When you start adding more and more microservices, things will break a lot more. This post is about how to provide a degraded experience to your users when things break.
 
-I'm going to build off of some of the boilerplate code [written in previous blog posts](https://nickolasfisher.com/blog/How-to-Make-Sequential-API-Calls-and-Merge-the-Results-In-Spring-Boot-Webflux). If you'll recall, we had a **WebClient** configured like so:
+I'm going to build off of some of the boilerplate code [written in previous blog posts](https://nickolasfisher.com/blog/how-to-make-sequential-api-calls-and-merge-the-results-in-spring-boot-webflux). If you'll recall, we had a **WebClient** configured like so:
 
 ```java
 @Configuration

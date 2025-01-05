@@ -7,7 +7,7 @@ tags: [java, spring, reactive, webflux, lettuce, redis]
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/reactive-programming-webflux).
 
-In my last article on [running a lua script against redis with lettuce](https://nickolasfisher.com/blog/How-to-Run-a-Lua-Script-against-Redis-using-Lettuce), we just sent the entire script \[that redis will execute atomically\] along with the arguments every time. For very small scripts this is unlikely to be a problem, but there is definitely a more efficient way to do this, using [EVALSHA](https://redis.io/commands/evalsha).
+In my last article on [running a lua script against redis with lettuce](https://nickolasfisher.com/blog/how-to-run-a-lua-script-against-redis-using-lettuce), we just sent the entire script \[that redis will execute atomically\] along with the arguments every time. For very small scripts this is unlikely to be a problem, but there is definitely a more efficient way to do this, using [EVALSHA](https://redis.io/commands/evalsha).
 
 ### How EVALSHA Works
 

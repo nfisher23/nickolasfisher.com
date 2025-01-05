@@ -201,4 +201,4 @@ mvn clean install
 
 As a reminder, feel free to check out the [source code for this post on Github](https://github.com/nfisher23/reactive-programming-webflux/tree/master/mocking-and-unit-testing).
 
-**Important Update**: There is a follow up article on how to [ensure that your reactor Publisher is actually getting subscribed to](https://nickolasfisher.com/blog/How-to-Unit-Test-that-a-Reactor-Mono-was-Actually-Subscribed-to), rather than just the method that returns the mono being called, which I would recommend anyone new to testing in reactor read and understand.
+**Important Update**: There is a follow up article on how to [ensure that your reactor Publisher is actually getting subscribed to](https://nickolasfisher.com/blog/how-to-unit-test-that-a-reactor-mono-was-actually-subscribed-to), rather than just the method that returns the mono being called, which I would recommend anyone new to testing in reactor read and understand.

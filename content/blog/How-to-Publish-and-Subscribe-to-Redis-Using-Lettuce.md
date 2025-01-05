@@ -41,7 +41,7 @@ In java using lettuce, the process is pretty similar, but subscribing is a littl
 
 ### Publish/Subscribe with Lettuce
 
-For a fast feedback loop, you can refer to either using [embedded redis to test lettuce](https://nickolasfisher.com/blog/How-to-use-Embedded-Redis-to-Test-a-Lettuce-Client-in-Spring-Boot-Webflux) or [using a redis test container to test lettuce](https://nickolasfisher.com/blog/How-to-use-a-Redis-Test-Container-with-LettuceSpring-Boot-Webflux) as a starting point. Once that's in place, subscribing and publishing looks like this:
+For a fast feedback loop, you can refer to either using [embedded redis to test lettuce](https://nickolasfisher.com/blog/how-to-use-embedded-redis-to-test-a-lettuce-client-in-spring-boot-webflux) or [using a redis test container to test lettuce](https://nickolasfisher.com/blog/how-to-use-a-redis-test-container-with-lettucespring-boot-webflux) as a starting point. Once that's in place, subscribing and publishing looks like this:
 
 ```java
     @Test

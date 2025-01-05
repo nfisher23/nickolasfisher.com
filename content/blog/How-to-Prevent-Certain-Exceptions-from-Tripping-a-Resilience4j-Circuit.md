@@ -58,7 +58,7 @@ It's not uncommon to throw exceptions as a part of normal business logic--they m
 
 ```
 
-\[Note: this code above will make more sense if you've read a [previous article on Resilience4j's circuit breaker](https://nickolasfisher.com/blog/Configuring-Testing-and-Using-Circuit-Breakers-on-Rest-API-calls-with-Resilience4j) and downloaded the sample code from Github\]
+\[Note: this code above will make more sense if you've read a [previous article on Resilience4j's circuit breaker](https://nickolasfisher.com/blog/configuring-testing-and-using-circuit-breakers-on-rest-api-calls-with-resilience4j) and downloaded the sample code from Github\]
 
 If you want to not count specific types of exceptions as being errors, then the [CircuitBreakerConfig](https://javadoc.io/doc/io.github.resilience4j/resilience4j-circuitbreaker/1.2.0/io/github/resilience4j/circuitbreaker/CircuitBreakerConfig.html) provides you with a few different options. You can either [ignore the exceptions you want to no longer count](https://javadoc.io/static/io.github.resilience4j/resilience4j-circuitbreaker/1.2.0/io/github/resilience4j/circuitbreaker/CircuitBreakerConfig.Builder.html#ignoreException-java.util.function.Predicate-), or you can [be explicit about the kinds of exceptions you think are valid with recordException](https://javadoc.io/static/io.github.resilience4j/resilience4j-circuitbreaker/1.2.0/io/github/resilience4j/circuitbreaker/CircuitBreakerConfig.Builder.html#recordException-java.util.function.Predicate-).
 

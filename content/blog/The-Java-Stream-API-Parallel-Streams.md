@@ -38,7 +38,7 @@ public void countingInParallel() {
 ```
 
 Parallel Streams are best used for lots of data, but the same gotchas that exist in all concurrent programming still apply. For example,
-using our [Fibonacci Stream generator](https://nickolasfisher.com/blog/The-Java-Stream-API-Generating-Fibonacci-Numbers), if we find the first
+using our [Fibonacci Stream generator](https://nickolasfisher.com/blog/the-java-stream-api-generating-fibonacci-numbers), if we find the first
 Fibonacci number over 5000 in a synchronous manner, we can always find the same number later:
 
 ```java

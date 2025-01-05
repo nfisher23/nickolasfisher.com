@@ -7,7 +7,7 @@ tags: [java, spring, DevOps, kubernetes, kind]
 
 In this article, I'm going to show you how to bootstrap a local kubernetes cluster with a custom image, debug it, deploy a new image, then rollback to the old image.
 
-If you don't have a good way to get a local kubernetes cluster, you should check out: [how to setup and use kind locally](https://nickolasfisher.com/blog/How-to-Setup-and-Use-Kubernetes-in-Docker-kind). Big fan.
+If you don't have a good way to get a local kubernetes cluster, you should check out: [how to setup and use kind locally](https://nickolasfisher.com/blog/how-to-setup-and-use-kubernetes-in-docker-kind). Big fan.
 
 ## Create Cluster, Make Base Resources
 

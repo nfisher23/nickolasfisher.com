@@ -5,7 +5,7 @@ draft: false
 tags: [java, spring, reactive, aws, dynamodb, webflux]
 ---
 
-In my last post on [getting started with spring boot webflux and AWS DynamoDB](https://nickolasfisher.com/blog/DynamoDB-and-Spring-Boot-Webflux-A-Working-Introduction), I mentioned that it wasn't immediately obvious to find a way to customize the response code in a spring boot **RestController**, so I opted to use handlers instead.
+In my last post on [getting started with spring boot webflux and AWS DynamoDB](https://nickolasfisher.com/blog/dynamodb-and-spring-boot-webflux-a-working-introduction), I mentioned that it wasn't immediately obvious to find a way to customize the response code in a spring boot **RestController**, so I opted to use handlers instead.
 
 It turns out it was pretty simple. This handler code from that post:
 

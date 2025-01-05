@@ -11,7 +11,7 @@ This was confusing to me at first, so I dug in and got a solid example working t
 
 ### Some Background On Theory
 
-Reactive Programming across network boundaries is fundamentally different from just making asynchronous calls in exactly one way. We'll start with an example from a [previous blog post on making concurrent API calls in Spring Boot](https://nickolasfisher.com/blog/How-to-Make-Concurrent-Service-API-Calls-in-Java-Using-Spring-Boot). In that example, the primary block to consider was this:
+Reactive Programming across network boundaries is fundamentally different from just making asynchronous calls in exactly one way. We'll start with an example from a [previous blog post on making concurrent API calls in Spring Boot](https://nickolasfisher.com/blog/how-to-make-concurrent-service-api-calls-in-java-using-spring-boot). In that example, the primary block to consider was this:
 
 ```java
 @Component
@@ -76,7 +76,7 @@ public class SlowApplication {
 
 ```
 
-If we have this service running on **port 9000**, then we can configure a reactive `WebClient` to use that as a base url. Going off a previous post on [configuring Reactive Netty in Spring Boot](https://nickolasfisher.com/blog/How-to-Configure-Reactive-Netty-in-Spring-Boot-in-Depth), we can modify our event loop group to have just five threads:
+If we have this service running on **port 9000**, then we can configure a reactive `WebClient` to use that as a base url. Going off a previous post on [configuring Reactive Netty in Spring Boot](https://nickolasfisher.com/blog/how-to-configure-reactive-netty-in-spring-boot-in-depth), we can modify our event loop group to have just five threads:
 
 ```java
     @Bean

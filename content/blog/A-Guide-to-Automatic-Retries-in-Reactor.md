@@ -13,7 +13,7 @@ Reactor has a lot of extension points to pretty easily retry in the case of fail
 
 ## The Example Project
 
-I'm going to extend some sample code from a previous blog post on [testing WebClient using MockServer in Spring Boot Webflux](https://nickolasfisher.com/blog/How-to-use-Mock-Server-to-End-to-End-Test-Any-WebClient-Calls-in-Spring-Boot-Webflux) to bootstrap us here. Recall, in that post, we had a really simple service:
+I'm going to extend some sample code from a previous blog post on [testing WebClient using MockServer in Spring Boot Webflux](https://nickolasfisher.com/blog/how-to-use-mock-server-to-end-to-end-test-any-webclient-calls-in-spring-boot-webflux) to bootstrap us here. Recall, in that post, we had a really simple service:
 
 ```java
 @Service

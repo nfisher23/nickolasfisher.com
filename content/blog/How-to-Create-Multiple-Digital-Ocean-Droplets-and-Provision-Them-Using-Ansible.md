@@ -5,7 +5,7 @@ draft: false
 tags: [ansible, DevOps, digital ocean]
 ---
 
-In a previous post, we saw [how to create a digital ocean droplet and provision it with Ansible](https://nickolasfisher.com/blog/How-To-Create-a-Digital-Ocean-Droplet-and-Provision-It-Using-Ansible). Creating multiple droplets is very similar, you mostly just have to pay attention to the response object that you get back, which is different in the single vs. the many case.
+In a previous post, we saw [how to create a digital ocean droplet and provision it with Ansible](https://nickolasfisher.com/blog/how-to-create-a-digital-ocean-droplet-and-provision-it-using-ansible). Creating multiple droplets is very similar, you mostly just have to pay attention to the response object that you get back, which is different in the single vs. the many case.
 
 ### Creating Multiple Droplets
 

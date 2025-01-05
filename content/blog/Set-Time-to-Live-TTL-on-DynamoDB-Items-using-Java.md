@@ -7,7 +7,7 @@ tags: [java, distributed systems, aws, dynamodb, webflux]
 
 In this post, we'll demonstrate how [expiring items in DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html) works in java, using the AWS SDK 2.0+, which has full reactive support.
 
-We will leverage work done in a previous post, which [setup an embedded DynamoDB instance for integration testing](https://nickolasfisher.com/blog/Configuring-an-In-Memory-DynamoDB-instance-with-Java-for-Integration-Testing), and [the source code is available on Github](https://github.com/nfisher23/webflux-and-dynamo) for this and previous posts related to this topic.
+We will leverage work done in a previous post, which [setup an embedded DynamoDB instance for integration testing](https://nickolasfisher.com/blog/configuring-an-in-memory-dynamodb-instance-with-java-for-integration-testing), and [the source code is available on Github](https://github.com/nfisher23/webflux-and-dynamo) for this and previous posts related to this topic.
 
 ## Background - How it Works
 

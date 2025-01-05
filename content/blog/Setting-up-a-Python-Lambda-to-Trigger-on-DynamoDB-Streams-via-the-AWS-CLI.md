@@ -7,7 +7,7 @@ tags: [DevOps, aws, dynamodb, aws-lambda]
 
 DynamoDB streams record information about what has changed in a DynamoDB table, and AWS lambdas are ways to run code without managing servers yourself. DynamoDB streams also have an integration with AWS Lambdas so that any change to a DynamoDB table can be processed by an AWS Lambda--still without worrying about keeping your servers up or maintaining them. That is the subject of this post.
 
-We'll be using [localstack](https://github.com/localstack/localstack) to prove this out. You can follow along with previous blog posts \[like this one about [python lambdas and localstack](https://nickolasfisher.com/blog/Basic-Python-Lambda-Function-Uploads-using-the-AWS-CLI)\] of mine for how to do AWS stuff with localstack.
+We'll be using [localstack](https://github.com/localstack/localstack) to prove this out. You can follow along with previous blog posts \[like this one about [python lambdas and localstack](https://nickolasfisher.com/blog/basic-python-lambda-function-uploads-using-the-aws-cli)\] of mine for how to do AWS stuff with localstack.
 
 **Important Note:** Localstack has a bug, which they claim to have fixed, where lambdas invoked inside the localstack container can't call other localstack resources, like sns or s3. I was able to hack around this and will cover the hack towards the end of this article. If you need to call other AWS resources with your lambda \[as will very often be the case\], then to really test it you'll just have to bite the bullet and use AWS itself as of now.
 

@@ -7,7 +7,7 @@ tags: [java, spring, testing]
 
 The source code for what follows [can be found on Github](https://github.com/nfisher23/java-failure-and-resilience).
 
-Very often, you will want to test service api clients using a [Mock Server](https://www.mock-server.com/) \[for example, [testing the spring webclient with mockserver](https://nickolasfisher.com/blog/How-to-use-Mock-Server-to-End-to-End-Test-Any-WebClient-Calls-in-Spring-Boot-Webflux)\]. And since network latency is a fact of life, not something we can merely ignore, actually injecting some latency to simulate timeouts will give us greater confidence that our system will behave as expected.
+Very often, you will want to test service api clients using a [Mock Server](https://www.mock-server.com/) \[for example, [testing the spring webclient with mockserver](https://nickolasfisher.com/blog/how-to-use-mock-server-to-end-to-end-test-any-webclient-calls-in-spring-boot-webflux)\]. And since network latency is a fact of life, not something we can merely ignore, actually injecting some latency to simulate timeouts will give us greater confidence that our system will behave as expected.
 
 ### Boilerplate for mock server
 

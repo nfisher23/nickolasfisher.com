@@ -7,7 +7,7 @@ tags: [java, i/o, performance testing, jmh]
 
 ﻿You can view the sample code associated with this post [on GitHub](https://github.com/nfisher23/io-tuning).
 
-Now that we know [how to benchmark using junit and jmh](https://nickolasfisher.com/blog/How-to-Benchmark-Java-Code-Using-JUnit-and-JMH), let's put it to the test and try to optimize some basic I/O operations. While filesystem tasks are much less common in the web-enabled world, understanding the basics can help us when we move on to streams across network connections.
+Now that we know [how to benchmark using junit and jmh](https://nickolasfisher.com/blog/how-to-benchmark-java-code-using-junit-and-jmh), let's put it to the test and try to optimize some basic I/O operations. While filesystem tasks are much less common in the web-enabled world, understanding the basics can help us when we move on to streams across network connections.
 
 First, we'll create a file to read from. I opt to make a comma separated variable (csv) file that has 10,000 lines of 1,2,3...,8,9:
 

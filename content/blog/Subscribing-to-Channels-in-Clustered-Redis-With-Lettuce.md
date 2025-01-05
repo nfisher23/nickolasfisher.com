@@ -5,13 +5,13 @@ draft: false
 tags: [java, spring, webflux, lettuce, redis]
 ---
 
-We already know [how to subscribe to redis using lettuce](https://nickolasfisher.com/blog/Subscribing-to-Redis-Channels-with-Java-Spring-Boot-and-Lettuce) when it's not running in clustered mode. If it's running in clustered mode, it's not terribly different, but I did discover one thing that is interesting, which is the subject of this article.
+We already know [how to subscribe to redis using lettuce](https://nickolasfisher.com/blog/subscribing-to-redis-channels-with-java-spring-boot-and-lettuce) when it's not running in clustered mode. If it's running in clustered mode, it's not terribly different, but I did discover one thing that is interesting, which is the subject of this article.
 
-What follows will be much easier to grok if you have already [set up a locally running redis cluster](https://nickolasfisher.com/blog/Bootstrap-a-Local-Sharded-Redis-Cluster-in-Five-Minutes) for testing. And the source code for everything that follows [can be found on github](https://github.com/nfisher23/reactive-programming-webflux).
+What follows will be much easier to grok if you have already [set up a locally running redis cluster](https://nickolasfisher.com/blog/bootstrap-a-local-sharded-redis-cluster-in-five-minutes) for testing. And the source code for everything that follows [can be found on github](https://github.com/nfisher23/reactive-programming-webflux).
 
 ### Lettuce Configuration
 
-Building off a previous article where we [configured a spring boot webflux application to connect to clustered redis](https://nickolasfisher.com/blog/Configuring-LettuceWebflux-to-work-with-Clustered-Redis), we will need to modify our config slightly to support subscriptions:
+Building off a previous article where we [configured a spring boot webflux application to connect to clustered redis](https://nickolasfisher.com/blog/configuring-lettucewebflux-to-work-with-clustered-redis), we will need to modify our config slightly to support subscriptions:
 
 ```java
 @Configuration

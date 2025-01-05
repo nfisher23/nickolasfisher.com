@@ -1,6 +1,29 @@
-.idea
-/node_modules
+
+ # Ignore Hugo's generated files
 .hugo_build.lock
-/public
+ /public/
+ /resources/_gen/
+ /hugo_stats.json
+
+ # Ignore temporary and backup files
+ *.bak
+ *.swp
+ *.swo
+ *.DS_Store
+ Thumbs.db
+
+ # Ignore build and dependency directories
+ /node_modules/
+ /dist/
+ /build/
+
+ /# Ignore OS-specific files
+ *.log
+
+ # Ignore IDE specific files
+ .idea/
+ .vscode/
+
+# infra
 .terraform
 .terraform.lock.hcl

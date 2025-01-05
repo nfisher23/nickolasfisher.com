@@ -1,0 +1,126 @@
+<!doctype html><html lang=en-US class="scroll-smooth dark"><head><meta charset=UTF-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><title>How to Automatically Retry on a Webclient Timeout in Spring Boot Webflux</title>
+<meta name=description content="The source code for this post can be found on Github.
+Intermittent network flapping, or any one downstream host of several clones responding slowly, is a not uncommon thing that happens in a microservices architecture, especially if you&rsquo;re using java applications, where the JIT compiler can often make initial requests slower than they ought to be."><link rel=canonical href=https://www.nickolasfisher.com/blog/how-to-automatically-retry-on-a-webclient-timeout-in-spring-boot-webflux/><link rel=robots href=/robots.txt><link rel=icon type=image/x-icon href=/img/nficon.png><script type=text/javascript src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type=text/x-mathjax-config>MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });</script><link rel=stylesheet href="https://www.nickolasfisher.com/css/app.min.dee9c4afb37cb95c5d39c976614ef6f95398bcba4b6e73066c44de2a3a6543ed.css"></head><body class="max-w-screen-md mx-auto px-2.5"><div class=header><header class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 pt-16 py-12"><div class="flex-none w-20 h-20 rounded-full overflow-hidden"><a href=https://www.nickolasfisher.com/><img srcset="/img/profile-picture_hu4241499301404582006.jpg 80w" src=/img/profile-picture.jpg width=386 height=345 alt="Nick Fisher's tech blog"></a></div><div class="flex flex-col gap-5"><a href=https://www.nickolasfisher.com/><h1 id=site-title>Nick Fisher's tech blog</h1></a><nav><ul><li><a href=/>home</a></li><li><a href=/blog>blog</a></li><li><a href=/about>about</a></li><li><a href=/tags>Tags</a></li></ul></nav></div></header><button class=toggle-theme aria-label="Toggle Theme" title="Toggle Theme" onclick=toggleTheme()>
+<span class="theme-icon light"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentcolor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75.0 11-7.5.0 3.75 3.75.0 017.5.0z"/></svg> </span><span class="theme-icon dark"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentcolor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718.0 0118 15.75c-5.385.0-9.75-4.365-9.75-9.75.0-1.33.266-2.597.748-3.752A9.753 9.753.0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753.0 009.002-5.998z"/></svg> </span></button>
+<script>document.addEventListener("DOMContentLoaded",function(){const e=localStorage.getItem("theme");setTheme(!e||e==="light"?"light":e)});function setTheme(e){const t=document.querySelector("html");localStorage.setItem("theme",e),e==="light"?(t.classList.contains("dark")&&document.querySelector("html").classList.remove("dark"),document.querySelector(".theme-icon.light").style.display="none",document.querySelector(".theme-icon.dark").style.display="block"):(t.classList.contains("dark")||document.querySelector("html").classList.add("dark"),document.querySelector(".theme-icon.dark").style.display="none",document.querySelector(".theme-icon.light").style.display="block")}function toggleTheme(){const e=localStorage.getItem("theme");setTheme(e==="light"?"dark":"light")}</script></div><main id=content><article class="flex flex-col gap-10"><header class="flex flex-col gap-2"><h2 class=title-large>How to Automatically Retry on a Webclient Timeout in Spring Boot Webflux</h2><div class=meta><time datetime="2020-10-03 16:09:51 +0000 UTC" title='Sat, Oct 3, 2020, 4:09 PM UTC'>03/10/2020 - Estimated reading time: 3 minutes</time></div></header><section><p>The source code for this post <a href=https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience>can be found on Github</a>.</p><p>Intermittent network flapping, or any one downstream host of several clones responding slowly, is a not uncommon thing that happens in a microservices architecture, especially if you&rsquo;re using java applications, where the JIT compiler can often make initial requests slower than they ought to be.</p><p>Depending on the request that you&rsquo;re making, it can often be retried effectively to smooth out these effects to your consumer. Doing so in a straightforward and declarative way will be the subject of this post.</p><h3 id=the-app>The App</h3><p>I&rsquo;m going to build off of some work in <a href=https://nickolasfisher.com/blog/How-to-Have-a-Fallback-on-Errors-Calling-Downstream-Services-in-Spring-Boot-Webflux>a previous blog post about fallbacks</a>. You&rsquo;ll recall that we had setup a WebClient like so:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=display:flex><span>@Configuration
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>Config</span> {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    @Bean(<span style=color:#f1fa8c>&#34;service-a-web-client&#34;</span>)
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> WebClient <span style=color:#50fa7b>serviceAWebClient</span>() {
+</span></span><span style=display:flex><span>        HttpClient httpClient <span style=color:#ff79c6>=</span> HttpClient.<span style=color:#50fa7b>create</span>().<span style=color:#50fa7b>tcpConfiguration</span>(tcpClient <span style=color:#ff79c6>-&gt;</span>
+</span></span><span style=display:flex><span>                tcpClient.<span style=color:#50fa7b>option</span>(ChannelOption.<span style=color:#50fa7b>CONNECT_TIMEOUT_MILLIS</span>, 1000)
+</span></span><span style=display:flex><span>                        .<span style=color:#50fa7b>doOnConnected</span>(connection <span style=color:#ff79c6>-&gt;</span> connection.<span style=color:#50fa7b>addHandlerLast</span>(<span style=color:#ff79c6>new</span> ReadTimeoutHandler(1000, TimeUnit.<span style=color:#50fa7b>MILLISECONDS</span>)))
+</span></span><span style=display:flex><span>        );
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>return</span> WebClient.<span style=color:#50fa7b>builder</span>()
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>baseUrl</span>(<span style=color:#f1fa8c>&#34;http://your-base-url.com&#34;</span>)
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>clientConnector</span>(<span style=color:#ff79c6>new</span> ReactorClientHttpConnector(httpClient))
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>build</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>This <strong>WebClient</strong> already has a timeout of 1 second configured, which in many cases is quite conservative [well written, performance focused services usually respond much faster than that].</p><h3 id=setting-up-the-retry>Setting up the retry</h3><p>I&rsquo;ll also steal our DTO from the last post:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>WelcomeMessage</span> {
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>private</span> String message;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#50fa7b>WelcomeMessage</span>() {}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#50fa7b>WelcomeMessage</span>(String message) {
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>this</span>.<span style=color:#50fa7b>message</span> <span style=color:#ff79c6>=</span> message;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> String <span style=color:#50fa7b>getMessage</span>() {
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>return</span> message;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#8be9fd>void</span> <span style=color:#50fa7b>setMessage</span>(String message) {
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>this</span>.<span style=color:#50fa7b>message</span> <span style=color:#ff79c6>=</span> message;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>With this, let&rsquo;s set up a barebones services that will soon contain the code we&rsquo;re looking for:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=display:flex><span>@Service
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>RetryService</span> {
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>private</span> <span style=color:#8be9fd;font-style:italic>final</span> WebClient serviceAWebClient;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#50fa7b>RetryService</span>(@Qualifier(<span style=color:#f1fa8c>&#34;service-a-web-client&#34;</span>) WebClient serviceAWebClient) {
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>this</span>.<span style=color:#50fa7b>serviceAWebClient</span> <span style=color:#ff79c6>=</span> serviceAWebClient;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> Mono<span style=color:#ff79c6>&lt;</span>WelcomeMessage<span style=color:#ff79c6>&gt;</span> <span style=color:#50fa7b>getWelcomeMessageAndHandleTimeout</span>(String locale) {
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>return</span> Mono.<span style=color:#50fa7b>empty</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>This code doesn&rsquo;t do anything yet. Now let&rsquo;s make a test class, configured with the familiar MockServer setup that we&rsquo;ve leveraged before:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=display:flex><span>@ExtendWith(MockServerExtension.<span style=color:#50fa7b>class</span>)
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>RetryServiceIT</span> {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#8be9fd;font-style:italic>static</span> <span style=color:#8be9fd;font-style:italic>final</span> <span style=color:#8be9fd>int</span> WEBCLIENT_TIMEOUT <span style=color:#ff79c6>=</span> 50;
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>private</span> <span style=color:#8be9fd;font-style:italic>final</span> ClientAndServer clientAndServer;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>private</span> RetryService retryService;
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>private</span> WebClient mockWebClient;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#50fa7b>RetryServiceIT</span>(ClientAndServer clientAndServer) {
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>this</span>.<span style=color:#50fa7b>clientAndServer</span> <span style=color:#ff79c6>=</span> clientAndServer;
+</span></span><span style=display:flex><span>        HttpClient httpClient <span style=color:#ff79c6>=</span> HttpClient.<span style=color:#50fa7b>create</span>()
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>tcpConfiguration</span>(tcpClient <span style=color:#ff79c6>-&gt;</span>
+</span></span><span style=display:flex><span>                        tcpClient.<span style=color:#50fa7b>option</span>(ChannelOption.<span style=color:#50fa7b>CONNECT_TIMEOUT_MILLIS</span>, WEBCLIENT_TIMEOUT)
+</span></span><span style=display:flex><span>                                .<span style=color:#50fa7b>doOnConnected</span>(connection <span style=color:#ff79c6>-&gt;</span> connection.<span style=color:#50fa7b>addHandlerLast</span>(
+</span></span><span style=display:flex><span>                                        <span style=color:#ff79c6>new</span> ReadTimeoutHandler(WEBCLIENT_TIMEOUT, TimeUnit.<span style=color:#50fa7b>MILLISECONDS</span>))
+</span></span><span style=display:flex><span>                                )
+</span></span><span style=display:flex><span>                );
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>this</span>.<span style=color:#50fa7b>mockWebClient</span> <span style=color:#ff79c6>=</span> WebClient.<span style=color:#50fa7b>builder</span>()
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>baseUrl</span>(<span style=color:#f1fa8c>&#34;http://localhost:&#34;</span> <span style=color:#ff79c6>+</span> <span style=color:#ff79c6>this</span>.<span style=color:#50fa7b>clientAndServer</span>.<span style=color:#50fa7b>getPort</span>())
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>clientConnector</span>(<span style=color:#ff79c6>new</span> ReactorClientHttpConnector(httpClient))
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>build</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    @BeforeEach
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#8be9fd>void</span> <span style=color:#50fa7b>setup</span>() {
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>this</span>.<span style=color:#50fa7b>retryService</span> <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>new</span> RetryService(mockWebClient);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    @AfterEach
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#8be9fd>void</span> <span style=color:#50fa7b>clearExpectations</span>() {
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>this</span>.<span style=color:#50fa7b>clientAndServer</span>.<span style=color:#50fa7b>reset</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    @Test
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#8be9fd>void</span> <span style=color:#50fa7b>retryOnTimeout</span>() {
+</span></span><span style=display:flex><span>        AtomicInteger counter <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>new</span> AtomicInteger();
+</span></span><span style=display:flex><span>        HttpRequest expectedRequest <span style=color:#ff79c6>=</span> request()
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>withPath</span>(<span style=color:#f1fa8c>&#34;/locale/en_US/message&#34;</span>)
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>withMethod</span>(HttpMethod.<span style=color:#50fa7b>GET</span>.<span style=color:#50fa7b>name</span>());
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>this</span>.<span style=color:#50fa7b>clientAndServer</span>.<span style=color:#50fa7b>when</span>(
+</span></span><span style=display:flex><span>                expectedRequest
+</span></span><span style=display:flex><span>        ).<span style=color:#50fa7b>respond</span>(
+</span></span><span style=display:flex><span>                httpRequest <span style=color:#ff79c6>-&gt;</span> {
+</span></span><span style=display:flex><span>                    <span style=color:#ff79c6>if</span> (counter.<span style=color:#50fa7b>incrementAndGet</span>() <span style=color:#ff79c6>&lt;</span> 2) {
+</span></span><span style=display:flex><span>                        Thread.<span style=color:#50fa7b>sleep</span>(WEBCLIENT_TIMEOUT <span style=color:#ff79c6>+</span> 10);
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                    <span style=color:#ff79c6>return</span> HttpResponse.<span style=color:#50fa7b>response</span>()
+</span></span><span style=display:flex><span>                            .<span style=color:#50fa7b>withBody</span>(<span style=color:#f1fa8c>&#34;{\&#34;message\&#34;: \&#34;hello\&#34;}&#34;</span>)
+</span></span><span style=display:flex><span>                            .<span style=color:#50fa7b>withContentType</span>(MediaType.<span style=color:#50fa7b>APPLICATION_JSON</span>);
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>        );
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        StepVerifier.<span style=color:#50fa7b>create</span>(retryService.<span style=color:#50fa7b>getWelcomeMessageAndHandleTimeout</span>(<span style=color:#f1fa8c>&#34;en_US&#34;</span>))
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>expectNextMatches</span>(welcomeMessage <span style=color:#ff79c6>-&gt;</span> <span style=color:#f1fa8c>&#34;hello&#34;</span>.<span style=color:#50fa7b>equals</span>(welcomeMessage.<span style=color:#50fa7b>getMessage</span>()))
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>verifyComplete</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>this</span>.<span style=color:#50fa7b>clientAndServer</span>.<span style=color:#50fa7b>verify</span>(expectedRequest, VerificationTimes.<span style=color:#50fa7b>exactly</span>(3));
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>This code:</p><ol><li>Starts by looking for a GET request at the endpoint <strong>/locale/en_US/message</strong></li><li>Anything that matches that request path and HTTP method will then leverage an <a href=https://javadoc.io/static/org.mock-server/mockserver-core/5.6.1/org/mockserver/mock/action/ExpectationResponseCallback.html>ExpectationResponseCallback</a> to sleep for 10 milliseconds longer than our <strong>WebClient</strong> is configured to timeout on for the first two requests</li><li>After the first two requests are completed, the response will immediately return</li><li>We verify, using <a href=https://projectreactor.io/docs/test/release/api/index.html?reactor/test/StepVerifier.html>StepVerifier</a>, that there is one item in the <strong>Mono</strong> and that item is deserialized correctly.</li><li>We then assert that this endpoint was called three times, meaning the first two would have timed out, and the final one was successful.</li></ol><p>Now, following TDD, let&rsquo;s write code that passes this test:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> Mono<span style=color:#ff79c6>&lt;</span>WelcomeMessage<span style=color:#ff79c6>&gt;</span> <span style=color:#50fa7b>getWelcomeMessageAndHandleTimeout</span>(String locale) {
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>return</span> <span style=color:#ff79c6>this</span>.<span style=color:#50fa7b>serviceAWebClient</span>.<span style=color:#50fa7b>get</span>()
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>uri</span>(uriBuilder <span style=color:#ff79c6>-&gt;</span> uriBuilder.<span style=color:#50fa7b>path</span>(<span style=color:#f1fa8c>&#34;/locale/{locale}/message&#34;</span>).<span style=color:#50fa7b>build</span>(locale))
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>retrieve</span>()
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>bodyToMono</span>(WelcomeMessage.<span style=color:#50fa7b>class</span>)
+</span></span><span style=display:flex><span>                .<span style=color:#50fa7b>retryWhen</span>(
+</span></span><span style=display:flex><span>                    Retry.<span style=color:#50fa7b>backoff</span>(2, Duration.<span style=color:#50fa7b>ofMillis</span>(25))
+</span></span><span style=display:flex><span>                            .<span style=color:#50fa7b>filter</span>(throwable <span style=color:#ff79c6>-&gt;</span> throwable <span style=color:#ff79c6>instanceof</span> TimeoutException)
+</span></span><span style=display:flex><span>                );
+</span></span><span style=display:flex><span>    }
+</span></span></code></pre></div><p>This code:</p><ol><li>Makes a GET request to the locale endpoint specified, passing in the <strong>locale</strong> argument so that it gets interpolated.</li><li>Deserializes the response into a <strong>WelcomeMessage</strong></li><li>If that mono fails to complete, it will consult the specified <strong>retryWhen</strong> declaration.</li><li>We specify that any exception which is of type <strong>TimeoutException</strong> should be retried twice, for a total of three attempts.</li></ol><p>If you now run the test, it will pass. Remember to <a href=https://github.com/nfisher23/reactive-programming-webflux/tree/master/api-calls-and-resilience>check out the source code on Github</a>!</p></section><footer><div class="pb-14 taxonomy-list tags-list"><a href=/tags/java/ alt=Java>Java
+</a><a href=/tags/spring/ alt=Spring>Spring
+</a><a href=/tags/reactive/ alt=Reactive>Reactive
+</a><a href=/tags/webflux/ alt=Webflux>Webflux</a></div></footer></article></main><footer class="pt-5 pb-10 grid gap-3 sm:grid-cols-2"><div class="text-xs font-semibold text-gray-500 order-2 sm:order-1">© 2018-2025 —
+<a href=https://www.nickolasfisher.com/>Nick Fisher's tech blog</a></div><div class="order-1 sm:order-2"><ul class="flex sm:justify-end gap-5"><li><a href=https://www.linkedin.com/in/nick-fisher-software/ target=_blank rel="noopener noreferrer">LinkedIn</a></li><li><a href=https://github.com/nfisher23 target=_blank rel="noopener noreferrer">GitHub</a></li></ul></div></footer></body></html>

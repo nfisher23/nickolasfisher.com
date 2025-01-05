@@ -1,0 +1,165 @@
+<!doctype html><html lang=en-US class="scroll-smooth dark"><head><meta charset=UTF-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><title>How to do a Rolling Upgrade of an Elasticsearch Cluster Using Ansible</title>
+<meta name=description content="You can see the source code for this blog post on GitHub.
+In a previous post, we saw how to provision a multi-node elasticsearch cluster using ansible. The problem with that post is that, by the time I was done writing it, Elastic had already come out with a new version of elasticsearch. I&rsquo;m being mildly facetious, but not really. They release new versions very quickly, even by the standards of modern software engineering."><link rel=canonical href=https://www.nickolasfisher.com/blog/how-to-do-a-rolling-upgrade-of-an-elasticsearch-cluster-using-ansible/><link rel=robots href=/robots.txt><link rel=icon type=image/x-icon href=/img/nficon.png><script type=text/javascript src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type=text/x-mathjax-config>MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });</script><link rel=stylesheet href="https://www.nickolasfisher.com/css/app.min.dee9c4afb37cb95c5d39c976614ef6f95398bcba4b6e73066c44de2a3a6543ed.css"></head><body class="max-w-screen-md mx-auto px-2.5"><div class=header><header class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 pt-16 py-12"><div class="flex-none w-20 h-20 rounded-full overflow-hidden"><a href=https://www.nickolasfisher.com/><img srcset="/img/profile-picture_hu4241499301404582006.jpg 80w" src=/img/profile-picture.jpg width=386 height=345 alt="Nick Fisher's tech blog"></a></div><div class="flex flex-col gap-5"><a href=https://www.nickolasfisher.com/><h1 id=site-title>Nick Fisher's tech blog</h1></a><nav><ul><li><a href=/>home</a></li><li><a href=/blog>blog</a></li><li><a href=/about>about</a></li><li><a href=/tags>Tags</a></li></ul></nav></div></header><button class=toggle-theme aria-label="Toggle Theme" title="Toggle Theme" onclick=toggleTheme()>
+<span class="theme-icon light"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentcolor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75.0 11-7.5.0 3.75 3.75.0 017.5.0z"/></svg> </span><span class="theme-icon dark"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentcolor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718.0 0118 15.75c-5.385.0-9.75-4.365-9.75-9.75.0-1.33.266-2.597.748-3.752A9.753 9.753.0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753.0 009.002-5.998z"/></svg> </span></button>
+<script>document.addEventListener("DOMContentLoaded",function(){const e=localStorage.getItem("theme");setTheme(!e||e==="light"?"light":e)});function setTheme(e){const t=document.querySelector("html");localStorage.setItem("theme",e),e==="light"?(t.classList.contains("dark")&&document.querySelector("html").classList.remove("dark"),document.querySelector(".theme-icon.light").style.display="none",document.querySelector(".theme-icon.dark").style.display="block"):(t.classList.contains("dark")||document.querySelector("html").classList.add("dark"),document.querySelector(".theme-icon.dark").style.display="none",document.querySelector(".theme-icon.light").style.display="block")}function toggleTheme(){const e=localStorage.getItem("theme");setTheme(e==="light"?"dark":"light")}</script></div><main id=content><article class="flex flex-col gap-10"><header class="flex flex-col gap-2"><h2 class=title-large>How to do a Rolling Upgrade of an Elasticsearch Cluster Using Ansible</h2><div class=meta><time datetime="2019-03-16 23:17:03 +0000 UTC" title='Sat, Mar 16, 2019, 11:17 PM UTC'>16/03/2019 - Estimated reading time: 4 minutes</time></div></header><section><p>You can see the source code for this blog post <a href=https://github.com/nfisher23/some-ansible-examples>on GitHub</a>.</p><p>In a previous post, we saw <a href=https://nickolasfisher.com/blog/How-to-Provision-a-Multi-Node-Elasticsearch-Cluster-Using-Ansible>how to provision a multi-node elasticsearch cluster using ansible</a>. The problem with that post is that, by the time I was done writing it, <em>Elastic had already come out with a new version of elasticsearch</em>. I&rsquo;m being mildly facetious, but not really. They release new versions very quickly, even by the standards of modern software engineering.</p><p>It would be wise, therefore, to think about upgrading from the very beginning. The recommended way to upgrade versions of elasticsearch from 5.6 onwards is a <a href=https://www.elastic.co/guide/en/elasticsearch/reference/current/rolling-upgrades.html>rolling upgrade</a>. As you can see from that article, upgrading (even in place) elasticsearch is not trivial by any stretch of the imagination.</p><p>However, it can be done, and in this post I&rsquo;ll show you one way to do it using ansible.</p><h3 id=doing-the-upgrade>Doing the Upgrade</h3><p>To start with, I&rsquo;ll create an ansible role using molecule to demo what is required:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ molecule init role -r upgrade-elasticsearch-cluster -d vagrant
+</span></span></code></pre></div><p>I&rsquo;m choosing Vagrant as my VM driver and calling this role upgrade-elasticsearch-cluster.</p><p>So I don&rsquo;t have to reinvent the wheel I&rsquo;m reusing the role that installs elasticsearch (version 6.3.0) by including it in my <strong>meta/main.yml</strong> file:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span><span style=color:#ff79c6>dependencies</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#ff79c6>role</span>: install-elasticsearch-cluster
+</span></span></code></pre></div><p>That role is still a WIP, and in fact I changed the discovery IP addresses to be 192.168.56.101-103, hardcoded in the configuration file. To demonstrate a minimum viable product for this example I&rsquo;ll reuse that <strong>molecule/default/molecule.yml</strong> platform&rsquo;s section:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#ff79c6>platforms</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#ff79c6>name</span>: elasticsearchNode1
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>box</span>: ubuntu/xenial64
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>memory</span>: <span style=color:#bd93f9>4096</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>provider_raw_config_args</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#f1fa8c>&#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>interfaces</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#ff79c6>auto_config</span>: <span style=color:#ff79c6>true</span>
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>network_name</span>: private_network
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>ip</span>: <span style=color:#bd93f9>192.168.56.101</span>
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>type</span>: static
+</span></span><span style=display:flex><span>  - <span style=color:#ff79c6>name</span>: elasticsearchNode2
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>box</span>: ubuntu/xenial64
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>memory</span>: <span style=color:#bd93f9>4096</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>provider_raw_config_args</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#f1fa8c>&#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>interfaces</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#ff79c6>auto_config</span>: <span style=color:#ff79c6>true</span>
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>network_name</span>: private_network
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>ip</span>: <span style=color:#bd93f9>192.168.56.102</span>
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>type</span>: static
+</span></span><span style=display:flex><span>  - <span style=color:#ff79c6>name</span>: elasticsearchNode3
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>box</span>: ubuntu/xenial64
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>memory</span>: <span style=color:#bd93f9>4096</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>provider_raw_config_args</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#f1fa8c>&#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>interfaces</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#ff79c6>auto_config</span>: <span style=color:#ff79c6>true</span>
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>network_name</span>: private_network
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>ip</span>: <span style=color:#bd93f9>192.168.56.103</span>
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>type</span>: static
+</span></span></code></pre></div><p>This creates three virtual machines that will be provisioned with elasticsearch and join the same cluster. Also be sure to add some host variables to your <strong>molecule.yml</strong> file:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#ff79c6>provisioner</span>:
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>name</span>: ansible
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>inventory</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>host_vars</span>:
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>elasticsearchNode1</span>:
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>node_name</span>: es_node_1
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>is_master_node</span>: <span style=color:#ff79c6>true</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>es_version_to_upgrade_to</span>: elasticsearch-6.5.3.deb
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>elasticsearchNode2</span>:
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>node_name</span>: es_node_2
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>is_master_node</span>: <span style=color:#ff79c6>true</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>es_version_to_upgrade_to</span>: elasticsearch-6.5.3.deb
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>elasticsearchNode3</span>:
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>node_name</span>: es_node_3
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>is_master_node</span>: <span style=color:#ff79c6>false</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>es_version_to_upgrade_to</span>: elasticsearch-6.5.3.deb
+</span></span></code></pre></div><p>We will eventually be upgrading to version 6.5.3, and that will become clear soon.</p><p>We will create a boolean flag that allows us to upgrade elasticsearch and call it upgrade_es, change your <strong>defaults/main.yml</strong> file to look like this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span><span style=color:#ff79c6>upgrade_es</span>: <span style=color:#ff79c6>false</span>
+</span></span></code></pre></div><p>Then, you can make your <strong>tasks/main.yml</strong> file look like:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>- <span style=color:#ff79c6>include</span>: upgrade_es.yml
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>when</span>: upgrade_es
+</span></span></code></pre></div><p>And create a <strong>tasks/upgrade_es.yml</strong> file, which will house all of the upgrade logic:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span><span style=color:#6272a4># tasks file for upgrade-elasticsearch-cluster</span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: ensure elasticsearch already present
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>service</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>name</span>: elasticsearch
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>state</span>: started
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: ensure elasticsearch is up and available
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>wait_for</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>host</span>: <span style=color:#bd93f9>127.0.0.1</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>port</span>: <span style=color:#bd93f9>9200</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>delay</span>: <span style=color:#bd93f9>5</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: get elasticsearch to upgrade to
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>get_url</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>dest</span>: <span style=color:#f1fa8c>&#34;/etc/{{ es_version_to_upgrade_to }}&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>url</span>: <span style=color:#f1fa8c>&#34;https://artifacts.elastic.co/downloads/elasticsearch/{{ es_version_to_upgrade_to }}&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>checksum</span>: <span style=color:#f1fa8c>&#34;sha512:https://artifacts.elastic.co/downloads/elasticsearch/{{ es_version_to_upgrade_to }}.sha512&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: perform upgrade process as root
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>block</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#ff79c6>name</span>: disable shard allocation
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>uri</span>:
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>url</span>: http://127.0.0.1:9200/_cluster/settings
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>body</span>: <span style=color:#f1fa8c>&#39;{&#34;persistent&#34;:{&#34;cluster.routing.allocation.enable&#34;:&#34;none&#34;}}&#39;</span> <span style=color:#6272a4># specify no shard allocation</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>body_format</span>: json
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>method</span>: PUT
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    - <span style=color:#ff79c6>name</span>: stop non essential indexing to speed up shard recovery
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>uri</span>:
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>url</span>: http://127.0.0.1:9200/_flush/synced
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>method</span>: POST
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>ignore_errors</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    - <span style=color:#ff79c6>name</span>: get cluster id
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>uri</span>:
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>url</span>: http://127.0.0.1:9200
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>register</span>: pre_upgrade_cluster_info
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    - <span style=color:#ff79c6>name</span>: shut down node
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>service</span>:
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>name</span>: elasticsearch
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>state</span>: stopped
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    - <span style=color:#ff79c6>name</span>: upgrade node
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>apt</span>:
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>deb</span>: <span style=color:#f1fa8c>&#34;/etc/{{ es_version_to_upgrade_to }}&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    - <span style=color:#ff79c6>name</span>: bring up node
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>service</span>:
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>name</span>: elasticsearch
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>state</span>: started
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>notify</span>: wait for elasticsearch to start
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    - <span style=color:#ff79c6>meta</span>: flush_handlers
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    - <span style=color:#ff79c6>name</span>: validate it joins cluster
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>uri</span>:
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>url</span>: http://127.0.0.1:9200
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>register</span>: post_upgrade_cluster_info
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>until</span>: pre_upgrade_cluster_info.json.cluster_uuid == post_upgrade_cluster_info.json.cluster_uuid
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>retries</span>: <span style=color:#bd93f9>3</span>
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>delay</span>: <span style=color:#bd93f9>10</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    - <span style=color:#ff79c6>name</span>: reenable shard allocation
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>uri</span>:
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>url</span>: http://127.0.0.1:9200/_cluster/settings
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>body</span>: <span style=color:#f1fa8c>&#39;{&#34;persistent&#34;:{&#34;cluster.routing.allocation.enable&#34;:null}}&#39;</span> <span style=color:#6272a4># reenabling the setting removes shard allocation</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>body_format</span>: json
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>method</span>: PUT
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    - <span style=color:#ff79c6>name</span>: wait for elasticsearch to recover
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>script</span>: check_es_health.py
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>register</span>: es_recovery_response
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>until</span>: es_recovery_response.rc == 0
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>retries</span>: <span style=color:#bd93f9>15</span>
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>delay</span>: <span style=color:#bd93f9>10</span>
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span></code></pre></div><p>There is one script that has to run located at <strong>files/check_es_health.py</strong>. This is pretty simple:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#6272a4>#!/usr/bin/python</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>import</span> urllib2
+</span></span><span style=display:flex><span><span style=color:#ff79c6>import</span> sys
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>response <span style=color:#ff79c6>=</span> urllib2<span style=color:#ff79c6>.</span>urlopen(<span style=color:#f1fa8c>&#34;http://127.0.0.1:9200/_cat/health&#34;</span>)
+</span></span><span style=display:flex><span>body <span style=color:#ff79c6>=</span> response<span style=color:#ff79c6>.</span>read()
+</span></span><span style=display:flex><span>response<span style=color:#ff79c6>.</span>close()
+</span></span><span style=display:flex><span><span style=color:#ff79c6>if</span> <span style=color:#f1fa8c>&#34;green&#34;</span> <span style=color:#ff79c6>in</span> body:
+</span></span><span style=display:flex><span>    sys<span style=color:#ff79c6>.</span>exit(<span style=color:#bd93f9>0</span>)
+</span></span><span style=display:flex><span><span style=color:#ff79c6>else</span>:
+</span></span><span style=display:flex><span>    sys<span style=color:#ff79c6>.</span>exit(<span style=color:#bd93f9>1</span>)
+</span></span></code></pre></div><p>Finally, there is one handler in <strong>handlers/main.yml</strong> file that looks like:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span><span style=color:#6272a4># handlers file for upgrade-elasticsearch-cluster</span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: wait for elasticsearch to start
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>wait_for</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>host</span>: <span style=color:#bd93f9>127.0.0.1</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>port</span>: <span style=color:#bd93f9>9200</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>delay</span>: <span style=color:#bd93f9>5</span>
+</span></span></code></pre></div><p>To run the <a href=https://github.com/nfisher23/some-ansible-examples>source code from github,</a> you will have to first leave the upgrade_es flag to be false. Then run:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ molecule create &amp;amp;&amp;amp; molecule converge
+</span></span></code></pre></div><p>After the VMs come up and they have working elasticsearch instances, you need to add the <strong>serial: 1</strong> flag at the top of the <strong>molecule/default/playbook.yml</strong> file. Then switch the <strong>upgrade_es</strong> flag to <strong>true</strong>, and run:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ molecule converge
+</span></span></code></pre></div><p>The virtual machines will then be upgraded one by one, stopping until the instance comes up and is available.</p></section><footer><div class="pb-14 taxonomy-list tags-list"><a href=/tags/distributed-systems/ alt="Distributed Systems">Distributed Systems
+</a><a href=/tags/vagrant/ alt=Vagrant>Vagrant
+</a><a href=/tags/ansible/ alt=Ansible>Ansible
+</a><a href=/tags/devops/ alt=DevOps>DevOps</a></div></footer></article></main><footer class="pt-5 pb-10 grid gap-3 sm:grid-cols-2"><div class="text-xs font-semibold text-gray-500 order-2 sm:order-1">© 2018-2025 —
+<a href=https://www.nickolasfisher.com/>Nick Fisher's tech blog</a></div><div class="order-1 sm:order-2"><ul class="flex sm:justify-end gap-5"><li><a href=https://www.linkedin.com/in/nick-fisher-software/ target=_blank rel="noopener noreferrer">LinkedIn</a></li><li><a href=https://github.com/nfisher23 target=_blank rel="noopener noreferrer">GitHub</a></li></ul></div></footer></body></html>

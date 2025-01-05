@@ -1,0 +1,192 @@
+<!doctype html><html lang=en-US class="scroll-smooth dark"><head><meta charset=UTF-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><title>How to Deploy a Spring MVC Application Behind an Nginx Reverse Proxy</title>
+<meta name=description content="Nginx is a popular webserver, excellent at serving up static content, and commonly used as a load balancer or reverse proxy. This post will set up a basic Spring Boot MVC web application, and use Nginx as a reverse proxy. The source code can be found on GitHub."><link rel=canonical href=https://www.nickolasfisher.com/blog/how-to-deploy-a-spring-mvc-application-behind-an-nginx-reverse-proxy/><link rel=robots href=/robots.txt><link rel=icon type=image/x-icon href=/img/nficon.png><script type=text/javascript src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type=text/x-mathjax-config>MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });</script><link rel=stylesheet href="https://www.nickolasfisher.com/css/app.min.dee9c4afb37cb95c5d39c976614ef6f95398bcba4b6e73066c44de2a3a6543ed.css"></head><body class="max-w-screen-md mx-auto px-2.5"><div class=header><header class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 pt-16 py-12"><div class="flex-none w-20 h-20 rounded-full overflow-hidden"><a href=https://www.nickolasfisher.com/><img srcset="/img/profile-picture_hu4241499301404582006.jpg 80w" src=/img/profile-picture.jpg width=386 height=345 alt="Nick Fisher's tech blog"></a></div><div class="flex flex-col gap-5"><a href=https://www.nickolasfisher.com/><h1 id=site-title>Nick Fisher's tech blog</h1></a><nav><ul><li><a href=/>home</a></li><li><a href=/blog>blog</a></li><li><a href=/about>about</a></li><li><a href=/tags>Tags</a></li></ul></nav></div></header><button class=toggle-theme aria-label="Toggle Theme" title="Toggle Theme" onclick=toggleTheme()>
+<span class="theme-icon light"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentcolor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75.0 11-7.5.0 3.75 3.75.0 017.5.0z"/></svg> </span><span class="theme-icon dark"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentcolor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718.0 0118 15.75c-5.385.0-9.75-4.365-9.75-9.75.0-1.33.266-2.597.748-3.752A9.753 9.753.0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753.0 009.002-5.998z"/></svg> </span></button>
+<script>document.addEventListener("DOMContentLoaded",function(){const e=localStorage.getItem("theme");setTheme(!e||e==="light"?"light":e)});function setTheme(e){const t=document.querySelector("html");localStorage.setItem("theme",e),e==="light"?(t.classList.contains("dark")&&document.querySelector("html").classList.remove("dark"),document.querySelector(".theme-icon.light").style.display="none",document.querySelector(".theme-icon.dark").style.display="block"):(t.classList.contains("dark")||document.querySelector("html").classList.add("dark"),document.querySelector(".theme-icon.dark").style.display="none",document.querySelector(".theme-icon.light").style.display="block")}function toggleTheme(){const e=localStorage.getItem("theme");setTheme(e==="light"?"dark":"light")}</script></div><main id=content><article class="flex flex-col gap-10"><header class="flex flex-col gap-2"><h2 class=title-large>How to Deploy a Spring MVC Application Behind an Nginx Reverse Proxy</h2><div class=meta><time datetime="2019-04-06 14:44:50 +0000 UTC" title='Sat, Apr 6, 2019, 2:44 PM UTC'>06/04/2019 - Estimated reading time: 6 minutes</time></div></header><section><p><a href=https://www.nginx.com/>Nginx</a> is a popular webserver, excellent at serving up static content, and commonly used as a load balancer or reverse proxy. This post will set up a basic <a href=https://spring.io/projects/spring-boot>Spring Boot</a> MVC web application, and use Nginx as a reverse proxy. The source code can be found <a href=https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx>on GitHub</a>.</p><h3 id=what-is-a-reverse-proxy>What is a Reverse Proxy?</h3><p>A reverse proxy is the middle-man between the consumer of your service/application and the application itself. Take, for example, somebody typing your web domain (<a href=https://your-awesome-domain.com>https://your-awesome-domain.com</a>) into her browser. After the browser finds the IP address of where your web domain is located, her browser sends an HTTP request to the browser at the specified endpoint. If you <em>don&rsquo;t</em> have a reverse proxy set up, then your application will have to be listening for active connections at your-awesome-domain.com:443, and be capable of serving up a CA-signed certificate along with the response. If your site doesn&rsquo;t have https configured, then it must be listening at port 80 (and obviously would not need any certs).</p><p>This is fine for some applications. However, what if you want to put another web app on the same VM (because you&rsquo;re cheap, like me)? With this setup, you&rsquo;re going to need something in between your web applications to decide which one to forward the request to. That &ldquo;something&rdquo; is a reverse proxy. The person deciding to come to your site still enters <a href=https://your-awesome-domain.com>https://your-awesome-domain.com</a> into the browser. Before, her signal would look like: [her] -> [your web app]. Now, her request signal looks like [her] -> [reverse proxy] -> [your web app].</p><p>Common reasons for reverse proxies include making zero downtime deployments much easier to do, handling certificate management for https-enabled sites, cramming as many web apps on your server as the thing can handle, or selectively caching content&ndash;which I will cover in the next post.</p><h3 id=create-an-ansible-role>Create an Ansible Role</h3><p>I will use <a href=https://www.ansible.com/>Ansible</a> to provision the server for this example. You will need ansible, molecule, vagrant, and virtual box on your machine to follow along.</p><p>Navigate to the directory that you want this project to go into and type:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ molecule init role -r reverse-proxy-nginx -d vagrant
+</span></span></code></pre></div><p>I&rsquo;m using vagrant as the VM provider here, and the ansible role I&rsquo;m creating is called &ldquo;reverse-proxy-nginx.&rdquo; Modify the <strong>molecule/default/molecule.yml</strong> file&rsquo;s <strong>providers</strong> section to the following:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#ff79c6>platforms</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#ff79c6>name</span>: reverse-proxy
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>box</span>: ubuntu/xenial64
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>memory</span>: <span style=color:#bd93f9>1024</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>provider_raw_config_args</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#f1fa8c>&#34;customize [&#39;modifyvm&#39;, :id, &#39;--uartmode1&#39;, &#39;disconnected&#39;]&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>interfaces</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#ff79c6>auto_config</span>: <span style=color:#ff79c6>true</span>
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>network_name</span>: private_network
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>ip</span>: <span style=color:#bd93f9>192.168.56.202</span>
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>type</span>: static
+</span></span></code></pre></div><p>The first thing we will need is a Spring MVC application to work with. For simplicity, we&rsquo;re going to keep the app source code within this ansible role. In a real application, you should set up a CI/CD pipeline that the application would go through, but I&rsquo;m going to keep the focus on getting a working example. Create a <strong>app/</strong> directory, then go to the <a href=https://start.spring.io/>spring initializer</a> and select the &ldquo;Web&rdquo; dependency option, then Maven as the build engine. Place the generated code inside the <strong>app/</strong> directory.</p><p>We can then add a <strong>SimpleController.java</strong> class to the <strong>app/src/main/java/com/nickolasfisher/simplemvc/</strong> directory that is, well, simple:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=display:flex><span><span style=color:#ff79c6>package</span> com.nickolasfisher.simplemvc;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>import</span> org.springframework.http.HttpStatus;
+</span></span><span style=display:flex><span><span style=color:#ff79c6>import</span> org.springframework.http.ResponseEntity;
+</span></span><span style=display:flex><span><span style=color:#ff79c6>import</span> org.springframework.stereotype.Controller;
+</span></span><span style=display:flex><span><span style=color:#ff79c6>import</span> org.springframework.web.bind.annotation.GetMapping;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>@Controller
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>SimpleController</span> {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    @GetMapping(<span style=color:#f1fa8c>&#34;/**&#34;</span>)
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> ResponseEntity<span style=color:#ff79c6>&lt;</span>String<span style=color:#ff79c6>&gt;</span> <span style=color:#50fa7b>simpleResponder</span>() {
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>return</span> <span style=color:#ff79c6>new</span> ResponseEntity<span style=color:#ff79c6>&lt;&gt;</span>(<span style=color:#f1fa8c>&#34;&lt;h1&gt;Welcome to my site!&lt;/h1&gt;&#34;</span>, HttpStatus.<span style=color:#50fa7b>ACCEPTED</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>On the server, we are going to need Java and Nginx. In the <a href=https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx>source code for this post</a>, I&rsquo;ve included two separate roles called <strong>openjdk</strong> and <strong>nginx</strong>. The ansible role that gets Java looks like:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: Get Java tarball
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>get_url</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>url</span>: <span style=color:#f1fa8c>&#34;{{ jdk_url }}&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>dest</span>: /etc/{{ jdk_tarball }}
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: make java directory
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>file</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>path</span>: <span style=color:#f1fa8c>&#34;/usr/lib/openjdk-{{ jdk_version }}&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>state</span>: directory
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: unpack tarball
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>unarchive</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>dest</span>: <span style=color:#f1fa8c>&#34;/usr/lib/openjdk-{{ jdk_version }}/&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>src</span>: /etc/{{ jdk_tarball }}
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>remote_src</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: update alternatives for java
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>alternatives</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>name</span>: java
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>path</span>: <span style=color:#f1fa8c>&#34;/usr/lib/openjdk-{{ jdk_version }}/jdk-{{ jdk_version }}/bin/java&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>link</span>: /usr/bin/java
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>priority</span>: <span style=color:#bd93f9>2000</span>
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: set java environment variable
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>blockinfile</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>insertafter</span>: EOF
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>path</span>: /etc/environment
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>block</span>: export JAVA_HOME=/usr/lib/openjdk-{{ jdk_version }}/jdk-{{ jdk_version }}
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: re-source env variables
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>shell</span>: . /etc/environment
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span></code></pre></div><p>Where the variables are:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span><span style=color:#6272a4># vars file for openjdk</span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>jdk_version</span>: <span style=color:#bd93f9>11.0.2</span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>jdk_tarball</span>: openjdk-{{ jdk_version }}_linux-x64_bin.tar.gz
+</span></span><span style=display:flex><span><span style=color:#ff79c6>jdk_url</span>: <span style=color:#f1fa8c>&#34;https://download.java.net/java/GA/jdk11/9/GPL/{{ jdk_tarball }}&#34;</span>
+</span></span></code></pre></div><p>The Nginx role playbook looks like:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span><span style=color:#6272a4># tasks file for nginx</span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: install nginx
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>apt</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>name</span>: nginx
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>update_cache</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>true</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: install nginx conf file
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>template</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>dest</span>: /etc/nginx/sites-available/{{ site_alias }}.conf
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>src</span>: server.conf.j2
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: link nginx conf file
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>file</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>src</span>: /etc/nginx/sites-available/{{ site_alias }}.conf
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>dest</span>: /etc/nginx/sites-enabled/{{ site_alias }}.conf
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>state</span>: link
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: remove nginx defaults
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>file</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>path</span>: <span style=color:#f1fa8c>&#34;{{ item }}&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>state</span>: absent
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>with_items</span>:
+</span></span><span style=display:flex><span>    - /etc/nginx/sites-available/default
+</span></span><span style=display:flex><span>    - /etc/nginx/sites-enabled/default
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>when</span>: remove_nginx_defaults
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: reload nginx
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>command</span>: nginx -s reload
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span></code></pre></div><p>With variables like:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span><span style=color:#6272a4># vars file for nginx</span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>app_port</span>: <span style=color:#bd93f9>8080</span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>site_alias</span>: my-site
+</span></span><span style=display:flex><span><span style=color:#ff79c6>remove_nginx_defaults</span>: <span style=color:#ff79c6>true</span>
+</span></span></code></pre></div><p>We also use a Jinja2 template for the configuration file, which is very simple (inside <strong>templates/server.conf.j2</strong>):</p><pre tabindex=0><code>server {
+    location / {
+        proxy_pass http://localhost:{{ app_port }};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection keep-alive;
+        proxy_set_header Host $http_host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+</code></pre><p>This nginx conf file is where you can insert all of the middle-man logic that you want. in this case, we set a few headers and the http version. But we can easily <a href=https://www.digitalocean.com/community/tutorials/how-to-set-up-let-s-encrypt-with-nginx-server-blocks-on-ubuntu-16-04>add TLS management with certbot</a> if we so choose.</p><p>Back inside our <strong>reverse-proxy-nginx</strong> role, we need to add these roles as dependencies in the <strong>meta/main.yml</strong> file:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span><span style=color:#ff79c6>dependencies</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#ff79c6>role</span>: openjdk
+</span></span><span style=display:flex><span>  - <span style=color:#ff79c6>role</span>: nginx
+</span></span></code></pre></div><p>We can now move on to the logic of deploying it. Again, in a production setup, we would want an automated CI/CD pipeline to handle deployments, preferably only deploying a release branch. However, for this simple example, we will build it using ansible and send up the artifact directly. The only protection that this offers is building and running the unit tests, but configuration management basically doesn&rsquo;t exist.</p><p>Note that you will need maven installed on your system for this to run properly.</p><p>We need to get the jar artifact on the server, then create a systemd service file that will run it for us. In the <strong>reverse-proxy-nginx/tasks/main.yml</strong>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span><span style=color:#6272a4># tasks file for reverse-proxy-nginx</span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: ensure files dir empty
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>file</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>path</span>: ../../files/{{ jar_name }}
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>state</span>: absent
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>delegate_to</span>: localhost
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: build solution and move jar to files
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>shell</span>: pwd &amp;amp;&amp;amp; cd ../../app &amp;amp;&amp;amp; mvn clean install &amp;amp;&amp;amp; cp target/*.jar ../files/{{ jar_name }}
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>delegate_to</span>: localhost
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: ensure apps dir exists
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>file</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>path</span>: <span style=color:#f1fa8c>&#34;{{ jar_dir }}&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>state</span>: directory
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>mode</span>: <span style=color:#bd93f9>0755</span>
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: send jar
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>copy</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>src</span>: <span style=color:#f1fa8c>&#34;{{ jar_name }}&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>dest</span>: <span style=color:#f1fa8c>&#34;{{ path_to_jar }}&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>mode</span>: <span style=color:#bd93f9>0755</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>force</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>notify</span>: restart app
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: setup service file
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>template</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>src</span>: app.service.j2
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>dest</span>: /etc/systemd/system/app.service
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>notify</span>: restart app
+</span></span></code></pre></div><p>We will need a Jinja2 template for systemd in <strong>templates/app.service.j2:</strong></p><pre tabindex=0><code>[Unit]
+Description=slow server to demonstrate caching
+
+[Service]
+WorkingDirectory={{ jar_dir }}
+ExecStart=/usr/bin/java -jar {{ path_to_jar }}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+</code></pre><p>And variables in <strong>vars/main.yml</strong>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span><span style=color:#6272a4># vars file for reverse-proxy-nginx</span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>jar_dir</span>: /opt/apps/app
+</span></span><span style=display:flex><span><span style=color:#ff79c6>jar_name</span>: app.jar
+</span></span><span style=display:flex><span><span style=color:#ff79c6>path_to_jar</span>: <span style=color:#f1fa8c>&#34;{{ jar_dir }}/{{ jar_name }}&#34;</span>
+</span></span></code></pre></div><p>Finally, we need to set up a handler in the <strong>handlers/main.yml</strong> to restart the app when we send it up:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>---
+</span></span><span style=display:flex><span><span style=color:#6272a4># handlers file for reverse-proxy-nginx</span>
+</span></span><span style=display:flex><span>- <span style=color:#ff79c6>name</span>: restart app
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>systemd</span>:
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>name</span>: app.service
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>daemon_reload</span>: <span style=color:#ff79c6>yes</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>state</span>: restarted
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>become</span>: <span style=color:#ff79c6>yes</span>
+</span></span></code></pre></div><p>You should now be able to run:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ molecule create &amp;amp;&amp;amp; molecule converge
+</span></span></code></pre></div><p>And see the VM come up at <a href=http://192.168.56.202.>http://192.168.56.202.</a></p><p>Definitely go <a href=https://github.com/nfisher23/some-ansible-examples/tree/master/reverse-proxy-nginx>check out the source code</a> to see this in action.</p></section><footer><div class="pb-14 taxonomy-list tags-list"><a href=/tags/java/ alt=Java>Java
+</a><a href=/tags/ngnix/ alt=Ngnix>Ngnix
+</a><a href=/tags/vagrant/ alt=Vagrant>Vagrant
+</a><a href=/tags/ansible/ alt=Ansible>Ansible
+</a><a href=/tags/spring/ alt=Spring>Spring
+</a><a href=/tags/devops/ alt=DevOps>DevOps
+</a><a href=/tags/maven/ alt=Maven>Maven</a></div></footer></article></main><footer class="pt-5 pb-10 grid gap-3 sm:grid-cols-2"><div class="text-xs font-semibold text-gray-500 order-2 sm:order-1">© 2018-2025 —
+<a href=https://www.nickolasfisher.com/>Nick Fisher's tech blog</a></div><div class="order-1 sm:order-2"><ul class="flex sm:justify-end gap-5"><li><a href=https://www.linkedin.com/in/nick-fisher-software/ target=_blank rel="noopener noreferrer">LinkedIn</a></li><li><a href=https://github.com/nfisher23 target=_blank rel="noopener noreferrer">GitHub</a></li></ul></div></footer></body></html>

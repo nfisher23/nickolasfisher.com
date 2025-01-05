@@ -1,0 +1,118 @@
+<!doctype html><html lang=en-US class="scroll-smooth dark"><head><meta charset=UTF-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><title>A VagrantFile for Elasticsearch, Logstash, and Kibana (On Three Different Servers)</title>
+<meta name=description content="Elasticsearch, Logstash, and Kibana, commonly referred to as ELK or the Elastic Stack, is a set of tools that can, well do a lot of things. It is most famous for its logging and analytics capabilities."><link rel=canonical href=https://www.nickolasfisher.com/blog/a-vagrantfile-for-elasticsearch-logstash-and-kibana-on-three-different-servers/><link rel=robots href=/robots.txt><link rel=icon type=image/x-icon href=/img/nficon.png><script type=text/javascript src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type=text/x-mathjax-config>MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });</script><link rel=stylesheet href="https://www.nickolasfisher.com/css/app.min.dee9c4afb37cb95c5d39c976614ef6f95398bcba4b6e73066c44de2a3a6543ed.css"></head><body class="max-w-screen-md mx-auto px-2.5"><div class=header><header class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 pt-16 py-12"><div class="flex-none w-20 h-20 rounded-full overflow-hidden"><a href=https://www.nickolasfisher.com/><img srcset="/img/profile-picture_hu4241499301404582006.jpg 80w" src=/img/profile-picture.jpg width=386 height=345 alt="Nick Fisher's tech blog"></a></div><div class="flex flex-col gap-5"><a href=https://www.nickolasfisher.com/><h1 id=site-title>Nick Fisher's tech blog</h1></a><nav><ul><li><a href=/>home</a></li><li><a href=/blog>blog</a></li><li><a href=/about>about</a></li><li><a href=/tags>Tags</a></li></ul></nav></div></header><button class=toggle-theme aria-label="Toggle Theme" title="Toggle Theme" onclick=toggleTheme()>
+<span class="theme-icon light"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentcolor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75.0 11-7.5.0 3.75 3.75.0 017.5.0z"/></svg> </span><span class="theme-icon dark"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentcolor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718.0 0118 15.75c-5.385.0-9.75-4.365-9.75-9.75.0-1.33.266-2.597.748-3.752A9.753 9.753.0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753.0 009.002-5.998z"/></svg> </span></button>
+<script>document.addEventListener("DOMContentLoaded",function(){const e=localStorage.getItem("theme");setTheme(!e||e==="light"?"light":e)});function setTheme(e){const t=document.querySelector("html");localStorage.setItem("theme",e),e==="light"?(t.classList.contains("dark")&&document.querySelector("html").classList.remove("dark"),document.querySelector(".theme-icon.light").style.display="none",document.querySelector(".theme-icon.dark").style.display="block"):(t.classList.contains("dark")||document.querySelector("html").classList.add("dark"),document.querySelector(".theme-icon.dark").style.display="none",document.querySelector(".theme-icon.light").style.display="block")}function toggleTheme(){const e=localStorage.getItem("theme");setTheme(e==="light"?"dark":"light")}</script></div><main id=content><article class="flex flex-col gap-10"><header class="flex flex-col gap-2"><h2 class=title-large>A VagrantFile for Elasticsearch, Logstash, and Kibana (On Three Different Servers)</h2><div class=meta><time datetime="2018-11-18 13:42:46 +0000 UTC" title='Sun, Nov 18, 2018, 1:42 PM UTC'>18/11/2018 - Estimated reading time: 4 minutes</time></div></header><section><p><a href=https://www.elastic.co/>Elasticsearch, Logstash, and Kibana</a>, commonly referred to as ELK or the Elastic Stack, is a set of tools that can, well do a lot of things. It is most famous for its logging and analytics capabilities.</p><p>In a nutshell:</p><ol><li>Elasticsearch is a distributed NoSQL database with automatic indexing, and is designed primarily for &ldquo;scalability&rdquo;&ndash;in other words, redundancy via sharding and clustering across multiple servers, and a document-based philosophy (and, you know, search).</li><li>Kibana is a dashboard designed primarily to be a GUI on top of the Elasticsearch database, with cool features like visualization.</li><li>Logstash can send formatted logs to Elasticsearch and filter out logs that aren&rsquo;t relevant, typically by receiving them from Filebeats.</li></ol><p>This is not an exhaustive list of all the things you can do with these tools, and this isn&rsquo;t even taking into account <a href=https://www.elastic.co/products/beats>beats</a>, but is usually where people start when they are introduced to the Elastic Stack.</p><p>So, now we want to play around with all of it, and we&rsquo;ve decided to use <a href=https://www.vagrantup.com/>Vagrant</a> to provision some local virtual machines. While this is a good starting point/sandbox, keep in mind that there is no security with the following setup, and in any production environment not having security baked in would be a very bad thing to do.</p><p>First, we&rsquo;ll set up the VagrantFile. Navigate to the directory you want to set this up in and type:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ vagrant init -m
+</span></span></code></pre></div><p>Then set up a VagrantFile like:</p><pre tabindex=0><code>Vagrant.configure(&#34;2&#34;) do |config|
+  config.vm.box = &#34;ubuntu/bionic64&#34;
+
+  config.vm.provider :virtualbox do |vb|
+    vb.memory = 3072
+    vb.cpus = 1
+  end
+
+  config.vm.define &#34;elasticsearch&#34; do |elasticsearch|
+    elasticsearch.vm.network &#34;private_network&#34;, ip: &#34;192.168.56.111&#34;
+    elasticsearch.vm.provision :shell, path: &#34;elasticsearch-provision.sh&#34;
+  end
+
+  config.vm.define &#34;kibana&#34; do |kibana|
+    kibana.vm.network &#34;private_network&#34;, ip: &#34;192.168.56.112&#34;
+    kibana.vm.provision :shell, path: &#34;kibana-provision.sh&#34;
+  end
+
+  config.vm.define &#34;logstash&#34; do |logstash|
+    logstash.vm.network &#34;private_network&#34;, ip: &#34;192.168.56.113&#34;
+    logstash.vm.provision :shell, path: &#34;logstash-provision.sh&#34;
+  end
+end
+</code></pre><p>You&rsquo;ll need three shell scripts in the same directory called &ldquo;elasticsearch-provision.sh&rdquo;, &ldquo;kibana-provision.sh&rdquo;, and &ldquo;logstash-provision.sh&rdquo;.</p><p>Let&rsquo;s start with the Elasticsearch shell script. From <a href=https://www.elastic.co/guide/en/elasticsearch/reference/6.4/index.html>the official Elasticsearch install guide for version 6.4</a>:</p><blockquote><p>Elasticsearch requires at least Java 8. Specifically as of this writing,
+it is recommended that you use the Oracle JDK version 1.8.0_131.</p></blockquote><p>So we need to:</p><ol><li><p>Install Java 8</p></li><li><p>Install Elasticsearch</p></li><li><p>Configure it to listen on a specified port on the server</p></li><li><p>Ensure the service is running, and runs on server boot up time</p></li></ol><p>The steps can be expressed in a bash script like so (elasticsearch-provision.sh):</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#ff79c6>#!/bin/bash
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6></span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># install java 8</span>
+</span></span><span style=display:flex><span>apt install -y software-properties-common
+</span></span><span style=display:flex><span>apt-add-repository -y ppa:webupd8team/java
+</span></span><span style=display:flex><span>apt update
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>echo</span> oracle-java8-installer shared/accepted-oracle-license-v1-1 <span style=color:#ff79c6>select</span> <span style=color:#8be9fd;font-style:italic>true</span> | /usr/bin/debconf-set-selections
+</span></span><span style=display:flex><span>apt install -y oracle-java8-installer
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># install elasticsearch</span>
+</span></span><span style=display:flex><span>wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.4.2.deb
+</span></span><span style=display:flex><span>wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.4.2.deb.sha512
+</span></span><span style=display:flex><span>shasum -a <span style=color:#bd93f9>512</span> -c elasticsearch-6.4.2.deb.sha512
+</span></span><span style=display:flex><span>sudo dpkg -i elasticsearch-6.4.2.deb
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># configure elasticsearch to be available on port 9200</span>
+</span></span><span style=display:flex><span>sudo chmod <span style=color:#bd93f9>777</span> /etc/elasticsearch
+</span></span><span style=display:flex><span>sudo touch /etc/elasticsearch/elasticsearch.yml
+</span></span><span style=display:flex><span>sudo cat <span style=color:#f1fa8c>&lt;&lt; EOF &gt; /etc/elasticsearch/elasticsearch.yml
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>path.data: /var/lib/elasticsearch
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>path.logs: /var/log/elasticsearch
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>network.host: 192.168.56.111
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>http.port: 9200-9300
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>EOF</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>echo</span> <span style=color:#f1fa8c>&#34;restarting service...&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>service elasticsearch restart
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># available on startup</span>
+</span></span><span style=display:flex><span>update-rc.d elasticsearch defaults <span style=color:#bd93f9>95</span> <span style=color:#bd93f9>10</span>
+</span></span></code></pre></div><p>If you run:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ vagrant up elasticsearch
+</span></span></code></pre></div><p>Then, after a few minutes of provisioning and letting the service get fully ramped up, you can</p><pre tabindex=0><code>$ curl 192.168.56.111:9200
+</code></pre><p>And you should see the Elasticsearch tagline response.</p><p>The setup for Kibana is a bit easier since we don&rsquo;t need to install Java (this is kibana-provision.sh):</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#6272a4>#/bin/bash</span>
+</span></span><span style=display:flex><span>wget https://artifacts.elastic.co/downloads/kibana/kibana-6.4.2-amd64.deb
+</span></span><span style=display:flex><span>shasum -a <span style=color:#bd93f9>512</span> kibana-6.4.2-amd64.deb
+</span></span><span style=display:flex><span>dpkg -i kibana-6.4.2-amd64.deb
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># configure kibana to be available on port 5601 and connect to elasticsearch instance</span>
+</span></span><span style=display:flex><span>chmod <span style=color:#bd93f9>777</span> /etc/kibana
+</span></span><span style=display:flex><span>touch /etc/kibana/kibana.yml
+</span></span><span style=display:flex><span>cat <span style=color:#f1fa8c>&lt;&lt; EOF &gt; /etc/kibana/kibana.yml
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>server.port: 5601
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>server.host: 192.168.56.112
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>elasticsearch.url: http://192.168.56.111:9200
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>EOF</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>service kibana restart
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># available on startup</span>
+</span></span><span style=display:flex><span>update-rc.d kibana defaults <span style=color:#bd93f9>95</span> <span style=color:#bd93f9>10</span>
+</span></span></code></pre></div><p>Once this is up (run $ vagrant up kibana), you should be able to navigate to 192.168.56.112:5601 in your browser and see Kibana&rsquo;s dashboard come up.</p><p>Finally, here&rsquo;s the Logstash script (logstash-provision.sh):</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#ff79c6>#!/bin/bash
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6></span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># install java 8</span>
+</span></span><span style=display:flex><span>apt install -y software-properties-common
+</span></span><span style=display:flex><span>apt-add-repository -y ppa:webupd8team/java
+</span></span><span style=display:flex><span>apt update
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>echo</span> oracle-java8-installer shared/accepted-oracle-license-v1-1 <span style=color:#ff79c6>select</span> <span style=color:#8be9fd;font-style:italic>true</span> | /usr/bin/debconf-set-selections
+</span></span><span style=display:flex><span>apt install -y oracle-java8-installer
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># install logstash</span>
+</span></span><span style=display:flex><span>wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+</span></span><span style=display:flex><span>apt-get install apt-transport-https
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>echo</span> <span style=color:#f1fa8c>&#34;deb https://artifacts.elastic.co/packages/6.x/apt stable main&#34;</span> | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
+</span></span><span style=display:flex><span>apt-get update &amp;amp;&amp;amp; apt-get install logstash
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># configure logstash to be available on port 5044 and send to elasticsearch</span>
+</span></span><span style=display:flex><span>sudo chmod <span style=color:#bd93f9>777</span> /etc/logstash
+</span></span><span style=display:flex><span>sudo touch /etc/logstash/conf.d/ex-pipeline.conf
+</span></span><span style=display:flex><span>sudo cat <span style=color:#f1fa8c>&lt;&lt; EOF &gt; /etc/logstash/conf.d/ex-pipeline.conf
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>input {
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>  beats {
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>    host =&gt; &#34;192.168.56.113&#34;
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>    port =&gt; &#34;5044&#34;
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>  }
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>}
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>output {
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>  elasticsearch {
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>    hosts =&gt; [ &#34;192.168.56.111:9200&#34; ]
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>  }
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>}
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>EOF</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>service logstash restart
+</span></span></code></pre></div><p>You now have your playground, go conquer the world with it.</p></section><footer><div class="pb-14 taxonomy-list tags-list"><a href=/tags/distributed-systems/ alt="Distributed Systems">Distributed Systems
+</a><a href=/tags/vagrant/ alt=Vagrant>Vagrant
+</a><a href=/tags/bash/ alt=Bash>Bash
+</a><a href=/tags/the-elastic-stack/ alt="The Elastic Stack">The Elastic Stack
+</a><a href=/tags/devops/ alt=DevOps>DevOps</a></div></footer></article></main><footer class="pt-5 pb-10 grid gap-3 sm:grid-cols-2"><div class="text-xs font-semibold text-gray-500 order-2 sm:order-1">© 2018-2025 —
+<a href=https://www.nickolasfisher.com/>Nick Fisher's tech blog</a></div><div class="order-1 sm:order-2"><ul class="flex sm:justify-end gap-5"><li><a href=https://www.linkedin.com/in/nick-fisher-software/ target=_blank rel="noopener noreferrer">LinkedIn</a></li><li><a href=https://github.com/nfisher23 target=_blank rel="noopener noreferrer">GitHub</a></li></ul></div></footer></body></html>

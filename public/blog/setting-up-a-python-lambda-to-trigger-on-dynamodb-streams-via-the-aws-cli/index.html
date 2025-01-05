@@ -1,0 +1,150 @@
+<!doctype html><html lang=en-US class="scroll-smooth dark"><head><meta charset=UTF-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><title>Setting up a Python Lambda to Trigger on DynamoDB Streams via the AWS CLI</title>
+<meta name=description content="DynamoDB streams record information about what has changed in a DynamoDB table, and AWS lambdas are ways to run code without managing servers yourself. DynamoDB streams also have an integration with AWS Lambdas so that any change to a DynamoDB table can be processed by an AWS Lambda&ndash;still without worrying about keeping your servers up or maintaining them. That is the subject of this post."><link rel=canonical href=https://www.nickolasfisher.com/blog/setting-up-a-python-lambda-to-trigger-on-dynamodb-streams-via-the-aws-cli/><link rel=robots href=/robots.txt><link rel=icon type=image/x-icon href=/img/nficon.png><script type=text/javascript src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type=text/x-mathjax-config>MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });</script><link rel=stylesheet href="https://www.nickolasfisher.com/css/app.min.dee9c4afb37cb95c5d39c976614ef6f95398bcba4b6e73066c44de2a3a6543ed.css"></head><body class="max-w-screen-md mx-auto px-2.5"><div class=header><header class="flex flex-col sm:flex-row items-center gap-5 sm:gap-10 pt-16 py-12"><div class="flex-none w-20 h-20 rounded-full overflow-hidden"><a href=https://www.nickolasfisher.com/><img srcset="/img/profile-picture_hu4241499301404582006.jpg 80w" src=/img/profile-picture.jpg width=386 height=345 alt="Nick Fisher's tech blog"></a></div><div class="flex flex-col gap-5"><a href=https://www.nickolasfisher.com/><h1 id=site-title>Nick Fisher's tech blog</h1></a><nav><ul><li><a href=/>home</a></li><li><a href=/blog>blog</a></li><li><a href=/about>about</a></li><li><a href=/tags>Tags</a></li></ul></nav></div></header><button class=toggle-theme aria-label="Toggle Theme" title="Toggle Theme" onclick=toggleTheme()>
+<span class="theme-icon light"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentcolor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75.0 11-7.5.0 3.75 3.75.0 017.5.0z"/></svg> </span><span class="theme-icon dark"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentcolor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718.0 0118 15.75c-5.385.0-9.75-4.365-9.75-9.75.0-1.33.266-2.597.748-3.752A9.753 9.753.0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753.0 009.002-5.998z"/></svg> </span></button>
+<script>document.addEventListener("DOMContentLoaded",function(){const e=localStorage.getItem("theme");setTheme(!e||e==="light"?"light":e)});function setTheme(e){const t=document.querySelector("html");localStorage.setItem("theme",e),e==="light"?(t.classList.contains("dark")&&document.querySelector("html").classList.remove("dark"),document.querySelector(".theme-icon.light").style.display="none",document.querySelector(".theme-icon.dark").style.display="block"):(t.classList.contains("dark")||document.querySelector("html").classList.add("dark"),document.querySelector(".theme-icon.dark").style.display="none",document.querySelector(".theme-icon.light").style.display="block")}function toggleTheme(){const e=localStorage.getItem("theme");setTheme(e==="light"?"dark":"light")}</script></div><main id=content><article class="flex flex-col gap-10"><header class="flex flex-col gap-2"><h2 class=title-large>Setting up a Python Lambda to Trigger on DynamoDB Streams via the AWS CLI</h2><div class=meta><time datetime="2021-02-07 19:47:50 +0000 UTC" title='Sun, Feb 7, 2021, 7:47 PM UTC'>07/02/2021 - Estimated reading time: 4 minutes</time></div></header><section><p>DynamoDB streams record information about what has changed in a DynamoDB table, and AWS lambdas are ways to run code without managing servers yourself. DynamoDB streams also have an integration with AWS Lambdas so that any change to a DynamoDB table can be processed by an AWS Lambda&ndash;still without worrying about keeping your servers up or maintaining them. That is the subject of this post.</p><p>We&rsquo;ll be using <a href=https://github.com/localstack/localstack>localstack</a> to prove this out. You can follow along with previous blog posts [like this one about <a href=https://nickolasfisher.com/blog/Basic-Python-Lambda-Function-Uploads-using-the-AWS-CLI>python lambdas and localstack</a>] of mine for how to do AWS stuff with localstack.</p><p><strong>Important Note:</strong> Localstack has a bug, which they claim to have fixed, where lambdas invoked inside the localstack container can&rsquo;t call other localstack resources, like sns or s3. I was able to hack around this and will cover the hack towards the end of this article. If you need to call other AWS resources with your lambda [as will very often be the case], then to really test it you&rsquo;ll just have to bite the bullet and use AWS itself as of now.</p><h2 id=create-aws-resources-and-lamdba>Create AWS Resources and Lamdba</h2><p>Assuming you already understand how to get localstack up and running locally, we&rsquo;ll need to create a dynamo table to work with:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#6272a4># fake credentials to make the cli happy</span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>export</span> <span style=color:#8be9fd;font-style:italic>AWS_SECRET_ACCESS_KEY</span><span style=color:#ff79c6>=</span><span style=color:#f1fa8c>&#34;FAKE&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>export</span> <span style=color:#8be9fd;font-style:italic>AWS_ACCESS_KEY_ID</span><span style=color:#ff79c6>=</span><span style=color:#f1fa8c>&#34;FAKE&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>export</span> <span style=color:#8be9fd;font-style:italic>AWS_DEFAULT_REGION</span><span style=color:#ff79c6>=</span>us-east-1
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># create simple table in localstack, streams enabled</span>
+</span></span><span style=display:flex><span>aws --endpoint-url http://localhost:4566 --region<span style=color:#ff79c6>=</span>us-east-1 dynamodb create-table <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>  --billing-mode PAY_PER_REQUEST <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>  --table-name SampleTable <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>  --attribute-definitions <span style=color:#8be9fd;font-style:italic>AttributeName</span><span style=color:#ff79c6>=</span>SamplePartitionKey,AttributeType<span style=color:#ff79c6>=</span>S <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>  --key-schema <span style=color:#8be9fd;font-style:italic>AttributeName</span><span style=color:#ff79c6>=</span>SamplePartitionKey,KeyType<span style=color:#ff79c6>=</span>HASH <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>  --stream-specification <span style=color:#8be9fd;font-style:italic>StreamEnabled</span><span style=color:#ff79c6>=</span>true,StreamViewType<span style=color:#ff79c6>=</span>NEW_IMAGE
+</span></span></code></pre></div><p>Note that streams are enabled and that we&rsquo;ve configured it to have a stream specification of <strong>NEW_IMAGE</strong>, which [surprise] emits stream records as the newly changed/created object.</p><p>We will also need to create an IAM role for our lambda function to assume when it runs, then attach a policy to that role which allows it to be a lambda&ndash;this includes logging so that we can observe it via cloudwatch and, in this case, we need to be able to interact with DynamoDB streams:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>aws --region us-east-1 --endpoint-url http://localhost:4566 iam create-role --role-name SampleDynamoLambdaRole <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>    --path <span style=color:#f1fa8c>&#34;/service-role/&#34;</span> <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>    --assume-role-policy-document file://trust-relationship.json
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>aws --region us-east-1 --endpoint-url http://localhost:4566 iam put-role-policy --role-name SampleDynamoLambdaRole <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>    --policy-name SampleDynamoLambdaRolePolicy <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>    --policy-document file://role-policy.json
+</span></span></code></pre></div><p>Note that the <strong>trust-relationship.json</strong> looks like this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>   <span style=color:#ff79c6>&#34;Version&#34;</span>: <span style=color:#f1fa8c>&#34;2021-01-01&#34;</span>,
+</span></span><span style=display:flex><span>   <span style=color:#ff79c6>&#34;Statement&#34;</span>: [
+</span></span><span style=display:flex><span>     {
+</span></span><span style=display:flex><span>       <span style=color:#ff79c6>&#34;Effect&#34;</span>: <span style=color:#f1fa8c>&#34;Allow&#34;</span>,
+</span></span><span style=display:flex><span>       <span style=color:#ff79c6>&#34;Principal&#34;</span>: {
+</span></span><span style=display:flex><span>         <span style=color:#ff79c6>&#34;Service&#34;</span>: <span style=color:#f1fa8c>&#34;lambda.amazonaws.com&#34;</span>
+</span></span><span style=display:flex><span>       },
+</span></span><span style=display:flex><span>       <span style=color:#ff79c6>&#34;Action&#34;</span>: <span style=color:#f1fa8c>&#34;sts:AssumeRole&#34;</span>
+</span></span><span style=display:flex><span>     }
+</span></span><span style=display:flex><span>   ]
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>And <strong>role-policy.json</strong> looks like:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>&#34;Version&#34;</span>: <span style=color:#f1fa8c>&#34;2021-01-01&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>&#34;Statement&#34;</span>: [
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>&#34;Effect&#34;</span>: <span style=color:#f1fa8c>&#34;Allow&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>&#34;Action&#34;</span>: <span style=color:#f1fa8c>&#34;lambda:InvokeFunction&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>&#34;Resource&#34;</span>: <span style=color:#f1fa8c>&#34;arn:aws:lambda:us-east-1:0000000000:function:ddb_stream_listener*&#34;</span>
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>&#34;Effect&#34;</span>: <span style=color:#f1fa8c>&#34;Allow&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>&#34;Action&#34;</span>: [
+</span></span><span style=display:flex><span>                <span style=color:#f1fa8c>&#34;logs:CreateLogGroup&#34;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#f1fa8c>&#34;logs:CreateLogStream&#34;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#f1fa8c>&#34;logs:PutLogEvents&#34;</span>
+</span></span><span style=display:flex><span>            ],
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>&#34;Resource&#34;</span>: <span style=color:#f1fa8c>&#34;arn:aws:logs:us-east-1:0000000000:*&#34;</span>
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>&#34;Effect&#34;</span>: <span style=color:#f1fa8c>&#34;Allow&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>&#34;Action&#34;</span>: [
+</span></span><span style=display:flex><span>                <span style=color:#f1fa8c>&#34;dynamodb:DescribeStream&#34;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#f1fa8c>&#34;dynamodb:GetRecords&#34;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#f1fa8c>&#34;dynamodb:GetShardIterator&#34;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#f1fa8c>&#34;dynamodb:ListStreams&#34;</span>
+</span></span><span style=display:flex><span>            ],
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>&#34;Resource&#34;</span>: <span style=color:#f1fa8c>&#34;arn:aws:dynamodb:us-east-1:0000000000:table/SampleTable/stream/*&#34;</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    ]
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Now we&rsquo;ll just create a python lambda that simply logs the event [a DynamoDB stream record event] and the context that it receives:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#ff79c6>import</span> logging
+</span></span><span style=display:flex><span><span style=color:#ff79c6>import</span> math
+</span></span><span style=display:flex><span><span style=color:#ff79c6>import</span> json
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>logger <span style=color:#ff79c6>=</span> logging<span style=color:#ff79c6>.</span>getLogger()
+</span></span><span style=display:flex><span>logger<span style=color:#ff79c6>.</span>setLevel(logging<span style=color:#ff79c6>.</span>INFO)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>def</span> <span style=color:#50fa7b>lambda_handler</span>(event, context):
+</span></span><span style=display:flex><span>    <span style=color:#f1fa8c>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>    Politely say hello
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>    &#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    logger<span style=color:#ff79c6>.</span>info(<span style=color:#f1fa8c>&#39;Event: </span><span style=color:#f1fa8c>%s</span><span style=color:#f1fa8c>&#39;</span>, event)
+</span></span><span style=display:flex><span>    logger<span style=color:#ff79c6>.</span>info(<span style=color:#f1fa8c>&#39;context: </span><span style=color:#f1fa8c>%s</span><span style=color:#f1fa8c>&#39;</span>, context<span style=color:#ff79c6>.</span>__dict__)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>return</span> event
+</span></span></code></pre></div><p>With a little bit of bash and jq, we can finish this out like so:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>zip my_func.zip my_func.py
+</span></span><span style=display:flex><span>aws --endpoint-url http://localhost:4566 lambda create-function --function-name ddb-lambda-function <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>  --zip-file fileb://my_func.zip --handler my_func.lambda_handler --runtime python3.8 <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>  --role arn:aws:iam::000000000000:role/SampleDynamoLambdaRole
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>STREAM_ARN</span><span style=color:#ff79c6>=</span><span style=color:#ff79c6>$(</span>aws --endpoint-url http://localhost:4566 dynamodbstreams list-streams --table-name SampleTable | jq -r <span style=color:#f1fa8c>&#39;.Streams[0] | .StreamArn&#39;</span><span style=color:#ff79c6>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>aws --endpoint-url http://localhost:4566 lambda create-event-source-mapping <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>    --region us-east-1 <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>    --function-name ddb-lambda-function <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>    --event-source <span style=color:#f1fa8c>&#34;</span><span style=color:#8be9fd;font-style:italic>$STREAM_ARN</span><span style=color:#f1fa8c>&#34;</span>  <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>    --batch-size <span style=color:#bd93f9>1</span> <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>    --starting-position TRIM_HORIZON
+</span></span></code></pre></div><p>We can test this by put-ing an item into Dynamo and viewing the logs of the lambda:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>TEMPLATE</span><span style=color:#ff79c6>=</span><span style=color:#ff79c6>$(</span>cat <span style=color:#f1fa8c>&lt;&lt;&#39;EOF&#39;
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>{
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>    &#34;SamplePartitionKey&#34;: {
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>        &#34;S&#34;: &#34;%s&#34;
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>    },
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>    &#34;SampleValue&#34;: {
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>        &#34;S&#34;: &#34;%s&#34;
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>    }
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>}
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c>EOF</span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>put_dynamo_local<span style=color:#ff79c6>()</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>ITEM</span><span style=color:#ff79c6>=</span><span style=color:#f1fa8c>&#34;</span><span style=color:#8be9fd;font-style:italic>$1</span><span style=color:#f1fa8c>&#34;</span>
+</span></span><span style=display:flex><span>    aws --endpoint-url http://localhost:4566 --region<span style=color:#ff79c6>=</span>us-east-1 dynamodb put-item <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>      --table-name SampleTable <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>      --item <span style=color:#f1fa8c>&#34;</span><span style=color:#8be9fd;font-style:italic>$ITEM</span><span style=color:#f1fa8c>&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>RANDOM_ITEM</span><span style=color:#ff79c6>=</span><span style=color:#ff79c6>$(</span><span style=color:#8be9fd;font-style:italic>printf</span> <span style=color:#f1fa8c>&#34;</span><span style=color:#8be9fd;font-style:italic>$TEMPLATE</span><span style=color:#f1fa8c>&#34;</span> <span style=color:#f1fa8c>&#34;Random </span><span style=color:#8be9fd;font-style:italic>$RANDOM</span><span style=color:#f1fa8c>&#34;</span> <span style=color:#f1fa8c>&#34;garf&#34;</span><span style=color:#ff79c6>)</span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>echo</span> <span style=color:#8be9fd;font-style:italic>$RANDOM_ITEM</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>put_dynamo_local <span style=color:#f1fa8c>&#34;</span><span style=color:#8be9fd;font-style:italic>$RANDOM_ITEM</span><span style=color:#f1fa8c>&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>echo</span> <span style=color:#f1fa8c>&#34;sleeping&#34;</span>
+</span></span><span style=display:flex><span>sleep <span style=color:#bd93f9>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># show some logs</span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>FIRST_STREAM_NAME</span><span style=color:#ff79c6>=</span><span style=color:#ff79c6>$(</span>aws --endpoint-url http://localhost:4566 logs describe-log-streams --log-group-name /aws/lambda/ddb-lambda-function | jq -r <span style=color:#f1fa8c>&#34;.logStreams[0].logStreamName&#34;</span><span style=color:#ff79c6>)</span>
+</span></span><span style=display:flex><span>aws --endpoint-url http://localhost:4566 logs get-log-events --log-group-name /aws/lambda/ddb-lambda-function --log-stream-name <span style=color:#f1fa8c>&#34;</span><span style=color:#8be9fd;font-style:italic>$FIRST_STREAM_NAME</span><span style=color:#f1fa8c>&#34;</span> --limit <span style=color:#bd93f9>50</span> | jq -r <span style=color:#f1fa8c>&#34;.events | map(.message)[]&#34;</span>
+</span></span></code></pre></div><p>And that should put you in pretty good shape</p><h2 id=a-caveat-connection-timeouts-with-localstack>A caveat: connection timeouts with localstack</h2><p>That lambda isn&rsquo;t particularly useful, however. If you wanted to, for example, publish an SNS event on inserting a new item into a DynamoDB stream, even after modifying the policy attached to the lambda, this gets a connection timeout for me locally [note that I&rsquo;m running linux mint on my machine, YMMV]:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#ff79c6>import</span> logging
+</span></span><span style=display:flex><span><span style=color:#ff79c6>import</span> math
+</span></span><span style=display:flex><span><span style=color:#ff79c6>import</span> json
+</span></span><span style=display:flex><span><span style=color:#ff79c6>import</span> boto3
+</span></span><span style=display:flex><span><span style=color:#ff79c6>import</span> os
+</span></span><span style=display:flex><span><span style=color:#ff79c6>from</span> botocore.client <span style=color:#ff79c6>import</span> Config
+</span></span><span style=display:flex><span><span style=color:#ff79c6>import</span> boto3
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>config <span style=color:#ff79c6>=</span> Config(connect_timeout<span style=color:#ff79c6>=</span><span style=color:#bd93f9>3</span>, retries<span style=color:#ff79c6>=</span>{<span style=color:#f1fa8c>&#39;max_attempts&#39;</span>: <span style=color:#bd93f9>0</span>})
+</span></span><span style=display:flex><span>logger <span style=color:#ff79c6>=</span> logging<span style=color:#ff79c6>.</span>getLogger()
+</span></span><span style=display:flex><span>logger<span style=color:#ff79c6>.</span>setLevel(logging<span style=color:#ff79c6>.</span>DEBUG)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>sns_client <span style=color:#ff79c6>=</span> boto3<span style=color:#ff79c6>.</span>client(<span style=color:#f1fa8c>&#39;sns&#39;</span>,
+</span></span><span style=display:flex><span>    endpoint_url<span style=color:#ff79c6>=</span><span style=color:#f1fa8c>&#34;http://&#34;</span> <span style=color:#ff79c6>+</span> os<span style=color:#ff79c6>.</span>getenv(<span style=color:#f1fa8c>&#34;LOCALSTACK_HOSTNAME&#34;</span>) <span style=color:#ff79c6>+</span> <span style=color:#f1fa8c>&#34;:4566&#34;</span>, <span style=color:#6272a4># this is the actual docker container ip, and it fails.</span>
+</span></span><span style=display:flex><span>    <span style=color:#6272a4># endpoint_url=&#34;http://172.30.0.1:4566&#34;,  # this is the harcoded gateway ip for the network, and it succeeds</span>
+</span></span><span style=display:flex><span>    config<span style=color:#ff79c6>=</span>config, region_name<span style=color:#ff79c6>=</span><span style=color:#f1fa8c>&#39;us-east-1&#39;</span>,
+</span></span><span style=display:flex><span>    aws_access_key_id<span style=color:#ff79c6>=</span><span style=color:#f1fa8c>&#34;FAKE&#34;</span>,
+</span></span><span style=display:flex><span>    aws_secret_access_key<span style=color:#ff79c6>=</span><span style=color:#f1fa8c>&#34;FAKE&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>def</span> <span style=color:#50fa7b>lambda_handler</span>(event, context):
+</span></span><span style=display:flex><span>    logger<span style=color:#ff79c6>.</span>info(<span style=color:#f1fa8c>&#39;Event: </span><span style=color:#f1fa8c>%s</span><span style=color:#f1fa8c>&#39;</span>, event)
+</span></span><span style=display:flex><span>    logger<span style=color:#ff79c6>.</span>info(<span style=color:#f1fa8c>&#39;context: </span><span style=color:#f1fa8c>%s</span><span style=color:#f1fa8c>&#39;</span>, context<span style=color:#ff79c6>.</span>__dict__)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>return</span> sns_client<span style=color:#ff79c6>.</span>list_topics()
+</span></span></code></pre></div><p>As that comment indicates, if I take the docker compose network gateway ip address and put it in place of the <strong>LOCALSTACK_HOSTNAME</strong> environment variable, then I can get it to publish successfully. My recommendation is to use real AWS resources and leverage terraform/s3 for environment promotion and versioning if you&rsquo;re doing this for anything other than a pet project. This, however, was a good learning exercise.</p></section><footer><div class="pb-14 taxonomy-list tags-list"><a href=/tags/devops/ alt=DevOps>DevOps
+</a><a href=/tags/aws/ alt=Aws>Aws
+</a><a href=/tags/dynamodb/ alt=Dynamodb>Dynamodb
+</a><a href=/tags/aws-lambda/ alt=Aws-Lambda>Aws-Lambda</a></div></footer></article></main><footer class="pt-5 pb-10 grid gap-3 sm:grid-cols-2"><div class="text-xs font-semibold text-gray-500 order-2 sm:order-1">© 2018-2025 —
+<a href=https://www.nickolasfisher.com/>Nick Fisher's tech blog</a></div><div class="order-1 sm:order-2"><ul class="flex sm:justify-end gap-5"><li><a href=https://www.linkedin.com/in/nick-fisher-software/ target=_blank rel="noopener noreferrer">LinkedIn</a></li><li><a href=https://github.com/nfisher23 target=_blank rel="noopener noreferrer">GitHub</a></li></ul></div></footer></body></html>

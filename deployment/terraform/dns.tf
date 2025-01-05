@@ -2,26 +2,54 @@ resource "digitalocean_domain" "nickolasfisherdotcom" {
   name = "nickolasfisher.com"  
 }
 
-resource "digitalocean_record" "root_a" {
+resource "digitalocean_record" "root_a1" {
   domain = digitalocean_domain.nickolasfisherdotcom.name
   type   = "A"
   name   = "@"
-  value  = "68.183.250.105"
+  value  = "185.199.108.153"
+  ttl      = 60  # Optional: Set an explicit TTL
 }
 
-resource "digitalocean_record" "www_a" {
+resource "digitalocean_record" "root_a2" {
   domain = digitalocean_domain.nickolasfisherdotcom.name
   type   = "A"
-  name   = "www"
-  value  = "68.183.250.105"
+  name   = "@"
+  value  = "185.199.109.153"
+  ttl      = 60  # Optional: Set an explicit TTL
 }
+
+resource "digitalocean_record" "root_a3" {
+  domain = digitalocean_domain.nickolasfisherdotcom.name
+  type   = "A"
+  name   = "@"
+  value  = "185.199.110.153"
+  ttl      = 60  # Optional: Set an explicit TTL
+}
+
+resource "digitalocean_record" "root_a4" {
+  domain = digitalocean_domain.nickolasfisherdotcom.name
+  type   = "A"
+  name   = "@"
+  value  = "185.199.111.153"
+  ttl      = 60  # Optional: Set an explicit TTL
+}
+
+# CNAME record for www subdomain
+resource "digitalocean_record" "www_cname" {
+  domain = digitalocean_domain.nickolasfisherdotcom.name
+  type   = "CNAME"
+  name   = "www"
+  value  = "nfisher23.github.io."
+  ttl      = 60  # Optional: Set an explicit TTL
+}
+
 resource "digitalocean_record" "mx_10" {
   domain   = digitalocean_domain.nickolasfisherdotcom.name
   type     = "MX"
   name     = "@"
   value    = "mx.zoho.com."  # Note the dot at the end
   priority = 10
-  ttl      = 1800  # Optional: Set an explicit TTL
+  ttl      = 60  # Optional: Set an explicit TTL
 }
 
 resource "digitalocean_record" "mx_20" {
@@ -30,7 +58,7 @@ resource "digitalocean_record" "mx_20" {
   name     = "@"
   value    = "mx2.zoho.com."  # Note the dot at the end
   priority = 20
-  ttl      = 1800  # Optional: Set an explicit TTL
+  ttl      = 60  # Optional: Set an explicit TTL
 }
 
 resource "digitalocean_record" "mx_50" {
@@ -39,7 +67,7 @@ resource "digitalocean_record" "mx_50" {
   name     = "@"
   value    = "mx3.zoho.com."  # Note the dot at the end
   priority = 50
-  ttl      = 1800  # Optional: Set an explicit TTL
+  ttl      = 60  # Optional: Set an explicit TTL
 }
 
 resource "digitalocean_record" "txt_zoho_verification" {

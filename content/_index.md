@@ -2,7 +2,7 @@
 title: "Home - Nick Fisher"
 draft: false
 ---
-Welcome to Nick Fisher's Tech Blog! I used to post a lot in here, and do so less often now. 
+Welcome to Nick Fisher's Tech Blog! I sometimes write in here about software engineering. Most of the older topics are "how to" articles detailing how to solve specific tasks in distributed systems that need to scale.
 
-I still work as an engineer, and might come back to writing in here again once I'm done with changing my kids' diapers :-D. 
+I still work as an engineer--writing in here has slowed with a few young kids at home &#128512;
 

@@ -1,9 +1,9 @@
 
  # Ignore Hugo's generated files
-.hugo_build.lock
- /public
+ /public/
  /resources/_gen/
  /hugo_stats.json
+.hugo_build.lock
 
  # Ignore temporary and backup files
  *.bak

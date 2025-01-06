@@ -8,6 +8,10 @@ enableRobotsTXT: true
 summaryLength: 15
 paginate: 5
 
+services:
+  googleAnalytics:
+    id: G-G1H6773P1N # Your GA4 Measurement ID
+
 markup:
   highlight:
     anchorLineNos: false

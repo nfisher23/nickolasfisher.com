@@ -27,3 +27,5 @@
 # infra
 .terraform
 .terraform.lock.hcl
+public
+resources/_gen
